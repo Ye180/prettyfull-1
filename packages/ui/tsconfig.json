@@ -1,7 +1,9 @@
 {
   "extends": "@prettyfull/typescript-config/react-library.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "declaration": true, // This is crucial! It creates the .d.ts files.
+    "declarationMap": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
