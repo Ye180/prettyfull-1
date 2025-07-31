@@ -8,5 +8,5 @@ FROM node:22-alpine
 WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY package*.json ./
-RUN pnpm install --prod
+RUN pnpm install 
 CMD ["node", "dist/apps/backend/main.js"]

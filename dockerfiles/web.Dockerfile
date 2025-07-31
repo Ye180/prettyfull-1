@@ -10,5 +10,5 @@ WORKDIR /app
 COPY --from=builder /app/apps/web/.next ./.next
 COPY --from=builder /app/apps/web/package.json ./
 RUN npm install -g pnpm
-RUN pnpm install --prod
+RUN pnpm install 
 CMD ["pnpm", "start"]
