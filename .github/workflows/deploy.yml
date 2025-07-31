@@ -46,7 +46,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./dockerfiles/.${{ matrix.app }}.Dockerfile
+          file: ./dockerfiles/${{ matrix.app }}.Dockerfile
           push: true
           tags: your-dockerhub-username/prettyfull-${{ matrix.app }}:latest
           cache-from: type=registry,ref=your-dockerhub-username/prettyfull-${{ matrix.app }}:buildcache
