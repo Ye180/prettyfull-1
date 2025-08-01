@@ -6,13 +6,13 @@ const page = () => {
       <div className="text-center space-y-4">
         {/* Logo */}
         <div className="mb-2">
-          <h1 className="text-6xl font-bold text-slate-900">PrettyFull</h1>
+          <h1 className="text-6xl font-bold text-slate-900">PrettyFull Shop</h1>
         </div>
 
         {/* Subtitle - reduced spacing with mb-2 instead of default gap */}
         <div>
           <p className="text-xl text-slate-600 font-medium">
-            Beautiful design meets powerful functionality
+            Beautiful Ecommerce In Construction
           </p>
         </div>
 
