@@ -26,6 +26,7 @@
     "@nestjs/cqrs": "^11.0.3",
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.2.0",
     "@prettyfull/eslint-config": "workspace:*",
     "@prettyfull/typescript-config": "workspace:*",
     "@trpc/server": "^11.4.3",
