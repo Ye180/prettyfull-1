@@ -7,61 +7,108 @@ on:
       - develop
 
 jobs:
-  build-and-deploy:
+  # Job séparé pour l'application web
+  deploy-web:
     runs-on: ubuntu-latest
-
-    # Stratégie pour lancer un job par application
-    strategy:
-      matrix:
-        app: [web, backend]
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Nécessaire pour détecter les changements
+          fetch-depth: 0
+
+      - name: Detect web changes
+        id: changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            web:
+              - 'apps/web/**'
+              - 'packages/**'
 
       - name: Set up Docker Buildx
+        if: steps.changes.outputs.web == 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
+        if: steps.changes.outputs.web == 'true'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Étape pour détecter les changements
-      - name: Detect changes
-        id: changes
-        uses: dorny/paths-filter@v2
-        with:
-          filters: |
-            ${{ matrix.app }}:
-              - 'apps/${{ matrix.app }}/**'
-              - 'packages/**' # Si un paquet partagé change, on reconstruit tout
-
-      # Construire et pousser l'image seulement si des changements sont détectés
-      - name: Build and push Docker image
-        if: steps.changes.outputs[matrix.app] == 'true'
+      - name: Build and push web Docker image
+        if: steps.changes.outputs.web == 'true'
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./dockerfiles/${{ matrix.app }}.Dockerfile
+          file: ./dockerfiles/web.Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-${{ matrix.app }}:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-${{ matrix.app }}:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-${{ matrix.app }}:buildcache,mode=max
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-web:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-web:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-web:buildcache,mode=max
 
-      # (Optionnel) Déployer sur le serveur
-      - name: Deploy to server
-        if: steps.changes.outputs[matrix.app] == 'true'
+      - name: Deploy web to server
+        if: steps.changes.outputs.web == 'true'
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-${{ matrix.app }}:latest
-            docker stop prettyfull-${{ matrix.app }} || true
-            docker rm prettyfull-${{ matrix.app }} || true
-            docker run -d --restart always --name prettyfull-${{ matrix.app }} -p ${{ matrix.app == 'web' && 3000 || matrix.app == 'admin' && 3001 || 3002 }}:${{ matrix.app == 'backend' && 7777 || 3000 }} ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-${{ matrix.app }}:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-web:latest
+            docker stop prettyfull-web || true
+            docker rm prettyfull-web || true
+            docker run -d --restart always --name prettyfull-web -p 3000:3000 ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-web:latest
+
+  # Job séparé pour l'application backend
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect backend changes
+        id: changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            backend:
+              - 'apps/backend/**'
+              - 'packages/**'
+
+      - name: Set up Docker Buildx
+        if: steps.changes.outputs.backend == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        if: steps.changes.outputs.backend == 'true'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push backend Docker image
+        if: steps.changes.outputs.backend == 'true'
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./dockerfiles/backend.Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-backend:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-backend:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-backend:buildcache,mode=max
+
+      - name: Deploy backend to server
+        if: steps.changes.outputs.backend == 'true'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-backend:latest
+            docker stop prettyfull-backend || true
+            docker rm prettyfull-backend || true
+            docker run -d --restart always --name prettyfull-backend -p 3002:7777 ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-backend:latest
