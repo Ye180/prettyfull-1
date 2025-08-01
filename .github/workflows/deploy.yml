@@ -33,7 +33,7 @@ jobs:
       # Étape pour détecter les changements
       - name: Detect changes
         id: changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v2
         with:
           filters: |
             ${{ matrix.app }}:
