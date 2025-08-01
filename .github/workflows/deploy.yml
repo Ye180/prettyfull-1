@@ -17,15 +17,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Nécessaire pour détecter les changements
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -33,7 +33,7 @@ jobs:
       # Étape pour détecter les changements
       - name: Detect changes
         id: changes
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v3
         with:
           filters: |
             ${{ matrix.app }}:
@@ -48,9 +48,9 @@ jobs:
           context: .
           file: ./dockerfiles/${{ matrix.app }}.Dockerfile
           push: true
-          tags: your-dockerhub-username/prettyfull-${{ matrix.app }}:latest
-          cache-from: type=registry,ref=your-dockerhub-username/prettyfull-${{ matrix.app }}:buildcache
-          cache-to: type=registry,ref=your-dockerhub-username/prettyfull-${{ matrix.app }}:buildcache,mode=max
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-${{ matrix.app }}:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-${{ matrix.app }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-${{ matrix.app }}:buildcache,mode=max
 
       # (Optionnel) Déployer sur le serveur
       - name: Deploy to server
@@ -61,7 +61,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull your-dockerhub-username/prettyfull-${{ matrix.app }}:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-${{ matrix.app }}:latest
             docker stop prettyfull-${{ matrix.app }} || true
             docker rm prettyfull-${{ matrix.app }} || true
-            docker run -d --restart always --name prettyfull-${{ matrix.app }} -p ${{ matrix.app == 'web' && 3000 || matrix.app == 'admin' && 3001 || 8080 }}:${{ matrix.app == 'backend' && 8080 || 3000 }} your-dockerhub-username/prettyfull-${{ matrix.app }}:latest
+            docker run -d --restart always --name prettyfull-${{ matrix.app }} -p ${{ matrix.app == 'web' && 3000 || matrix.app == 'admin' && 3001 || 8080 }}:${{ matrix.app == 'backend' && 8080 || 3000 }} ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-${{ matrix.app }}:latest
