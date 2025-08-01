@@ -65,4 +65,3 @@ jobs:
             docker stop prettyfull-${{ matrix.app }} || true
             docker rm prettyfull-${{ matrix.app }} || true
             docker run -d --restart always --name prettyfull-${{ matrix.app }} -p ${{ matrix.app == 'web' && 3000 || matrix.app == 'admin' && 3001 || 8080 }}:${{ matrix.app == 'backend' && 7777 || 3000 }} ${{ secrets.DOCKERHUB_USERNAME }}/prettyfull-${{ matrix.app }}:latest
-com
