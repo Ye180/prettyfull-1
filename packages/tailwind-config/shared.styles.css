@@ -1,0 +1,74 @@
+/* tailwind.css */
+
+/*
+|--------------------------------------------------------------------------
+| 1. Import Tailwind's base, components, and utilities.
+|--------------------------------------------------------------------------
+*/
+@import "tailwindcss";
+
+/*
+|--------------------------------------------------------------------------
+| 2. Define your design system using @theme.
+|--------------------------------------------------------------------------
+|
+| This is where we define all the design tokens extracted from the
+| "Pretyfull" design, such as colors, fonts, and border radia.
+|
+*/
+@theme {
+  /*
+  |----------------------------------
+  | Color Palette
+  |----------------------------------
+  | We define a base palette and then create semantic aliases for use
+  | throughout the application.
+  */
+
+  /* Base Palette */
+  --color-light: #ffffff;
+  --color-dark: #070707; /* A slightly softer black for the footer */
+  --color-black: #000000; /* True black for primary buttons & text */
+  --color-grey: #888888; /* Muted text, placeholders */
+  --color-grey-light: #e5e7eb; /* Borders */
+
+  /* Semantic Colors */
+  --color-background: var(--color-light);
+  --color-foreground: var(--color-black);
+
+  --color-background-dark: var(--color-dark);
+  --color-foreground-dark: var(--color-light);
+
+  --color-primary: var(--color-black);
+  --color-primary-foreground: var(--color-light);
+
+  --color-secondary: var(--color-light);
+  --color-secondary-foreground: var(--color-black);
+
+  --color-muted: var(--color-grey);
+  --color-border: var(--color-grey-light);
+
+  /*
+  |----------------------------------
+  | User-provided Custom Colors
+  |----------------------------------
+  */
+  --color-blue-1000: #2a8af6;
+  --color-purple-1000: #a853ba;
+  --color-red-1000: #e92a67;
+
+  /*
+  |----------------------------------
+  | Typography
+  |----------------------------------
+  */
+  --font-family-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /*
+  |----------------------------------
+  | Border Radius
+  |----------------------------------
+  | Buttons and inputs use a fully-rounded, pill shape.
+  */
+  --border-radius-component: 9999px;
+}

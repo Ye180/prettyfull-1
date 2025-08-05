@@ -1,0 +1,22 @@
+{
+  "extends": "@prettyfull/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@prettyfull/ui": ["../../packages/ui/src"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "../../packages/ui/src"
+  ],
+  "exclude": ["node_modules"]
+}

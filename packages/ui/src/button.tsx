@@ -1,10 +1,11 @@
 "use client";
 
 import { cva, type VariantProps } from "class-variance-authority";
-import { ButtonHTMLAttributes, ReactNode } from "react";
+import { ButtonHTMLAttributes, PropsWithChildren } from "react";
+import "./styles.css";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
+  "inline-flex items-center justify-center rounded-md text-[9.7rem] font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
   {
     variants: {
       variant: {
@@ -30,9 +31,7 @@ const buttonVariants = cva(
 
 interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  children: ReactNode;
-}
+    VariantProps<typeof buttonVariants> {}
 
 export const Button = ({
   children,
@@ -40,7 +39,7 @@ export const Button = ({
   variant,
   size,
   ...props
-}: ButtonProps) => {
+}: PropsWithChildren<ButtonProps>) => {
   return (
     <button className={buttonVariants({ variant, size, className })} {...props}>
       {children}
