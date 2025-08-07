@@ -1,135 +1,188 @@
-# Turborepo starter
+# PrettyFull - Turborepo Monorepo
 
-This Turborepo starter is maintained by the Turborepo core team.
+Application web complète avec architecture micro-frontend utilisant Turborepo pour la gestion des packages partagés.
 
-## Using this example
+## 🏗️ Architecture
 
-Run the following command:
+### Apps
 
-```sh
-npx create-turbo@latest
+- **`web`**: Application frontend Next.js principale
+- **`backend`**: API backend NestJS (serveur sur port 7777)
+- **`admin`**: Interface d'administration (port 3001)
+
+### Packages Partagés
+
+- **`@repo/ui`**: Composants React réutilisables avec prefix CSS `ui:` (ex: `ui:bg-red-600`)
+- **`@repo/eslint-config`**: Configurations ESLint partagées (base, next, react)
+- **`@repo/store`**: État global et logique métier partagée (Zustand)
+- **`@repo/typescript-config`**: Configurations TypeScript partagées (base, nestjs, nextjs)
+
+## 🚀 Démarrage Rapide
+
+### Installation
+
+```bash
+pnpm install
 ```
 
-## What's inside?
+### Développement
 
-This Turborepo includes the following packages/apps:
+```bash
+# Démarrer tous les services
+pnpm dev
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+# Applications spécifiques
+pnpm dev --filter=web       # Frontend uniquement
+pnpm dev --filter=backend   # Backend uniquement
+pnpm dev --filter=admin     # Admin uniquement
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+**Accès local :**
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+- Web: `http://localhost:3000`
+- Backend API: `http://localhost:7777`
+- Admin: `http://localhost:3001`
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+### Build & Production
 
-### Develop
+```bash
+# Build tout le projet
+pnpm build
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+# Build spécifique
+pnpm build --filter=web
+pnpm build --filter=backend
+pnpm build --filter=admin
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## 📦 Utilisation des Packages
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+### UI Components
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+```tsx
+import { Button } from "@prettyfull/ui";
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+<Button variant="destructive" size="lg">
+  Mon bouton
+</Button>;
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+_Note: Les styles utilisent le prefix `ui:` pour éviter les conflits CSS_
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+**Variantes disponibles :**
+
+- `variant`: `default`, `destructive`, `outline`, `secondary`, `ghost`, `link`
+- `size`: `default`, `sm`, `lg`
+
+### Store (État Global)
+
+```tsx
+import { useCartStore } from "@prettyfull/store";
+
+const { items, addItem } = useCartStore();
+```
+
+### Configurations
+
+- **ESLint**: Automatiquement héritée dans chaque app
+- **TypeScript**: Configurations partagées via `@prettyfull/typescript-config`
+  - `base.json`: Configuration de base
+  - `nestjs.json`: Pour le backend
+  - `nextjs.json`: Pour les apps Next.js
+
+## 🐳 Déploiement
+
+Le projet utilise Docker et GitHub Actions pour le déploiement automatique :
+
+- **Déclencheur**: Push sur la branche `develop`
+- **Détection intelligente**: Seules les apps modifiées sont redéployées (à revoir)
+- **Jobs séparés**: Un job indépendant par application
+- **Ports de production**: Web (3000), Backend (3002), Admin (3001)
+
+### Dockerfiles
 
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+dockerfiles/
+├── web.Dockerfile      # Next.js app
+├── backend.Dockerfile  # NestJS API
+└── admin.Dockerfile    # Admin interface
 ```
 
-## Useful Links
+## 🛠️ Commandes Utiles
 
-Learn more about the power of Turborepo:
+```bash
+# Développement ciblé
+pnpm dev --filter=web --filter=backend  # Web + Backend uniquement
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+# Build avec cache
+pnpm build --cache-dir=.turbo
+
+# Nettoyage
+pnpm clean
+
+# Tests
+pnpm test --filter=backend
+pnpm test --filter=web
+
+# Linting
+pnpm lint --filter=web
+```
+
+## 📁 Structure du Projet
+
+```
+prettyfull/
+├── apps/
+│   ├── web/          # App Next.js principale (e-commerce)
+│   ├── backend/      # API NestJS avec MongoDB
+│   └── admin/        # Interface d'administration
+├── packages/
+│   ├── ui/           # Composants + styles (prefix ui:)
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   └── styles.css
+│   ├── store/        # État global (Zustand)
+│   │   └── use-cart-store.ts
+│   ├── eslint-config/
+│   │   ├── base.js
+│   │   ├── next.js
+│   │   └── react-internal.js
+│   └── typescript-config/
+│       ├── base.json
+│       ├── nestjs.json
+│       └── nextjs.json
+├── dockerfiles/      # Configurations Docker
+└── .github/workflows/ # CI/CD GitHub Actions
+```
+
+## 🔧 Configuration Technique
+
+- **Turborepo**: Cache intelligent et builds parallèles
+- **Docker**: Containerisation pour production
+- **GitHub Actions**: CI/CD automatique avec détection de changements
+- **MongoDB**: Base de données (backend)
+- **Tailwind CSS**: Système de design cohérent
+- **Class Variance Authority**: Gestion des variantes de composants
+
+## 📋 Modules Backend
+
+```
+backend/src/modules/
+├── auth/         # Authentification JWT
+├── users/        # Gestion des utilisateurs
+├── products/     # Catalogue produits
+└── orders/       # Gestion des commandes
+```
+
+**Architecture CQRS** avec séparation commands/queries/schemas/services.
+
+## 🎯 Features Web App
+
+- **Authentification**: Système de login/register
+- **E-commerce**: Panier, commandes, paiements
+- **Interface moderne**: Tailwind CSS + composants UI
+- **État global**: Gestion du panier avec Zustand
+
+---
+
+**Tip**: Utilisez `pnpm dev --filter=<app>` pour développer efficacement sur une seule partie du projet.
