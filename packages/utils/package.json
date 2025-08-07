@@ -1,0 +1,12 @@
+{
+  "name": "@prettyfull/utils",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./styles.css": "./dist/index.css",
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint src --max-warnings 0"
+  }
+}
