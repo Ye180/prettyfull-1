@@ -1,4 +1,4 @@
-import type { StorybookConfig } from "@storybook/nextjs";
+import type { StorybookConfig } from "@storybook/nextjs-vite";
 
 import { dirname, join } from "path";
 
@@ -15,14 +15,17 @@ const config: StorybookConfig = {
     "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)",
   ],
   addons: [
-    "@storybook/addon-essentials",
-    "@storybook/addon-onboarding",
-    "@chromatic-com/storybook",
-    "@storybook/experimental-addon-test",
-    "@storybook/addon-mdx-gfm",
+    // "@storybook/addon-essentials",
+    // "@storybook/addon-onboarding",
+    // "@chromatic-com/storybook",
+    // "@storybook/experimental-addon-test",
+    // "@storybook/addon-mdx-gfm",
+    "@storybook/addon-a11y",
+    "@storybook/addon-docs",
+    "@storybook/addon-vitest",
   ],
   framework: {
-    name: "@storybook/nextjs",
+    name: "@storybook/nextjs-vite",
     options: {},
   },
 };

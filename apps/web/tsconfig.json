@@ -8,7 +8,10 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@prettyfull/ui": ["../../packages/ui/src/index.ts"]
+      "@prettyfull/ui": ["../../packages/ui/src/index.ts"],
+      "@prettyfull/tailwind-config": [
+        "../../packages/tailwind-config/shared.styles.css"
+      ]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

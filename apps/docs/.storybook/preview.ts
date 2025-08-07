@@ -1,5 +1,6 @@
+import "@prettyfull/ui/styles.css";
 import type { Preview } from "@storybook/nextjs-vite";
-import "../global.css";
+import "../globals.css";
 
 const preview: Preview = {
   parameters: {

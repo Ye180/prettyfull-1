@@ -27,6 +27,7 @@
   "devDependencies": {
     "@prettyfull/eslint-config": "workspace:*",
     "@prettyfull/typescript-config": "workspace:*",
+    "@prettyfull/tailwind-config": "workspace:*",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
