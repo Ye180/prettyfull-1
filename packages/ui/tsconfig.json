@@ -1,10 +1,18 @@
 {
-  "extends": "@prettyfull/typescript-config/react-library.json",
+  "extends": "@prettyfull/typescript-config/nextjs.json",
   "compilerOptions": {
     "outDir": "dist",
     "declaration": true, // This is crucial! It creates the .d.ts files.
-    "declarationMap": true
+    "declarationMap": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@prettyfull/utils": ["../../packages/utils/index.ts"],
+      "@prettyfull/tailwind-config": [
+        "../../packages/tailwind-config/shared.styles.css"
+      ]
+    }
   },
-  "include": ["src", "src/styles.css"],
+
+  "include": ["src", "src/styles.css", "../../packages/utils"],
   "exclude": ["node_modules", "dist"]
 }

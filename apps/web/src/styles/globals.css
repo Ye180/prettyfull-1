@@ -1,10 +1,7 @@
 @import "tailwindcss";
-@import "@prettyfull/tailwind-config";
+@import "@prettyfull/tailwind-config/styles";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@source "../../node_modules/@prettyfull/ui";
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -16,5 +13,4 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }

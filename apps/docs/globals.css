@@ -1,9 +1,4 @@
 @import "tailwindcss";
-@import "../../packages/tailwind-config";
+@import "@prettyfull/tailwind-config/styles";
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@source "./node_modules/@prettyfull/ui";

@@ -1,8 +1,6 @@
 import "@/styles/globals.css";
-import "@prettyfull/ui/styles.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "../../../../packages/ui/src/styles.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

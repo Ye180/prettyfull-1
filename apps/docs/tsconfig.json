@@ -9,9 +9,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@prettyfull/ui": ["../../packages/ui/src"],
-      "@prettyfull/tailwind-config": [
-        "../../packages/tailwind-config/shared.styles.css"
-      ]
+      "@prettyfull/tailwind-config": ["../../packages/tailwind-config"]
     }
   },
   "include": ["."],

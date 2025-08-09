@@ -6,7 +6,9 @@ const page = () => {
       <div className="text-center space-y-4">
         {/* Logo */}
         <div className="mb-2">
-          <h1 className="text-6xl font-bold text-slate-900">PrettyFull Shop</h1>
+          <h1 className="text-6xl font-extralight text-slate-900">
+            PrettyFull Shop
+          </h1>
         </div>
 
         {/* Subtitle - reduced spacing with mb-2 instead of default gap */}
@@ -18,9 +20,7 @@ const page = () => {
 
         {/* Call to action */}
         <div className="mt-8">
-          <Button className="px-8 py-3 !bg-blue-1000   text-white rounded-lg hover:bg-slate-800 transition-colors">
-            Get Started
-          </Button>
+          <Button className="bg-red-200">Get Started</Button>
         </div>
       </div>
     </div>
