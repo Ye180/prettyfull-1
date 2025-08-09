@@ -6,9 +6,9 @@ const page = () => {
       <div className="text-center space-y-4">
         {/* Logo */}
         <div className="mb-2">
-          <h1 className="text-6xl font-extralight text-slate-900">
+          <h6 className="text-6xl font-extralight text-slate-900">
             PrettyFull Shop
-          </h1>
+          </h6>
         </div>
 
         {/* Subtitle - reduced spacing with mb-2 instead of default gap */}
