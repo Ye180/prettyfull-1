@@ -1,8 +1,9 @@
-import { Button } from "@prettyfull/ui";
+import { Button, CardProduct } from "@prettyfull/ui";
+import Image from "next/image";
 
 const page = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen  space-y-12 flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="text-center space-y-4">
         {/* Logo */}
         <div className="mb-2">
@@ -18,11 +19,15 @@ const page = () => {
           </p>
         </div>
 
+        {/* <Card_Product /> */}
+
         {/* Call to action */}
         <div className="mt-8">
           <Button>Get Started</Button>
         </div>
       </div>
+
+      <div className="  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
   );
 };

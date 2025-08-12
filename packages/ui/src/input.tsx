@@ -1,6 +1,6 @@
+import { cn } from "@prettyfull/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { InputHTMLAttributes } from "react";
-import { cn } from "../../utils";
 
 const inputVariants = cva(
   [
