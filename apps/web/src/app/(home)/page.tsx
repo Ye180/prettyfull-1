@@ -1,5 +1,4 @@
-import { Button, CardProduct } from "@prettyfull/ui";
-import Image from "next/image";
+import { Button } from "@prettyfull/ui";
 
 const page = () => {
   return (
