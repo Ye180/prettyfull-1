@@ -1,5 +1,5 @@
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
-import { cva, VariantProps } from "class-variance-authority";
+import { VariantProps, cva } from "class-variance-authority";
 
 const cardVariants = cva(["space-y-3  relative"], {
   variants: {

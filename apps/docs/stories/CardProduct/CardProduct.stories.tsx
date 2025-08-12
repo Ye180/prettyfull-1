@@ -1,5 +1,6 @@
 import { CardProduct } from "@prettyfull/ui";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import Image from "next/image";
 
 import { fn } from "storybook/test";
 
@@ -36,6 +37,16 @@ type Story = StoryObj<typeof meta>;
 export const Product_Simple: Story = {
   args: {
     variant: "default",
+    children: (
+      <Image
+        src="/assets/product_1.jpg"
+        alt="Sweet-Top"
+        width={6000}
+        height={6000}
+        className="object-cover w-full h-full "
+        priority
+      />
+    ),
   },
 };
 

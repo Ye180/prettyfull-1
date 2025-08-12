@@ -1,5 +1,5 @@
 import { Button } from "@prettyfull/ui";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { fn } from "storybook/test";
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
