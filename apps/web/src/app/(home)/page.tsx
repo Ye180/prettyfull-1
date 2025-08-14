@@ -1,4 +1,5 @@
-import { Button } from "@prettyfull/ui";
+import { Button, CardProduct } from "@prettyfull/ui";
+import Image from "next/image";
 
 const page = () => {
   return (
@@ -26,7 +27,27 @@ const page = () => {
         </div>
       </div>
 
-      <div className="  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <div className="  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <CardProduct
+          price={12000}
+          promotion={{
+            pourcentage: 50,
+            reduced_price: 6000,
+          }}
+          small_description="Top polyvalente á Manche"
+          title="Sweet-Top"
+        >
+          <Image
+            src="/assets/product_1.jpg"
+            alt="Sweet-Top"
+            width={6000}
+            height={6000}
+            className="object-cover w-full h-full "
+            priority
+          />
+        </CardProduct>
+        ;
+      </div>
     </div>
   );
 };

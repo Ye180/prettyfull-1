@@ -52,3 +52,27 @@ export const Solde_Product: Story = {
     },
   },
 };
+
+export const Variable_Product: Story = {
+  args: {
+    onClick: fn(),
+    children: "Ajouter une image",
+    small_description: "Top polyvalente á Manche",
+    title: "Sweet-Top",
+    price: 12000,
+    variable: [
+      {
+        color: { couleur: "Rouge", code: "#FF0000" },
+        size: ["S", "M", "L"],
+        image: ["image1.jpg", "image2.jpg"],
+        quantity: 1,
+      },
+      {
+        color: { couleur: "Vert", code: "#00FF00" },
+        size: ["S", "M", "L"],
+        image: ["image3.jpg", "image4.jpg"],
+        quantity: 1,
+      },
+    ],
+  },
+};
