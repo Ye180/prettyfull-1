@@ -1,5 +1,5 @@
 import { CardProduct } from "@prettyfull/ui";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { fn } from "storybook/test";
 
@@ -11,7 +11,12 @@ const meta: Meta<typeof CardProduct> = {
   tags: ["autodocs"],
   args: {
     onClick: fn(),
-    children: "Ajouter une image",
+    notVariable: {
+      color: { label: "Rouge", code: "#FF0000" },
+      size: ["S", "M", "L"],
+      image: "/assets/product_2.jpg",
+      quantity: 1,
+    },
     small_description: "Top polyvalente á Manche",
     title: "Sweet-Top",
     price: 12000,
@@ -33,16 +38,22 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const Product_Simple: Story = {
+export const ProductSimple: Story = {
   args: {
     variant: "default",
   },
 };
 
-export const Solde_Product: Story = {
+export const SoldeProduct: Story = {
   args: {
     onClick: fn(),
-    children: "Ajouter une image",
+
+    notVariable: {
+      color: { label: "Rouge", code: "#FF0000" },
+      size: ["S", "M", "L"],
+      image: "/assets/product_1.jpg",
+      quantity: 1,
+    },
     small_description: "Top polyvalente á Manche",
     title: "Sweet-Top",
     price: 12000,
@@ -53,24 +64,24 @@ export const Solde_Product: Story = {
   },
 };
 
-export const Variable_Product: Story = {
+export const VariableProduct: Story = {
   args: {
     onClick: fn(),
-    children: "Ajouter une image",
+
     small_description: "Top polyvalente á Manche",
     title: "Sweet-Top",
     price: 12000,
     variable: [
       {
-        color: { couleur: "Rouge", code: "#FF0000" },
+        color: { label: "Rouge", code: "#FF0000" },
         size: ["S", "M", "L"],
-        image: ["image1.jpg", "image2.jpg"],
+        image: ["/assets/product_1.jpg", "/assets/product_2.jpg"],
         quantity: 1,
       },
       {
-        color: { couleur: "Vert", code: "#00FF00" },
+        color: { label: "Vert", code: "#00FF00" },
         size: ["S", "M", "L"],
-        image: ["image3.jpg", "image4.jpg"],
+        image: ["/assets/product_2.jpg", "image4.jpg"],
         quantity: 1,
       },
     ],
