@@ -108,5 +108,3 @@ export function CardProduct({
     </article>
   );
 }
-
-///Example of product
