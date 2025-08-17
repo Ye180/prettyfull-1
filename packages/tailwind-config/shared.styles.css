@@ -167,6 +167,7 @@
   --tracking-widest: 0.16rem; /* = 0.1em @ 1.6rem (16px) */
 
   /* Breakpoints */
+  --breakpoint-xs: 40rem; /*400px*/
   --breakpoint-sm: 64rem; /* 640px */
   --breakpoint-md: 76.8rem; /* 768px */
   --breakpoint-lg: 102.4rem; /* 1024px */

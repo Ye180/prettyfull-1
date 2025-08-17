@@ -1,13 +1,13 @@
+"use client";
 import { cn, data_url, formatCurrency_FR } from "@prettyfull/utils";
 import { cva, VariantProps } from "class-variance-authority";
-import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./button";
+import { AddToCardIcon } from "./icons/add.cart.icon";
 import { Heart } from "./icons/heart.icon";
-import { Spinner } from "./icons/spinner.icon";
 
-const cardVariants = cva(["space-y-3 w-[33rem] h-[52rem] relative"], {
+const cardVariants = cva(["space-y-3 w-[100%] h-full relative"], {
   variants: {
     variant: {
       default: "tracking-wide  cursor-pointer",
@@ -45,7 +45,6 @@ interface CardProps
     reduced_price: number;
     pourcentage: number;
   };
-
   isLoading?: boolean;
 }
 export function CardProduct({
@@ -64,10 +63,6 @@ export function CardProduct({
   const [activeIndex, setActiveIndex] = useState(0);
 
   const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
-
-  const articleRef = useRef(null);
-
-  const [hover, setHover] = useState(false);
 
   // Préchargement des images
   useEffect(() => {
@@ -92,22 +87,16 @@ export function CardProduct({
   }, [variable]);
 
   return (
-    <article
-      ref={articleRef}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      className={cn(cardVariants(), className)}
-      {...props}
-    >
-      <div className="bg-sky-200 h-[80%] flex justify-center items-center relative">
+    <article className={cn(cardVariants(), className)} {...props}>
+      <div className="bg-sky-200 h-[80%] md:hover:[&>div]:opacity-100 flex  justify-center items-center relative">
         {/* L'affichage d'un produit avec un produits variable */}
         {variable?.map((variant, i) => (
           <Image
             key={i}
             src={variant.image[0] as string}
             alt={`Product Image ${i + 1}`}
-            width={8000}
-            height={8000}
+            width={800}
+            height={800}
             className={cn(
               "object-cover w-full h-full absolute inset-0 transition-opacity duration-300",
               i === activeIndex ? "opacity-100" : "opacity-0"
@@ -130,43 +119,35 @@ export function CardProduct({
             blurDataURL={data_url}
           />
         )}
-        {/* Indicateur de chargement */}
-        {variable && !imagesLoaded[activeIndex] && <Spinner />}
-        {/* <SkeletonProduct /> */}
-        {hover && (
-          <AnimatePresence>
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0.5, scale: 0, y: -80 }}
-              // key="box"
-              className="absolute bottom-5  w-full flex gap-8  px-4 justify-between items-center  "
-            >
-              <Button className="pt-4 pb-5 px-4 w-2/3 text-[1.4rem] font-medium">
-                Ajouter au panier
-              </Button>
-              <button className=" w-fit bg-secondary p-4 text-2xl  rounded-full cursor-pointer">
-                <Heart />
-              </button>
-            </motion.div>
-          </AnimatePresence>
-        )}
+
+        <div className="absolute opacity-0 bottom-5  transition-all duration-300 ease-in-out w-full flex gap-8  px-4 justify-between items-center ">
+          <Button className="pt-4 pb-5 px-4 w-2/3 text-[1.4rem] font-medium">
+            Ajouter au panier
+          </Button>
+          <button className=" w-fit bg-secondary p-4 text-2xl  rounded-full cursor-pointer">
+            <Heart />
+          </button>
+        </div>
+        <button className="bg-white right-2 bottom-5 w-fit p-2 text-2xl absolute rounded-full md:hidden  cursor-pointer">
+          <AddToCardIcon />
+        </button>
       </div>
+
       <div className="space-y-3">
-        <p className="text-sm capitalize text-grey  tracking-[0.03em] font-light">
+        <p className="text-sm  max-sm:hidden capitalize text-grey  tracking-[0.03em] font-light">
           {small_description}
         </p>
       </div>
-      <div className="flex justify-between items-start text-[#000]  text-[2.7rem]">
-        <h3 className="tracking-[0.03em]"> {title}</h3>
+      <div className="flex justify-between items-start text-[#000] max-md:text-[2rem]  md:text-[2.7rem]">
+        <h3 className="tracking-[0.03em] truncate line-clamp-1"> {title}</h3>
 
         {/* Correction de l'affichage des promotions */}
         {!promotion && <h4> {formatCurrency_FR(price)}</h4>}
         {promotion && (
           <>
-            <div className="block text-end">
+            <div className="block text-end ">
               <h4> {formatCurrency_FR(promotion.reduced_price || 0)}</h4>
-              <h4 className="text-grey/50 text-2xl line-through">
+              <h4 className="text-grey/50 text-2xl line-through max-md:text-[2rem]  md:text-[2.7rem]">
                 {formatCurrency_FR(price)}
               </h4>
             </div>

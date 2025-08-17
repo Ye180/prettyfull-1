@@ -41,6 +41,7 @@ type Story = StoryObj<typeof meta>;
 export const ProductSimple: Story = {
   args: {
     variant: "default",
+    className: "w-[35rem] h-[55rem]",
   },
 };
 
@@ -55,6 +56,7 @@ export const SoldeProduct: Story = {
       quantity: 1,
     },
     small_description: "Top polyvalente á Manche",
+    className: "w-[35rem] h-[55rem]",
     title: "Sweet-Top",
     price: 12000,
     promotion: {
@@ -71,6 +73,7 @@ export const VariableProduct: Story = {
     small_description: "Top polyvalente á Manche",
     title: "Sweet-Top",
     price: 12000,
+    className: "w-[35rem] h-[55rem]",
     variable: [
       {
         color: { label: "Rouge", code: "#FF0000" },
