@@ -15,9 +15,14 @@ const LoginPage = () => {
           {/* Form Header */}
           <header>
             <div className="space-y-8">
-              <h3>Create an account</h3>
+              <div className="mb-20">
+                <h3>Welcome Back to Snaely</h3>
+                <p className="text-neutral-500">
+                  Log in to your account to shopping the newest fashion style
+                </p>
+              </div>
               {/* SSO Button */}
-              <Flex>
+              <Flex className="flex-col">
                 <Button
                   variant="outline"
                   icon={<AppleIcon className="size-12" />}
@@ -44,15 +49,10 @@ const LoginPage = () => {
             </div>
           </header>
           <main>
-            <div className="grid grid-cols-2 gap-8">
-              <Input label="First Name" />
-              <Input label="Last Name" />
-              <div className="col-span-2">
-                <Input label="Email" />
-              </div>
-              <div className="col-span-2">
-                <Input label="Password" />
-              </div>
+            <div className="space-y-8">
+              <Input label="Email" />
+
+              <Input type="password" label="Password" />
             </div>
           </main>
           <Flex
@@ -60,11 +60,11 @@ const LoginPage = () => {
             settings={{ isColumn: true, align: "center", spacing: "gap-10" }}
             className="mt-[5.2rem]"
           >
-            <Button fullWidth>Create Account</Button>
+            <Button fullWidth>Login</Button>
             <p className="font-medium text-grey">
-              Already have an account?{" "}
-              <Link href="/login" className="text-black underline">
-                Login
+              Don’t have an account?{" "}
+              <Link href="/create-account" className="text-black underline">
+                Create Account
               </Link>
             </p>
           </Flex>
