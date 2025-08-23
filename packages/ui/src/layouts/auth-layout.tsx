@@ -22,10 +22,12 @@ const AuthLayout = ({
     <Flex
       as="section"
       settings={{ shouldTakeSameSpace: true }}
-      className="flex h-screen p-3 "
+      className="h-screen"
     >
       <div className={cn("relative", settings?.leftClassname)}>{children}</div>
-      <div className={cn(settings?.rightClassname)}>{rightChildren}</div>
+      <div className={cn("relative", settings?.rightClassname)}>
+        {rightChildren}
+      </div>
     </Flex>
   );
 };

@@ -19,4 +19,5 @@ You could abstract the @source into the UI package's own CSS:
 @import "@repo/ui/styles.css";
 Little more complicated but more modular.
 
-- [] Fix Build Errors due to fontvariable font.
+- [x] Fix Build Errors due to fontvariable font.
+- [ ] Fix UI package imports (components in ui subolder it's not infer when importing)

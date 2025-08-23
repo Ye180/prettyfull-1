@@ -1,4 +1,4 @@
-import { nextJsConfig } from "@prettyfull/ui/eslint-config/next";
+import { nextJsConfig } from "@prettyfull/eslint-config/next";
 
 /** @type {import("eslint").Linter.Config} */
 export default nextJsConfig;

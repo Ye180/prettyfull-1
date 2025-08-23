@@ -2,18 +2,27 @@
 
 @source "../../node_modules/@prettyfull/ui";
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-}
-
 h1 {
-  font-size: 10.5rem;
+  font-size: clamp(4rem, 5vw + 1rem, 10.5rem);
+}
+h2 {
+  font-size: clamp(3rem, 4vw + 1rem, 8rem);
+}
+h3 {
+  font-size: clamp(2.5rem, 4vw + 1rem, 4.2rem);
+}
+h4 {
+  font-size: clamp(2rem, 2vw + 1rem, 4rem);
+}
+h5 {
+  font-size: clamp(1.5rem, 1vw + 1rem, 2rem);
+}
+h6 {
+  font-size: clamp(1rem, 0.5vw + 1rem, 1.5rem);
+}
+
+/* Padding */
+
+.pd-8 {
+  padding: clamp(2rem, 9vw + 1rem, 15rem);
 }

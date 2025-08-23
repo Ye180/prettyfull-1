@@ -19,7 +19,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "../../packages/ui/src"
+    "../../packages/ui/src/*",
+    "../../packages/ui/src/layouts"
   ],
   "exclude": ["node_modules"]
 }

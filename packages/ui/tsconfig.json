@@ -13,6 +13,6 @@
     }
   },
 
-  "include": ["src", "src/styles.css", "../../packages/utils"],
+  "include": ["src", "src/layouts", "src/styles.css", "../../packages/utils"],
   "exclude": ["node_modules", "dist"]
 }
