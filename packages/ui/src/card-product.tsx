@@ -1,10 +1,10 @@
 "use client";
 import { cn, data_url, formatCurrency_FR } from "@prettyfull/utils";
-import { cva, VariantProps } from "class-variance-authority";
+import { VariantProps, cva } from "class-variance-authority";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Button } from "./button";
-import { AddToCardIcon } from "./icons/add.cart.icon";
+import { AddToCardIcon } from "./icons/add-cart.icon";
 import { Heart } from "./icons/heart.icon";
 
 const cardVariants = cva(["space-y-3 w-[100%] h-full relative"], {
