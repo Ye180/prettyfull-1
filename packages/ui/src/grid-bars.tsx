@@ -19,7 +19,7 @@ const GridBar = ({
       )}
     >
       {Array.from({ length: number }).map((_, i) => (
-        <span className="w-2 h-8 bg-gray-300" />
+        <span key={i} className="w-2 h-8 bg-gray-300" />
       ))}
     </button>
   );
