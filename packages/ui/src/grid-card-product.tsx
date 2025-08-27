@@ -6,7 +6,7 @@ import React, { ReactElement, useCallback, useMemo, useState } from "react";
 import { StyleBar } from "../../utils/constants";
 import GridBar from "./grid-bars";
 
-const gridVariants = cva(["w-full "], {
+const gridVariants = cva(["w-full  "], {
   variants: {
     variant: {
       default: "",
@@ -86,7 +86,7 @@ export const GridCardProduct = ({
 
   return (
     <div
-      className={cn(gridVariants(), "text-black  space-y-8", className)}
+      className={cn(gridVariants(), "text-black  space-y-8 ", className)}
       {...props}
     >
       {action_grid && (
@@ -104,7 +104,7 @@ export const GridCardProduct = ({
         </div>
       )}
 
-      <div className={cn(gridClasses)}>{children}</div>
+      <div className={cn(" space-y-12", gridClasses)}>{children}</div>
     </div>
   );
 };

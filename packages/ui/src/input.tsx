@@ -4,6 +4,7 @@ import { InputHTMLAttributes } from "react";
 
 const inputVariants = cva(
   [
+    "w-full",
     "outline-none focus-visible:ring-1 ",
     "disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none",
   ],
@@ -15,7 +16,7 @@ const inputVariants = cva(
         filled: "bg-gray-100",
       },
       sizes: {
-        default: "pl-[1.6rem] py-[1.9rem] font-medium",
+        default: "pl-[1.6rem] py-[1.8rem] font-medium",
       },
     },
     defaultVariants: {
@@ -45,7 +46,11 @@ export const Input = ({
           {label}
         </label>
       )}
-      <input className={cn(inputVariants({ variant }), className)} {...props} />
+      <input
+        className={cn(inputVariants({ variant }), className)}
+        {...props}
+        placeholder={props.placeholder ?? "Type here..."}
+      />
     </div>
   );
 };

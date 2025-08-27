@@ -1,10 +1,10 @@
 "use client";
 import { cn, data_url, formatCurrency_FR } from "@prettyfull/utils";
-import { cva, VariantProps } from "class-variance-authority";
+import { VariantProps, cva } from "class-variance-authority";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Button } from "./button";
-import { AddToCardIcon } from "./icons/add.cart.icon";
+import { AddToCardIcon } from "./icons/add-cart.icon";
 import { Heart } from "./icons/heart.icon";
 
 const cardVariants = cva(["space-y-3 w-[100%] h-full relative"], {
@@ -138,8 +138,11 @@ export function CardProduct({
           {small_description}
         </p>
       </div>
-      <div className="flex justify-between items-start text-[#000] max-md:text-[2rem]  md:text-[2.7rem]">
-        <h3 className="tracking-[0.03em] truncate line-clamp-1"> {title}</h3>
+      <div className="flex justify-between items-start text-[#000] ">
+        <h4 className="tracking-[0.03em] max-md:text-[2rem]  md:text-[2.2rem] truncate line-clamp-1">
+          {" "}
+          {title}
+        </h4>
 
         {/* Correction de l'affichage des promotions */}
         {!promotion && <h4> {formatCurrency_FR(price)}</h4>}
@@ -147,7 +150,7 @@ export function CardProduct({
           <>
             <div className="block text-end ">
               <h4> {formatCurrency_FR(promotion.reduced_price || 0)}</h4>
-              <h4 className="text-grey/50 text-2xl line-through max-md:text-[2rem]  md:text-[2.7rem]">
+              <h4 className="text-grey/50 text-2xl line-through max-md:text-[2rem]  md:text-[2.2rem]">
                 {formatCurrency_FR(price)}
               </h4>
             </div>
