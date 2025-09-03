@@ -26,3 +26,14 @@ h6 {
 .pd-8 {
   padding: clamp(2rem, 9vw + 1rem, 15rem);
 }
+
+@media screen and (40rem <=width<= 76.8rem) {
+  .box {
+    .boxdiv:nth-child(1) {
+      grid-column: span 2;
+    }
+    .boxdiv:nth-child(-n + 1) {
+      grid-column: span 2;
+    }
+  }
+}
