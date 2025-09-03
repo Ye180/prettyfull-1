@@ -56,7 +56,7 @@ const page = () => {
 							<ArrowRightIcon className="rotate-45" />
 						</Button>
 					</div>
-
+					{/* //hhdhd */}
 					<div className="grid  max-md:grid-rows-2 gap-x-6  sm:grid-cols-2 md:grid-cols-3 md:gap-x-16 overflow-x-auto items-end box">
 						{Array.from({ length: 3 }).map((_, index) => (
 							<Box
