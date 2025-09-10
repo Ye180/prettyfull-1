@@ -167,13 +167,13 @@
   --tracking-widest: 0.16rem; /* = 0.1em @ 1.6rem (16px) */
 
   /* Breakpoints */
-  --breakpoint-xs: 40rem !important; /*400px*/
-  --breakpoint-sm: 64rem !important; /* 640px */
-  --breakpoint-md: 76.8rem !important; /* 768px */
-  --breakpoint-lg: 102.4rem !important; /* 1024px */
-  --breakpoint-xl: 128rem !important; /* 1280px */
-  --breakpoint-2xl: 153.6rem !important; /* 1536px */
-  --breakpoint-3xl: 192rem !important; /* 1920px */
+  --breakpoint-xs: 34rem !important; /*400px*/
+  --breakpoint-sm: 40rem !important; /* 640px */
+  --breakpoint-md: 48rem !important; /* 768px */
+  --breakpoint-lg: 64rem !important; /* 1024px */
+  --breakpoint-xl: 80rem !important; /* 1280px */
+  --breakpoint-2xl: 96rem !important; /* 1536px */
+  --breakpoint-3xl: 112rem !important; /* 1920px */
 
   /* Container Sizes */
   --container-3xs: 25.6rem; /* 256px */
