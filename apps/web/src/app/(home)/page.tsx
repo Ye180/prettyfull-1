@@ -4,6 +4,7 @@ import { Button } from "@prettyfull/ui";
 const page = () => {
   return (
     <>
+
       <div className="min-h-screen  space-y-12 flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="text-center space-y-4">
           {/* Logo */}
