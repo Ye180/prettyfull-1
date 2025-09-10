@@ -2,19 +2,19 @@ import { cn } from "@prettyfull/utils";
 import { PropsWithChildren } from "react";
 
 interface HomeLayoutProps {
-  className?: string;
+	className?: string;
 }
 
 const HomeLayout = ({
-  children,
-  className,
+	children,
+	className,
 }: PropsWithChildren<HomeLayoutProps>) => {
-  return (
-    <>
-      <header></header>
-      <body className={cn(className)}>{children}</body>
-    </>
-  );
+	return (
+		<>
+			<header className="h-[10vh] border-2 border-orange-100"></header>
+			<body className={cn(className)}>{children}</body>
+		</>
+	);
 };
 
 export default HomeLayout;
