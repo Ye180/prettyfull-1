@@ -10,8 +10,9 @@ const HomeLayout = ({
 }: PropsWithChildren<HomeLayoutProps>) => {
 	return (
 		<>
-			<header className="h-[10vh] border-2 border-orange-100"></header>
+			{/* <Header /> */}
 			<body>{children}</body>
+			{/* <Footer /> */}
 		</>
 	);
 };

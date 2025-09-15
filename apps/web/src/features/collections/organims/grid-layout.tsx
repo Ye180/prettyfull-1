@@ -15,7 +15,7 @@ const GridCollectionLayout = () => {
 											code: "#FF0000",
 										},
 										size: ["S", "M", "L"],
-										image: ["/assets/product_1.jpg", "/assets/product_2.jpg"],
+										image: ["/assets/product5.webp", "/assets/product_2.jpg"],
 										quantity: 1,
 									},
 									{

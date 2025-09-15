@@ -29,6 +29,7 @@ h6 {
 
 @theme {
 	--font-manrope: "manrope", sans-serif;
+	--font-bebas-neue: "bebas neue", sans-serif;
 }
 
 @media screen and (40rem <=width<= 76.8rem) {

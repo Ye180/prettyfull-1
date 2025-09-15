@@ -26,12 +26,14 @@ const NewsArrivals = () => {
 					<Box
 						key={index}
 						className={`bg-black/60 relative  p-4 flex items-end shadow-md h-[40rem] lg:h-[50rem]  boxdiv   mt-4 aspect-auto bg-[url(/home/cover-box-3.jpg)]   bg-cover  bg-center bg-no-repeat transition-all duration-300 ease-in-out cursor-pointer `}
+						onClick={() => console.log("Clicked on box", index)}
 					>
 						<Image
 							src={item.picture}
 							alt={item.label}
 							layout="fill"
 							objectFit="cover"
+							fill
 							className="absolute top-0 left-0 w-full h-full z-0"
 						/>
 						<div className="w-full h-1/2 absolute bottom-0 left-0   bg-linear-to-t from-black/70 to-black/0"></div>
@@ -42,6 +44,7 @@ const NewsArrivals = () => {
 							<Button
 								variant="default"
 								className="text-black bg-white py-4 px-6 w-fit rounded-full hover:[&>*]:text-white [&>*]:text-black"
+								onClick={() => console.log("Clicked on box", index)}
 							>
 								<ArrowRightIcon className="rotate-45  " />
 							</Button>
