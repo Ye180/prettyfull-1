@@ -6,6 +6,7 @@ import NewsArrivals from "@/features/homepage/organims/news-arrivals";
 import Recommendation from "@/features/homepage/organims/recommendation";
 import TrendReport from "@/features/homepage/organims/trend-report";
 import Container from "../../../../../packages/ui/src/layouts/helpers/container";
+import Header from "../../../../../packages/ui/src/header";
 
 const page = () => {
 	return (

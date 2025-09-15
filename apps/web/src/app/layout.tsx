@@ -2,7 +2,6 @@ import "@/styles/globals.css";
 import "@prettyfull/tailwind-config/styles";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Header from "../../../../packages/ui/src/header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +32,7 @@ export default function RootLayout({
       >
         {children}
       </body>
+      <Footer />
     </html>
   );
 }
