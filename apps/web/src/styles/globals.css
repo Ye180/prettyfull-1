@@ -27,6 +27,10 @@ h6 {
 	padding: clamp(2rem, 9vw + 1rem, 15rem);
 }
 
+@theme {
+	--font-manrope: "manrope", sans-serif;
+}
+
 @media screen and (40rem <=width<= 76.8rem) {
 	.box {
 		.boxdiv:nth-child(1) {

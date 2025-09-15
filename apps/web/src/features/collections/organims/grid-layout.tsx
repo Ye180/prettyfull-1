@@ -1,0 +1,47 @@
+import { CardProduct, GridCardProduct } from "@prettyfull/ui";
+
+const GridCollectionLayout = () => {
+	return (
+		<div className="h-full rounded-md max-md:w-full md:w-5/6">
+			<GridCardProduct action_grid>
+				<>
+					{Array.from({ length: 15 }).map((_, i) => (
+						<div key={i} className="w-full aspect-10/9">
+							<CardProduct
+								variable={[
+									{
+										color: {
+											label: "Rouge",
+											code: "#FF0000",
+										},
+										size: ["S", "M", "L"],
+										image: ["/assets/product_1.jpg", "/assets/product_2.jpg"],
+										quantity: 1,
+									},
+									{
+										color: {
+											label: "Vert",
+											code: "#00FF00",
+										},
+										size: ["S", "M", "L"],
+										image: ["/assets/product_2.jpg", "image4.jpg"],
+										quantity: 1,
+									},
+								]}
+								price={12000}
+								promotion={{
+									pourcentage: 50,
+									reduced_price: 6000,
+								}}
+								small_description="Top polyvalente á Manche"
+								title="Sweet-Top"
+							/>
+						</div>
+					))}
+				</>
+			</GridCardProduct>
+		</div>
+	);
+};
+
+export default GridCollectionLayout;

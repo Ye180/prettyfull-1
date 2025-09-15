@@ -88,7 +88,14 @@ export function CardProduct({
 
 	return (
 		<article className={cn(cardVariants(), className)} {...props}>
-			<div className="bg-sky-200 h-[80%] md:hover:[&>div]:opacity-100 flex  justify-center items-center relative">
+			<div
+				className="bg-sky-200 h-[80%] md:hover:[&>div]:opacity-100 flex  justify-center items-center relative"
+				style={
+					{
+						"--aspect-ratio-hack": "149.70059880239518%",
+					} as React.CSSProperties
+				}
+			>
 				{/* L'affichage d'un produit avec un produits variable */}
 				{variable?.map((variant, i) => (
 					<Image
@@ -104,6 +111,11 @@ export function CardProduct({
 						priority={i === 0}
 						placeholder="blur"
 						blurDataURL={data_url}
+						style={
+							{
+								"--aspect-ratio-hack": "149.70059880239518%",
+							} as React.CSSProperties
+						}
 					/>
 				))}
 				{/* Fallback si pas de produit */}
@@ -117,6 +129,11 @@ export function CardProduct({
 						priority
 						placeholder="blur"
 						blurDataURL={data_url}
+						style={
+							{
+								"--aspect-ratio-hack": "149.70059880239518%",
+							} as React.CSSProperties
+						}
 					/>
 				)}
 

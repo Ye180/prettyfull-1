@@ -1,4 +1,3 @@
-import { cn } from "@prettyfull/utils";
 import { PropsWithChildren } from "react";
 
 interface HomeLayoutProps {
@@ -12,7 +11,7 @@ const HomeLayout = ({
 	return (
 		<>
 			<header className="h-[10vh] border-2 border-orange-100"></header>
-			<body className={cn(className)}>{children}</body>
+			<body>{children}</body>
 		</>
 	);
 };

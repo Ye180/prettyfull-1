@@ -5,6 +5,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import React, { ReactElement, useCallback, useMemo, useState } from "react";
 import { StyleBar } from "../../utils/constants";
 import GridBar from "./grid-bars";
+import ToPull from "./to-pull";
 
 const gridVariants = cva(["w-full  "], {
 	variants: {
@@ -54,7 +55,7 @@ export const GridCardProduct = ({
 	);
 
 	const responsive =
-		"max-lg:grid-cols-3 max-lg:[&>div]:h-[75rem] max-md:[&>div]:h-[65rem]  max-md:[&>div]:bg-red-500  max-md:grid-cols-3  max-sm:grid-cols-2  max-sm:[&>div]:h-[50rem] max-xs:[&>div]:h-[30rem]";
+		"max-lg:grid-cols-3 max-lg:[&>div]:h-[75rem] max-md:[&>div]:h-[65rem]   max-md:grid-cols-3  max-sm:grid-cols-2  max-sm:[&>div]:h-[50rem] max-xs:[&>div]:h-[30rem]";
 
 	const handleChangeStyle = useCallback(
 		(style: Object, index: number) => {
@@ -88,21 +89,24 @@ export const GridCardProduct = ({
 
 	return (
 		<div
-			className={cn(gridVariants(), "text-black  space-y-8 ", className)}
+			className={cn(gridVariants(), "text-black   space-y-8 ", className)}
 			{...props}
 		>
 			{action_grid && (
-				<div className="text-black  hidden lg:flex lg:justify-end gap-4 ">
-					{StyleBar.map((styles, index) => (
-						<GridBar
-							key={index}
-							className={cn(
-								styleGrid.active === styles.number ? "[&>span]:bg-black" : ""
-							)}
-							number={styles.number}
-							onclick={() => handleChangeStyle(styles.style, styles.number)}
-						/>
-					))}
+				<div className="gap-4 space-x-5 text-black max-md:hidden md:flex md:justify-end md:items-center">
+					<ToPull />
+					<span className="flex items-center justify-center gap-4">
+						{StyleBar.map((styles, index) => (
+							<GridBar
+								key={index}
+								className={cn(
+									styleGrid.active === styles.number ? "[&>span]:bg-black" : ""
+								)}
+								number={styles.number}
+								onclick={() => handleChangeStyle(styles.style, styles.number)}
+							/>
+						))}
+					</span>
 				</div>
 			)}
 
