@@ -7,13 +7,25 @@ import { User } from './icons/user.icon';
 import { Heart } from './icons/heart.icon';
 import { Search } from './icons/search.icon';
 import { Menu } from './icons/menu.icon';
+<<<<<<< HEAD
 
 const cn = (...args: any[]) => args.filter(Boolean).join(' ');
 
 interface IconProps extends SVGProps<SVGSVGElement> {}
 
 
+=======
+>>>>>>> 61b92b3 (feat: finalize footer component)
 
+// --- Fonctions et Icônes Utilitaires (pour la prévisualisation) ---
+// NOTE: Dans votre projet, vous importeriez 'cn' et vos icônes.
+const cn = (...args: any[]) => args.filter(Boolean).join(' ');
+
+interface IconProps extends SVGProps<SVGSVGElement> {}
+
+
+
+// --- Composants de Style (CVA) ---
 const navLinkVariants = cva(
   "transition-colors duration-300 text-sm",
   {
@@ -36,6 +48,7 @@ interface NavLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement>, Va
 }
 
 const NavLink: FC<NavLinkProps> = ({ className, variant, href, children, ...props }) => {
+  // NOTE: Remplacé par <a> pour la prévisualisation. Utilisez <Link> de Next.js dans votre projet.
   return (
     <a href={href} className={cn(navLinkVariants({ variant, className }))} {...props}>
       {children}
