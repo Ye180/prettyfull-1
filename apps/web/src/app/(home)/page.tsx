@@ -1,36 +1,37 @@
 "use client";
-import { Button } from "@prettyfull/ui";
+
+import Hero from "@/features/homepage/organims/hero";
+import ModeCollection from "@/features/homepage/organims/mode-collection";
+import NewsArrivals from "@/features/homepage/organims/news-arrivals";
+import Recommendation from "@/features/homepage/organims/recommendation";
+import TrendReport from "@/features/homepage/organims/trend-report";
+import Container from "../../../../../packages/ui/src/layouts/helpers/container";
 
 const page = () => {
-  return (
-    <>
+	return (
+		<>
+			<div className="  w-full [&>*]:w-full space-y-[8rem] lg:space-y-[13rem] ">
+				<Hero />
+				<NewsArrivals />
+				<Container maxWidth="100vw" className="h-[40vh] lg:h-[70vh] lg:px-40 ">
+					<div className="h-full bg-black/60 overflow-hidden rounded-xl bg-[url(/home/promo-phone.jpg)] lg:bg-[url(/home/promo-desktop-1.jpg)] shadow-lg cursor-pointer   bg-cover  bg-center bg-no-repeat" />
+				</Container>
+				<ModeCollection />
+				<Container maxWidth="100vw" className="w-full lg:px-40">
+					<h2 className="text-center">
+						Nous nous engageons à vous offrir une expérience d'achat fluide et
+						agréable.
+					</h2>
+				</Container>
+				<TrendReport />
+				<Container maxWidth="100vw" className="h-[40vh] lg:h-[70vh] lg:px-40 ">
+					<div className="h-full bg-black/60 overflow-hidden rounded-xl bg-[url(/home/promo-phone.jpg)] lg:bg-[url(/home/promo-desktop-1.jpg)] shadow-lg cursor-pointer   bg-cover  bg-center bg-no-repeat" />
+				</Container>
 
-      <div className="min-h-screen  space-y-12 flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-        <div className="text-center space-y-4">
-          {/* Logo */}
-          <div className="mb-2">
-            <h1 className="text-6xl font-extralight text-slate-900">
-              PrettyFull Shop
-            </h1>
-          </div>
-
-          {/* Subtitle - reduced spacing with mb-2 instead of default gap */}
-          <div>
-            <p className="text-xl text-slate-600 font-medium">
-              Beautiful Ecommerce In Construction
-            </p>
-          </div>
-
-          {/* <Card_Product /> */}
-
-          {/* Call to action */}
-          <div className="mt-8">
-            <Button>Get Started</Button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+				<Recommendation />
+			</div>
+		</>
+	);
 };
 
 export default page;

@@ -7,7 +7,7 @@ import { cn } from "@prettyfull/utils";
 import type { HTMLAttributes, PropsWithChildren } from "react";
 
 interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
-  maxWidth?: `${number}px` | `${number}rem`;
+  maxWidth?: `${number}px` | `${number}rem` | `${number}vw`;
   as?: "div" | "section" | "main" | "footer" | "header";
 }
 
