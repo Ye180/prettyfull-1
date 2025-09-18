@@ -24,7 +24,7 @@ const Filter = () => {
 				className="w-full text-black"
 				defaultValue={["item-12", "item-1", "item-2", "item-3", "item-4"]}
 			>
-				<AccordionItem value="item-12" className="space-y-2 pb-4 md:hidden">
+				<AccordionItem value="item-12" className="pb-4 space-y-2 md:hidden">
 					<AccordionTrigger className={cn(headerClass)}>
 						Trier par
 					</AccordionTrigger>
@@ -66,7 +66,7 @@ const Filter = () => {
 				</AccordionItem>
 			</Accordion>
 
-			<div className="w-full hidden justify-between mt-8 max-md:flex gap-5">
+			<div className="justify-between hidden w-full gap-5 mt-8 max-md:flex">
 				<Button variant="outline">Effacer</Button>
 				<Button>Appliquer</Button>
 			</div>

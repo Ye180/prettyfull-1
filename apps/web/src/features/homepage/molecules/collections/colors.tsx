@@ -20,7 +20,7 @@ const items = [
 
 const Colors = () => {
 	return (
-		<div className="max-md:flex max-md:flex-wrap max-md:gap-y-10   md:grid md:grid-cols-2 justify-start pb-8 mt-4 md:space-y-6 gap-y-4 gap-x-10 text-balance">
+		<div className="justify-start pb-8 mt-4 max-md:flex max-md:flex-wrap max-md:gap-y-10 md:grid md:grid-cols-2 md:space-y-6 gap-y-4 gap-x-10 text-balance">
 			{items.map((item, i) => (
 				<span className="flex items-center gap-2 cursor-pointer" key={i}>
 					<Checkbox
@@ -33,7 +33,7 @@ const Colors = () => {
 						}}
 					/>
 					{/* <span className="w-8 h-8 bg-red-500 rounded-2xl" /> */}
-					<span className="ml-2 text-[1.6rem]">{item.fr}</span>
+					<span className="ml-2 text-[1.5rem]">{item.fr}</span>
 				</span>
 			))}
 		</div>

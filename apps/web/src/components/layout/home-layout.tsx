@@ -1,3 +1,5 @@
+import Footer from "@/shared/components/molecules/footer";
+import Header from "@/shared/components/molecules/header";
 import { PropsWithChildren } from "react";
 
 interface HomeLayoutProps {
@@ -10,9 +12,9 @@ const HomeLayout = ({
 }: PropsWithChildren<HomeLayoutProps>) => {
 	return (
 		<>
-			{/* <Header /> */}
-			<body>{children}</body>
-			{/* <Footer /> */}
+			<Header />
+			<div className="h-fit">{children}</div>
+			<Footer />
 		</>
 	);
 };

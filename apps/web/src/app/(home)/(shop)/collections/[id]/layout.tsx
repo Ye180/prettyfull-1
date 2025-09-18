@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import CollectionLayout from "../../../../../../../../packages/ui/src/layouts/collection-layout";
+import CollectionLayout from "../../../../../components/layout/collection-layout";
 
 const RootLayout = ({ children }: PropsWithChildren<{}>) => {
 	return <CollectionLayout children={children} />;

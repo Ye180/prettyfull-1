@@ -7,7 +7,7 @@ const Adjust = () => {
 				<div className="flex items-start gap-4 text-balance" key={i}>
 					{" "}
 					<Checkbox className="" />
-					<span className="text-[1.6rem]">Oversized</span>
+					<span className="text-[1.5rem]">Oversized</span>
 				</div>
 			))}
 		</>

@@ -6,19 +6,18 @@ import Container from "../../../../../../../../packages/ui/src/layouts/helpers/c
 
 const Page = () => {
 	return (
-		<div>
+		<div className="pb-20 space-y-12">
 			<div className="h-[25vh] md:h-[45vh]  space-y-18 border-orange-100 p-2 md:p-4">
 				<Banner />
-
-				<Container maxWidth="100vw" className="space-y-8 max-lg:px-4 lg:px-40 ">
-					<NavbarCollection />
-
-					<div className="flex relative justify-center items-end h-[200vh] space-x-8">
-						<FilterLayout />
-						<GridCollectionLayout />
-					</div>
-				</Container>
 			</div>
+			<Container maxWidth="100vw" className="space-y-8 max-lg:px-4 lg:px-40 ">
+				<NavbarCollection />
+
+				<div className="relative flex items-start justify-center !w-full space-x-8  h-fit ">
+					<FilterLayout />
+					<GridCollectionLayout />
+				</div>
+			</Container>
 		</div>
 	);
 };

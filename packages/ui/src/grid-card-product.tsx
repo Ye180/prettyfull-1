@@ -55,7 +55,7 @@ export const GridCardProduct = ({
 	);
 
 	const responsive =
-		"max-lg:grid-cols-3 max-lg:[&>div]:h-[75rem] max-md:[&>div]:h-[65rem]   max-md:grid-cols-3  max-sm:grid-cols-2  max-sm:[&>div]:h-[50rem] max-xs:[&>div]:h-[30rem]";
+		"max-md:grid-cols-3 max-md:[&>div]:h-[75rem] max-md:[&>div]:h-[65rem]   max-md:grid-cols-3  max-sm:grid-cols-2  max-sm:[&>div]:h-[50rem] max-xs:[&>div]:h-[30rem]";
 
 	const handleChangeStyle = useCallback(
 		(style: Object, index: number) => {

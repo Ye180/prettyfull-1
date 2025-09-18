@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PropsWithChildren } from "react";
-import HomeLayout from "../../../../../packages/ui/src/layouts/home-layout";
+import HomeLayout from "../../components/layout/home-layout";
 
 export const metadata: Metadata = {
 	title: "PrettyFull ",

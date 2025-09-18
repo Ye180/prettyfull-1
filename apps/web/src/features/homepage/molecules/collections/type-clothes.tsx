@@ -28,10 +28,10 @@ const TypeClothes = () => {
 		<>
 			{items.map((item, i) => (
 				<div key={i}>
-					<div className="flex items-start gap-4 text-balance  max-md:w-fit ">
+					<div className="flex items-start gap-4 text-balance max-md:w-fit ">
 						{" "}
 						<Checkbox className="" />
-						<span className="text-[1.6rem]">{item.label}</span>
+						<span className="text-[1.5rem]">{item.label}</span>
 					</div>
 				</div>
 			))}

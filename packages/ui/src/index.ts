@@ -15,6 +15,8 @@ export * from "../src/components/ui/label";
 
 export * from "../src/components/ui/drawer";
 
+export * from "../src/components/ui/navlink";
+
 
 
 

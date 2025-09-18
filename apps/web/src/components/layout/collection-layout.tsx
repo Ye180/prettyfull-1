@@ -9,11 +9,7 @@ const CollectionLayout = ({
 	children,
 	className,
 }: PropsWithChildren<CollectionProps>) => {
-	return (
-		<>
-			<div className={cn(className)}>{children}</div>
-		</>
-	);
+	return <div className={cn(className)}>{children}</div>;
 };
 
 export default CollectionLayout;

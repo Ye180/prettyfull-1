@@ -2,8 +2,7 @@ import "@/styles/globals.css";
 import "@prettyfull/tailwind-config/styles";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Footer from "../../../../packages/ui/src/footer";
-import Header from "../../../../packages/ui/src/header";
+import React from "react";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -27,14 +26,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<Header />
-
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
 				{children}
 			</body>
-			<Footer />
 		</html>
 	);
 }

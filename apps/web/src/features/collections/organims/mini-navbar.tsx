@@ -2,7 +2,7 @@ import DrawerLayout from "@/features/homepage/molecules/collections/drawer-layou
 
 const NavbarCollection = () => {
 	return (
-		<nav className="w-full flex items-center justify-between max-md:pb-8">
+		<nav className="flex items-center justify-between w-full max-md:pb-8">
 			<div className="flex items-start justify-start h-full mt-2 max-md:hidden">
 				{["Hot", "Promotion", "Tendance", "Promotion"].map((tag, index) => (
 					<button
