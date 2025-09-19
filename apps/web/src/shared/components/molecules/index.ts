@@ -1,3 +1,3 @@
-export * from "./footer"
-export * from "./header"
+export * from "../organims/footer"
+export * from "../organims/header"
 
