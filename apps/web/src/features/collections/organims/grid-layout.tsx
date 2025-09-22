@@ -1,3 +1,4 @@
+import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
 import { CardProduct, GridCardProduct } from "@prettyfull/ui";
 
 const GridCollectionLayout = () => {
@@ -35,6 +36,7 @@ const GridCollectionLayout = () => {
 								}}
 								small_description="Top polyvalente á Manche"
 								title="Sweet-Top"
+								link={PRODUCT_PATHS.productDetail("SWEET-TOP")}
 							/>
 						</div>
 					))}

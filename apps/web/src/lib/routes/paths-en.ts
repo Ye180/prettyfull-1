@@ -2,7 +2,7 @@
 
 const ROOTS = {
       auth : "/auth",
-      produit : "/produit",
+      products : "/products",
       collections : "/collections",
 
 }
@@ -32,10 +32,10 @@ export const AUTH_PATHS = {
 }
 
 export const PRODUCT_PATHS = {
-    productList : ROOTS.produit,
-    productDetail : (id: string) => `${ROOTS.produit}/${id}`,
-    newProduct : ROOTS.produit + "/new",
-    editProduct : (id: string) => `${ROOTS.produit}/${id}/edit`,
+    productList : ROOTS.products,
+    productDetail : (id: string) => `${ROOTS.products}/${id}`,
+    newProduct : ROOTS.products + "/new",
+    editProduct : (id: string) => `${ROOTS.products}/${id}/edit`,
 }
 
 export const COLLECTION_PATHS = {

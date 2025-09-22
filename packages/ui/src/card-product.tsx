@@ -2,6 +2,7 @@
 import { cn, data_url, formatCurrency_FR } from "@prettyfull/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AddToCardIcon } from "../../../apps/web/src/components/icons/add-cart.icon";
 import { Button } from "./button";
@@ -26,6 +27,7 @@ interface CardProps
 	extends React.HTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof cardVariants> {
 	title: string;
+	link?: string;
 	variable?: {
 		color: { label: string; code: string };
 		size: string[];
@@ -58,11 +60,31 @@ export function CardProduct({
 	variable,
 	notVariable,
 	isLoading,
+	link,
 	...props
 }: CardProps) {
 	const [activeIndex, setActiveIndex] = useState(0);
 
+	const router = useRouter();
+
 	const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
+
+	const handleRoutes = (link?: string) => {
+		if (link) {
+			router.push(link);
+		}
+	};
+
+	const handleVariantClick = ({
+		e,
+		index,
+	}: {
+		e: React.MouseEvent<HTMLButtonElement>;
+		index: number;
+	}) => {
+		setActiveIndex(index);
+		e.stopPropagation();
+	};
 
 	// Préchargement des images
 	useEffect(() => {
@@ -95,6 +117,7 @@ export function CardProduct({
 						"--aspect-ratio-hack": "149.70059880239518%",
 					} as React.CSSProperties
 				}
+				onClick={() => handleRoutes(link)}
 			>
 				{/* L'affichage d'un produit avec un produits variable */}
 				{variable?.map((variant, i) => (
@@ -125,7 +148,7 @@ export function CardProduct({
 						alt="Product Image"
 						width={400}
 						height={400}
-						className="object-cover w-full h-full absolute inset-0 transition-opacity duration-300"
+						className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300"
 						priority
 						placeholder="blur"
 						blurDataURL={data_url}
@@ -137,15 +160,21 @@ export function CardProduct({
 					/>
 				)}
 
-				<div className="absolute opacity-0 bottom-5  transition-all duration-300 ease-in-out w-full flex gap-8  px-4 justify-between items-center ">
-					<Button className="pt-4 pb-5 px-4 w-2/3 text-[1.4rem] font-medium">
+				<div className="absolute flex items-center justify-between w-full gap-8 px-4 transition-all duration-300 ease-in-out opacity-0 bottom-5 ">
+					<Button
+						className="pt-4 pb-5 px-4 w-2/3 text-[1.4rem] font-medium"
+						onClick={(e) => e.stopPropagation()}
+					>
 						Ajouter au panier
 					</Button>
-					<button className=" w-fit bg-secondary p-4 text-2xl  rounded-full cursor-pointer">
+					<button
+						className="p-4 text-2xl rounded-full cursor-pointer w-fit bg-secondary"
+						onClick={(e) => e.stopPropagation()}
+					>
 						<Heart />
 					</button>
 				</div>
-				<button className="bg-white right-2 bottom-5 w-fit p-2 text-2xl absolute rounded-full md:hidden  cursor-pointer">
+				<button className="absolute p-2 text-2xl bg-white rounded-full cursor-pointer right-2 bottom-5 w-fit md:hidden">
 					<AddToCardIcon />
 				</button>
 			</div>
@@ -185,7 +214,7 @@ export function CardProduct({
 					</>
 				)}
 			</div>
-			<div className="flex justify-start gap-2 items-center">
+			<div className="flex items-center justify-start gap-2">
 				{variable?.map((variant, i) => (
 					<button
 						key={i}
@@ -193,7 +222,7 @@ export function CardProduct({
 							"h-fit w-fit p-[2px] border bg-white flex justify-center items-center rounded-full transition-all duration-200",
 							i === activeIndex ? "border-black shadow-md" : "border-gray-300"
 						)}
-						onClick={() => setActiveIndex(i)}
+						onClick={(e) => handleVariantClick({ e, index: i })}
 					>
 						<span
 							className={cn("h-5 w-5 rounded-full cursor-pointer")}

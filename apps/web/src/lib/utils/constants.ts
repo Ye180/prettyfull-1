@@ -4,6 +4,7 @@ import LinkedinIcon from "@/components/icons/linkedin.icon";
 import TwitterIcon from "@/components/icons/twitter.icon";
 import { BoxTypes } from "@/types/constants-type";
 import { FC } from "react";
+import { COLLECTION_PATHS } from "../routes/paths-en";
 
 interface IconProps {
     className?: string;
@@ -81,9 +82,9 @@ export const FOOTER_DATA = [
 ];
 
 export const NAV_LINKS = [
-      { href: "/special-offer", label: "Special Offer" },
-      { href: "/collection", label: "Collection" },
-	{ href: "/store", label: "Store" },
+      { href: COLLECTION_PATHS.collectionDetail('special-offer'), label: "Special Offer" },
+      { href: COLLECTION_PATHS.collectionDetail('collection'), label: "Collection" },
+	{ href:COLLECTION_PATHS.collectionDetail('store'), label: "Store" },
       ]
 
 

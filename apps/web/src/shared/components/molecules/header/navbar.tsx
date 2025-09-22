@@ -2,6 +2,7 @@
 
 import { Cart } from "@/components/icons/cart.icon";
 import { NAV_LINKS } from "@/lib/utils/constants";
+import { setItem } from "@/lib/utils/local-storage";
 import { Input, NavLink } from "@prettyfull/ui";
 import Link from "next/link";
 import { useState } from "react";
@@ -24,7 +25,12 @@ const NavBarHeaders = () => {
 				</Link>
 				<div className=" max-md:hidden flex text-[1.2rem] text-black items-center space-x-6">
 					{NAV_LINKS.map((link, index) => (
-						<NavLink key={index} href={link.href} className="font-semibold">
+						<NavLink
+							key={index}
+							href={link.href}
+							onClick={() => setItem("links", link.label)}
+							className="font-semibold"
+						>
 							{link.label}
 						</NavLink>
 					))}

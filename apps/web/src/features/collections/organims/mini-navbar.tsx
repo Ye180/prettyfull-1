@@ -14,7 +14,7 @@ const NavbarCollection = () => {
 				))}
 			</div>
 			<h3 className="!text-[3.5rem] font-semibold flex tracking-wide">
-				Collection
+				Formal Shop
 			</h3>
 			<DrawerLayout />
 		</nav>
