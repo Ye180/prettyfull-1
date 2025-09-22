@@ -36,13 +36,13 @@ const productData: ProductTypes = {
 	],
 };
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage() {
 	const [selectedSize, setSelectedSize] = useState<string>("M");
 	const [selectedColor, setSelectedColor] = useState<string>("Black");
 
 	return (
-		<Container maxWidth="100vw" className="py-12 lg:px-40 mx-auto  space-y-18">
-			<div className="flex flex-col gap-20 sm:flex-row justify-center ">
+		<Container maxWidth="100vw" className="py-12 mx-auto lg:px-40 space-y-18">
+			<div className="flex flex-col justify-center gap-20 sm:flex-row ">
 				{/* Colonne de gauche - Images */}
 				<div className="w-full space-y-8 lg:w-2/5 ">
 					<ProductGallery
