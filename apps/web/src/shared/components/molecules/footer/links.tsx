@@ -1,4 +1,4 @@
-import { FOOTER_DATA } from "@/lib/utils/constants";
+import { FOOTER_DATA } from "@/lib/utils/constants/constants";
 import Link from "next/link";
 
 const LinksFooter = () => {

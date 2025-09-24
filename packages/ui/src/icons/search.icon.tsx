@@ -5,8 +5,8 @@ export function Search(props: SVGProps<SVGSVGElement>) {
 		<svg
 			{...props}
 			fill="none"
-			width="22"
-			height="22"
+			width="20"
+			height="20"
 			stroke="currentColor"
 			viewBox="0 0 24 24"
 			xmlns="http://www.w3.org/2000/svg"

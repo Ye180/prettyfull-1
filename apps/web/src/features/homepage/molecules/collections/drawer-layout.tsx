@@ -1,4 +1,10 @@
-import { Button, Drawer, DrawerContent, DrawerTrigger } from "@prettyfull/ui";
+import {
+	Button,
+	Drawer,
+	DrawerContent,
+	DrawerFooter,
+	DrawerTrigger,
+} from "@prettyfull/ui";
 
 import { FilterIcon } from "../../../../../../../packages/ui/src/icons/filter.icon";
 import Filter from "./apps/filter";
@@ -9,7 +15,7 @@ const DrawerLayout = () => {
 			<DrawerTrigger asChild>
 				<Button
 					variant="outline"
-					className="flex items-center justify-center  py-2  border px-6 border-black/20 rounded-lg cursor-pointer w-fit md:hidden hover:bg-black hover:text-white"
+					className="flex items-center justify-center px-6 py-2 border rounded-lg cursor-pointer border-black/20 w-fit md:hidden hover:bg-black hover:text-white"
 				>
 					<FilterIcon />
 					<span>Filter </span>
@@ -17,9 +23,18 @@ const DrawerLayout = () => {
 			</DrawerTrigger>
 			<DrawerContent
 				title="Filter & Trier "
-				className="w-full p-5 border-none outline-none  md:hidden lg:hidden xl:hidden 2xl:hidden"
+				className="w-full p-5 border-none outline-none  md:hidden lg:hidden xl:hidden 2xl:hidden max-h-[90%] "
 			>
-				<Filter />
+				<div className=" overflow-x-scroll scrollbar-hide h-[90%] rounded-lg p-4">
+					<Filter />
+				</div>
+
+				<DrawerFooter>
+					<div className="justify-between hidden w-full gap-5 mt-8 max-md:flex">
+						<Button variant="outline">Effacer</Button>
+						<Button>Appliquer</Button>
+					</div>
+				</DrawerFooter>
 			</DrawerContent>
 		</Drawer>
 	);

@@ -1,5 +1,5 @@
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
-import { SOCIALS_DATA_FOOTER } from "@/lib/utils/constants";
+import { SOCIALS_DATA_FOOTER } from "@/lib/utils/constants/constants";
 import Link from "next/link";
 
 const DescriptionFooter = () => {

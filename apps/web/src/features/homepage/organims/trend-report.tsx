@@ -1,5 +1,5 @@
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
-import { BOX_DATA_SECOND } from "@/lib/utils/constants";
+import { BOX_DATA_SECOND } from "@/lib/utils/constants/constants";
 import { Button } from "@prettyfull/ui";
 import Image from "next/image";
 import Box from "../../../../../../packages/ui/src/layouts/helpers/box";

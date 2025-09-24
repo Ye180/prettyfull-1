@@ -4,7 +4,7 @@ import LinkedinIcon from "@/components/icons/linkedin.icon";
 import TwitterIcon from "@/components/icons/twitter.icon";
 import { BoxTypes } from "@/types/constants-type";
 import { FC } from "react";
-import { COLLECTION_PATHS } from "../routes/paths-en";
+import { COLLECTION_PATHS } from "../../routes/paths-en";
 
 interface IconProps {
     className?: string;

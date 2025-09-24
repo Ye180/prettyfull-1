@@ -35,7 +35,7 @@ const ToPull = () => {
 					Trier par:{" "}
 					<span className="font-semibold  text-[1.4rem]">{activeItem}</span>
 				</span>
-				<span className=" ">
+				<span className="">
 					<ArrowIcon />
 				</span>
 			</DropdownMenuTrigger>

@@ -3,7 +3,6 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-	Button,
 } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import Adjust from "../adjust";
@@ -66,10 +65,10 @@ const Filter = () => {
 				</AccordionItem>
 			</Accordion>
 
-			<div className="justify-between hidden w-full gap-5 mt-8 max-md:flex">
+			{/* <div className="justify-between hidden w-full gap-5 mt-8 max-md:flex">
 				<Button variant="outline">Effacer</Button>
 				<Button>Appliquer</Button>
-			</div>
+			</div> */}
 		</div>
 	);
 };
