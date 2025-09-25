@@ -21,7 +21,7 @@ const Recommendation = () => {
 			<GridCardProduct>
 				<>
 					{Array.from({ length: value }).map((_, i) => (
-						<div key={i} className=" w-full aspect-10/9 ">
+						<div key={i} className="w-full aspect-10/9">
 							<CardProduct
 								notVariable={{
 									color: {
@@ -47,34 +47,45 @@ const Recommendation = () => {
 		);
 	};
 	return (
-		<Container maxWidth="100vw" className="w-full lg:px-40 space-y-8">
+		<Container maxWidth="100vw" className="w-full space-y-8 lg:px-40">
 			<div className="flex justify-between space-y-8 ">
 				<h4 className="p-2 w-fit"> RECOMMANDEZ POUR VOUS</h4>
 			</div>
-			<Tabs defaultValue={TABS.for_you} className="w-full space-y-16">
-				<TabsList>
-					<TabsTrigger value={TABS.for_you}>{TABS.for_you}</TabsTrigger>
-					<TabsTrigger value={TABS.woman}>{TABS.woman}</TabsTrigger>
-					<TabsTrigger value={TABS.men}>{TABS.men}</TabsTrigger>
-					<TabsTrigger value={TABS.accessory}>{TABS.accessory}</TabsTrigger>
+			<Tabs defaultValue={TABS.for_you} className="w-full space-y-16 ">
+				<TabsList className="flex justify-start w-full overflow-x-auto rounded-none h-fit scrolbarRecomandation">
+					<div className="flex justify-start gap-6 whitespace-nowrap max-sm:snap-x snap-mandatory lg:gap-6 ">
+						{[TABS.for_you, TABS.woman, TABS.men, TABS.accessory].map((tab) => (
+							<TabsTrigger
+								key={tab}
+								value={tab}
+								className=" !h-12 snap-center 
+								border-gray-100
+								w-fit rounded-lg bg-transparent 
+								data-[state=active]:rounded-lg
+								data-[state=active]:border-b-2 data-[state=active]:border-black data-[state=active]:font-semibold"
+							>
+								{tab}
+							</TabsTrigger>
+						))}
+					</div>
 				</TabsList>
 				<TabsContent value={TABS.for_you}>
-					<div className="w-full flex justify-between  max-lg:flex-col p-4 ">
+					<div className="flex justify-between w-full p-4 max-lg:flex-col ">
 						{handleGridClick(4)}
 					</div>
 				</TabsContent>
 				<TabsContent value={TABS.woman}>
-					<div className="w-full flex justify-between  max-lg:flex-col p-4 ">
+					<div className="flex justify-between w-full p-4 max-lg:flex-col ">
 						{handleGridClick(3)}
 					</div>
 				</TabsContent>
 				<TabsContent value={TABS.men}>
-					<div className="w-full flex justify-between  max-lg:flex-col p-4 ">
+					<div className="flex justify-between w-full p-4 max-lg:flex-col ">
 						{handleGridClick(2)}
 					</div>
 				</TabsContent>
 				<TabsContent value={TABS.accessory}>
-					<div className="w-full flex justify-between  max-lg:flex-col p-4 ">
+					<div className="flex justify-between w-full p-4 max-lg:flex-col ">
 						{handleGridClick(4)}
 					</div>
 				</TabsContent>

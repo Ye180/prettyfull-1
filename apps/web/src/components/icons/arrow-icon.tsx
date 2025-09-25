@@ -1,22 +1,19 @@
 import type { SVGProps } from "react";
 
 export function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={14}
-      height={22}
-      viewBox="0 0 9 16"
-      {...props}
-    >
-      <path
-        fill="currentColor"
-        d="M4.5 14c-.28 0-.5-.22-.5-.5v-9c0-.28.22-.5.5-.5s.5.22.5.5v9c0 .28-.22.5-.5.5"
-      ></path>
-      <path
-        fill="currentColor"
-        d="M8 7.5a.47.47 0 0 1-.35-.15L4.5 4.2L1.35 7.35c-.2.2-.51.2-.71 0s-.2-.51 0-.71l3.5-3.5c.2-.2.51-.2.71 0l3.5 3.5c.2.2.2.51 0 .71c-.1.1-.23.15-.35.15"
-      ></path>
-    </svg>
-  );
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width={10}
+			height={20}
+			viewBox="0 0 10 24"
+			{...props}
+		>
+			<path
+				fill="currentColor"
+				fillRule="evenodd"
+				d="M10.157 12.711L4.5 18.368l-1.414-1.414l4.95-4.95l-4.95-4.95L4.5 5.64l5.657 5.657a1 1 0 0 1 0 1.414"
+			></path>
+		</svg>
+	);
 }

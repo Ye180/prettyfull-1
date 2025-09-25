@@ -10,11 +10,11 @@ const HomeLayout = ({
 	className,
 }: PropsWithChildren<HomeLayoutProps>) => {
 	return (
-		<>
+		<div className="flex flex-col min-h-screen overflow-x-hidden">
 			<Header />
 			<div className={cn("h-fit", className)}>{children}</div>
 			<Footer />
-		</>
+		</div>
 	);
 };
 

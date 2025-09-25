@@ -4,8 +4,8 @@ import { VariantProps, cva } from "class-variance-authority";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AddToCardIcon } from "../../../apps/web/src/components/icons/add-cart.icon";
 import { Button } from "./button";
+import { F7CartFillBadgePlus } from "./icons/add-cart.icon";
 import { Heart } from "./icons/heart.icon";
 
 const cardVariants = cva(["space-y-3 w-[100%] h-full relative"], {
@@ -175,7 +175,7 @@ export function CardProduct({
 					</button>
 				</div>
 				<button className="absolute p-2 text-2xl bg-white rounded-full cursor-pointer right-2 bottom-5 w-fit md:hidden">
-					<AddToCardIcon />
+					<F7CartFillBadgePlus />
 				</button>
 			</div>
 
@@ -200,11 +200,11 @@ export function CardProduct({
 				{promotion && (
 					<>
 						<div className="block text-end ">
-							<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem]">
+							<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] whitespace-nowrap">
 								{" "}
 								{formatCurrency_FR(promotion.reduced_price || 0)}
 							</h4>
-							<h4 className="text-grey/50 !text-2xl line-through max-md:!text-[2rem]  md:!text-[2.2rem]">
+							<h4 className="text-grey/50 !text-2xl line-through max-md:!text-[2rem]  md:!text-[2.2rem]  whitespace-nowrap">
 								{formatCurrency_FR(price)}
 							</h4>
 						</div>

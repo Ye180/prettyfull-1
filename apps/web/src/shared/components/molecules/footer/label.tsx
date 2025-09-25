@@ -1,4 +1,5 @@
-import { ArrowRightIcon } from "@/components/icons/arrow-icon";
+// import { ArrowRightIcon } from "@/components/icons/arrow-linear-icon";
+import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
 import { SOCIALS_DATA_FOOTER } from "@/lib/utils/constants/constants";
 import Link from "next/link";
 
@@ -27,7 +28,7 @@ const DescriptionFooter = () => {
 						placeholder="Your email address"
 					/>
 					<button className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
-						<ArrowRightIcon className="text-gray-400 transition-colors hover:text-white" />
+						<ArrowLinearIcon className="text-gray-400 transition-colors rotate-90 hover:text-white" />
 					</button>
 				</div>
 			</div>
