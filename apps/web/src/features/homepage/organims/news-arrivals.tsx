@@ -31,6 +31,7 @@ const NewsArrivals = () => {
 								objectFit="cover"
 								fill
 								className="w-full h-full "
+								priority
 							/>
 							<div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/70 to-black/0"></div>
 

@@ -36,6 +36,7 @@ const TrendReport = () => {
 							layout="fill"
 							objectFit="cover"
 							className="absolute top-0 left-0 z-0 w-full h-full"
+							priority
 						/>
 						<div className="absolute bottom-0 left-0 w-full h-full bg-black/30"></div>
 						<div className="flex items-center justify-between">

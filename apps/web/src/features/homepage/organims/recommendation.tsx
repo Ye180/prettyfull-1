@@ -49,7 +49,10 @@ const Recommendation = () => {
 	return (
 		<Container maxWidth="100vw" className="w-full space-y-8 lg:px-40">
 			<div className="flex justify-between space-y-8 ">
-				<h4 className="p-2 w-fit"> RECOMMANDEZ POUR VOUS</h4>
+				<h4 className="p-2 w-fit max-md:!text-[2.5rem]">
+					{" "}
+					RECOMMANDEZ POUR VOUS
+				</h4>
 			</div>
 			<Tabs defaultValue={TABS.for_you} className="w-full space-y-16 ">
 				<TabsList className="flex justify-start w-full overflow-x-auto rounded-none h-fit scrolbarRecomandation">

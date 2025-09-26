@@ -3,11 +3,20 @@
 import { NAV_LINKS } from "@/lib/utils/constants/constants";
 import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
 import { setItem } from "@/lib/utils/local-storage";
-import { Input, NavLink } from "@prettyfull/ui";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+	Input,
+	NavLink,
+} from "@prettyfull/ui";
 import Link from "next/link";
 import { useState } from "react";
+import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
 import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
+import BottomHeader from "./bottom";
 import { Currency } from "./currency";
 
 const NavBarHeaders = () => {
@@ -44,7 +53,7 @@ const NavBarHeaders = () => {
 							className="h-4 border-none outline-1 text-black font-light px-2 py-4 border-gray-300 focus:ring-0 focus:border-none  text-[1.8rem] max-sm:hidden w-[20rem] sm:w-[28rem] placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.5rem]"
 						/>
 					</div>
-					<div>
+					<div className="max-md:hidden">
 						<Currency />
 					</div>
 
@@ -62,7 +71,7 @@ const NavBarHeaders = () => {
 										{item.infos.count}
 									</p>
 								)}
-								<item.icon />
+								<item.icon className="" />
 							</NavLink>
 						))}
 					</div>
@@ -74,56 +83,103 @@ const NavBarHeaders = () => {
 						className="text-gray-600 hover:text-black focus:outline-none"
 						aria-label="Ouvrir le menu"
 					>
-						<Menu className="w-6 h-6" />
+						<Menu className="w-10 h-10" />
 					</button>
 				</div>
-				{/* <Drawer>
-					<DrawerTrigger asChild>
-						<Menu className="w-6 h-6" />
-					</DrawerTrigger>
-					<DrawerContent
-						position="left"
-						className="w-full p-5 border-none outline-none  md:hidden lg:hidden xl:hidden 2xl:hidden max-h-[90%] left"
-					>
-						<div className=" overflow-x-scroll scrollbar-hide h-[90%] rounded-lg p-4">
-							<NavLink href="/collection" variant="mobile">
-								Collection
-							</NavLink>
-							<NavLink href="/special-offer" variant="mobile">
-								Special Offer
-							</NavLink>
-							<NavLink href="/store" variant="mobile">
-								Store
-							</NavLink>
-							
-							<NavLink href="/about" variant="mobile">
-								About
-							</NavLink>
-							<NavLink href="/help" variant="mobile">
-								Help
-							</NavLink>
-						</div>
-					</DrawerContent>
-				</Drawer> */}
 			</div>
 			{isMobileMenuOpen && (
-				<div className="absolute z-50 w-[100vw] pb-4 space-y-2 bg-white border-b border-gray-200 md:hidden top-20 right-0 -left-4 h-[100vh] ">
-					<NavLink href="/collection" variant="mobile">
-						Collection
-					</NavLink>
-					<NavLink href="/special-offer" variant="mobile">
-						Special Offer
-					</NavLink>
-					<NavLink href="/store" variant="mobile">
-						Store
-					</NavLink>
-					{/* <hr /> */}
-					<NavLink href="/about" variant="mobile">
-						About
-					</NavLink>
-					<NavLink href="/help" variant="mobile">
-						Help
-					</NavLink>
+				<div
+					className="fixed z-50 w-[100vw] pb-4 space-y-10 bg-white  md:hidden top-0 
+				right-0 -left-0 h-[100vh] overflow-hidden "
+				>
+					<div className="relative flex flex-col items-start justify-between p-2 ">
+						<button
+							onClick={() => setIsMobileMenuOpen(false)}
+							className="absolute text-gray-600 cursor-pointer right-5 top-10 hover:text-black focus:outline-none "
+							aria-label="Fermer le menu"
+						>
+							<CloseIcon className="w-10 h-10 cursor-pointer" />
+						</button>
+						<Link
+							href="/"
+							className="text-[3.5rem] font-bold tracking-wider text-black font-bebas-neue pt-5 px-2"
+						>
+							PRETTYFULL
+						</Link>
+						<div className="flex flex-col w-full p-0 mt-4 space-y-4 ">
+							{NAV_LINKS.map((link, index) => (
+								<NavLink
+									key={index}
+									href={link.href}
+									onClick={() => setItem("links", link.label)}
+									className="font-semibold text-gray-500 text-[1.8rem]  w-fit hover:text-black hover:bg-none cursor-pointer "
+									variant="mobile"
+								>
+									{link.label}
+								</NavLink>
+							))}
+						</div>
+					</div>
+					<BottomHeader className="px-4 max-sm:flex" className_2="flex-wrap" />
+
+					<div className="p-4 border-t border-gray-200">
+						<Accordion
+							type="single"
+							defaultValue="item-1"
+							collapsible
+							className="w-full text-black"
+						>
+							<AccordionItem
+								value="item-12"
+								className="pb-4 space-y-2 md:hidden"
+							>
+								<AccordionTrigger className=" !font-manrope text-lg font-medium">
+									Reglages
+								</AccordionTrigger>
+								<AccordionContent className="pb-8 mt-4 space-y-8 ">
+									<div className="space-y-3 ">
+										{/* <h4 className="!text-[1.8rem] ">Currency</h4> */}
+										<div className="flex flex-wrap mt-0 gap-x-4">
+											{[
+												{ label: "Euro (€)", symbol: "€" },
+												{ label: "Dollar ($)", symbol: "$" },
+												{ label: "Franc CFA (XOF)", symbol: "FCFA" },
+											].map((items, index) => (
+												<div
+													key={index}
+													className="flex items-center justify-between gap-3 px-8 py-3 transition-all duration-300 border border-gray-300 rounded-md cursor-pointer py w-fit hover:bg-black hover:text-white hover:border-black"
+												>
+													<p className="text-[1.2rem] font-semibold">
+														{items.label}
+													</p>
+												</div>
+											))}
+										</div>
+									</div>
+									<div className="px-[6rem] border-b border-gray-100" />
+
+									<div className="mt-2 space-y-3">
+										{/* <h4 className="!text-[1.8rem]">Langue</h4> */}
+										<div className="flex flex-wrap gap-4 mt-0">
+											{[
+												{ label: "Anglais", symbol: "AN" },
+												{ label: "Français", symbol: "FR" },
+											].map((items, index) => (
+												<div
+													key={index}
+													className="flex items-center justify-between gap-3 px-8 py-3 transition-all duration-300 border border-gray-300 rounded-md cursor-pointer w-fit hover:bg-black hover:text-white hover:border-black"
+												>
+													<p className="text-[1.2rem] font-semibold">
+														{items.label} ({items.symbol})
+													</p>
+												</div>
+											))}
+										</div>
+									</div>
+								</AccordionContent>
+							</AccordionItem>
+						</Accordion>
+					</div>
 				</div>
 			)}{" "}
 		</div>

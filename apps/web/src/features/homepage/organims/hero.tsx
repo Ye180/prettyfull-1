@@ -3,10 +3,10 @@ import Container from "../../../../../../packages/ui/src/layouts/helpers/contain
 
 const Hero = () => {
 	return (
-		<div className=" relative h-[90vh] w-full overflow-hidden bg-gray-100">
+		<div className=" relative h-[90vh] w-full overflow-hidden bg-gray-100 bg-[url(/home/cover-phone.jpg)] md:bg-[url(/home/cover-desktop-1.jpg)] bg-center bg-cover">
 			<Container
 				maxWidth="100vw"
-				className="space-y-12 flex flex-col items-center lg:px-40 h-full justify-center bg-[url(/home/cover-phone.jpg)] md:bg-[url(/home/cover-desktop-1.jpg)] bg-center bg-cover"
+				className="flex flex-col items-center justify-center h-full space-y-12 lg:px-40 "
 			>
 				<div className="flex items-end justify-center w-full h-full text-white lg:p-8 rounded-xl md:justify-start">
 					<div className="pb-40 space-y-8 md:w-1/2 max-md:w-full max-lg:pb-20 lg: max-md:text-center">

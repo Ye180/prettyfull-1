@@ -6,7 +6,7 @@ import NavBarHeaders from "../molecules/header/navbar";
 
 const Header: FC = () => {
 	return (
-		<header className="py-8 bg-white border-b border-gray-200 ">
+		<header className="py-8 bg-white max-sm:h-30 ">
 			<nav className="flex flex-col justify-start px-4 mx-auto gap-y-4 sm:px-6 lg:px-8 max-auto ">
 				<NavBarHeaders />
 
