@@ -67,7 +67,7 @@ const NavBarHeaders = () => {
 								className="relative p-3 text-black transition-colors rounded-full hover:bg-gray-100"
 							>
 								{item.infos?.count && (
-									<p className="absolute flex items-center justify-center text-[0.8rem] border bottom-2 right-2  text-center content-center w-[1.5rem] h-[1.5rem] lg:w-[1.8rem] lg:h-[1.8rem] text-xs text-white bg-red-500 rounded-full lg:right-0 lg:bottom-0 lg:text-[1rem] font-semibold lg:border-2 lg:p-2 border-white">
+									<p className="absolute flex items-center justify-center text-[0.8rem] border bottom-2 right-2  text-center content-center w-[1.5rem] h-[1.5rem] lg:w-[1.8rem] lg:h-[1.8rem] text-xs text-white bg-red-500 rounded-full lg:right-2 lg:bottom-0 lg:text-[1rem] font-semibold lg:border-2 lg:p-2 border-white">
 										{item.infos.count}
 									</p>
 								)}
@@ -89,7 +89,7 @@ const NavBarHeaders = () => {
 			</div>
 			{isMobileMenuOpen && (
 				<div
-					className="fixed z-50 w-[100vw] pb-4 space-y-10 bg-white  md:hidden top-0 
+					className="fixed z-40 w-[100vw] pb-4 space-y-10 bg-white  md:hidden top-0 
 				right-0 -left-0 h-[100vh] overflow-hidden "
 				>
 					<div className="relative flex flex-col items-start justify-between p-2 ">

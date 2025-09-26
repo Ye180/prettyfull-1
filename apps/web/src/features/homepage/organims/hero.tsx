@@ -4,13 +4,13 @@ import Container from "../../../../../../packages/ui/src/layouts/helpers/contain
 
 const Hero = () => {
 	return (
-		<div className=" relative h-[90vh] w-full overflow-hidden bg-gray-100  ">
+		<div className=" relative h-[90vh] -z-0 w-full overflow-hidden bg-gray-100  ">
 			<Image
 				src="/home/cover-desktop-1.jpg"
 				alt="Hero background image"
 				layout="fill"
 				objectFit="cover"
-				className="absolute top-0 left-0 w-full h-full -z-0 max-md:hidden md:flex"
+				className="absolute top-0 left-0 z-10 w-full h-full max-md:hidden md:flex"
 				priority
 			/>
 			<Image
@@ -18,14 +18,14 @@ const Hero = () => {
 				alt="Hero background image"
 				layout="fill"
 				objectFit="cover"
-				className="absolute top-0 left-0 w-full h-full -z-0 max-md:flex md:hidden"
+				className="absolute top-0 left-0 z-10 w-full h-full max-md:flex md:hidden"
 				priority
 			/>
 			<Container
 				maxWidth="100vw"
 				className="flex flex-col items-center justify-center h-full space-y-12 lg:px-40 bg-none/30 "
 			>
-				<div className="z-20 flex items-end justify-center w-full h-full text-white lg:p-8 rounded-xl md:justify-start">
+				<div className="flex items-end justify-center w-full h-full text-white z-15 lg:p-8 rounded-xl md:justify-start">
 					<div className="pb-40 space-y-8 md:w-1/2 max-md:w-full max-lg:pb-20 lg: max-md:text-center">
 						<h1 className="!text-[3rem]  md:!text-[4.5rem] lg:!text-[5.5rem] leading-[6.5rem] tracking-tight font-normal text-center md:text-start   ">
 							Des{" "}

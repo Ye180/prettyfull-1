@@ -4,7 +4,7 @@ import Container from "../../../../../../../packages/ui/src/layouts/helpers/cont
 
 const SearchBar = () => {
 	return (
-		<Container maxWidth="100vw" className=" lg:px-40">
+		<Container maxWidth="100vw" className="px-4 ">
 			<div className="items-center justify-between w-full h-fit sm:hidden max-sm:flex max-sm:gap-x-2 ">
 				<div className="items-center justify-start w-[100%] gap-2 py-1 text-gray-500 border-b border-gray-300 sm:hidden outline-gray-700 max-sm:flex ">
 					<Search className="" />
