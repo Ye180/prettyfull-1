@@ -15,12 +15,12 @@ const Filter = () => {
 	const checkboxClass =
 		"pb-8 mt-4 space-y-10  max-md:flex max-md:flex-wrap max-md:gap-x-10";
 
-	const headerClass = "!font-manrope  text-lg font-medium ";
+	const headerClass = "!font-manrope  text-lg font-medium  ";
 	return (
 		<div>
 			<Accordion
 				type="multiple"
-				className="w-full text-black"
+				className="w-full text-black "
 				defaultValue={["item-12", "item-1", "item-2", "item-3", "item-4"]}
 			>
 				<AccordionItem value="item-12" className="pb-4 space-y-2 md:hidden">

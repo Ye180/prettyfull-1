@@ -1,18 +1,13 @@
+import ItemsCategory from "../molecules/items-category";
+
 const CategoryCollection = () => {
 	return (
-		<div className="grid items-center justify-between w-full h-full grid-cols-6 grid-rows-1 gap-x-2 ">
-			{Array.from({ length: 6 }).map((_, index) => (
-				<button
-					key={index}
-					className="bg-gray-100  w-[100%] aspect-square pointer-cursor"
-					style={{
-						backgroundImage: `url('/assets/product_1.jpg')`,
-						backgroundSize: "cover",
-						backgroundPosition: "start",
-						backgroundRepeat: "no-repeat",
-					}}
-				/>
-			))}
+		<div className="w-full overflow-x-auto h-fit scrolbarRecomandation">
+			<div className="flex gap-x-4 md:gap-x-16 max-sm:snap-x md:w-full  h-[20rem] md:overflow-hidden overflow-y-hidden  lg:overflow-visible  lg:gap-x-6  sm:h-[35rem]  lg:space-y-0  lg:space-x-0  lg:scrollbar-hide  lg:scroll-smooth  lg:snap-x  lg:snap-mandatory scrolbarRecomandation ">
+				{Array.from({ length: 8 }).map((_, index) => (
+					<ItemsCategory key={index} />
+				))}
+			</div>
 		</div>
 	);
 };

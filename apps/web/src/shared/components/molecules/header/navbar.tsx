@@ -112,7 +112,7 @@ const NavBarHeaders = () => {
 									key={index}
 									href={link.href}
 									onClick={() => setItem("links", link.label)}
-									className="font-semibold text-gray-500 text-[1.8rem]  w-fit hover:text-black hover:bg-none cursor-pointer "
+									className="font-semibold text-gray-500 text-[1.8rem]  w-fit hover:text-black hover:bg-white cursor-pointer "
 									variant="mobile"
 								>
 									{link.label}

@@ -22,8 +22,8 @@ const Page = () => {
 
 				<NavbarCollection />
 
-				<div className="relative flex items-start justify-center !w-full space-x-8  h-fit ">
-					<FilterLayout />
+				<div className="flex  items-start justify-center !w-full space-x-8  h-fit ">
+					<FilterLayout className="h-fit " />
 					<GridCollectionLayout />
 				</div>
 			</Container>
