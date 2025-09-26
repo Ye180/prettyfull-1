@@ -25,7 +25,7 @@ const DrawerLayout = () => {
 				title="Filter & Trier "
 				className="w-full p-5 border-none outline-none  md:hidden lg:hidden xl:hidden 2xl:hidden max-h-[90%] "
 			>
-				<div className=" overflow-x-scroll scrollbar-hide h-[90%] rounded-lg p-4">
+				<div className=" overflow-x-scroll scrollbar-hide h-[75vh] rounded-lg p-4">
 					<Filter />
 				</div>
 

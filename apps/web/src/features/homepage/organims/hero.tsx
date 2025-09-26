@@ -1,14 +1,31 @@
 import { Button } from "@prettyfull/ui";
+import Image from "next/image";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
 const Hero = () => {
 	return (
-		<div className=" relative h-[90vh] w-full overflow-hidden bg-gray-100 bg-[url(/home/cover-phone.jpg)] md:bg-[url(/home/cover-desktop-1.jpg)] bg-center bg-cover">
+		<div className=" relative h-[90vh] w-full overflow-hidden bg-gray-100  ">
+			<Image
+				src="/home/cover-desktop-1.jpg"
+				alt="Hero background image"
+				layout="fill"
+				objectFit="cover"
+				className="absolute top-0 left-0 w-full h-full -z-0 max-md:hidden md:flex"
+				priority
+			/>
+			<Image
+				src="/home/cover-phone.jpg"
+				alt="Hero background image"
+				layout="fill"
+				objectFit="cover"
+				className="absolute top-0 left-0 w-full h-full -z-0 max-md:flex md:hidden"
+				priority
+			/>
 			<Container
 				maxWidth="100vw"
-				className="flex flex-col items-center justify-center h-full space-y-12 lg:px-40 "
+				className="flex flex-col items-center justify-center h-full space-y-12 lg:px-40 bg-none/30 "
 			>
-				<div className="flex items-end justify-center w-full h-full text-white lg:p-8 rounded-xl md:justify-start">
+				<div className="z-20 flex items-end justify-center w-full h-full text-white lg:p-8 rounded-xl md:justify-start">
 					<div className="pb-40 space-y-8 md:w-1/2 max-md:w-full max-lg:pb-20 lg: max-md:text-center">
 						<h1 className="!text-[3rem]  md:!text-[4.5rem] lg:!text-[5.5rem] leading-[6.5rem] tracking-tight font-normal text-center md:text-start   ">
 							Des{" "}
@@ -22,7 +39,7 @@ const Hero = () => {
 							</span>{" "}
 							chaque instant.
 						</h1>
-						<p className="mt-8 text-[1.5rem] max-md:hidden lg:text-[1.8rem] font-light leading-[1.5] text-pretty lg:text-justify">
+						<p className="mt-8 text-[1.5rem] max-md:hidden lg:text-[1.8rem] font-light leading-[1.5] text-pretty  lg:text-justify">
 							Découvrez l’élégance de vêtements intemporels, pensés pour
 							sublimer votre style, renforcer votre confiance et révéler votre
 							singularité. Confortables, polyvalents et conçus pour rendre
