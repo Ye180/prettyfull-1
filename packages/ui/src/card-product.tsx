@@ -111,12 +111,16 @@ export function CardProduct({
 	return (
 		<article className={cn(cardVariants(), className)} {...props}>
 			<div
-				className="bg-sky-200 h-[80%] md:hover:[&>div]:opacity-100 flex  justify-center items-center relative"
-				style={
-					{
-						"--aspect-ratio-hack": "149.70059880239518%",
-					} as React.CSSProperties
-				}
+				className="bg-sky-200 h-[100%] md:hover:[&>div]:opacity-100 flex   justify-center items-center relative"
+				// style={
+				// 	{
+				// 		backgroundImage: imagesLoaded[activeIndex]
+				// 			? `url(${variable ? variable[activeIndex as string].image[0] : notVariable?.image})`
+				// 			: undefined,
+				// 	}
+
+				// 	// backgroundImage: imagesLoaded[activeIndex]
+				// }
 				onClick={() => handleRoutes(link)}
 			>
 				{/* L'affichage d'un produit avec un produits variable */}
@@ -128,7 +132,7 @@ export function CardProduct({
 						width={800}
 						height={800}
 						className={cn(
-							"object-cover w-full h-full absolute inset-0 transition-opacity duration-300",
+							"object-cover  w-full h-full absolute inset-0 transition-opacity duration-300",
 							i === activeIndex ? "opacity-100" : "opacity-0"
 						)}
 						priority={i === 0}
