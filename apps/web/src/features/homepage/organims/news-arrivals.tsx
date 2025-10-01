@@ -2,20 +2,22 @@ import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
 import { BOX_DATA_FIRST } from "@/lib/utils/constants/constants";
 import ViewAll from "@/shared/components/molecules/core/view-all";
 import { Button } from "@prettyfull/ui";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Box from "../../../../../../packages/ui/src/layouts/helpers/box";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
 const NewsArrivals = () => {
+	const t = useTranslations("HomePage.news");
 	return (
-		<Container maxWidth="100vw" className="w-full lg:px-40">
+		<Container maxWidth="100vw" className="w-full px-4 lg:px-40">
 			<div className="flex items-center justify-between h-fit ">
-				<h4 className="p-2 w-fit max-md:!text-[2.5rem]"> NOUVELLE ARRIVAGE</h4>
+				<h4 className=" w-fit max-md:!text-[2.5rem] uppercase">{t("title")}</h4>
 
-				<ViewAll>Voir tout</ViewAll>
+				<ViewAll>{t("viewAll")}</ViewAll>
 			</div>
 			<div className="w-full overflow-x-auto h-fit ">
-				<div className="flex gap-x-4 md:gap-x-16 max-sm:snap-x md:w-full sm:grid sm:grid-cols-3 h-[50rem] md:overflow-hidden overflow-y-hidden  lg:overflow-visible  lg:gap-x-6  lg:grid-cols-3 lg:grid-rows-1  lg:h-[60rem]  lg:space-y-0  lg:space-x-0  lg:scrollbar-hide  lg:scroll-smooth  lg:snap-x  lg:snap-mandatory  lg:p-4  lg:pb-16  lg:pt-8 scrolbar">
+				<div className="flex gap-x-4 md:gap-x-16 max-sm:snap-x md:w-full sm:grid sm:grid-cols-3 h-[50rem] md:overflow-hidden overflow-y-hidden  lg:overflow-visible  lg:gap-x-6  lg:grid-cols-3 lg:grid-rows-1  lg:h-[60rem]  lg:space-y-0  lg:space-x-0  lg:scrollbar-hide  lg:scroll-smooth  lg:snap-x  lg:snap-mandatory  lg:pb-16  lg:pt-8 scrolbar">
 					{BOX_DATA_FIRST.map((item, index) => (
 						<Box
 							key={index}

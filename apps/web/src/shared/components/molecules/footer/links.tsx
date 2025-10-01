@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const LinksFooter = () => {
 	return (
-		<div className="flex max-lg:justify-between lg:justify-start lg:w-3/6 max-lg:w-full">
+		<div className="flex gap-8 max-lg:justify-between lg:justify-start lg:w-3/6 max-lg:w-full max-md:grid max-md:grid-cols-2 max-md:gap-y-16 ">
 			{/* SHOP */}
 
 			{FOOTER_DATA.map((items, index) => (

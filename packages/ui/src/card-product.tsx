@@ -112,15 +112,6 @@ export function CardProduct({
 		<article className={cn(cardVariants(), className)} {...props}>
 			<div
 				className="bg-sky-200 h-[100%] md:hover:[&>div]:opacity-100 flex   justify-center items-center relative"
-				// style={
-				// 	{
-				// 		backgroundImage: imagesLoaded[activeIndex]
-				// 			? `url(${variable ? variable[activeIndex as string].image[0] : notVariable?.image})`
-				// 			: undefined,
-				// 	}
-
-				// 	// backgroundImage: imagesLoaded[activeIndex]
-				// }
 				onClick={() => handleRoutes(link)}
 			>
 				{/* L'affichage d'un produit avec un produits variable */}

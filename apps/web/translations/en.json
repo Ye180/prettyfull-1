@@ -1,0 +1,32 @@
+{
+	"HomePage": {
+		"hero": {
+			"title": "Clothing designed to enhance every moment.",
+			"subtitle": "Discover the elegance of timeless clothing, designed to elevate your style, boost your confidence, and reveal your uniqueness. Comfortable, versatile, and crafted to make every moment unforgettable.",
+			"ctaButton": "Shop Now"
+		},
+		"news": {
+			"title": "News Arrivals",
+			"viewAll": "View all"
+		},
+		"containers": {
+			"paragraph1": "We are committed to providing you with a seamless and enjoyable shopping experience."
+		},
+		"collection": {
+			"title": "Women's Collection: elegance reinvented",
+			"subtitle": "Stay on trend with our new selection of modern styles, designed just for you.",
+			"ctaButton": "Go for it"
+		},
+		"trendReport": {
+			"title": "The Trend Report",
+			"viewAll": "View all"
+		},
+		"recommendation": {
+			"title": "RECOMMENDED FOR YOU",
+			"forYou": "For you",
+			"woman": "Woman",
+			"men": "Men",
+			"accessory": "Accessory"
+		}
+	}
+}

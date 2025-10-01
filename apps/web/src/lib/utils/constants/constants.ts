@@ -31,7 +31,7 @@ export const BOX_DATA_FIRST: BoxTypes[] = [
 export const BOX_DATA_SECOND: BoxTypes[] = [
       {
             picture: "/home/cover-box-second-1.jpg",
-            label: "ÉTÉ",
+            label: "SUMMER",
       },
       
       {
@@ -82,11 +82,12 @@ export const FOOTER_DATA = [
 ];
 
 export const NAV_LINKS = [
-      { href: COLLECTION_PATHS.collectionDetail('special-offer'), label: "Special Offer" },
-      { href: COLLECTION_PATHS.collectionDetail('collection'), label: "Collection" },
-	{ href:COLLECTION_PATHS.collectionDetail('store'), label: "Store" },
-      ]
-
+  { href: COLLECTION_PATHS.collectionDetail('women'), label: "Women" },
+  { href: COLLECTION_PATHS.collectionDetail('plus-curve'), label: "Plus+Curve" },
+  { href: COLLECTION_PATHS.collectionDetail('men'), label: "Men" },
+  { href: COLLECTION_PATHS.collectionDetail('kids'), label: "Kids" },
+  { href: COLLECTION_PATHS.collectionDetail('beauty'), label: "Beauty" },
+];
 
 export const SOCIALS_DATA_FOOTER: {
     label: string;
@@ -98,4 +99,26 @@ export const SOCIALS_DATA_FOOTER: {
       { label: "Instagram", href: "#", icon: InstagramIcon },
       { label: "LinkedIn", href: "#", icon: LinkedinIcon },
 ]
+
+export const SUBS_CATEGORY =  [
+					
+      { href: "/new-in", label: "New in " },
+      { href: "/nova-deals", label: "Nova Deals" },
+					{ href: COLLECTION_PATHS.collectionDetail('halloween'), label: "Halloween" },
+					{ href: COLLECTION_PATHS.collectionDetail('formal-shop'), label: "Formal Shop" },
+					{ href: COLLECTION_PATHS.collectionDetail('dresses'), label: "Dresses" },
+					{ href: COLLECTION_PATHS.collectionDetail('matching-sets'), label: "Matching Sets" },
+					{ href: COLLECTION_PATHS.collectionDetail('tops'), label: "Tops" },
+					{ href: COLLECTION_PATHS.collectionDetail('jeans'), label: "Jeans" },
+					{ href: COLLECTION_PATHS.collectionDetail('jackets'), label: "Jackets" },
+					{ href: COLLECTION_PATHS.collectionDetail('sweaters'), label: "Sweaters" },
+					{ href: COLLECTION_PATHS.collectionDetail('shoes'), label: "Shoes" },
+					{ href: COLLECTION_PATHS.collectionDetail('bottoms'), label: "Bottoms" },
+					{ href: COLLECTION_PATHS.collectionDetail('jumpsuits'), label: "Jumpsuits" },
+					{ href: COLLECTION_PATHS.collectionDetail('lingerie-sleep'), label: "Lingerie & Sleep" },
+					{ href: COLLECTION_PATHS.collectionDetail('accessories'), label: "Accessories" },
+					{ href: COLLECTION_PATHS.collectionDetail('activewear'), label: "Activewear" },
+					{ href: COLLECTION_PATHS.collectionDetail('nova-luxe'), label: "Nova Luxe" },
+					{ href: COLLECTION_PATHS.collectionDetail('sale'), label: "Sale" },
+				]
 

@@ -55,7 +55,7 @@ export const GridCardProduct = ({
 	);
 
 	const responsive =
-		"max-md:grid-cols-3 max-md:[&>div]:h-[75rem] max-md:[&>div]:h-[600px]   max-md:grid-cols-3  max-sm:grid-cols-2 max-sm:gap-x-2  max-sm:[&>div]:h-[600px] max-xs:[&>div]:h-[400px] max-sm: space-y-36 sm:space-y-48 md:space-y-48 lg:space-y-52 ";
+		"max-md:grid-cols-3  max-md:[&>div]:h-[75rem]   max-md:grid-cols-3  max-sm:grid-cols-2 max-sm:gap-x-2  max-sm:[&>div]:h-[450px] max-xs:[&>div]:h-[400px] max-sm: space-y-36 sm:space-y-48 md:space-y-48 lg:space-y-52  ";
 
 	const handleChangeStyle = useCallback(
 		(style: Object, index: number) => {
@@ -110,7 +110,7 @@ export const GridCardProduct = ({
 				</div>
 			)}
 
-			<div className={cn("lg:space-y-52", gridClasses, classGrid)}>
+			<div className={cn("lg:space-y-52", gridClasses, classGrid, "produit")}>
 				{children}
 			</div>
 		</div>

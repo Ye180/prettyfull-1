@@ -56,6 +56,14 @@ h6 {
 	}
 }
 
+@mesdia screen and (max-width: 40rem) {
+	.produit {
+		height: 10rem !important;
+
+		background: #000;
+	}
+}
+
 .scrolbar::-webkit-scrollbar {
 	height: 5px !important; /* Largeur du scrollbar */
 }
@@ -78,4 +86,7 @@ h6 {
 .viva {
 	position: sticky !important;
 	top: 0 !important;
+}
+
+.bg {
 }

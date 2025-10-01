@@ -1,3 +1,4 @@
+import { SUBS_CATEGORY } from "@/lib/utils/constants/constants";
 import { NavLink } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 
@@ -11,30 +12,28 @@ const BottomHeader = ({
 	return (
 		<div
 			className={cn(
-				"max-sm:hidden sm:flex items-center justify-start gap-6 mt-4  text-[1.5rem] ",
+				"max-xs:hidden sm:flex items-center justify-start gap-6 mt-4  text-[1.5rem] ",
 				className
 			)}
 		>
-			<div
-				className={cn(
-					"flex items-center justify-start gap-6 mt-4  text-[1.5rem]",
-					className_2
-				)}
-			>
-				{[
-					{ href: "/collection", label: "Tailleur GT" },
-					{ href: "/special-offer", label: "Jooging" },
-					{ href: "/store", label: "Decembre" },
-					{ href: "/store", label: "Zara Shoes" },
-					{ href: "/store", label: "Herve Leger" },
-					{ href: "/store", label: "Accessoires" },
-					{ href: "/store", label: "Sexy-hot" },
-				].map((link, index) => (
-					<NavLink href={link.href} key={index} className="!text-[1.6rem] ">
-						{" "}
-						{link.label}
-					</NavLink>
-				))}
+			<div className="w-full overflow-x-auto h-fit ">
+				<div
+					className={cn(
+						"flex   max-sm:snap-x md:w-full  md:overflow-hidden overflow-y-hidden  lg:overflow-visible   space-y-0  space-x-0  scrollbar-hide  scroll-smooth snap-x  lg:snap-mandatory gap-x-6  scrolbar text-[1.5rem]",
+						className_2
+					)}
+				>
+					{SUBS_CATEGORY.map((link, index) => (
+						<NavLink
+							href={link.href}
+							key={index}
+							className="!text-[1.6rem] capitalize snap-center"
+						>
+							{" "}
+							{link.label}
+						</NavLink>
+					))}
+				</div>
 			</div>
 		</div>
 	);

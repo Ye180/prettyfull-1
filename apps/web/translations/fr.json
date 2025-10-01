@@ -1,0 +1,32 @@
+{
+	"HomePage": {
+		"hero": {
+			"title": "Des vêtements pensés pour sublimer chaque instant.",
+			"subtitle": "Découvrez l’élégance de vêtements intemporels, pensés pour sublimer votre style, renforcer votre confiance et révéler votre singularité. Confortables, polyvalents et conçus pour rendre chaque instant inoubliable.",
+			"ctaButton": "Achetez maintenant"
+		},
+		"news": {
+			"title": "Nouveautés",
+			"viewAll": "Voir tout"
+		},
+		"containers": {
+			"paragraph1": "Nous nous engageons à vous offrir une expérience de shopping fluide et agréable."
+		},
+		"collection": {
+			"title": "Collection Femme : élégance réinventée",
+			"subtitle": "Restez à la mode avec notre nouvelle sélection de styles modernes, conçus juste pour vous.",
+			"ctaButton": "Lancez-vous"
+		},
+		"trendReport": {
+			"title": "Le Rapport sur les Tendances",
+			"viewAll": "Voir tout"
+		},
+		"recommendation": {
+			"title": "RECOMMANDEZ POUR VOUS",
+			"forYou": "Pour toi",
+			"woman": "Femme",
+			"men": "Homme",
+			"accessory": "Accessoires"
+		}
+	}
+}
