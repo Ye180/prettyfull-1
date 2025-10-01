@@ -12,11 +12,11 @@ import {
 import { ArrowIcon } from "./icons/arrow-top.icon";
 
 const constantByFilter = {
-	mise_en_avant: "Tous les produits",
-	meilleures_ventes: "Meilleures ventes",
-	prix_croissant: "Prix croissant",
-	prix_décroissant: "Prix décroissant",
-	nouveautés: "Nouveautés",
+	mise_en_avant: "All Products",
+	meilleures_ventes: "Best Sellers",
+	prix_croissant: "Price: Low to High",
+	prix_décroissant: "Price: High to Low",
+	nouveautés: "New Arrivals",
 };
 
 const ToPull = () => {

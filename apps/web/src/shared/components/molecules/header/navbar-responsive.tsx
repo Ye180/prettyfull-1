@@ -6,6 +6,7 @@ import {
 	AccordionTrigger,
 	NavLink,
 } from "@prettyfull/ui";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import BottomHeader from "./bottom";
@@ -17,6 +18,7 @@ const NavbarResponsive = ({
 	close: () => void;
 	onClick: () => void;
 }) => {
+	const t = useTranslations("headerResponsive");
 	return (
 		<div
 			className="fixed z-40 w-[100vw] pb-4 space-y-10 bg-white  md:hidden top-0 
@@ -63,7 +65,7 @@ const NavbarResponsive = ({
 				>
 					<AccordionItem value="item-12" className="pb-4 space-y-2 md:hidden">
 						<AccordionTrigger className=" !font-manrope text-lg font-medium">
-							Reglages
+							{t("setting")}
 						</AccordionTrigger>
 						<AccordionContent className="pb-8 mt-4 space-y-8 ">
 							<div className="space-y-3 ">

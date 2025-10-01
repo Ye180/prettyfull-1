@@ -1,4 +1,8 @@
 {
+	"headerResponsive": {
+		"setting": "Réglage"
+	},
+
 	"HomePage": {
 		"hero": {
 			"title": "Des vêtements pensés pour sublimer chaque instant.",
@@ -28,5 +32,31 @@
 			"men": "Homme",
 			"accessory": "Accessoires"
 		}
+	},
+
+	"CollectionPage": {
+		"filters": {
+			"sort_by": "Trier par",
+			"type_clothes": "Types de vêtements",
+			"colors": "Couleurs",
+			"adjust": "Ajuster",
+			"taille": "Taille"
+		}
+	},
+	"Cart": {
+		"cart": {
+			"title": "Panier"
+		},
+		"summary": {
+			"title": "Résumé",
+			"subtotal": "Sous-total",
+			"shipping": "Frais de port",
+			"taxes": "Estimation des droits et taxes",
+			"total": "Total",
+			"checkout": "Passer à la caisse"
+		}
+	},
+	"Wishlist": {
+		"title": "Preference"
 	}
 }

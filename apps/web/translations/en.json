@@ -1,4 +1,8 @@
 {
+	"headerResponsive": {
+		"setting": "Setting"
+	},
+
 	"HomePage": {
 		"hero": {
 			"title": "Clothing designed to enhance every moment.",
@@ -28,5 +32,30 @@
 			"men": "Men",
 			"accessory": "Accessory"
 		}
+	},
+	"CollectionPage": {
+		"filters": {
+			"sort_by": "Sort by",
+			"type_clothes": "Best Sellers",
+			"colors": "Colors",
+			"adjust": "Adjust",
+			"taille": "Size"
+		}
+	},
+	"Cart": {
+		"product": {
+			"title": "Cart"
+		},
+		"summary": {
+			"title": " Summary",
+			"subtotal": "Subtotal",
+			"shipping": "Shipping",
+			"taxes": "Estimate Duties And Taxes",
+			"total": "Total",
+			"checkout": "Checkout"
+		}
+	},
+	"Wishlist": {
+		"title": "Wishlist"
 	}
 }

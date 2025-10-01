@@ -3,7 +3,7 @@ import { CardProduct, GridCardProduct } from "@prettyfull/ui";
 
 const GridWishlistLayout = () => {
 	return (
-		<div className="w-full h-full rounded-md ">
+		<div className="w-full h-full rounded-md pb-44 ">
 			<GridCardProduct>
 				<>
 					{Array.from({ length: 15 }).map((_, i) => (

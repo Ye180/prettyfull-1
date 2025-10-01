@@ -5,6 +5,7 @@ import {
 	AccordionTrigger,
 } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Adjust from "../adjust";
 import Colors from "../colors";
 import Size from "../size";
@@ -12,6 +13,8 @@ import ToPull from "../to-pull";
 import TypeClothes from "../type-clothes";
 
 const Filter = () => {
+	const t = useTranslations("CollectionPage.filters");
+
 	const checkboxClass =
 		"pb-8 mt-4 space-y-10  max-md:flex max-md:flex-wrap max-md:gap-x-10";
 
@@ -25,7 +28,7 @@ const Filter = () => {
 			>
 				<AccordionItem value="item-12" className="pb-4 space-y-2 md:hidden">
 					<AccordionTrigger className={cn(headerClass)}>
-						Trier par
+						{t("sort_by")}
 					</AccordionTrigger>
 					<AccordionContent className="pb-8 mt-4 space-y-10 ">
 						<ToPull />
@@ -33,7 +36,7 @@ const Filter = () => {
 				</AccordionItem>
 				<AccordionItem value="item-1" className="space-y-2">
 					<AccordionTrigger className={cn(headerClass)}>
-						Type Habits
+						{t("type_clothes")}
 					</AccordionTrigger>
 					<AccordionContent className={cn(checkboxClass)}>
 						<TypeClothes />
@@ -41,7 +44,7 @@ const Filter = () => {
 				</AccordionItem>
 				<AccordionItem value="item-2">
 					<AccordionTrigger className={cn(headerClass)}>
-						Couleur
+						{t("colors")}
 					</AccordionTrigger>
 					<AccordionContent className="">
 						<Colors />
@@ -49,7 +52,7 @@ const Filter = () => {
 				</AccordionItem>
 				<AccordionItem value="item-3" className="space-y-2">
 					<AccordionTrigger className={cn(headerClass)}>
-						Ajuster
+						{t("adjust")}
 					</AccordionTrigger>
 					<AccordionContent className={cn(checkboxClass)}>
 						<Adjust />
@@ -57,7 +60,7 @@ const Filter = () => {
 				</AccordionItem>
 				<AccordionItem value="item-4">
 					<AccordionTrigger className={cn(headerClass)}>
-						Taille
+						{t("taille")}
 					</AccordionTrigger>
 					<AccordionContent className="flex flex-wrap gap-8 text-balance">
 						<Size />
