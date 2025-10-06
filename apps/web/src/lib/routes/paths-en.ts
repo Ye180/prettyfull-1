@@ -16,6 +16,7 @@ export const paths = {
     wishlist : "/wishlist",
     profile : "/profile",
     cart : "/cart",
+    checkout : "/checkout",
     collection : "/collection",
     contact : "/contact",
     terms : "/terms",

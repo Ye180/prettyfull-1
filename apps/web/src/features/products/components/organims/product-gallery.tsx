@@ -59,7 +59,7 @@ export function ProductGallery({
 			</div>
 
 			{/* Image principale */}
-			<div className="flex-1 relative max-xs:h-[25vh] xs:h-[70vh] bg-gray-100 min-h-[500px]">
+			<div className="flex-1 relative max-xs:h-[25vh] xs:h-[70vh] bg-gray-100 min-h-[500px] ">
 				<Image
 					src={images[activeImage] as string | StaticImport}
 					alt={title}
@@ -71,7 +71,7 @@ export function ProductGallery({
 			</div>
 
 			{/* Mobile thumbnails (dots) */}
-			<div className="flex justify-center gap-2 mt-4 sm:hidden absolute -bottom-24 left-1/2 transform -translate-x-1/2 w-full">
+			<div className="absolute flex justify-center w-full gap-2 mt-4 transform -translate-x-1/2 sm:hidden -bottom-24 left-1/2">
 				{images.map((image, index) => (
 					<div
 						key={index}

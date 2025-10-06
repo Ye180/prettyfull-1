@@ -1,8 +1,10 @@
 "use client";
 
 import { CartSummaryType } from "@/features/cart/types";
+import { paths } from "@/lib/routes/paths-en";
 import { Button, DropdownMenuSeparator } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { FC } from "react";
 
 interface Props {
@@ -13,8 +15,10 @@ const CartSummary: FC<Props> = ({ summary }) => {
 	const tCart = useTranslations("Cart.product");
 	const tSummary = useTranslations("Cart.summary");
 
+	const router = useRouter();
+
 	return (
-		<div className="w-full py-6 bg-white md:w-1/3">
+		<div className="w-full py-6 bg-white sm:w-1/3">
 			<div className="py-12 text-2xl font-bold">{tSummary("title")}</div>
 			<div className="mb-6 space-y-8">
 				<div className="space-y-8">
@@ -42,6 +46,7 @@ const CartSummary: FC<Props> = ({ summary }) => {
 			<Button
 				variant="secondary"
 				className="w-full text-white bg-black hover:bg-gray-800"
+				onClick={() => router.push(paths.checkout)}
 			>
 				{tSummary("checkout")}
 			</Button>

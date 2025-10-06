@@ -19,6 +19,7 @@
 		"collection": {
 			"title": "Collection Femme : élégance réinventée",
 			"subtitle": "Restez à la mode avec notre nouvelle sélection de styles modernes, conçus juste pour vous.",
+			"deal": "Deal de la semaine",
 			"ctaButton": "Lancez-vous"
 		},
 		"trendReport": {
@@ -58,5 +59,42 @@
 	},
 	"Wishlist": {
 		"title": "Preference"
+	},
+	"CheckoutPage": {
+		"checkoutForm": {
+			"labelMethod": "Comment souhaitez-vous recevoir votre commande ?",
+			"placeholderMethod": "Entrez votre méthode de livraison...",
+
+			"labelAddress": "Entrer votre numero, nom et adresse",
+			"placeholderNumber": "Entrez votre numéro de téléphone...",
+			"placeholderLastName": "Entrez votre nom et prénom...",
+			"placeholderAddress": "Entrez votre adresse...",
+			"labelPostCode": "Entrer votre code postal",
+			"placeholderPostCode": "Entrez votre code postal...",
+			"labelCity": "Entrer votre ville",
+			"placeholderCity": "Entrez votre ville...",
+			"labelCountry": "Entrer votre pays",
+			"placeholderCountry": "Entrez votre pays...",
+			"labelState": "Entrer votre région",
+			"placeholderState": "Entrez votre région..."
+		},
+		"infosCheckout": {
+			"save": "Enregistrer cette adresse dans mon profil",
+			"favorite": "Faites de ceci mon adresse préférée",
+			"termes": "Termes et Conditions",
+			"accept": "J'ai lu et j'accepte les termes et conditions",
+			"ctaButton": "Procéder au paiement"
+		},
+		"features": {
+			"delivery": "Livraison",
+			"shipping": "Expédition",
+			"billing": "Facturation",
+			"payment": "Paiement",
+			"data": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+		},
+		"items": {
+			"color": "Couleur",
+			"size": "Taille"
+		}
 	}
 }

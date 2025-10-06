@@ -41,7 +41,10 @@ export default function ProductPage() {
 	const [selectedColor, setSelectedColor] = useState<string>("Black");
 
 	return (
-		<Container maxWidth="100vw" className="py-12 mx-auto lg:px-40 space-y-18">
+		<Container
+			maxWidth="100vw"
+			className="px-4 py-12 mx-auto lg:px-40 space-y-18"
+		>
 			<div className="flex flex-col justify-center gap-20 sm:flex-row ">
 				{/* Colonne de gauche - Images */}
 				<div className="w-full space-y-8 lg:w-2/5 ">

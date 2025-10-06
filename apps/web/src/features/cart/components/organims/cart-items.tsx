@@ -25,7 +25,7 @@ const CartItem: FC<Props> = ({ item, onIncrease, onDecrease, onRemove }) => {
 					}}
 				/>
 
-				<div className="flex flex-col space-y-4 justify-between">
+				<div className="flex flex-col justify-between space-y-4">
 					<div className="space-y-2 text-[1.5rem]">
 						<h5 className="font-semibold !text-[2.2rem] tracking-wider whitespace-nowrap">
 							{item.name}
@@ -47,12 +47,12 @@ const CartItem: FC<Props> = ({ item, onIncrease, onDecrease, onRemove }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex flex-col justify-between items-end">
-				<div className="text-right font-semibold">${item.price}</div>
+			<div className="flex flex-col items-end justify-between">
+				<div className="font-semibold text-right">${item.price}</div>
 				<div className="flex pb-4 ">
 					<EditItems
 						onRemove={() => onRemove(item.id)}
-						className="max-sm:flex sm:hidden flex-col gap-y-8"
+						className="flex-col max-sm:flex sm:hidden gap-y-8"
 					/>
 				</div>
 			</div>

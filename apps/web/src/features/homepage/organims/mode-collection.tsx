@@ -28,7 +28,7 @@ const ModeCollection = () => {
 				<div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-t from-black/40 to-black/0" />
 
 				<div className="static z-20 flex items-center justify-between w-full p-8 pb-16">
-					<h4 className="text-[16px] text-white">Deal de la semaine</h4>
+					<h4 className="text-[16px] text-white">{t("deal")}</h4>
 				</div>
 			</div>
 			<div className="w-full space-y-12 overflow-hidden md:w-1/2 h-fit ">

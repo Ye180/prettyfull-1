@@ -122,3 +122,27 @@ export const SUBS_CATEGORY =  [
 					{ href: COLLECTION_PATHS.collectionDetail('sale'), label: "Sale" },
 				]
 
+
+
+export const DATA_CARD = [
+	{
+		id: "1",
+		name: "Nike Form",
+		description: "Dri-FIT Hooded Versatile Jacket",
+		color: "Black",
+		size: "L",
+		price: 360,
+		image: "/assets/product_1.jpg",
+		quantity: 1,
+	},
+	{
+		id: "2",
+		name: "Nike Club",
+		description: "Men's Short-Sleeve Polo",
+		color: "White",
+		size: "M",
+		price: 38,
+		image: "/assets/product_2.jpg",
+		quantity: 75,
+	},
+];

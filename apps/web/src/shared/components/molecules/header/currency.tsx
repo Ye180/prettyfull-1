@@ -4,8 +4,15 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@prettyfull/ui";
+import { usePathname, useRouter } from "next/navigation";
 
 export function Currency() {
+	const router = useRouter();
+	const pathname = usePathname();
+	const changeLanguage = (locale: string) => {
+		// Redirect to the new locale while preserving the current path
+		router.push(`/${locale}${pathname.replace(/^\/(en|fr|es)/, "")}`);
+	};
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className="outline-none outline-black/20 flex items-end !justify-between px-2 py-2 w-fit rounded-md  h-fit hover:bg-black hover:text-white cursor-pointer">
@@ -40,17 +47,18 @@ export function Currency() {
 					<h4 className="!text-[2.2rem]">Langue</h4>
 					<div className="flex flex-wrap gap-4 mt-0">
 						{[
-							{ label: "Anglais", symbol: "AN" },
-							{ label: "Français", symbol: "FR" },
+							{ label: "Anglais", symbol: "en" },
+							{ label: "Français", symbol: "fr" },
 						].map((items, index) => (
-							<div
+							<button
 								key={index}
 								className="flex items-center justify-between gap-3 px-6 py-3 transition-all duration-300 border border-gray-300 cursor-pointer py rounded-xl w-fit hover:bg-black hover:text-white hover:border-black"
+								onClick={() => changeLanguage(items.symbol)}
 							>
 								<p className="text-[1.2rem] font-semibold">
 									{items.label} ({items.symbol})
 								</p>
-							</div>
+							</button>
 						))}
 					</div>
 				</div>
