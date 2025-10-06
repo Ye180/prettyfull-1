@@ -88,5 +88,14 @@ h6 {
 	top: 0 !important;
 }
 
-.bg {
+.scrolbar {
+	scrollbar-width: none !important; /* Firefox */
+
+	-ms-overflow-style: none !important; /* Internet Explorer 10+ */
+}
+
+.scrolbar::-webkit-scrollbar-thumb {
+	/* display: none !important; cache les flèches */
+	background-color: inherit !important; /* Largeur du scrollbar */
+	border-radius: 10%;
 }
