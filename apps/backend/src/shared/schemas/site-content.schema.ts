@@ -55,7 +55,7 @@ export class SiteContent {
 
 export const SiteContentSchema = SchemaFactory.createForClass(SiteContent);
 
-// Index pour les performances  
+// Index pour les performances
 SiteContentSchema.index({ key: 1 });
 SiteContentSchema.index({ type: 1, isActive: 1 });
 SiteContentSchema.index({ publishedAt: 1, expiresAt: 1 });

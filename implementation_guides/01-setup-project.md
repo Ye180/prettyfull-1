@@ -1,11 +1,13 @@
 # Étape 1 : Configuration Initiale du Projet Backend
 
 ## Objectif
+
 Configuration de base du projet NestJS pour l'API e-commerce avec les middlewares de sécurité, la validation globale et l'infrastructure de développement.
 
 ## Dépendances Ajoutées
 
 ### Authentification & Sécurité
+
 - `@nestjs/jwt` - Gestion des tokens JWT
 - `@nestjs/passport` - Intégration Passport.js
 - `passport`, `passport-local`, `passport-jwt` - Stratégies d'authentification
@@ -14,6 +16,7 @@ Configuration de base du projet NestJS pour l'API e-commerce avec les middleware
 - `@nestjs/throttler` - Protection contre le rate limiting
 
 ### Base de Données & Cache
+
 - `@nestjs/mongoose` - Intégration MongoDB via Mongoose
 - `mongoose` - ODM MongoDB
 - `@nestjs/cache-manager` - Gestion du cache
@@ -21,10 +24,12 @@ Configuration de base du projet NestJS pour l'API e-commerce avec les middleware
 - `ioredis` - Client Redis performant
 
 ### Files d'Attente & Jobs Asynchrones
+
 - `@nestjs/bull` - Gestion des files d'attente
 - `bull` - Processeur de jobs Redis-based
 
 ### Validation & Transformation
+
 - `class-validator` - Validation déclarative
 - `class-transformer` - Transformation d'objets
 - `compression` - Compression gzip des réponses
@@ -32,7 +37,9 @@ Configuration de base du projet NestJS pour l'API e-commerce avec les middleware
 ## Configuration de l'Environnement
 
 ### Fichier `.env.example`
+
 Variables d'environnement essentielles configurées :
+
 - Base de données MongoDB
 - Configuration Redis
 - Secrets JWT (Access & Refresh tokens)
@@ -41,7 +48,9 @@ Variables d'environnement essentielles configurées :
 - Taux de change des devises
 
 ### Docker Configuration
+
 `docker-compose.yml` incluant :
+
 - **MongoDB 7.0** avec authentification
 - **Redis 7.2** pour le cache et les sessions
 - **Redis Commander** interface d'administration Redis
@@ -50,11 +59,13 @@ Variables d'environnement essentielles configurées :
 ## Point d'Entrée (`main.ts`)
 
 ### Middlewares de Sécurité
+
 - **Helmet** : Protection des headers HTTP
 - **Compression** : Compression gzip automatique
 - **CORS** : Configuration fine avec headers d'internationalisation
 
 ### Validation Globale
+
 - `ValidationPipe` configuré pour :
   - Filtrage des propriétés non autorisées (`whitelist`)
   - Rejet des propriétés inconnues (`forbidNonWhitelisted`)
@@ -62,7 +73,9 @@ Variables d'environnement essentielles configurées :
   - Conversion implicite des types
 
 ### Headers d'Internationalisation
+
 Headers personnalisés supportés :
+
 - `Accept-Language` : Langue demandée (fr/en)
 - `Accept-Currency` : Devise demandée (XOF/USD)
 

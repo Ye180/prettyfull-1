@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { I18nStringSchema, I18nString, PriceSchema, Price } from './i18n.schema';
+import type { I18nString, Price } from './i18n.schema';
+import { I18nStringSchema, PriceSchema } from './i18n.schema';
 
 export type ProductDocument = Product & Document;
 
@@ -48,11 +49,13 @@ export class Product {
   @Prop({ type: [String] })
   tags: string[];
 
-  @Prop({ 
-    type: [{
-      name: { type: I18nStringSchema, required: true },
-      values: [{ type: I18nStringSchema, required: true }]
-    }]
+  @Prop({
+    type: [
+      {
+        name: { type: I18nStringSchema, required: true },
+        values: [{ type: I18nStringSchema, required: true }],
+      },
+    ],
   })
   variants?: Array<{
     name: I18nString;
@@ -82,7 +85,7 @@ export class Product {
       length: Number,
       width: Number,
       height: Number,
-    }
+    },
   })
   dimensions?: {
     length: number;
@@ -104,12 +107,12 @@ export class Product {
 export const ProductSchema = SchemaFactory.createForClass(Product);
 
 // Index pour la recherche
-ProductSchema.index({ 
-  'name.fr': 'text', 
+ProductSchema.index({
+  'name.fr': 'text',
   'name.en': 'text',
   'description.fr': 'text',
   'description.en': 'text',
-  tags: 'text'
+  tags: 'text',
 });
 
 // Index pour les performances

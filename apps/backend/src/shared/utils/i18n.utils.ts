@@ -1,9 +1,9 @@
-import { 
-  I18nString, 
-  I18nContext, 
-  SupportedLanguage, 
+import {
+  I18nContext,
+  I18nString,
+  Price,
   SupportedCurrency,
-  Price 
+  SupportedLanguage,
 } from '../schemas/i18n.schema';
 
 /**
@@ -59,7 +59,7 @@ export function createI18nProjection(
   fields.forEach((field) => {
     // Pour les champs i18n, projette seulement la langue demandée
     projection[`${field}.${context.language}`] = 1;
-    
+
     // Fallback vers français si la langue demandée n'existe pas
     if (context.language !== SupportedLanguage.FR) {
       projection[`${field}.fr`] = 1;
@@ -85,11 +85,8 @@ export function transformI18nDocument(
     if (transformed[field] && typeof transformed[field] === 'object') {
       const i18nValue = transformed[field];
       // Utilise la langue demandée ou fallback vers français
-      transformed[field] = 
-        i18nValue[context.language] || 
-        i18nValue.fr || 
-        i18nValue.en || 
-        '';
+      transformed[field] =
+        i18nValue[context.language] || i18nValue.fr || i18nValue.en || '';
     }
   });
 
@@ -115,7 +112,7 @@ export function transformPriceDocument(
       try {
         transformed[field] = convertPrice(transformed[field], targetCurrency);
       } catch (error) {
-        console.warn(`Erreur conversion prix pour ${field}:`, error.message);
+        console.warn(`Erreur conversion prix pour ${field}:`, (error as Error).message);
       }
     }
   });
@@ -126,19 +123,23 @@ export function transformPriceDocument(
 /**
  * Utilitaire pour extraire le contexte i18n des headers HTTP
  */
-export function extractI18nContext(headers: Record<string, string>): I18nContext {
+export function extractI18nContext(
+  headers: Record<string, string>,
+): I18nContext {
   // Extrait la langue depuis Accept-Language
-  const acceptLanguage = headers['accept-language'] || headers['Accept-Language'] || 'fr';
+  const acceptLanguage =
+    headers['accept-language'] || headers['Accept-Language'] || 'fr';
   let language = SupportedLanguage.FR;
-  
+
   if (acceptLanguage.includes('en')) {
     language = SupportedLanguage.EN;
   }
 
   // Extrait la devise depuis Accept-Currency
-  const acceptCurrency = headers['accept-currency'] || headers['Accept-Currency'] || 'XOF';
+  const acceptCurrency =
+    headers['accept-currency'] || headers['Accept-Currency'] || 'XOF';
   let currency = SupportedCurrency.XOF;
-  
+
   if (acceptCurrency.includes('USD')) {
     currency = SupportedCurrency.USD;
   }
@@ -159,13 +160,10 @@ export function createI18nPipeline(
   // Étape 1: Projection pour les champs i18n
   if (i18nFields.length > 0) {
     const projection: Record<string, any> = {};
-    
+
     i18nFields.forEach((field) => {
       projection[field] = {
-        $ifNull: [
-          `$${field}.${context.language}`,
-          `$${field}.fr`
-        ]
+        $ifNull: [`$${field}.${context.language}`, `$${field}.fr`],
       };
     });
 
@@ -180,11 +178,14 @@ export function createI18nPipeline(
     priceFields.forEach((field) => {
       priceProjection[field] = {
         amount: {
-          $round: [{
-            $multiply: [`$${field}.amount`, rate]
-          }, 2]
+          $round: [
+            {
+              $multiply: [`$${field}.amount`, rate],
+            },
+            2,
+          ],
         },
-        currency: context.currency
+        currency: context.currency,
       };
     });
 

@@ -1,8 +1,8 @@
+import { BullModule } from '@nestjs/bull';
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CacheModule } from '@nestjs/cache-manager';
-import { BullModule } from '@nestjs/bull';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,14 +12,14 @@ import { RedisModule } from './shared/redis';
 
 // Business modules
 import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
-import { ProductsModule } from './modules/products/products.module';
-import { CategoriesModule } from './modules/categories/categories.module';
-import { OrdersModule } from './modules/orders/orders.module';
 import { CartsModule } from './modules/carts/carts.module';
-import { WishlistsModule } from './modules/wishlists/wishlists.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { ProductsModule } from './modules/products/products.module';
 import { SiteContentModule } from './modules/site-content/site-content.module';
+import { UsersModule } from './modules/users/users.module';
+import { WishlistsModule } from './modules/wishlists/wishlists.module';
 
 @Module({
   imports: [
@@ -33,7 +33,9 @@ import { SiteContentModule } from './modules/site-content/site-content.module';
     // Base de données MongoDB
     MongooseModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get('DATABASE_URL') || 'mongodb://localhost:27017/prettyfull-ecommerce',
+        uri:
+          configService.get('DATABASE_URL') ||
+          'mongodb://localhost:27017/prettyfull-ecommerce',
         retryWrites: true,
         retryAttempts: 3,
         retryDelay: 1000,

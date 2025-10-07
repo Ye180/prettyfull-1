@@ -1,16 +1,11 @@
-import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import helmet from 'helmet';
+import { NestFactory } from '@nestjs/core';
 import * as compression from 'compression';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { swaggerSetup } from './shared/config/swagger.config';
-import {
-  API_PREFIX,
-  API_VERSION,
-  APP_DESCRIPTION,
-  APP_NAME,
-} from './shared/constants';
+import { API_VERSION, APP_DESCRIPTION, APP_NAME } from './shared/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -68,7 +63,9 @@ async function bootstrap() {
   const port = configService.get('PORT', 3001);
   await app.listen(port, () => {
     console.log(`🚀 E-commerce API server started at http://localhost:${port}`);
-    console.log(`📚 API Documentation: http://localhost:${port}/${apiPrefix}/docs`);
+    console.log(
+      `📚 API Documentation: http://localhost:${port}/${apiPrefix}/docs`,
+    );
   });
 }
 void bootstrap();

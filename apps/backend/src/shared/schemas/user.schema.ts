@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
+import { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -19,8 +19,8 @@ export enum UserStatus {
   timestamps: true,
   toJSON: {
     transform: function (doc, ret) {
-      delete ret.password;
-      delete ret.__v;
+      delete (ret as any).password;
+      delete (ret as any).__v;
       return ret;
     },
   },
@@ -97,7 +97,7 @@ UserSchema.pre<UserDocument>('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 });
 
