@@ -5,8 +5,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./button";
-import { F7CartFillBadgePlus } from "./icons/add-cart.icon";
+import DrawerCart from "./drawer-cart";
+import { CloseIcon } from "./icons/close.icon";
 import { Heart } from "./icons/heart.icon";
+import Size from "./size";
 
 const cardVariants = cva(["space-y-3 w-[100%] h-full relative"], {
 	variants: {
@@ -69,9 +71,25 @@ export function CardProduct({
 
 	const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
 
+	const [showSizes, setShowSizes] = useState(false);
+
+	const [size, setSize] = useState<string[]>([]);
+
 	const handleRoutes = (link?: string) => {
 		if (link) {
 			router.push(link);
+		}
+	};
+
+	const handleShowSizes = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.stopPropagation();
+		setShowSizes(!showSizes);
+		if (variable && variable[activeIndex]) {
+			setSize(variable[activeIndex].size as string[]);
+		}
+
+		if (notVariable) {
+			setSize(notVariable.size as string[]);
 		}
 	};
 
@@ -155,23 +173,26 @@ export function CardProduct({
 					/>
 				)}
 
-				<div className="absolute flex items-center justify-between w-full gap-8 px-4 transition-all duration-300 ease-in-out opacity-0 bottom-5 ">
-					<Button
-						className="pt-4 pb-5 px-4 w-2/3 text-[1.4rem] font-medium"
-						onClick={(e) => e.stopPropagation()}
-					>
-						Ajouter au panier
-					</Button>
-					<button
-						className="p-4 text-2xl rounded-full cursor-pointer w-fit bg-secondary"
-						onClick={(e) => e.stopPropagation()}
-					>
-						<Heart />
-					</button>
-				</div>
-				<button className="absolute p-2 text-2xl bg-white rounded-full cursor-pointer right-2 bottom-5 w-fit md:hidden">
-					<F7CartFillBadgePlus />
-				</button>
+				{!showSizes && (
+					<div className="absolute flex items-center justify-between w-full gap-8 px-4 transition-all duration-300 ease-in-out opacity-0 bottom-5 ">
+						<Button
+							className="pt-4 pb-5 px-4 w-2/3 text-[1.4rem] font-medium"
+							onClick={(e) => handleShowSizes(e)}
+						>
+							Ajouter au panier
+						</Button>
+						<button
+							className="p-4 text-2xl rounded-full cursor-pointer w-fit bg-secondary"
+							onClick={(e) => e.stopPropagation()}
+						>
+							<Heart />
+						</button>
+					</div>
+				)}
+
+				{/* <button className="absolute p-2 text-2xl bg-white rounded-full cursor-pointer right-2 bottom-5 w-fit md:hidden"> */}
+				<DrawerCart />
+				{/* </button> */}
 			</div>
 
 			<div className="space-y-3">
@@ -218,6 +239,7 @@ export function CardProduct({
 							i === activeIndex ? "border-black shadow-md" : "border-gray-300"
 						)}
 						onClick={(e) => handleVariantClick({ e, index: i })}
+						disabled={showSizes}
 					>
 						<span
 							className={cn("h-5 w-5 rounded-full cursor-pointer")}
@@ -226,6 +248,18 @@ export function CardProduct({
 					</button>
 				))}
 			</div>
+			{(notVariable?.size || variable) &&
+				(showSizes ? (
+					<div className="absolute  w-[80%] left-1/2 right-1/2  -translate-x-1/2 bg-white border-2 border-gray-200 bottom-15 text-black  text-center rounded-md text-sm font-light  p-8 shadow-lg">
+						<div className="flex items-center justify-between mb-6">
+							<p className="font-semibold text-[1.4rem]">Size</p>
+							<button onClick={handleShowSizes} className="cursor-pointer">
+								<CloseIcon className="w-8 h-8" />
+							</button>
+						</div>
+						<Size size={size} />
+					</div>
+				) : null)}
 		</article>
 	);
 }

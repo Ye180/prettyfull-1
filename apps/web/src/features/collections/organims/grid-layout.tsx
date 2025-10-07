@@ -15,7 +15,7 @@ const GridCollectionLayout = () => {
 											label: "Rouge",
 											code: "#FF0000",
 										},
-										size: ["S", "M", "L"],
+										size: ["S", "M", "L", "XL", "2XL", "3XL"],
 										image: ["/assets/product5.webp", "/assets/product_2.jpg"],
 										quantity: 1,
 									},
