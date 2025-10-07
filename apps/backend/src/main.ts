@@ -2,20 +2,20 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { swaggerSetup } from './shared/config/swagger.config';
 import {
   API_PREFIX,
   API_VERSION,
   APP_DESCRIPTION,
   APP_NAME,
-} from './common/constants';
-import { swaggerSetup } from './config/swagger.config';
+} from './shared/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix(`${API_PREFIX}/`);
 
-  // Redirect
+  // Redirect to Swagger API
   app.getHttpAdapter().get('', (req, res) => {
     res.redirect(`${API_PREFIX}/docs`);
   });
@@ -31,8 +31,10 @@ async function bootstrap() {
     },
   });
 
-  // Redirect to Swagger API
-
-  await app.listen(process.env.PORT ?? 7777);
+  await app.listen(process.env.PORT ?? 7777, () =>
+    console.log(
+      `🚀 Server started at http://localhost:${process.env.PORT ?? 7777}`,
+    ),
+  );
 }
 void bootstrap();
