@@ -1,7 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import * as compression from 'compression';
+import compression from 'compression';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { swaggerSetup } from './shared/config/swagger.config';
@@ -17,7 +17,7 @@ async function bootstrap() {
 
   // CORS configuration
   app.enableCors({
-    origin: configService.get('CORS_ORIGIN', 'http://localhost:3000'),
+    origin: configService.get<string>('CORS_ORIGIN', 'http://localhost:3000'),
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'Content-Type',
@@ -41,11 +41,12 @@ async function bootstrap() {
   );
 
   // API prefix
-  const apiPrefix = configService.get('API_PREFIX', 'api/v1');
+  const apiPrefix = configService.get<string>('API_PREFIX', 'api/v1');
   app.setGlobalPrefix(apiPrefix);
 
   // Redirect root to API docs
   app.getHttpAdapter().get('', (req, res) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     res.redirect(`/${apiPrefix}/docs`);
   });
 
@@ -60,7 +61,7 @@ async function bootstrap() {
     },
   });
 
-  const port = configService.get('PORT', 3001);
+  const port = configService.get<number>('PORT', 3001);
   await app.listen(port, () => {
     console.log(`🚀 E-commerce API server started at http://localhost:${port}`);
     console.log(

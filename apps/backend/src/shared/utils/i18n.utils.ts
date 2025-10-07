@@ -112,7 +112,10 @@ export function transformPriceDocument(
       try {
         transformed[field] = convertPrice(transformed[field], targetCurrency);
       } catch (error) {
-        console.warn(`Erreur conversion prix pour ${field}:`, (error as Error).message);
+        console.warn(
+          `Erreur conversion prix pour ${field}:`,
+          (error as Error).message,
+        );
       }
     }
   });
