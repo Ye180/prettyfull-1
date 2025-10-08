@@ -6,7 +6,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { UserRole } from '../../../shared/schemas/user.schema';
+import { UserRole } from '../schemas/user.schema';
 
 export class CreateUserDto {
   @IsEmail({}, { message: 'Email invalide' })
