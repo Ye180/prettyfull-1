@@ -4,7 +4,9 @@ import { SiteContent, SiteContentSchema } from './schemas/site-content.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: SiteContent.name, schema: SiteContentSchema }]),
+    MongooseModule.forFeature([
+      { name: SiteContent.name, schema: SiteContentSchema },
+    ]),
   ],
   controllers: [],
   providers: [],

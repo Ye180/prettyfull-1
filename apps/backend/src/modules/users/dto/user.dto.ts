@@ -1,15 +1,20 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  IsString,
-  IsEmail,
-  IsOptional,
   IsBoolean,
-  IsEnum,
   IsDate,
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsString,
   IsUUID,
   MinLength,
 } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { UserRole, UserStatus, Currency, Language } from '../schemas/user.schema';
+import {
+  Currency,
+  Language,
+  UserRole,
+  UserStatus,
+} from '../schemas/user.schema';
 
 // Base DTO - La source de vérité pour tous les DTOs User
 export class UserDto {
@@ -17,7 +22,10 @@ export class UserDto {
   @IsUUID()
   id: string;
 
-  @ApiProperty({ description: 'User email address', example: 'user@example.com' })
+  @ApiProperty({
+    description: 'User email address',
+    example: 'user@example.com',
+  })
   @IsEmail()
   email: string;
 
@@ -81,7 +89,7 @@ export class UserDto {
 }
 
 // DTOs dérivés selon les meilleures pratiques
-import { PickType, OmitType, PartialType } from '@nestjs/mapped-types';
+import { OmitType, PartialType, PickType } from '@nestjs/mapped-types';
 
 // DTO pour la création d'utilisateur - champs requis seulement
 export class CreateUserDto extends PickType(UserDto, [
@@ -111,7 +119,7 @@ export class UpdateUserDto extends PartialType(
     'bio',
     'preferredLanguage',
     'preferredCurrency',
-  ] as const)
+  ] as const),
 ) {}
 
 // DTO pour les réponses publiques - informations minimales
@@ -123,7 +131,9 @@ export class PublicUserDto extends PickType(UserDto, [
 ] as const) {}
 
 // DTO pour les réponses d'administration - toutes les infos sauf mot de passe
-export class UserResponseDto extends OmitType(UserDto, ['updatedAt'] as const) {}
+export class UserResponseDto extends OmitType(UserDto, [
+  'updatedAt',
+] as const) {}
 
 // DTO pour les profils utilisateur - infos publiques étendues
 export class UserProfileDto extends PickType(UserDto, [
