@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import type { Price } from './i18n.schema';
-import { PriceSchema } from './i18n.schema';
+import type { Price } from '../../../shared/schemas/i18n.schema';
+import { PriceSchema } from '../../../shared/schemas/i18n.schema';
 
 export type OrderDocument = Order & Document;
 

@@ -15,6 +15,16 @@ export enum UserStatus {
   BANNED = 'banned',
 }
 
+export enum Language {
+  FR = 'fr',
+  EN = 'en',
+}
+
+export enum Currency {
+  XOF = 'XOF',
+  USD = 'USD',
+}
+
 @Schema({
   timestamps: true,
   toJSON: {
@@ -46,6 +56,12 @@ export class User {
 
   @Prop({ type: String, enum: UserStatus, default: UserStatus.ACTIVE })
   status: UserStatus;
+
+  @Prop({ type: String, enum: Language, default: Language.FR })
+  preferredLanguage: Language;
+
+  @Prop({ type: String, enum: Currency, default: Currency.XOF })
+  preferredCurrency: Currency;
 
   @Prop()
   avatar?: string;

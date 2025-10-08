@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { I18nString } from './i18n.schema';
+import { I18nString } from '../../../shared/schemas/i18n.schema';
 
 export type SiteContentDocument = SiteContent & Document;
 

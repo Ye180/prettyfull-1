@@ -6,8 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument, UserRole } from './schemas/user.schema';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -57,20 +56,6 @@ export class UsersService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UserDocument> {
-    // Si l'email est modifié, vérifier qu'il n'existe pas déjà
-    if (updateUserDto.email) {
-      const existingUser = await this.userModel.findOne({
-        email: updateUserDto.email.toLowerCase(),
-        _id: { $ne: id },
-      });
-
-      if (existingUser) {
-        throw new ConflictException('Cet email est déjà utilisé');
-      }
-
-      updateUserDto.email = updateUserDto.email.toLowerCase();
-    }
-
     const user = await this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .select('-password')

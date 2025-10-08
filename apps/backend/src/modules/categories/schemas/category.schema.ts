@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import type { I18nString } from './i18n.schema';
-import { I18nStringSchema } from './i18n.schema';
+import type { I18nString } from '../../../shared/schemas/i18n.schema';
+import { I18nStringSchema } from '../../../shared/schemas/i18n.schema';
 
 export type CategoryDocument = Category & Document;
 
