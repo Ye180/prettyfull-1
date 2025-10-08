@@ -114,11 +114,6 @@ email: string;
 export class CreateUserDto extends OmitType(User, ['id', 'createdAt', 'updatedAt']) {}
 This couples your DTOs directly to your database schema. When your database needs change (and they will), your API contracts change too. Not good.
 
-Get Serhii Malyshev’s stories in your inbox
-Join Medium for free to get updates from this writer.
-
-Enter your email
-Subscribe
 Instead, keep them separate:
 
 // ✅ Keep concerns separated
