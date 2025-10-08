@@ -2,6 +2,7 @@ import { BullModule } from '@nestjs/bull';
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
@@ -9,6 +10,9 @@ import { AppService } from './app.service';
 
 // Shared modules
 import { RedisModule } from './shared/redis';
+
+// Auth guards
+import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 
 // Business modules
 import { AuthModule } from './modules/auth/auth.module';
@@ -94,6 +98,12 @@ import { WishlistsModule } from './modules/wishlists/wishlists.module';
     SiteContentModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}
