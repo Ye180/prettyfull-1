@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: prettyfull-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: prettyfull-ecommerce
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker-init/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - prettyfull-network
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: prettyfull-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - prettyfull-network
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: prettyfull-redis-commander
+    restart: unless-stopped
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    networks:
+      - prettyfull-network
+    depends_on:
+      - redis
+
+volumes:
+  mongodb_data:
+  redis_data:
+
+networks:
+  prettyfull-network:
+    driver: bridge
