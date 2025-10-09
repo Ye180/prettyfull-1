@@ -76,7 +76,9 @@
 			"labelCountry": "Entrer votre pays",
 			"placeholderCountry": "Entrez votre pays...",
 			"labelState": "Entrer votre région",
-			"placeholderState": "Entrez votre région..."
+			"placeholderState": "Entrez votre région...",
+
+			"description": "* Pour la livraison, vous pouvez saisir votre adresse de maniére précise."
 		},
 		"infosCheckout": {
 			"save": "Enregistrer cette adresse dans mon profil",

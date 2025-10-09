@@ -7,7 +7,7 @@ import Container from "../../../../../../../../packages/ui/src/layouts/helpers/c
 
 const Page = () => {
 	return (
-		<div className="pb-20 space-y-12">
+		<div className="space-y-12 max-md:pb-70 md:pb-30">
 			<div className="h-[25vh] md:h-[45vh]  space-y-18 border-orange-100 p-2 md:p-4">
 				<Banner />
 			</div>

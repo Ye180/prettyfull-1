@@ -3,9 +3,10 @@ import { cn, data_url, formatCurrency_FR } from "@prettyfull/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { Button } from "./button";
 import DrawerCart from "./drawer-cart";
+import DrawerVariable from "./drawer-variable";
 import { CloseIcon } from "./icons/close.icon";
 import { Heart } from "./icons/heart.icon";
 import Size from "./size";
@@ -24,6 +25,13 @@ const cardVariants = cva(["space-y-3 w-[100%] h-full relative"], {
 		size: "default",
 	},
 });
+
+const INITIAL_DRAWER_STATES = {
+	showSizes: false,
+	showVariable: false,
+};
+
+type DrawerStatesProps = typeof INITIAL_DRAWER_STATES;
 
 interface CardProps
 	extends React.HTMLAttributes<HTMLDivElement>,
@@ -71,7 +79,17 @@ export function CardProduct({
 
 	const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
 
-	const [showSizes, setShowSizes] = useState(false);
+	const [drawerStates, setDrawerStates] = useState<DrawerStatesProps>(
+		INITIAL_DRAWER_STATES
+	);
+
+	// Fonction utilitaire pour mettre à jour les états des tiroirs
+	const updateDrawerState = useCallback(
+		(key: keyof DrawerStatesProps, value: SetStateAction<boolean>) => {
+			setDrawerStates((prev) => ({ ...prev, [key]: value }));
+		},
+		[]
+	);
 
 	const [size, setSize] = useState<string[]>([]);
 
@@ -81,17 +99,22 @@ export function CardProduct({
 		}
 	};
 
-	const handleShowSizes = (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.stopPropagation();
-		setShowSizes(!showSizes);
-		if (variable && variable[activeIndex]) {
-			setSize(variable[activeIndex].size as string[]);
-		}
+	// Gestion de l'affichage des tailles
+	const handleShowSizes = useCallback(
+		(e: React.MouseEvent<HTMLButtonElement>) => {
+			e.stopPropagation();
+			updateDrawerState("showSizes", !drawerStates.showSizes);
 
-		if (notVariable) {
-			setSize(notVariable.size as string[]);
-		}
-	};
+			if (variable && variable[activeIndex]) {
+				setSize(variable[activeIndex].size as string[]);
+			}
+
+			if (notVariable) {
+				setSize(notVariable.size as string[]);
+			}
+		},
+		[activeIndex, notVariable, drawerStates.showSizes, variable]
+	);
 
 	const handleVariantClick = ({
 		e,
@@ -173,8 +196,8 @@ export function CardProduct({
 					/>
 				)}
 
-				{!showSizes && (
-					<div className="absolute flex items-center justify-between w-full gap-8 px-4 transition-all duration-300 ease-in-out opacity-0 bottom-5 ">
+				{!drawerStates.showSizes && (
+					<div className="absolute flex items-center justify-between w-full gap-8 px-4 transition-all duration-300 ease-in-out opacity-0 bottom-5 max-md:hidden md:flex">
 						<Button
 							className="pt-4 pb-5 px-4 w-2/3 text-[1.4rem] font-medium"
 							onClick={(e) => handleShowSizes(e)}
@@ -190,9 +213,11 @@ export function CardProduct({
 					</div>
 				)}
 
-				{/* <button className="absolute p-2 text-2xl bg-white rounded-full cursor-pointer right-2 bottom-5 w-fit md:hidden"> */}
-				<DrawerCart />
-				{/* </button> */}
+				<DrawerCart
+					size={size}
+					handleClick={(e) => handleShowSizes(e)}
+					close={() => updateDrawerState("showSizes", false)}
+				/>
 			</div>
 
 			<div className="space-y-3">
@@ -201,7 +226,7 @@ export function CardProduct({
 				</p>
 			</div>
 			<div className="flex justify-between items-start text-[#000] ">
-				<h4 className="tracking-[0.03em] max-md:!text-[2rem]  md:!text-[2.2rem] truncate line-clamp-1">
+				<h4 className="tracking-[0.03em] !text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] truncate line-clamp-1">
 					{" "}
 					{title}
 				</h4>
@@ -230,8 +255,9 @@ export function CardProduct({
 					</>
 				)}
 			</div>
+
 			<div className="flex items-center justify-start gap-2">
-				{variable?.map((variant, i) => (
+				{variable?.slice(0, 3)?.map((variant, i) => (
 					<button
 						key={i}
 						className={cn(
@@ -239,7 +265,7 @@ export function CardProduct({
 							i === activeIndex ? "border-black shadow-md" : "border-gray-300"
 						)}
 						onClick={(e) => handleVariantClick({ e, index: i })}
-						disabled={showSizes}
+						disabled={drawerStates.showSizes}
 					>
 						<span
 							className={cn("h-5 w-5 rounded-full cursor-pointer")}
@@ -247,17 +273,25 @@ export function CardProduct({
 						></span>
 					</button>
 				))}
+
+				{variable && <DrawerVariable label={`+ ${variable.length - 4}`} />}
 			</div>
 			{(notVariable?.size || variable) &&
-				(showSizes ? (
-					<div className="absolute  w-[80%] left-1/2 right-1/2  -translate-x-1/2 bg-white border-2 border-gray-200 bottom-15 text-black  text-center rounded-md text-sm font-light  p-8 shadow-lg">
+				(drawerStates.showSizes ? (
+					<div className="absolute  w-[80%] left-1/2 right-1/2  -translate-x-1/2 bg-white border-2 border-gray-200 bottom-15 text-black  text-center rounded-md text-sm font-light  p-8 shadow-lg max-md:hidden md:block">
 						<div className="flex items-center justify-between mb-6">
 							<p className="font-semibold text-[1.4rem]">Size</p>
-							<button onClick={handleShowSizes} className="cursor-pointer">
+							<button
+								onClick={() => updateDrawerState("showSizes", false)}
+								className="cursor-pointer"
+							>
 								<CloseIcon className="w-8 h-8" />
 							</button>
 						</div>
-						<Size size={size} />
+						<Size
+							size={size}
+							onclose={() => updateDrawerState("showSizes", false)}
+						/>
 					</div>
 				) : null)}
 		</article>

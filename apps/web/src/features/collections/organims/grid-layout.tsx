@@ -28,6 +28,69 @@ const GridCollectionLayout = () => {
 										image: ["/assets/product_2.jpg", "image4.jpg"],
 										quantity: 1,
 									},
+									{
+										color: {
+											label: "Rouge",
+											code: "#FF0000",
+										},
+										size: ["S", "M", "L", "XL", "2XL", "3XL"],
+										image: ["/assets/product5.webp", "/assets/product_2.jpg"],
+										quantity: 1,
+									},
+									{
+										color: {
+											label: "Vert",
+											code: "#00FF00",
+										},
+										size: ["S", "M", "L"],
+										image: ["/assets/product_2.jpg", "image4.jpg"],
+										quantity: 1,
+									},
+									{
+										color: {
+											label: "Rouge",
+											code: "#FF0000",
+										},
+										size: ["S", "M", "L", "XL", "2XL", "3XL"],
+										image: ["/assets/product5.webp", "/assets/product_2.jpg"],
+										quantity: 1,
+									},
+									{
+										color: {
+											label: "Vert",
+											code: "#00FF00",
+										},
+										size: ["S", "M", "L"],
+										image: ["/assets/product_2.jpg", "image4.jpg"],
+										quantity: 1,
+									},
+									{
+										color: {
+											label: "Vert",
+											code: "#00FF00",
+										},
+										size: ["S", "M", "L"],
+										image: ["/assets/product_2.jpg", "image4.jpg"],
+										quantity: 1,
+									},
+									{
+										color: {
+											label: "Rouge",
+											code: "#FF0000",
+										},
+										size: ["S", "M", "L", "XL", "2XL", "3XL"],
+										image: ["/assets/product5.webp", "/assets/product_2.jpg"],
+										quantity: 1,
+									},
+									{
+										color: {
+											label: "Vert",
+											code: "#00FF00",
+										},
+										size: ["S", "M", "L"],
+										image: ["/assets/product_2.jpg", "image4.jpg"],
+										quantity: 1,
+									},
 								]}
 								price={12000}
 								promotion={{
