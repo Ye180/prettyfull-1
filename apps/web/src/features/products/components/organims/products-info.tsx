@@ -10,14 +10,21 @@ import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
 import { ProductTypes } from "../../types";
 import { ProductOptions } from "../molecules/product-options";
 
-type ProductInfosProps = {
-	productData: ProductTypes;
-	selectedColor: string;
-	setSelectedColor: (color: string) => void;
-	selectedSize: string;
-	setSelectedSize: (size: string) => void;
+type ProductInfoData = {
+    category: string;
+    title: string;
+    price: number;
+    description: string;
+    sizes: { label: string; value: string }[];
+    colors: { name: string; code: string }[];
 };
-
+type ProductInfosProps = {
+    productData: ProductInfoData; // On utilise notre nouveau type
+    selectedColor: string;
+    setSelectedColor: (color: string) => void;
+    selectedSize: string;
+    setSelectedSize: (size: string) => void;
+};
 const ProductInfos = ({
 	productData,
 	selectedColor,
@@ -43,14 +50,14 @@ const ProductInfos = ({
 				</div>
 
 				{/* Options de produit */}
-				<ProductOptions
-					sizes={productData.sizes}
-					colors={productData.colors}
-					selectedSize={selectedSize}
-					selectedColor={selectedColor}
-					onSizeChange={(size) => setSelectedSize(size)}
-					onColorChange={(color) => setSelectedColor(color)}
-				/>
+				   <ProductOptions
+                    sizes={productData.sizes}
+                    colors={productData.colors}
+                    selectedSize={selectedSize}
+                    selectedColor={selectedColor}
+                    onSizeChange={(size) => setSelectedSize(size)}
+                    onColorChange={(color) => setSelectedColor(color)}
+                />
 
 				{/* Boutons d'action */}
 				<div className="flex gap-8 mt-15 w-[70%] items-center">

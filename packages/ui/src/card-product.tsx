@@ -48,7 +48,7 @@ interface CardProps
 		color?: { label: string; code: string };
 		size: string[];
 		image: string;
-		quantity: number;
+		 quantity?: number;
 	};
 	small_description?: string;
 	price: number;
