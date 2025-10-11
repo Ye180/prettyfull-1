@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { WishlistsService } from './wishlists.service';
-import { WishlistsController } from './wishlists.controller';
 import { RedisModule } from '../../shared/redis/redis.module';
+import { WishlistsController } from './wishlists.controller';
+import { WishlistsService } from './wishlists.service';
 
 @Module({
   imports: [RedisModule],

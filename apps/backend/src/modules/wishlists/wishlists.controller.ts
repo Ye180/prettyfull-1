@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Delete,
-  Param,
-  Request,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Request } from '@nestjs/common';
 import { WishlistsService } from './wishlists.service';
 
 @Controller('wishlists')
@@ -48,7 +41,10 @@ export class WishlistsController {
     @Param('productId') productId: string,
   ) {
     const userId = req.user?.id || 'temp-user-id';
-    const isInWishlist = await this.wishlistsService.isInWishlist(userId, productId);
+    const isInWishlist = await this.wishlistsService.isInWishlist(
+      userId,
+      productId,
+    );
     return { productId, isInWishlist };
   }
 }
