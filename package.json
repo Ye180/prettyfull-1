@@ -5,6 +5,7 @@
     "build": "turbo run build",
     "install:fonts": "pnpm install @fontsource-variable/manrope @fontsource/bebas-neue --filter @prettyfull/ui  --filter docs --filter web --filter ui  --filter tailwind-config",
     "dev": "turbo run dev",
+    "start:prod": "turbo run start ",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",

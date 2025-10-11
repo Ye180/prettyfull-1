@@ -163,6 +163,6 @@ export const OrderSchema = SchemaFactory.createForClass(Order);
 
 // Index pour les performances
 OrderSchema.index({ user: 1, createdAt: -1 });
-OrderSchema.index({ orderNumber: 1 });
+// Note: orderNumber index is automatically created by unique: true
 OrderSchema.index({ status: 1 });
 OrderSchema.index({ paymentStatus: 1 });

@@ -1,3 +1,4 @@
+import { OmitType, PartialType, PickType } from '@nestjs/mapped-types';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
@@ -87,9 +88,6 @@ export class UserDto {
   @IsDate()
   updatedAt: Date;
 }
-
-// DTOs dérivés selon les meilleures pratiques
-import { OmitType, PartialType, PickType } from '@nestjs/mapped-types';
 
 // DTO pour la création d'utilisateur - champs requis seulement
 export class CreateUserDto extends PickType(UserDto, [
