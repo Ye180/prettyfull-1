@@ -33,7 +33,7 @@ const INITIAL_DRAWER_STATES = {
 
 type DrawerStatesProps = typeof INITIAL_DRAWER_STATES;
 
-interface CardProps
+export interface CardProps
 	extends React.HTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof cardVariants> {
 	title: string;
@@ -58,6 +58,7 @@ interface CardProps
 		pourcentage: number;
 	};
 	isLoading?: boolean;
+	label?: string;
 }
 export function CardProduct({
 	title,
@@ -274,7 +275,29 @@ export function CardProduct({
 					</button>
 				))}
 
-				{variable && <DrawerVariable label={`+ ${variable.length - 4}`} />}
+				{variable && (
+					<DrawerVariable
+						label={`+ ${variable.length - 4}`}
+						title={title}
+						photos={variable?.map((v) => v.image[0]) as string[]}
+						promotion={promotion}
+						productData={{
+							title,
+							price,
+
+							description: small_description || "",
+
+							sizes: variable[0]
+								? variable[0].size.map((s) => ({ label: s, value: s }))
+								: [],
+							colors: variable.map((v) => ({
+								name: v.color.label,
+								code: v.color.code,
+							})),
+							images: variable.flatMap((v) => v.image),
+						}}
+					/>
+				)}
 			</div>
 			{(notVariable?.size || variable) &&
 				(drawerStates.showSizes ? (
