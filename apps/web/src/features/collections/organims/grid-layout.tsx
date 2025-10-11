@@ -3,7 +3,7 @@ import { CardProduct, GridCardProduct } from "@prettyfull/ui";
 
 const GridCollectionLayout = () => {
 	return (
-		<div className="h-full rounded-md max-md:w-full md:w-5/6">
+		<div className="h-full rounded-md max-md:w-full md:w-6/6 px-2">
 			<GridCardProduct action_grid>
 				<>
 					{Array.from({ length: 15 }).map((_, i) => (
