@@ -1,6 +1,7 @@
 "use client";
 import { cn, data_url, formatCurrency_FR } from "@prettyfull/utils";
 import { VariantProps, cva } from "class-variance-authority";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { SetStateAction, useCallback, useEffect, useState } from "react";
@@ -37,20 +38,22 @@ export interface CardProps
 	extends React.HTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof cardVariants> {
 	title: string;
+	category?: string;
 	link?: string;
 	variable?: {
 		color: { label: string; code: string };
 		size: string[];
-		image: Array<string>;
+		image: string[] | StaticImport[];
 		quantity: number;
 	}[];
 	notVariable?: {
 		color?: { label: string; code: string };
 		size: string[];
 		image: string;
-		 quantity?: number;
+		quantity?: number;
 	};
-	small_description?: string;
+	smallDescription?: string;
+	description?: string;
 	price: number;
 	solde?: boolean;
 	promotion?: {
@@ -63,7 +66,7 @@ export interface CardProps
 export function CardProduct({
 	title,
 	className,
-	small_description,
+	smallDescription,
 	price,
 	children,
 	promotion,
@@ -223,7 +226,7 @@ export function CardProduct({
 
 			<div className="space-y-3">
 				<p className="text-sm  max-sm:hidden capitalize text-grey  tracking-[0.03em] font-light">
-					{small_description}
+					{smallDescription}
 				</p>
 			</div>
 			<div className="flex justify-between items-start text-[#000] ">
@@ -285,7 +288,7 @@ export function CardProduct({
 							title,
 							price,
 
-							description: small_description || "",
+							description: smallDescription || "",
 
 							sizes: variable[0]
 								? variable[0].size.map((s) => ({ label: s, value: s }))
@@ -294,7 +297,9 @@ export function CardProduct({
 								name: v.color.label,
 								code: v.color.code,
 							})),
-							images: variable.flatMap((v) => v.image),
+							images: variable.flatMap(
+								(v) => v.image as string | readonly string[]
+							),
 						}}
 					/>
 				)}

@@ -4,26 +4,18 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 	Button,
+	CardProps,
 } from "@prettyfull/ui";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
-import { ProductTypes } from "../../types";
 import { ProductOptions } from "../molecules/product-options";
 
-type ProductInfoData = {
-    category: string;
-    title: string;
-    price: number;
-    description: string;
-    sizes: { label: string; value: string }[];
-    colors: { name: string; code: string }[];
-};
 type ProductInfosProps = {
-    productData: ProductInfoData; // On utilise notre nouveau type
-    selectedColor: string;
-    setSelectedColor: (color: string) => void;
-    selectedSize: string;
-    setSelectedSize: (size: string) => void;
+	productData: CardProps; // On utilise notre nouveau type
+	selectedColor: string;
+	setSelectedColor: (color: string) => void;
+	selectedSize: string;
+	setSelectedSize: (size: string) => void;
 };
 const ProductInfos = ({
 	productData,
@@ -38,26 +30,37 @@ const ProductInfos = ({
 			<div className="space-y-6">
 				{/* Catégorie */}
 				<h4 className="tracking-wide text-gray-500 uppercase !text-[2.1rem] font-bebas-neue">
-					{productData.category}
+					{productData?.category}
 				</h4>
 
 				{/* Titre et prix */}
 				<div className="space-y-2">
 					<h1 className="!text-[4.8rem] font-bold">{productData.title}</h1>
-					<p className="text-3xl font-medium font-bebas-neue">
-						{formatCurrency_FR(productData.price)}
-					</p>
+					{productData.promotion ? (
+						<div className="block text-start ">
+							<h4 className="  !text-3xl whitespace-nowrap">
+								{" "}
+								{formatCurrency_FR(productData.promotion?.reduced_price || 0)}
+							</h4>
+							<h4 className="text-grey/50  line-through !text-[2.5rem]   whitespace-nowrap">
+								{formatCurrency_FR(productData.price)}
+							</h4>
+						</div>
+					) : (
+						<h4 className="!text-3xl font-medium font-bebas-neue">
+							{formatCurrency_FR(productData.price)}
+						</h4>
+					)}
 				</div>
 
 				{/* Options de produit */}
-				   <ProductOptions
-                    sizes={productData.sizes}
-                    colors={productData.colors}
-                    selectedSize={selectedSize}
-                    selectedColor={selectedColor}
-                    onSizeChange={(size) => setSelectedSize(size)}
-                    onColorChange={(color) => setSelectedColor(color)}
-                />
+				<ProductOptions
+					variable={productData.variable}
+					selectedSize={selectedSize}
+					selectedColor={selectedColor}
+					onSizeChange={(size) => setSelectedSize(size)}
+					onColorChange={(color) => setSelectedColor(color)}
+				/>
 
 				{/* Boutons d'action */}
 				<div className="flex gap-8 mt-15 w-[70%] items-center">

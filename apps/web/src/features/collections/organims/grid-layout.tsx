@@ -61,7 +61,7 @@ const GridCollectionLayout = () => {
 									pourcentage: 50,
 									reduced_price: 6000,
 								}}
-								small_description="Top polyvalente á Manche"
+								smallDescription="Top polyvalente á Manche"
 								title="Sweet-Top"
 								link={PRODUCT_PATHS.productDetail("SWEET-TOP")}
 							/>

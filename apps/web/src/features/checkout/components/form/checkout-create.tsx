@@ -8,8 +8,10 @@ import {
 	FormMessage,
 	Input,
 } from "@prettyfull/ui";
+import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
+import InputSelect from "../../../../../../../packages/ui/src/input-select";
 
 const CreateCheckoutForm = () => {
 	const form = useForm();
@@ -18,24 +20,21 @@ const CreateCheckoutForm = () => {
 
 	const tsave = useTranslations("CheckoutPage.infosCheckout");
 
+	const classNameSelect = cn(
+		" !text-[1.7rem] py-2 hover:bg-gray-100 cursor-pointer"
+	);
+
 	return (
 		<div>
 			<Form {...form}>
 				<div className="space-y-15 ">
-					<FormField
-						control={form.control}
-						name="type"
-						render={() => (
-							<FormItem>
-								<FormLabel>{t("labelMethod")} </FormLabel>
-								<FormControl>
-									<Input placeholder={t("placeholderMethod")} />
-								</FormControl>
-
-								<FormMessage />
-							</FormItem>
-						)}
+					<InputSelect
+						label={t("placeholderMethod")}
+						placeholder={t("placeholderMethod")}
+						classNameSelect={classNameSelect}
+						items={["Rapide", "Expedition", "Dans 3 jours"]}
 					/>
+
 					<FormField
 						control={form.control}
 						name="adress"
@@ -56,7 +55,6 @@ const CreateCheckoutForm = () => {
 						name="name"
 						render={() => (
 							<FormItem>
-								{/* <FormLabel>{t("labelAddress")} </FormLabel> */}
 								<FormControl>
 									<Input label="" placeholder={t("placeholderLastName")} />
 								</FormControl>
@@ -71,7 +69,6 @@ const CreateCheckoutForm = () => {
 						name="adress"
 						render={() => (
 							<FormItem>
-								{/* <FormLabel>{t("labelAddress")} </FormLabel> */}
 								<FormControl>
 									<Input label="" placeholder={t("placeholderAddress")} />
 								</FormControl>

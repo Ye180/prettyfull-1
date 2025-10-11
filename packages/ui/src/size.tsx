@@ -1,10 +1,15 @@
+import { cn } from "@prettyfull/utils";
 import { Button } from "./button";
 
 const Size = ({
 	size,
+	className,
+	classButton,
 	onclose,
 }: {
 	size: string[];
+	className?: string;
+	classButton?: string;
 	onclose?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
 	const sizeOptions = [
@@ -39,13 +44,16 @@ const Size = ({
 	];
 
 	return (
-		<div className="grid grid-cols-4 gap-y-10 gap-x-8 ">
+		<div className={cn("grid grid-cols-4 gap-y-10 gap-x-8 ", className)}>
 			{sizeOptions.map((items, i) => (
 				<Button
 					key={i}
 					onClick={(e) => onclose && onclose(e)}
 					disabled={!size.includes(items.label)}
-					className="flex  items-center justify-center w-full h-14 px-6 py-4 mx-auto font-normal text-gray-600 uppercase bg-white border border-gray-300 rounded-sm text-[1.3rem] hover:border-black hover:text-white transition-all duration-200 cursor-pointer"
+					className={cn(
+						"flex  items-center justify-center w-full h-14 px-6 py-4 mx-auto font-normal text-gray-600 uppercase bg-white border border-gray-300 rounded-sm text-[1.3rem] hover:border-black hover:text-white transition-all duration-200 cursor-pointer",
+						classButton
+					)}
 				>
 					{items.label}
 				</Button>

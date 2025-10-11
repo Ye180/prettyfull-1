@@ -13,23 +13,54 @@
 //     }[];
 //     images: string[];
 
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
+
 // }
 
 
-export type ProductVariant = {
-    size: string;
-    color: {
-        name: string;
-        code: string;
-    };
-    images: string[];
-    stock: number; // 0 pour hors-stock
+export type ProductVariable = {
+    color: { label: string; code: string };
+	size: string[];
+	image:string[] | StaticImport[];
+	quantity: number;
 };
 
 export type ProductTypes = {
-    category: string;
+    category?: string;
     title: string;
     price: number;
     description: string;
-    variants: ProductVariant[]; // On remplace sizes, colors, images par les variantes
+    solde?: boolean;
+    
+    promotion?: {
+        reduced_price: number;
+        pourcentage: number;
+    };
+    variable: ProductVariable[]; // On remplace sizes, colors, images par les variantes
 };
+
+// export interface CardProps {
+//     title: string;
+//     link?: string;
+//     variable?: {
+//         color: { label: string; code: string };
+//         size: string[];
+//         image: Array<string>;
+//         quantity: number;
+//     }[];
+//     notVariable?: {
+//         color?: { label: string; code: string };
+//         size: string[];
+//         image: string;
+//          quantity?: number;
+//     };
+//     smallDescription?: string;
+//     price: number;
+//     solde?: boolean;
+//     promotion?: {
+//         reduced_price: number;
+//         pourcentage: number;
+//     };
+//     isLoading?: boolean;
+//     label?: string;
+// }

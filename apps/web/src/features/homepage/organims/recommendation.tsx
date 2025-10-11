@@ -1,3 +1,4 @@
+import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
 import {
 	CardProduct,
 	GridCardProduct,
@@ -39,8 +40,9 @@ const Recommendation = () => {
 									pourcentage: 50,
 									reduced_price: 6000,
 								}}
-								small_description="Top polyvalente á Manche"
+								smallDescription="Top polyvalente á Manche"
 								title="Sweet-Top"
+								link={PRODUCT_PATHS.productDetail("SWEET-TOP")}
 							/>
 						</div>
 					))}
@@ -49,7 +51,7 @@ const Recommendation = () => {
 		);
 	};
 	return (
-		<Container maxWidth="100vw" className="w-full px-4 space-y-8  lg:px-40">
+		<Container maxWidth="100vw" className="w-full px-4 space-y-8 lg:px-40">
 			<div className="flex justify-between space-y-8 ">
 				<h4 className=" w-fit max-md:!text-[2.5rem] uppercase">
 					{" "}
