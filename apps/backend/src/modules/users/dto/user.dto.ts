@@ -1,5 +1,10 @@
-import { OmitType, PartialType, PickType } from '@nestjs/mapped-types';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  OmitType,
+  PartialType,
+  PickType,
+} from '@nestjs/swagger';
 import {
   IsBoolean,
   IsDate,

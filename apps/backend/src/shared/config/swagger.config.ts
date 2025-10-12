@@ -19,21 +19,13 @@ export const swaggerSetup = ({
     .setTitle(title)
     .setDescription(description)
     .setVersion(version)
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        description: 'Enter JWT token',
-      },
-      'JWT-auth',
-    )
-    .addSecurity('optional-auth', {
-      type: 'http',
-      scheme: 'bearer',
-      bearerFormat: 'JWT',
-      description: 'Optional JWT token for enhanced features',
-    })
+    .addBearerAuth()
+    // .addSecurity('optional-auth', {
+    //   type: 'http',
+    //   scheme: 'bearer',
+    //   bearerFormat: 'JWT',
+    //   description: 'Optional JWT token for enhanced features',
+    // })
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
