@@ -5,7 +5,9 @@ on:
   push:
     branches:
       - develop
-
+    paths:
+      - "apps/web/**"
+      - "apps/backend/**"
 jobs:
   # Job séparé pour l'application web
   deploy-web:

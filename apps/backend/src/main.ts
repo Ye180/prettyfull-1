@@ -62,6 +62,7 @@ async function bootstrap() {
   });
 
   const port = configService.get<number>('PORT', 7777);
+  console.log({ port });
   await app.listen(port, () => {
     console.log(`🚀 E-commerce API server started at http://localhost:${port}`);
     console.log(

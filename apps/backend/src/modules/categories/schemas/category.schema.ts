@@ -45,6 +45,6 @@ export class Category {
 export const CategorySchema = SchemaFactory.createForClass(Category);
 
 // Index pour les performances
-CategorySchema.index({ slug: 1 });
+// Note: slug index is automatically created by unique: true
 CategorySchema.index({ parent: 1, sortOrder: 1 });
 CategorySchema.index({ isActive: 1, isVisible: 1 });
