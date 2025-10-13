@@ -8,7 +8,7 @@ import {
 } from "@prettyfull/ui";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
-import { ProductOptions } from "../molecules/product-options";
+import { ProductOptions, SizeOption } from "../molecules/product-options";
 
 type ProductInfosProps = {
 	productData: CardProps; // On utilise notre nouveau type
@@ -16,15 +16,24 @@ type ProductInfosProps = {
 	setSelectedColor: (color: string) => void;
 	selectedSize: string;
 	setSelectedSize: (size: string) => void;
+	sizes: SizeOption[] | string[];
+	handleClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+	onClick: ({ size, color }: { size: string; color: string }) => void;
+	disabled?: boolean;
 };
 const ProductInfos = ({
+	sizes,
 	productData,
 	selectedColor,
 	setSelectedColor,
 	selectedSize,
 	setSelectedSize,
+	handleClick,
+	onClick,
+	disabled,
 }: ProductInfosProps) => {
 	const classNames = "!font-light font-manrope !text-[1.8rem]";
+
 	return (
 		<div className="w-full lg:w-2/5 ">
 			<div className="space-y-6">
@@ -55,16 +64,27 @@ const ProductInfos = ({
 
 				{/* Options de produit */}
 				<ProductOptions
+					sizes={sizes as SizeOption[]}
 					variable={productData.variable}
 					selectedSize={selectedSize}
 					selectedColor={selectedColor}
-					onSizeChange={(size) => setSelectedSize(size)}
 					onColorChange={(color) => setSelectedColor(color)}
+					onSizeChange={(selectedSize) => {
+						setSelectedSize(selectedSize);
+					}}
+					handleClick={handleClick}
 				/>
 
 				{/* Boutons d'action */}
 				<div className="flex gap-8 mt-15 w-[70%] items-center">
-					<Button variant="default" className="flex-1 py-6 text-lg">
+					<Button
+						variant="default"
+						className="flex-1 py-6 text-lg"
+						onClick={() =>
+							onClick({ size: selectedSize, color: selectedColor })
+						}
+						disabled={disabled}
+					>
 						Acheter
 					</Button>
 

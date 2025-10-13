@@ -1,9 +1,9 @@
 import { cn } from "@prettyfull/utils";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
-import { useState } from "react";
-import { CardProduct } from "./card-product";
+import { useCallback, useMemo, useState } from "react";
+import { CardProduct, CardProps } from "./card-product";
 import { ProductGallery } from "./components/products/products-galery";
-import ProductInfos from "./components/products/products-infos";
+import ProductInfos, { SizeOption } from "./components/products/products-infos";
 import {
 	Drawer,
 	DrawerClose,
@@ -15,44 +15,95 @@ import { CloseIcon } from "./icons/close.icon";
 
 const DrawerVariable = ({
 	label,
-	title,
-	photos,
 	productData,
-	promotion,
 }: {
 	label: string;
 	title: string;
 	photos: string[] | StaticImport[] | undefined;
-	promotion?: {
-		reduced_price: number;
-		pourcentage: number;
-	};
 
-	productData: {
-		category?: string;
-		title: string;
-		price: number;
-		description: string;
-		sizes: {
-			label: string;
-			value: string;
-		}[];
-		colors: {
-			name: string;
-			code: string;
-		}[];
-		images: string[];
-	};
+	productData: CardProps;
 }) => {
 	const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.stopPropagation();
 	};
 
-	const [selectedSize, setSelectedSize] = useState<string>("M");
-	const [selectedColor, setSelectedColor] = useState<string>("Black");
-	const [promo, setPromo] = useState<typeof promotion | undefined>(promotion);
+	const [variable, setVariable] = useState<{
+		images: string[] | StaticImport[];
+		sizes: SizeOption[] | string[];
+		activeImageOne?: number;
+	}>({
+		images: [],
+		sizes: [],
+		activeImageOne: 0,
+	});
 
-	console.log(promotion);
+	const colorByDefault = productData?.variable
+		? productData?.variable[0]?.color.code
+		: productData.notVariable?.color
+			? productData.notVariable.color.code
+			: "#3b82f6";
+
+	const sizeByDefault = variable?.sizes[0] as string;
+
+	const [selectedColor, setSelectedColor] = useState<string>(
+		colorByDefault as string
+	);
+	const [selectedSize, setSelectedSize] = useState<string>(
+		sizeByDefault as string
+	);
+
+	const [activeImage, setActiveImage] = useState<number>(0);
+
+	const [disabled, setDisabled] = useState(true);
+
+	const availableColors = useMemo(() => {
+		const colors = productData.variable?.find(
+			(v) => v.color.code === selectedColor
+		);
+
+		setVariable({
+			images:
+				((colors?.image as string[]) || productData.notVariable?.image) ?? [],
+			sizes: (colors?.size as string[]) || productData.notVariable?.size || [],
+		});
+	}, [selectedColor]);
+
+	const handleColorChange = useCallback(
+		async (selectedColor: string) => {
+			variable;
+			setSelectedColor(selectedColor);
+			setDisabled(true);
+			setSelectedSize(null as unknown as string);
+
+			setActiveImage(0);
+
+			console.log("active image one", variable.activeImageOne);
+		},
+
+		[selectedColor]
+	);
+
+	const handleSizeChange = useCallback(
+		async (size: string) => {
+			setSelectedSize(size);
+			setDisabled(false);
+		},
+
+		[selectedSize]
+	);
+
+	const handleClick = () => {
+		console.log("Acheter", { size: selectedSize, color: selectedColor });
+
+		const selectedVariant = productData.variable?.find(
+			(v) =>
+				v.color.code === selectedColor &&
+				(v.size as string[])?.includes(selectedSize)
+		);
+
+		selectedVariant === undefined ? setDisabled(true) : setDisabled(false);
+	};
+
 	return (
 		<Drawer direction="bottom">
 			<DrawerTrigger asChild>
@@ -79,15 +130,28 @@ const DrawerVariable = ({
 
 				<div className="h-[80vh] flex justify-around gap-10 lg:justify-center border-none">
 					<div className="flex justify-around w-full gap-10 px-4 py-10 overflow-y-scroll sm:px-10 scrollbar-hide lg:justify-center">
-						<div className="flex flex-col w-full gap-10 py-10 sm:w-3/5 lg:justify-center sm:flex-row ">
-							<ProductGallery title={title} images={photos} />
+						<div className="flex flex-col w-full gap-10 py-10 sm:w-3/5 lg:justify-center sm:flex-row">
+							<ProductGallery
+								images={variable.images}
+								title={productData.title}
+								activeImage={activeImage}
+								setActiveImage={setActiveImage}
+							/>
 							<ProductInfos
+								sizes={
+									(variable.sizes as string[]) ||
+									productData.notVariable?.size ||
+									[]
+								}
 								productData={productData}
 								selectedColor={selectedColor}
-								setSelectedColor={setSelectedColor}
+								setSelectedColor={handleColorChange}
 								selectedSize={selectedSize}
-								setSelectedSize={setSelectedSize}
-								promotion={promo || null}
+								setSelectedSize={handleSizeChange}
+								onClick={() => {
+									handleClick();
+								}}
+								disabled={disabled}
 							/>
 						</div>
 

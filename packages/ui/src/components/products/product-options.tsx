@@ -1,6 +1,8 @@
 "use client";
 
 import { cn } from "@prettyfull/utils";
+import Size from "../../size";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 interface SizeOption {
 	label: string;
@@ -15,20 +17,37 @@ interface ColorOption {
 interface ProductOptionsProps {
 	sizes?: SizeOption[];
 	colors?: ColorOption[];
+	variable?: {
+		color: { label: string; code: string };
+		size: string[];
+		image: string[] | StaticImport[];
+		quantity: number;
+	}[];
+	notVariable?: {
+		color?: { label: string; code: string };
+		size: string[];
+		image: string;
+		quantity?: number;
+	};
 	selectedSize: string;
 	selectedColor: string;
-	onSizeChange: (size: string) => void;
 	onColorChange: (color: string) => void;
+
+	onSizeChange?: (size: string) => void;
+
+	handleClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+
 	className?: string;
 }
 
 export function ProductOptions({
+	variable,
 	sizes,
-	colors,
 	selectedSize,
 	selectedColor,
-	onSizeChange,
 	onColorChange,
+	onSizeChange,
+	handleClick,
 	className,
 }: ProductOptionsProps) {
 	return (
@@ -42,46 +61,41 @@ export function ProductOptions({
 						</p>
 					</div>
 					<div className="flex flex-wrap gap-6">
-						{sizes.map((size) => (
-							<button
-								key={size.value}
-								onClick={() => onSizeChange(size.value)}
-								className={cn(
-									"w-16 h-15 border-1 text-[1.5rem] flex items-center justify-center transition-all",
-									selectedSize === size.value
-										? "border-black bg-black text-white"
-										: "border-gray-200 hover:border-gray-500"
-								)}
-							>
-								{size.label}
-							</button>
-						))}
+						<Size
+							selectSize={selectedSize}
+							onSizeChange={onSizeChange}
+							size={sizes as []}
+							className="flex flex-row whitespace-nowrap"
+							classButton=""
+							onclose={handleClick}
+						/>
 					</div>
 				</div>
 			)}
 
 			{/* Sélecteur de couleur */}
-			{colors && colors.length > 0 && (
+			{variable && variable.length > 0 && (
 				<div className="space-y-6">
 					<p className="font-semibold uppercase !text-[1.9rem] font-bebas-neue tracking-wider">
 						Color
 					</p>
-					<div className="flex flex-wrap gap-6 w-[38rem] border-none ">
-						{colors.map((color) => (
+					<div className="flex flex-wrap gap-6 ">
+						{variable.map((items, index) => (
 							<button
-								key={color.name}
-								onClick={() => onColorChange(color.name)}
+								key={index}
+								onClick={() => onColorChange(items.color.code)}
 								className={cn(
-									"w-fit h-fit border-1 flex items-center justify-center gap-2 transition-all p-[0.4rem] rounded-full",
-									selectedColor === color.name
+									"w-[13rem] h-16 border-1 flex items-center justify-center gap-2 transition-all",
+									selectedColor === items.color.code
 										? "border-black"
 										: "border-gray-200 hover:border-gray-500"
 								)}
 							>
 								<span
-									className="w-6 h-6 rounded-full"
-									style={{ backgroundColor: color.code }}
+									className="w-5 h-5 rounded-full"
+									style={{ backgroundColor: items.color.code }}
 								/>
+								{items.color.label}
 							</button>
 						))}
 					</div>

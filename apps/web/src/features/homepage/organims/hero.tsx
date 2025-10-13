@@ -32,17 +32,17 @@ const Hero = () => {
 				<Image
 					src="/home/cover-desktop-1.jpg"
 					alt="Hero background image"
-					layout="fill"
-					objectFit="cover"
-					className="absolute top-0 left-0 z-10 w-full h-full max-md:hidden md:flex"
+					fill
+					sizes="100%"
+					className="absolute top-0 left-0 z-10 object-cover w-full h-full max-md:hidden md:flex"
 					priority
 				/>
 				<Image
 					src="/home/cover-phone.jpg"
 					alt="Hero background image"
-					layout="fill"
-					objectFit="cover"
-					className="absolute top-0 left-0 z-10 w-full h-full max-md:flex md:hidden"
+					fill
+					sizes="100%"
+					className="absolute top-0 left-0 z-10 object-cover w-full h-full max-md:flex md:hidden"
 					priority
 				/>
 				<Container

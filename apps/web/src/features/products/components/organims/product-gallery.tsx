@@ -3,21 +3,24 @@
 import { cn } from "@prettyfull/utils";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 interface ProductGalleryProps {
 	images: string[] | StaticImport[];
 	title: string;
+
 	className?: string;
+	activeImage: number;
+	setActiveImage: Dispatch<SetStateAction<number>>;
 }
 
 export function ProductGallery({
 	images,
 	title,
 	className,
+	activeImage,
+	setActiveImage,
 }: ProductGalleryProps) {
-	const [activeImage, setActiveImage] = useState<number>(0);
-
 	if (images.length === 0) {
 		return (
 			<div
@@ -51,7 +54,7 @@ export function ProductGallery({
 								alt={`${title} - vue ${index + 1}`}
 								width={80}
 								height={80}
-								className="object-cover"
+								className="object-cover object-center-top"
 							/>
 						</div>
 					</div>

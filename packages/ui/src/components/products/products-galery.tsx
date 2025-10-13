@@ -3,33 +3,24 @@
 import { cn } from "@prettyfull/utils";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 interface ProductGalleryProps {
 	images?: string[] | StaticImport[];
 	title: string;
 	className?: string;
+
+	activeImage: number;
+	setActiveImage: Dispatch<SetStateAction<number>>;
 }
 
 export function ProductGallery({
 	images,
 	title,
 	className,
+	activeImage,
+	setActiveImage,
 }: ProductGalleryProps) {
-	const [activeImage, setActiveImage] = useState<number>(0);
-
-	// if (images?.length === 0) {
-	// 	return (
-	// 		<div
-	// 			className={cn("relative w-full aspect-square bg-gray-100", className)}
-	// 		>
-	// 			<div className="flex items-center justify-center h-full text-gray-500">
-	// 				Aucune image disponible
-	// 			</div>
-	// 		</div>
-	// 	);
-	// }
-
 	return (
 		<div
 			className={cn(

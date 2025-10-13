@@ -49,7 +49,7 @@ export interface CardProps
 	notVariable?: {
 		color?: { label: string; code: string };
 		size: string[];
-		image: string;
+		image: string[] | StaticImport[];
 		quantity?: number;
 	};
 	smallDescription?: string;
@@ -184,7 +184,7 @@ export function CardProduct({
 				{/* Fallback si pas de produit */}
 				{!variable && notVariable?.image && (
 					<Image
-						src={notVariable.image}
+						src={notVariable.image[0] as string}
 						alt="Product Image"
 						width={400}
 						height={400}
@@ -278,28 +278,18 @@ export function CardProduct({
 					</button>
 				))}
 
-				{variable && (
+				{variable && variable.length > 3 && (
 					<DrawerVariable
-						label={`+ ${variable.length - 4}`}
+						label={`+ ${variable.length + 1 - 4}`}
 						title={title}
 						photos={variable?.map((v) => v.image[0]) as string[]}
-						promotion={promotion}
 						productData={{
 							title,
 							price,
+							variable,
+							notVariable,
 
 							description: smallDescription || "",
-
-							sizes: variable[0]
-								? variable[0].size.map((s) => ({ label: s, value: s }))
-								: [],
-							colors: variable.map((v) => ({
-								name: v.color.label,
-								code: v.color.code,
-							})),
-							images: variable.flatMap(
-								(v) => v.image as string | readonly string[]
-							),
 						}}
 					/>
 				)}

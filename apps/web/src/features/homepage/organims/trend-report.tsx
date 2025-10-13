@@ -22,19 +22,16 @@ const TrendReport = () => {
 					<Box
 						key={index}
 						className={` relative  px-4 flex justify-center items-center  shadow-md   max-md:h-[35rem] h-[60rem]  mt-4 hover:[&>button]:bg-black hover:[&>button>*]:text-white  transition-all duration-300 ease-in-out cursor-pointer `}
-						style={{
-							backgroundImage: `url(${item.picture})`,
-							backgroundSize: "cover",
-							backgroundPosition: "center",
-							backgroundRepeat: "no-repeat",
-						}}
 					>
 						<Image
 							src={item.picture}
 							alt={item.label}
-							layout="fill"
-							objectFit="cover"
-							className="absolute top-0 left-0 z-0 w-full h-full"
+							width={500}
+							height={800}
+							// fill
+							// objectFit="cover"
+							// layout="fill"
+							className="absolute top-0 left-0 z-0 object-cover object-center w-full h-full"
 							priority
 						/>
 						<div className="absolute bottom-0 left-0 w-full h-full bg-black/30"></div>

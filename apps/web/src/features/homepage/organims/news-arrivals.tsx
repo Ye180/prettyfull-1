@@ -21,18 +21,16 @@ const NewsArrivals = () => {
 					{BOX_DATA_FIRST.map((item, index) => (
 						<Box
 							key={index}
-							className={`flex-none  bg-blue-200 flex items-end justify-center text-4xl  shadow-md h-[50rem]  max-sm:w-[40rem] max-xs:w-[85%] sm:w-[100%]  mt-4 aspect-auto  bg-cover  bg-center bg-no-repeat transition-all duration-300 ease-in-out cursor-pointer snap-center bg-url(${item.picture})  relative `}
+							className={`flex-none  bg-blue-200 flex items-end justify-center text-4xl  shadow-md h-[50rem]  max-sm:w-[40rem] max-xs:w-[85%] sm:w-[100%]  mt-4 aspect-auto  bg-cover  bg-center bg-no-repeat transition-all duration-300 ease-in-out cursor-pointer snap-center relative `}
 							// boxdiv
 							onClick={() => console.log("Clicked on box", index)}
-							style={{ backgroundImage: `url(${item.picture})` }}
 						>
 							<Image
 								src={item.picture}
 								alt={item.label}
-								layout="fill"
-								objectFit="cover"
 								fill
-								className="w-full h-full "
+								sizes="100%"
+								className="object-cover w-full h-full "
 								priority
 							/>
 							<div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/70 to-black/0"></div>

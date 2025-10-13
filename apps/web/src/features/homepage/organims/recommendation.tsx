@@ -31,7 +31,7 @@ const Recommendation = () => {
 										code: "#FF0000",
 										label: "Rouge",
 									},
-									image: "/assets/product_1.jpg",
+									image: ["/assets/product_1.jpg"],
 									quantity: 1,
 									size: ["S", "M", "L"],
 								}}

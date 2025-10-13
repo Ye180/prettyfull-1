@@ -36,7 +36,9 @@ export type ProductTypes = {
         reduced_price: number;
         pourcentage: number;
     };
-    variable: ProductVariable[]; // On remplace sizes, colors, images par les variantes
+	notVariable?:ProductVariable; // Pour les produits sans variantes,
+
+    variable?: ProductVariable[]; // On remplace sizes, colors, images par les variantes
 };
 
 // export interface CardProps {

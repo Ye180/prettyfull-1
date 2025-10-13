@@ -4,7 +4,7 @@ import { cn } from "@prettyfull/utils";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Size from "../../../../../../../packages/ui/src/size";
 
-interface SizeOption {
+export interface SizeOption {
 	label: string;
 	value: string;
 }
@@ -31,8 +31,12 @@ interface ProductOptionsProps {
 	};
 	selectedSize: string;
 	selectedColor: string;
-	onSizeChange: (size: string) => void;
 	onColorChange: (color: string) => void;
+
+	onSizeChange?: (size: string) => void;
+
+	handleClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+
 	className?: string;
 }
 
@@ -40,11 +44,13 @@ const sizeOptions = ["X", "XL", "2XL"];
 
 export function ProductOptions({
 	variable,
+	sizes,
 	notVariable,
 	selectedSize,
 	selectedColor,
-	onSizeChange,
 	onColorChange,
+	onSizeChange,
+	handleClick,
 	className,
 }: ProductOptionsProps) {
 	return (
@@ -60,9 +66,12 @@ export function ProductOptions({
 				</div>
 				<div className="flex flex-wrap gap-6">
 					<Size
-						size={sizeOptions}
+						selectSize={selectedSize}
+						onSizeChange={onSizeChange}
+						size={sizes as []}
 						className="flex flex-row whitespace-nowrap"
 						classButton=""
+						onclose={handleClick}
 					/>
 				</div>
 			</div>

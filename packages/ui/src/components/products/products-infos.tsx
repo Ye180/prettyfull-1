@@ -1,44 +1,39 @@
 import { formatCurrency_FR } from "@prettyfull/utils";
 
+import { CardProps } from "@/card-product";
 import { Button } from "../../button";
 import { Heart } from "../../icons/heart.icon";
 import { ProductOptions } from "./product-options";
+
 // import { Button } from "@/button";
 
-type ProductInfosProps = {
-	productData: {
-		category?: string;
-		title: string;
-		price: number;
-		description: string;
-		sizes: {
-			label: string;
-			value: string;
-		}[];
-		colors: {
-			name: string;
-			code: string;
-		}[];
+export interface SizeOption {
+	label: string;
+	value: string;
+}
 
-		images: string[];
-	};
-	promotion: {
-		reduced_price: number;
-		pourcentage: number;
-	} | null;
+type ProductInfosProps = {
+	productData: CardProps; // On utilise notre nouveau type
 	selectedColor: string;
 	setSelectedColor: (color: string) => void;
 	selectedSize: string;
 	setSelectedSize: (size: string) => void;
+	sizes: SizeOption[] | string[];
+	handleClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+	onClick: ({ size, color }: { size: string; color: string }) => void;
+	disabled?: boolean;
 };
 
 const ProductInfos = ({
+	sizes,
 	productData,
 	selectedColor,
 	setSelectedColor,
 	selectedSize,
 	setSelectedSize,
-	promotion,
+	handleClick,
+	onClick,
+	disabled,
 }: ProductInfosProps) => {
 	const classNames = "!font-light font-manrope !text-[1.8rem]";
 	return (
@@ -46,20 +41,17 @@ const ProductInfos = ({
 			<div className="space-y-6">
 				{/* Catégorie */}
 				<h4 className="tracking-wide text-gray-500 uppercase !text-[2.1rem] font-bebas-neue">
-					{productData.category}
+					{productData?.category}
 				</h4>
 
 				{/* Titre et prix */}
 				<div className="space-y-2">
-					<h1 className=" max-md:text-[3rem] md:!text-[4.8rem] font-bold">
-						{productData.title}
-					</h1>
-
-					{promotion ? (
+					<h1 className="!text-[4.8rem] font-bold">{productData.title}</h1>
+					{productData.promotion ? (
 						<div className="block text-start ">
 							<h4 className="  !text-3xl whitespace-nowrap">
 								{" "}
-								{formatCurrency_FR(promotion?.reduced_price || 0)}
+								{formatCurrency_FR(productData.promotion?.reduced_price || 0)}
 							</h4>
 							<h4 className="text-grey/50  line-through !text-[2.5rem]   whitespace-nowrap">
 								{formatCurrency_FR(productData.price)}
@@ -74,17 +66,27 @@ const ProductInfos = ({
 
 				{/* Options de produit */}
 				<ProductOptions
-					sizes={productData.sizes}
-					colors={productData.colors}
+					sizes={sizes as SizeOption[]}
+					variable={productData.variable}
 					selectedSize={selectedSize}
 					selectedColor={selectedColor}
-					onSizeChange={(size) => setSelectedSize(size)}
 					onColorChange={(color) => setSelectedColor(color)}
+					onSizeChange={(selectedSize) => {
+						setSelectedSize(selectedSize);
+					}}
+					handleClick={handleClick}
 				/>
 
 				{/* Boutons d'action */}
-				<div className="flex gap-8 mt-15 w-[100%] items-center py-8">
-					<Button variant="default" className="flex-1 py-6 text-lg">
+				<div className="flex gap-8 mt-15 w-[70%] items-center">
+					<Button
+						variant="default"
+						className="flex-1 py-6 text-lg"
+						onClick={() =>
+							onClick({ size: selectedSize, color: selectedColor })
+						}
+						disabled={disabled}
+					>
 						Acheter
 					</Button>
 
@@ -95,6 +97,8 @@ const ProductInfos = ({
 						<Heart />
 					</Button>
 				</div>
+
+				{/* Section description */}
 			</div>
 		</div>
 	);

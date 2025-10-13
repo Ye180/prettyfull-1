@@ -54,7 +54,7 @@ const ModeCollection = () => {
 											code: "#FF0000",
 											label: "Rouge",
 										},
-										image: "/home/image.png",
+										image: ["/home/image.png"],
 										quantity: 1,
 										size: ["S", "M", "L"],
 									}}
