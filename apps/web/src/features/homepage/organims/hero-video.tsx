@@ -37,12 +37,8 @@ const HeroVideo = () => {
 					playsInline
 					className="absolute top-0 left-0 z-10 flex object-cover w-full h-full"
 				>
-					<source
-						src="/video/video.mp4"
-						type="video/ogg
-					git "
-					/>
-					Your browser does not support the video tag.
+					<source src="/video/video.mp4" type="video/mp4" />;
+					{/* codecs="avc1.42E01E, git Your browser does not support the video tag. */}
 				</video>
 				{/* <Image
 					src="/home/cover-phone.jpg"
