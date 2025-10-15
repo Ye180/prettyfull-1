@@ -1,10 +1,10 @@
 // web/src/services/auth.service.ts
-import apiClient from '@/api/client';
 import { API_ROUTES } from '@/api';
-import { setItem } from '@/lib/utils/local-storage';
-import { LoginDto } from '@/features/auth/types/login.dto';
 import { AuthResponse, User } from '@/features/auth/types';
+import { LoginDto } from '@/features/auth/types/login.dto';
 import { RegisterDto } from '@/features/auth/types/register.dto';
+import { setItem } from '@/lib/utils/local-storage';
+import apiClient from '@/shared/lib/client';
 
 
 

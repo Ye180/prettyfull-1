@@ -1,7 +1,8 @@
 // web/src/api/index.ts
 
 // Centralisation des routes de l'API pour une maintenance facile
-export const API_ROUTES = {
+export const
+  API_ROUTES = {
   // --- Authentification ---
   auth: {
     login: '/auth/login',
@@ -37,17 +38,24 @@ export const API_ROUTES = {
 
   // --- Panier (Cart) ---
   cart: {
-    get: '/carts',
-    addItem: '/carts/add',
-    removeItem: (itemId: string) => `/carts/item/${itemId}`,
-    clear: '/carts',
+   
+    getItem: (userId: string) => `/carts/${userId}`,
+    removeCartById: (userId: string) => `/carts/item/${userId}`,
+
+    addItemsToCartByUserId: (userId: string) => `/carts/${userId}/items`,
+
+    updateItemsProductByUserId: (userId: string, productId:string) => `/carts/${userId}/items/${productId}`,
+    removeItemsCartByUserId: (userId: string, productId:string) => `/carts/${userId}/items/${productId}`,
+   
   },
 
   // --- Liste de souhaits (Wishlist) ---
   wishlist: {
     get: '/wishlists',
-    add: '/wishlists',
+    add: (productId: string) => `/wishlists/${productId}`,
     remove: (productId: string) => `/wishlists/${productId}`,
+    removeAll : '/wishlists',
+    check: (productId: string) => `/wishlists/check/${productId}` // Ajout de la route check
   },
 
   // --- Commandes (Orders) ---
@@ -55,6 +63,9 @@ export const API_ROUTES = {
     getAll: '/orders',
     getById: (orderId: string) => `/orders/${orderId}`,
     create: '/orders',
+    cancel: (orderId: string) => `/orders/${orderId}/cancel`,
+    updatePaymentStatus: (orderId: string) => `/orders/${orderId}/payment-status`,
+    updateOrderStatus: (orderId: string) => `/orders/${orderId}/status`,
     update: (orderId: string) => `/orders/${orderId}`,
   },
 
