@@ -4,6 +4,9 @@
 	},
 
 	"HomePage": {
+		"header": {
+			"placeholder": "Rechercher des produits..."
+		},
 		"hero": {
 			"title": "Des vêtements pensés pour sublimer chaque instant.",
 			"subtitle": "Découvrez l’élégance de vêtements intemporels, pensés pour sublimer votre style, renforcer votre confiance et révéler votre singularité. Confortables, polyvalents et conçus pour rendre chaque instant inoubliable.",
@@ -54,7 +57,8 @@
 			"shipping": "Frais de port",
 			"taxes": "Estimation des droits et taxes",
 			"total": "Total",
-			"checkout": "Passer à la caisse"
+			"checkout": "Passer à la caisse",
+			"apply": "Appliquer"
 		}
 	},
 	"Wishlist": {

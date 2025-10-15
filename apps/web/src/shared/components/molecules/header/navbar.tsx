@@ -5,6 +5,7 @@ import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
 import { setItem } from "@/lib/utils/local-storage";
 import { Input, NavLink } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
@@ -14,6 +15,8 @@ import NavbarResponsive from "./navbar-responsive";
 
 const NavBarHeaders = () => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+	const t = useTranslations("HomePage.header");
 
 	return (
 		<>
@@ -43,7 +46,7 @@ const NavBarHeaders = () => {
 						<div className="flex items-center justify-start gap-2 py-1 text-gray-500 border-b border-gray-300 px- outline-gray-700 max-sm:hidden w-fit">
 							<Search className="" />
 							<Input
-								placeholder="Rechercher..."
+								placeholder={t("placeholder")}
 								className="h-4 border-none outline-1 text-black font-light px-2 py-4 border-gray-300 focus:ring-0 focus:border-none  text-[1.8rem] max-sm:hidden w-[20rem] sm:w-[28rem] placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.5rem]"
 							/>
 						</div>

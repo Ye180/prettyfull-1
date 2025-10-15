@@ -4,6 +4,10 @@
 	},
 
 	"HomePage": {
+		"header": {
+			"placeholder": "Search for products..."
+		},
+
 		"hero": {
 			"title": "Clothing designed to enhance every moment.",
 			"subtitle": "Discover the elegance of timeless clothing, designed to elevate your style, boost your confidence, and reveal your uniqueness. Comfortable, versatile, and crafted to make every moment unforgettable.",
@@ -53,7 +57,8 @@
 			"shipping": "Shipping",
 			"taxes": "Estimate Duties And Taxes",
 			"total": "Total",
-			"checkout": "Checkout"
+			"checkout": "Checkout",
+			"apply": "Apply"
 		}
 	},
 	"Wishlist": {
