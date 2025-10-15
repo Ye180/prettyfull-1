@@ -9,6 +9,7 @@ import {
 	Input,
 	Spinner,
 } from "@prettyfull/ui";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
@@ -31,7 +32,7 @@ type SimilarProduct = {
 	smallDescription: string;
 	title: string;
 	notVariable: {
-		image: string;
+		image: string[] | StaticImport[];
 		size: string[];
 	};
 };
@@ -71,7 +72,7 @@ export const NotifyMeModal = ({
 							smallDescription: "Top similaire à la mode",
 							title: `Body Confort ${i + 1}`,
 							notVariable: {
-								image: `/assets/product_${i % 2 === 0 ? "1" : "2"}.jpg`,
+								image: [`/assets/product_${i % 2 === 0 ? "1" : "2"}.jpg`],
 								size: ["S", "M", "L"],
 							},
 						})
@@ -97,12 +98,12 @@ export const NotifyMeModal = ({
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent
 				showCloseButton={false}
-				className="max-w-4xl p-0 border-none rounded-lg overflow-hidden"
+				className="max-w-4xl p-0 overflow-hidden border-none rounded-lg"
 			>
 				<div className="relative max-h-[90vh] overflow-y-auto">
 					<button
 						onClick={onClose}
-						className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full"
+						className="absolute z-10 p-2 bg-white rounded-full top-4 right-4"
 					>
 						<CloseIcon className="w-8 h-8" />
 					</button>

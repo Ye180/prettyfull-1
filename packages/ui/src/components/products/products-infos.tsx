@@ -1,9 +1,10 @@
 import { formatCurrency_FR } from "@prettyfull/utils";
 
-import { CardProps } from "@/card-product";
 import { Button } from "../../button";
 import { Heart } from "../../icons/heart.icon";
 import { ProductOptions } from "./product-options";
+
+import { CardProps } from "../../card-product";
 
 // import { Button } from "@/button";
 
