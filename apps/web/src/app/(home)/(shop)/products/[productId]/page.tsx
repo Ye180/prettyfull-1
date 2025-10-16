@@ -64,7 +64,7 @@ const productData: ProductTypes = {
 	],
 };
 
-export default function ProductPage() {
+export default function ProductViews() {
 	const [variable, setVariable] = useState<{
 		images: string[] | StaticImport[];
 		sizes: SizeOption[] | string[];

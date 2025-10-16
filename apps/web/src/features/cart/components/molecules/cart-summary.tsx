@@ -2,7 +2,7 @@
 
 import { CartSummaryType } from "@/features/cart/types";
 import { paths } from "@/lib/routes/paths-en";
-import { Button, DropdownMenuSeparator } from "@prettyfull/ui";
+import { Button, DropdownMenuSeparator, Input } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { FC } from "react";
@@ -19,6 +19,15 @@ const CartSummary: FC<Props> = ({ summary }) => {
 
 	return (
 		<div className="w-full py-6 bg-white sm:w-1/3">
+			<div>
+				<div className="flex flex-row justify-between gap-x-8">
+					{/* <Input className="w-full" placeholder="Code promo" /> */}
+					<div className="w-full">
+						<Input className="w-full" placeholder="Code promo" />
+					</div>
+					<Button className="w-fit">{tSummary("apply")}</Button>
+				</div>
+			</div>
 			<div className="py-12 text-2xl font-bold">{tSummary("title")}</div>
 			<div className="mb-6 space-y-8">
 				<div className="space-y-8">
