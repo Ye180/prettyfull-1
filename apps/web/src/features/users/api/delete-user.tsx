@@ -1,4 +1,3 @@
-
 import { API_ROUTES } from "@/api";
 import apiClient from "@/shared/lib/client";
 import { USER_QUERY_KEY } from "@/shared/utils/query-keys";
@@ -10,12 +9,12 @@ export const deleteUser = async (userId: string) => {
 };
 
 export const useDeleteUser = () => {
-    const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: deleteUser,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [USER_QUERY_KEY] });
-        }
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [USER_QUERY_KEY] });
+		},
 	});
 };

@@ -8,19 +8,19 @@ import { useQuery } from "@tanstack/react-query";
 import { User } from "../../users/types";
 
 export const getProfile = async (): Promise<User | null> => {
-    const token = getItem('accessToken');
-    if (!token) {
-        return null; 
-    }
+	const token = getItem("accessToken");
+	if (!token) {
+		return null;
+	}
 	const response = await apiClient.get(API_ROUTES.auth.getProfile);
 	return response.data;
 };
 
 export const useGetProfile = () => {
 	return useQuery({
-		queryKey: [USER_QUERY_KEY, 'profile'],
+		queryKey: [USER_QUERY_KEY, "profile"],
 		queryFn: getProfile,
-        staleTime: Infinity, 
-        gcTime: Infinity,  
+		staleTime: Infinity,
+		gcTime: Infinity,
 	});
 };
