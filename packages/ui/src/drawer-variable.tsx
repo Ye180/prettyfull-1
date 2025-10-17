@@ -177,7 +177,7 @@ const DrawerVariable = ({
 													size: ["S", "M", "L", "XL", "2XL", "3XL"],
 													image: [
 														"/assets/product5.webp",
-														"/assets/product_2.jpg",
+														"/assets/product_2.webp",
 													],
 													quantity: 1,
 												},
@@ -187,7 +187,7 @@ const DrawerVariable = ({
 														code: "#00FF00",
 													},
 													size: ["S", "M", "L"],
-													image: ["/assets/product_2.jpg", "image4.jpg"],
+													image: ["/assets/product_2.webp", "image4.jpg"],
 													quantity: 1,
 												},
 												{
@@ -198,7 +198,7 @@ const DrawerVariable = ({
 													size: ["S", "M", "L", "XL", "2XL", "3XL"],
 													image: [
 														"/assets/product5.webp",
-														"/assets/product_2.jpg",
+														"/assets/product_2.webp",
 													],
 													quantity: 1,
 												},
@@ -208,7 +208,7 @@ const DrawerVariable = ({
 														code: "#00FF00",
 													},
 													size: ["S", "M", "L"],
-													image: ["/assets/product_2.jpg", "image4.jpg"],
+													image: ["/assets/product_2.webp", "image4.jpg"],
 													quantity: 1,
 												},
 												{
@@ -219,7 +219,7 @@ const DrawerVariable = ({
 													size: ["S", "M", "L", "XL", "2XL", "3XL"],
 													image: [
 														"/assets/product5.webp",
-														"/assets/product_2.jpg",
+														"/assets/product_2.webp",
 													],
 													quantity: 1,
 												},
@@ -229,7 +229,7 @@ const DrawerVariable = ({
 														code: "#00FF00",
 													},
 													size: ["S", "M", "L"],
-													image: ["/assets/product_2.jpg", "image4.jpg"],
+													image: ["/assets/product_2.webp", "image4.jpg"],
 													quantity: 1,
 												},
 												{
@@ -238,7 +238,7 @@ const DrawerVariable = ({
 														code: "#00FF00",
 													},
 													size: ["S", "M", "L"],
-													image: ["/assets/product_2.jpg", "image4.jpg"],
+													image: ["/assets/product_2.webp", "image4.jpg"],
 													quantity: 1,
 												},
 												{
@@ -249,7 +249,7 @@ const DrawerVariable = ({
 													size: ["S", "M", "L", "XL", "2XL", "3XL"],
 													image: [
 														"/assets/product5.webp",
-														"/assets/product_2.jpg",
+														"/assets/product_2.webp",
 													],
 													quantity: 1,
 												},
@@ -259,7 +259,7 @@ const DrawerVariable = ({
 														code: "#00FF00",
 													},
 													size: ["S", "M", "L"],
-													image: ["/assets/product_2.jpg", "image4.jpg"],
+													image: ["/assets/product_2.webp", "image4.jpg"],
 													quantity: 1,
 												},
 											]}

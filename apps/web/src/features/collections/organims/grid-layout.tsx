@@ -6,7 +6,7 @@ const GridCollectionLayout = () => {
 		<div className="h-full px-2 rounded-md max-md:w-full md:w-6/6">
 			<GridCardProduct action_grid>
 				<>
-					{Array.from({ length: 15 }).map((_, i) => (
+					{Array.from({ length: 12 }).map((_, i) => (
 						<div key={i} className="w-full aspect-10/9">
 							<CardProduct
 								variable={[
@@ -17,9 +17,9 @@ const GridCollectionLayout = () => {
 										},
 										size: ["S", "M", "L", "XL", "2XL", "3XL"],
 										image: [
-											"/assets/product_2.jpg",
+											"/assets/product_2.webp",
 											"/assets/product5.webp",
-											"/assets/product_2.jpg",
+											"/assets/product_2.webp",
 										],
 										quantity: 1,
 									},
@@ -29,7 +29,7 @@ const GridCollectionLayout = () => {
 											code: "#373B39",
 										},
 										size: ["S", "M", "L"],
-										image: ["/assets/product5.webp", "/assets/product_2.jpg"],
+										image: ["/assets/product5.webp", "/assets/product_2.webp"],
 										quantity: 1,
 									},
 									{
@@ -38,7 +38,7 @@ const GridCollectionLayout = () => {
 											code: "#3C2E69",
 										},
 										size: ["S", "M", "L", "XL", "2XL", "3XL"],
-										image: ["/assets/product5.webp", "/assets/product_2.jpg"],
+										image: ["/assets/product5.webp", "/assets/product_2.webp"],
 										quantity: 1,
 									},
 									{
@@ -48,9 +48,9 @@ const GridCollectionLayout = () => {
 										},
 										size: ["S", "M", "L"],
 										image: [
-											"/assets/product_2.jpg",
+											"/assets/product_2.webp",
 											"/assets/product5.webp",
-											"/assets/product_2.jpg",
+											"/assets/product_2.webp",
 										],
 										quantity: 1,
 									},

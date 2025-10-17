@@ -12,7 +12,7 @@ import { CloseIcon } from "./icons/close.icon";
 import { Heart } from "./icons/heart.icon";
 import Size from "./size";
 
-const cardVariants = cva(["space-y-3 w-[100%] h-full relative"], {
+const cardVariants = cva(["space-y-3 w-[100%] h-fit "], {
 	variants: {
 		variant: {
 			default: "tracking-wide  cursor-pointer",
@@ -155,21 +155,37 @@ export function CardProduct({
 
 	return (
 		<article className={cn(cardVariants(), className)} {...props}>
-			<div
-				className="bg-sky-200 h-[100%] md:hover:[&>div]:opacity-100 flex   justify-center items-center relative"
+			{/* <div
+				className="bg-sky-200 max-md:h-[90%] h-[90%] md:hover:[&>div]:opacity-100 flex   justify-start items-start relative"
 				onClick={() => handleRoutes(link)}
-			>
-				{/* L'affichage d'un produit avec un produits variable */}
+			> */}
+			{/* L'affichage d'un produit avec un produits variable */}
+			<div className="relative bg-amber-300 h-fit ">
 				{variable?.map((variant, i) => (
 					<Image
 						key={i}
 						src={variant.image[0] as string}
 						alt={`Product Image ${i + 1}`}
-						width={800}
-						height={800}
+						width={400}
+						height={400}
+						sizes="
+
+						(max-width: 344px) 100px,
+						(max-width: 375px) 100px,
+						(max-width: 639px) 150px,
+						(max-width: 767px) 200px,
+
+						(max-width: 989px) 250px,
+						(max-width: 1179px) 200px,
+						(max-width: 1366px) 250px,
+						(max-width: 1800px) 400px,
+						(max-width: 2800px) 400px,
+						400px
+
+						"
 						className={cn(
-							"object-cover  w-full h-full absolute inset-0 transition-opacity duration-300",
-							i === activeIndex ? "opacity-100" : "opacity-0"
+							"object-contain w-full h-full  transition-opacity duration-300 ",
+							i === activeIndex ? "opacity-100 " : "hidden opacity-0"
 						)}
 						priority={i === 0}
 						placeholder="blur"
@@ -188,7 +204,7 @@ export function CardProduct({
 						alt="Product Image"
 						width={400}
 						height={400}
-						className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300"
+						className="object-cover w-full h-full transition-opacity duration-300 "
 						priority
 						placeholder="blur"
 						blurDataURL={data_url}

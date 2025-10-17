@@ -14,7 +14,7 @@ const meta: Meta<typeof CardProduct> = {
 		notVariable: {
 			color: { label: "Rouge", code: "#FF0000" },
 			size: ["S", "M", "L"],
-			image: "/assets/product_2.jpg",
+			image: "/assets/product_2.webp",
 			quantity: 1,
 		},
 		smallDescription: "Top polyvalente á Manche",
@@ -78,13 +78,13 @@ export const VariableProduct: Story = {
 			{
 				color: { label: "Rouge", code: "#FF0000" },
 				size: ["S", "M", "L"],
-				image: ["/assets/product_1.jpg", "/assets/product_2.jpg"],
+				image: ["/assets/product_1.jpg", "/assets/product_2.webp"],
 				quantity: 1,
 			},
 			{
 				color: { label: "Vert", code: "#00FF00" },
 				size: ["S", "M", "L"],
-				image: ["/assets/product_2.jpg", "image4.jpg"],
+				image: ["/assets/product_2.webp", "image4.jpg"],
 				quantity: 1,
 			},
 		],

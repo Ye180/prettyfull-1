@@ -142,7 +142,7 @@ export const DATA_CARD = [
 		color: "White",
 		size: "M",
 		price: 38,
-		image: "/assets/product_2.jpg",
+		image: "/assets/product_2.webp",
 		quantity: 75,
 	},
 ];
