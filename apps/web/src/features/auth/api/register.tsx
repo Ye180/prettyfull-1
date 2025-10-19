@@ -3,8 +3,6 @@ import { API_ROUTES } from "@/api";
 import apiClient from "@/shared/lib/client";
 import { useMutation } from "@tanstack/react-query";
 import { RegisterDto } from "../types/register.dto";
-
-
 import { User } from "../../users/types"; 
 
 export const register = async (data: RegisterDto): Promise<User> => {
