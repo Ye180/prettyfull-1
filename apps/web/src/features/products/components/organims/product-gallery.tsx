@@ -35,7 +35,6 @@ export function ProductGallery({
     );
   }
 
-  // 🔄 Gestion du swipe sur mobile
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () =>
       setActiveImage((prev) => (prev < images.length - 1 ? prev + 1 : 0)),
@@ -47,7 +46,6 @@ export function ProductGallery({
   return (
     <>
       <div className={cn("flex-row gap-4 w-fit relative sm:flex", className)}>
-        {/* Thumbnails (desktop) */}
         <div className="hidden grid-cols-2 gap-4 sm:grid place-content-start">
           {images.map((image, index) => (
             <div
@@ -69,7 +67,6 @@ export function ProductGallery({
           ))}
         </div>
 
-        {/* Image principale (desktop) */}
         <div
           className="relative hidden sm:flex cursor-zoom-in w-fit"
           onClick={() => setIsZoomed(true)}
@@ -103,7 +100,6 @@ export function ProductGallery({
         </div>
       </div>
 
-      {/* Lightbox plein écran améliorée */}
       <AnimatePresence>
         {isZoomed && (
           <motion.div
@@ -113,7 +109,6 @@ export function ProductGallery({
             exit={{ opacity: 0 }}
             {...swipeHandlers}
           >
-            {/* Bouton fermeture */}
             <button
               className="absolute top-4 right-4 text-white text-3xl z-50"
               onClick={() => setIsZoomed(false)}
@@ -121,7 +116,6 @@ export function ProductGallery({
               ×
             </button>
 
-            {/* Image principale centrée */}
             <div
               className="relative flex items-center justify-center max-h-[80vh] w-full max-w-4xl"
               onClick={(e) => e.stopPropagation()}
@@ -135,7 +129,6 @@ export function ProductGallery({
                 priority
               />
 
-              {/* Flèches desktop */}
               {images.length > 1 && (
                 <>
                   <button
@@ -162,7 +155,6 @@ export function ProductGallery({
               )}
             </div>
 
-            {/* Miniatures visibles en bas */}
             <div className="mt-6 flex justify-center gap-2 overflow-x-auto max-w-[90vw] pb-2 scrollbar-hide">
               {images.map((image, index) => (
                 <div
