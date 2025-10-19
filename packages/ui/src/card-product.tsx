@@ -160,7 +160,7 @@ export function CardProduct({
 				onClick={() => handleRoutes(link)}
 			> */}
 			{/* L'affichage d'un produit avec un produits variable */}
-			<div className="relative bg-amber-300 h-fit ">
+			<div className="relative h-fit " onClick={() => handleRoutes(link)}>
 				{variable?.map((variant, i) => (
 					<Image
 						key={i}
@@ -238,6 +238,11 @@ export function CardProduct({
 					handleClick={(e) => handleShowSizes(e)}
 					close={() => updateDrawerState("showSizes", false)}
 				/>
+				{promotion && (
+					<span className="text-black font-semibold !text-[1rem] lg:!text-xs bg-light absolute top-4 right-4 px-4 py-2 rounded-full">
+						{promotion.pourcentage}% OFF
+					</span>
+				)}
 			</div>
 
 			<div className="space-y-3">
@@ -269,9 +274,6 @@ export function CardProduct({
 								{formatCurrency_FR(price)}
 							</h4>
 						</div>
-						<span className="text-black font-semibold !text-[1rem] lg:!text-xs bg-light absolute top-4 right-4 px-4 py-2 rounded-full">
-							{promotion.pourcentage}% OFF
-						</span>
 					</>
 				)}
 			</div>

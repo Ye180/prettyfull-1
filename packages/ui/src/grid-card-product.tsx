@@ -55,7 +55,7 @@ export const GridCardProduct = ({
 	);
 
 	const responsive =
-		"max-md:grid-cols-3 gap-x-[1px]  max-md:grid-cols-3  max-sm:grid-cols-2     ";
+		"max-md:grid-cols-3 gap-x-[8px]  max-md:grid-cols-3  max-sm:grid-cols-2     ";
 	// "z-0 mb-6 lg:mb-4 grid grid-cols-2 md:grid-cols-3 gap-x-[1px] md:gap-y-8 lg:grid-cols-4 lg:gap-x-2 lg:gap-y-8 3xl:grid-cols-5";
 	// "max-md:grid-cols-3  max-md:[&>div]:h-[75rem]   max-md:grid-cols-3  max-sm:grid-cols-2 max-sm:gap-x-2  max-sm:[&>div]:h-[450px] max-xs:[&>div]:h-[400px] max-sm: space-y-45 sm:space-y-58 md:space-y-48 lg:space-y-52  ";
 

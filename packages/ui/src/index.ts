@@ -20,6 +20,7 @@ export * from "../src/components/ui/dropdown-menu";
 export * from "../src/components/ui/form";
 export * from "../src/components/ui/label";
 export * from "../src/components/ui/navlink";
+export * from "../src/components/ui/scroll-area"; // <-- AJOUTEZ CETTE LIGNE
 export * from "../src/components/ui/select";
 export * from "../src/components/ui/tabs";
 

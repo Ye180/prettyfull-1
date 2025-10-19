@@ -62,14 +62,14 @@ export function ProductOptions({
 					<p className="font-semibold uppercase !text-[1.9rem] font-bebas-neue tracking-wider">
 						Taille
 					</p>
-					<span className="text-right">Taille</span>
+					<span className="text-right max-sm:hidden sm:flex">Taille</span>
 				</div>
-				<div className="flex flex-wrap gap-6">
+				<div className="flex flex-wrap ">
 					<Size
 						selectSize={selectedSize}
 						onSizeChange={onSizeChange}
 						size={sizes as []}
-						className="flex flex-row whitespace-nowrap"
+						className=""
 						classButton=""
 						onclose={handleClick}
 					/>

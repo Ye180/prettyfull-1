@@ -63,7 +63,12 @@ const Size = ({
 	};
 
 	return (
-		<div className={cn("grid grid-cols-4 gap-y-10 gap-x-8 ", className)}>
+		<div
+			className={cn(
+				"flex  items-start justify-start gap-y-10 gap-x-4 sm:gap-x-8 ",
+				className
+			)}
+		>
 			{sizeOptions.map((items, i) => (
 				<Button
 					key={i}
@@ -71,8 +76,9 @@ const Size = ({
 						handleClick(e, items.label);
 					}}
 					disabled={!size.includes(items.label)}
+					size="lg"
 					className={cn(
-						"flex  items-center justify-center w-full h-14 px-6 py-4 mx-auto font-normal text-gray-600 uppercase bg-white border border-gray-300 rounded-sm text-[1.3rem] hover:border-black hover:text-white transition-all duration-200 cursor-pointer",
+						"flex flex-wrap w-fit items-center justify-center text-center  h-14 px-6 pb-4 pt-3  mx-auto font-normal text-gray-600 uppercase bg-white border border-gray-300 rounded-sm text-[1.3rem] hover:border-black hover:text-white transition-all duration-200 cursor-pointer",
 						size.includes(selectSize as string) && selectSize === items.label
 							? "border-black"
 							: "border-gray-200 hover:border-gray-500",

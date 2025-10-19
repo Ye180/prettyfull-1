@@ -39,7 +39,14 @@ const productData: ProductTypes = {
 				code: "#3b82f6",
 			},
 			size: ["S", "M", "L", "3XL"],
-			image: ["/assets/product5.webp", "/assets/product_2.webp"],
+			image: [
+				"/assets/product5.webp",
+				"/assets/product_2.webp",
+				"/assets/product5.webp",
+				"/assets/product_2.webp",
+				"/assets/product5.webp",
+				"/assets/product_2.webp",
+			],
 			quantity: 1,
 		},
 		{
@@ -151,17 +158,17 @@ export default function ProductViews() {
 		<>
 			<Container
 				maxWidth="100vw"
-				className="px-4 py-12 mx-auto lg:px-40 space-y-18"
+				className="px-4 py-2 mx-auto sm:py-12 lg:px-40 "
 			>
-				<div className="flex flex-col justify-center gap-20 sm:flex-row">
-					<div className="w-full space-y-8 lg:w-2/5">
+				<div className="flex flex-col justify-center sm:flex-row gap-x-14 ">
+					<div className="flex flex-col space-y-4 sm:space-y-8 w-fit ">
 						<ProductGallery
 							images={variable.images}
 							title={productData.title}
 							activeImage={activeImage}
 							setActiveImage={setActiveImage}
 						/>
-						<Reviews className="max-sm:hidden sm:block" />
+						<Reviews className="max-sm:hidden sm:block w-[600px] " />
 					</div>
 
 					<ProductInfos

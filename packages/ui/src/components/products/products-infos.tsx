@@ -39,7 +39,7 @@ const ProductInfos = ({
 	const classNames = "!font-light font-manrope !text-[1.8rem]";
 	return (
 		<div className="w-full lg:w-2/5 ">
-			<div className="space-y-6">
+			<div className="space-y-2">
 				{/* Catégorie */}
 				<h4 className="tracking-wide text-gray-500 uppercase !text-[2.1rem] font-bebas-neue">
 					{productData?.category}
@@ -47,19 +47,21 @@ const ProductInfos = ({
 
 				{/* Titre et prix */}
 				<div className="space-y-2">
-					<h1 className="!text-[4.8rem] font-bold">{productData.title}</h1>
+					<h1 className="!text-[3rem] sm:!text-[4.8rem] font-bold ">
+						{productData.title}
+					</h1>
 					{productData.promotion ? (
 						<div className="block text-start ">
-							<h4 className="  !text-3xl whitespace-nowrap">
+							<h4 className="!text-2xl  sm:!text-3xl whitespace-nowrap">
 								{" "}
 								{formatCurrency_FR(productData.promotion?.reduced_price || 0)}
 							</h4>
-							<h4 className="text-grey/50  line-through !text-[2.5rem]   whitespace-nowrap">
+							<h4 className="text-grey/50  line-through !text-[2rem] sm:!text-[2.8rem]   whitespace-nowrap">
 								{formatCurrency_FR(productData.price)}
 							</h4>
 						</div>
 					) : (
-						<h4 className="!text-3xl font-medium font-bebas-neue">
+						<h4 className="!text-2xl  sm:!text-3xl whitespace-nowrap">
 							{formatCurrency_FR(productData.price)}
 						</h4>
 					)}
@@ -79,7 +81,7 @@ const ProductInfos = ({
 				/>
 
 				{/* Boutons d'action */}
-				<div className="flex gap-8 mt-15 w-[70%] items-center">
+				<div className="flex gap-8 mt-15 w-[70%] items-center pb-8">
 					<Button
 						variant="default"
 						className="flex-1 py-6 text-lg"

@@ -119,7 +119,7 @@ const DrawerVariable = ({
 
 			<DrawerContent
 				title="Details du produit"
-				className="flex justify-center border-none outline-none rounded-t-3xl"
+				className="flex justify-center py-6 border-none outline-none rounded-t-3xl"
 			>
 				<DrawerClose
 					className="absolute z-30 p-2 text-2xl bg-white rounded-full cursor-pointer right-4 top-4"
@@ -128,9 +128,9 @@ const DrawerVariable = ({
 					<CloseIcon className="w-10 h-10" />
 				</DrawerClose>
 
-				<div className="h-[80vh] flex justify-around gap-10 lg:justify-center border-none">
-					<div className="flex justify-around w-full gap-10 px-4 py-10 overflow-y-scroll sm:px-10 scrollbar-hide lg:justify-center">
-						<div className="flex flex-col w-full gap-10 py-10 sm:w-3/5 lg:justify-center sm:flex-row">
+				<div className="h-[80vh] flex justify-around gap-10 lg:justify-center border-none ">
+					<div className="flex justify-around w-full gap-10 px-4 overflow-y-scroll sm:px-10 scrollbar-hide lg:justify-center">
+						<div className="flex flex-col w-full gap-10 sm:w-3/5 lg:justify-center sm:flex-row">
 							<ProductGallery
 								images={variable.images}
 								title={productData.title}

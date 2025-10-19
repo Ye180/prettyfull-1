@@ -68,25 +68,20 @@ export function ProductGallery({
 			</div>
 
 			{/* Mobile thumbnails (dots) */}
-			<div className="flex w-full overflow-x-auto h-fit scrolbarRecomandation sm:hidden">
-				<div className="flex gap-x-4 md:gap-x-16 max-sm:snap-x md:w-full  h-[30rem] md:overflow-hidden overflow-y-hidden  lg:overflow-visible  lg:gap-x-6  sm:h-[35rem]  lg:space-y-0  lg:space-x-0  lg:scrollbar-hide  lg:scroll-smooth  lg:snap-x  lg:snap-mandatory scrolbarRecomandation ">
+			<div className="w-full overflow-x-auto sm:hidden h-fit max-sm:flex ">
+				<div
+					className={cn(
+						"flex   max-sm:snap-x md:w-full  md:overflow-hidden overflow-y-hidden  lg:overflow-visible   space-y-0  space-x-0  scrollbar-hide  scroll-smooth snap-x  lg:snap-mandatory gap-x-1  scrolbar text-[1.5rem]"
+					)}
+				>
 					{images?.map((image, index) => (
-						<div
+						<Image
 							key={index}
-							// onClick={() => setActiveImage(index)}
-							className={cn(
-								"bg-gray-100 relative h-full w-[17rem] sm:w-[25rem] aspect-square pointer-cursor overflow-hidden flex-shrink-0 snap-center"
-							)}
-						>
-							<div className="relative w-full h-full overflow-hidden">
-								<Image
-									src={image}
-									alt={`${title} - vue ${index + 1}`}
-									fill
-									className="object-cover"
-								/>
-							</div>
-						</div>
+							src={image}
+							alt={`${title} - vue ${index + 1}`}
+							width={300}
+							height={500}
+						/>
 					))}
 				</div>
 			</div>

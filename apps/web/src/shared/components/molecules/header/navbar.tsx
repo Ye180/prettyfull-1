@@ -34,7 +34,7 @@ const NavBarHeaders = () => {
 								key={index}
 								href={link.href}
 								onClick={() => setItem("links", link.label)}
-								className="font-semibold"
+								className="font-black "
 							>
 								{link.label}
 							</NavLink>
@@ -43,11 +43,11 @@ const NavBarHeaders = () => {
 				</div>
 				<div className="flex items-center gap-2 md:gap-6">
 					<div className="flex items-center gap-2 md:gap-6">
-						<div className="flex items-center justify-start gap-2 py-1 text-gray-500 border-b border-gray-300 px- outline-gray-700 max-sm:hidden w-fit">
+						<div className="flex items-center justify-start w-full gap-2 py-1 text-gray-500 border-b border-gray-300 px- outline-gray-700 max-sm:hidden ">
 							<Search className="" />
 							<Input
 								placeholder={t("placeholder")}
-								className="h-4 border-none outline-1 text-black font-light px-2 py-4 border-gray-300 focus:ring-0 focus:border-none  text-[1.8rem] max-sm:hidden w-[20rem] sm:w-[28rem] placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.5rem]"
+								className="h-4 border-none outline-1 text-black font-light px-2 py-4 border-gray-300  text-[1.8rem] max-sm:hidden w-full sm:w-[28rem] placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.5rem] "
 							/>
 						</div>
 						<div className="max-md:hidden">
@@ -102,7 +102,7 @@ const NavBarHeaders = () => {
 						key={index}
 						href={link.href}
 						onClick={() => setItem("links", link.label)}
-						className="font-semibold !text-[1.7rem]"
+						className="font-extrabold !text-[1.7rem]"
 					>
 						{link.label}
 					</NavLink>

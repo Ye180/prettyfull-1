@@ -13,9 +13,9 @@ import Container from "../../../../../../../../packages/ui/src/layouts/helpers/c
 const Page = () => {
 	return (
 		<div className="pb-32 space-y-16 bg-neutral-50">
-			<div className="relative h-[30vh] md:h-[45vh]">
+			<div className="relative h-[30vh] md:h-[45vh] px-4 bg-white">
 				<Banner />
-				<div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+				{/* <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" /> */}
 			</div>
 			<Container maxWidth="100vw" className="px-4 space-y-12 lg:px-32">
 				<div className="flex items-center justify-center">

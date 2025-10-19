@@ -22,9 +22,7 @@ const CartSummary: FC<Props> = ({ summary }) => {
 			<div>
 				<div className="flex flex-row justify-between gap-x-8">
 					{/* <Input className="w-full" placeholder="Code promo" /> */}
-					<div className="w-full">
-						<Input className="w-full" placeholder="Code promo" />
-					</div>
+
 					<Button className="w-fit">{tSummary("apply")}</Button>
 				</div>
 			</div>

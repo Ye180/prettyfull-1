@@ -40,12 +40,12 @@ const ProductSuggestion = () => {
 		);
 	};
 	return (
-		<Container maxWidth="100vw" className="w-full space-y-8 lg:px-40">
+		<Container maxWidth="100vw" className="w-full px-4 space-y-8 lg:px-40">
 			<div className="flex justify-between space-y-8 ">
-				<h4 className="p-2 capitalize w-fit"> tu peux aussi aimer</h4>
+				<h4 className="py-2 capitalize w-fit"> tu peux aussi aimer</h4>
 			</div>
 
-			<div className="flex justify-between w-full p-4 max-lg:flex-col ">
+			<div className="flex justify-between w-full max-lg:flex-col ">
 				{handleGridClick(4)}
 			</div>
 		</Container>
