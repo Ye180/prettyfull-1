@@ -167,6 +167,7 @@ export default function ProductViews() {
 							title={productData.title}
 							activeImage={activeImage}
 							setActiveImage={setActiveImage}
+							promotion={productData.promotion}
 						/>
 						<Reviews className="max-sm:hidden sm:block w-[600px] " />
 					</div>

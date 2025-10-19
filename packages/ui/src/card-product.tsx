@@ -239,7 +239,7 @@ export function CardProduct({
 					close={() => updateDrawerState("showSizes", false)}
 				/>
 				{promotion && (
-					<span className="text-black font-semibold !text-[1rem] lg:!text-xs bg-light absolute top-4 right-4 px-4 py-2 rounded-full">
+					<span className="fond-semibold bg-red-700 text-white !text-[1.2rem] lg:!text-xs  absolute top-4 right-4 px-4 py-2 rounded-full">
 						{promotion.pourcentage}% OFF
 					</span>
 				)}
@@ -306,6 +306,7 @@ export function CardProduct({
 							price,
 							variable,
 							notVariable,
+							promotion,
 
 							description: smallDescription || "",
 						}}

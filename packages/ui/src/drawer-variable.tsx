@@ -136,6 +136,7 @@ const DrawerVariable = ({
 								title={productData.title}
 								activeImage={activeImage}
 								setActiveImage={setActiveImage}
+								promotion={productData.promotion}
 							/>
 							<ProductInfos
 								sizes={
