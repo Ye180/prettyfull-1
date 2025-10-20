@@ -13,7 +13,7 @@ export const getUsers = async (): Promise<User[]> => {
 
 export const useGetUsers = () => {
 	return useQuery({
-		queryKey: [USER_QUERY_KEY, "list"],
+		queryKey: [USER_QUERY_KEY],
 		queryFn: getUsers,
 	});
 };

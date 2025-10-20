@@ -97,7 +97,7 @@ export const GridCardProduct = ({
 			{...props}
 		>
 			{action_grid && (
-				<div className="gap-4 space-x-5 text-black max-md:hidden md:flex md:justify-end md:items-center">
+				<div className="gap-4 py-1 space-x-5 text-black max-md:hidden md:flex md:justify-end md:items-center">
 					<ToPull />
 					<span className="flex items-center justify-center gap-4">
 						{StyleBar.map((styles, index) => (

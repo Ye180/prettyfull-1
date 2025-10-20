@@ -1,12 +1,12 @@
 import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
-import { CardProduct, GridCardProduct } from "@prettyfull/ui";
+import { CardProduct, GridCardProduct, ScrollArea } from "@prettyfull/ui";
 
 const GridCollectionLayout = () => {
 	return (
-		<div className="h-full px-2 rounded-md max-md:w-full md:w-6/6">
-			<GridCardProduct action_grid>
+		<ScrollArea className="h-[200vh] px-2  rounded-md max-md:w-full md:w-6/6 scrolbar ">
+			<GridCardProduct action_grid className=" max-sm:gap-y-8">
 				<>
-					{Array.from({ length: 12 }).map((_, i) => (
+					{Array.from({ length: 24 }).map((_, i) => (
 						<div key={i} className="w-full aspect-10/9">
 							<CardProduct
 								variable={[
@@ -68,7 +68,7 @@ const GridCollectionLayout = () => {
 					))}
 				</>
 			</GridCardProduct>
-		</div>
+		</ScrollArea>
 	);
 };
 

@@ -88,15 +88,10 @@ export function ProductGallery({
 							key={index}
 							src={image}
 							alt={`${title} - vue ${index + 1}`}
-							width={300}
-							height={500}
+							width={150}
+							height={350}
 						/>
 					))}
-					{promotion && (
-						<span className="fond-semibold bg-red-700 text-white !text-[1.2rem] lg:!text-xs  absolute top-4 right-4 px-4 py-2 rounded-full">
-							{promotion.pourcentage}% OFF
-						</span>
-					)}
 				</div>
 			</div>
 		</div>

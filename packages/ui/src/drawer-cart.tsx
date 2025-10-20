@@ -42,7 +42,7 @@ const DrawerCart = ({
 				>
 					<CloseIcon className="w-10 h-10" />
 				</DrawerClose>
-				<div className="p-4 overflow-x-scroll rounded-lg scrollbar-hide h-[20vh]">
+				<div className="p-4 overflow-x-scroll rounded-lg scrollbar-hide h-[10vh]">
 					<Size size={size} onclose={(e) => handleClose(e)} />
 				</div>
 			</DrawerContent>

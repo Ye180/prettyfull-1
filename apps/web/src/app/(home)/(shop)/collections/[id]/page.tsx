@@ -12,7 +12,7 @@ import Container from "../../../../../../../../packages/ui/src/layouts/helpers/c
 
 const Page = () => {
 	return (
-		<div className="pb-32 space-y-16 bg-neutral-50">
+		<div className="pb-32 space-y-16 ">
 			<div className="relative h-[30vh] md:h-[45vh] px-4 bg-white">
 				<Banner />
 				{/* <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" /> */}
@@ -24,9 +24,9 @@ const Page = () => {
 				<div className="pb-4 border-b border-neutral-200">
 					<NavbarCollection />
 				</div>
-				<div className="flex items-start justify-center gap-8 !w-full">
-					<FilterLayout className="border my-26 bg-white/90 backdrop-blur-md border-black/20" />
-					<div className="flex-1 overflow-y-auto h-[calc(200vh-8rem)]  scrollbar-hide py-4">
+				<div className="flex items-start justify-center gap-8 !w-full ">
+					<FilterLayout className="h-[200vh] mt-4 border bg-white backdrop-blur-md border-gray-200" />
+					<div className="flex-1 py-4">
 						<GridCollectionLayout />
 					</div>
 				</div>
@@ -34,5 +34,5 @@ const Page = () => {
 		</div>
 	);
 };
-
+// overflow-y-auto h-[calc(200vh-8rem)]  scrollbar-hide
 export default Page;
