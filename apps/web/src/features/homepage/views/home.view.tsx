@@ -16,7 +16,7 @@ const HomeView = () => {
 			<SearchBar />
 
 			{/* <Hero /> */}
-			<HeroVideo />
+			<HeroVideo video={true} />
 			<Space />
 			<NewsArrivals />
 			<Space />

@@ -18,6 +18,7 @@ export const chemins = {
     contact: "/contact",
     conditions: "/conditions",
     confidentialite: "/confidentialite",
+    shippingReturn: "/shipping-return",
     ...ROOTS
 }
 

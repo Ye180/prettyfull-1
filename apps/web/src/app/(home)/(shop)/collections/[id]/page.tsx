@@ -8,14 +8,14 @@ import CategoryCollection from "@/features/collections/organims/mini-category";
 
 import NavbarCollection from "@/features/collections/organims/mini-navbar";
 
+import { ScrollArea } from "@prettyfull/ui";
 import Container from "../../../../../../../../packages/ui/src/layouts/helpers/container";
 
 const Page = () => {
 	return (
 		<div className="pb-32 space-y-16 ">
-			<div className="relative h-[30vh] md:h-[45vh] px-4 bg-white">
+			<div className="relative h-[20vh] md:h-[35vh] px-4 bg-white">
 				<Banner />
-				{/* <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" /> */}
 			</div>
 			<Container maxWidth="100vw" className="px-4 space-y-12 lg:px-32">
 				<div className="flex items-center justify-center">
@@ -26,7 +26,10 @@ const Page = () => {
 				</div>
 				<div className="flex items-start justify-center gap-8 !w-full ">
 					<FilterLayout className="h-[200vh] mt-4 border bg-white backdrop-blur-md border-gray-200" />
-					<div className="flex-1 py-4">
+					<ScrollArea className="py-4 max-md:hidden md:flex-1 h-[200vh]  scrolbarRecomandation">
+						<GridCollectionLayout />
+					</ScrollArea>
+					<div className="hidden max-md:flex md:hidden">
 						<GridCollectionLayout />
 					</div>
 				</div>
@@ -34,5 +37,4 @@ const Page = () => {
 		</div>
 	);
 };
-// overflow-y-auto h-[calc(200vh-8rem)]  scrollbar-hide
 export default Page;

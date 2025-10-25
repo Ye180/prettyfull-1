@@ -14,7 +14,10 @@ const LinksFooter = () => {
 					<ul className="space-y-3 text-gray-400 text-md">
 						{items.links.map((link) => (
 							<li key={link.label}>
-								<Link href="/" className="transition-colors hover:text-white">
+								<Link
+									href={link.url}
+									className="transition-colors hover:text-white"
+								>
 									{link.label}
 								</Link>
 							</li>

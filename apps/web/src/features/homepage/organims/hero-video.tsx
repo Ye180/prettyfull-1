@@ -1,11 +1,12 @@
 import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
 import { Button } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowIcon } from "../../../../../../packages/ui/src/icons/arrow-top.icon";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
-const HeroVideo = () => {
+const HeroVideo = ({ video }: { video?: boolean }) => {
 	const t = useTranslations("HomePage.hero");
 
 	return (
@@ -28,26 +29,42 @@ const HeroVideo = () => {
 				</span>
 			</Link>
 			<div className="h-[93%] absolute top-[7%] left-0 w-full  z-20">
-				<video
-					width="500"
-					height="500"
-					autoPlay
-					muted
-					loop
-					playsInline
-					className="absolute top-0 left-0 z-10 flex object-cover w-full h-full"
-				>
-					<source src="/video/video.mp4" type="video/mp4" />;
-					{/* codecs="avc1.42E01E, git Your browser does not support the video tag. */}
-				</video>
-				{/* <Image
-					src="/home/cover-phone.jpg"
-					alt="Hero background image"
-					fill
-					sizes="100%"
-					className="absolute top-0 left-0 z-10 object-cover w-full h-full max-md:flex md:hidden"
-					priority
-				/> */}
+				{video ? (
+					<video
+						width="500"
+						height="500"
+						autoPlay
+						muted
+						loop
+						playsInline
+						className="absolute top-0 left-0 z-10 flex object-cover w-full h-full"
+					>
+						<source src="/video/video.mp4" type="video/mp4" />;
+						{/* codecs="avc1.42E01E, git Your browser does not support the video tag. */}
+					</video>
+				) : (
+					<>
+						<Image
+							src="/home/cover-phone.jpg"
+							alt="Hero background image"
+							fill
+							sizes="100%"
+							className="absolute top-0 left-0 z-10 object-cover w-full h-full max-md:flex md:hidden"
+							priority
+						/>
+
+						<Image
+							src="/home/cover-desktop-1.jpg"
+							alt="Hero background image"
+							fill
+							sizes="100%"
+							className="absolute top-0 left-0 z-10 object-cover w-full h-full max-md:hidden md:flex"
+							priority
+						/>
+					</>
+				)}
+
+				{/*  */}
 				<Container
 					maxWidth="100vw"
 					className="flex flex-col items-center justify-center h-full space-y-12 lg:px-40 bg-none/30 "

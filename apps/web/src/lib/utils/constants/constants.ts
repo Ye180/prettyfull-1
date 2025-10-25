@@ -4,7 +4,7 @@ import LinkedinIcon from "@/components/icons/linkedin.icon";
 import TwitterIcon from "@/components/icons/twitter.icon";
 import { BoxTypes } from "@/types/constants-type";
 import { FC } from "react";
-import { COLLECTION_PATHS } from "../../routes/paths-en";
+import { COLLECTION_PATHS, paths } from "../../routes/paths-en";
 
 interface IconProps {
     className?: string;
@@ -62,11 +62,13 @@ export const FOOTER_DATA = [
       {
             "title": "HELP",
             "links": [
-                  { "label": "Contact", "url": "/help/contact" },
-                  { "label": "FAQ", "url": "/help/faq" },
-                  { "label": "Shipping & Return", "url": "/help/shipping-return" },
-                  { "label": "Privacy Policy", "url": "/help/privacy-policy" },
-                  { "label": "About Snaely", "url": "/help/about-snaely" }
+              { "label": "About Prettyfull", "url": "/help/about-snaely" },
+                  { "label": "Contact", "url": paths.contact },
+                  { "label": "FAQ", "url": paths.faq },
+                  { "label": "Terms & Conditions", "url": paths.terms },
+                  { "label": "Shipping & Return", "url": paths.shippingReturn },
+                 
+                
             ]
       },
       {
@@ -104,12 +106,12 @@ export const SUBS_CATEGORY =  [
 					
       { href: "/new-in", label: "New in " },
       { href: "/nova-deals", label: "Nova Deals" },
-					{ href: COLLECTION_PATHS.collectionDetail('halloween'), label: "Halloween" },
-					{ href: COLLECTION_PATHS.collectionDetail('formal-shop'), label: "Formal Shop" },
-					{ href: COLLECTION_PATHS.collectionDetail('dresses'), label: "Dresses" },
-					{ href: COLLECTION_PATHS.collectionDetail('matching-sets'), label: "Matching Sets" },
-					{ href: COLLECTION_PATHS.collectionDetail('tops'), label: "Tops" },
-					{ href: COLLECTION_PATHS.collectionDetail('jeans'), label: "Jeans" },
+	{ href: COLLECTION_PATHS.collectionDetail('halloween'), label: "Halloween" },
+	{ href: COLLECTION_PATHS.collectionDetail('formal-shop'), label: "Formal Shop" },
+	{ href: COLLECTION_PATHS.collectionDetail('dresses'), label: "Dresses" },
+	{ href: COLLECTION_PATHS.collectionDetail('matching-sets'), label: "Matching Sets" },
+	{ href: COLLECTION_PATHS.collectionDetail('tops'), label: "Tops" },
+	{ href: COLLECTION_PATHS.collectionDetail('jeans'), label: "Jeans" },
 					{ href: COLLECTION_PATHS.collectionDetail('jackets'), label: "Jackets" },
 					{ href: COLLECTION_PATHS.collectionDetail('sweaters'), label: "Sweaters" },
 					{ href: COLLECTION_PATHS.collectionDetail('shoes'), label: "Shoes" },
