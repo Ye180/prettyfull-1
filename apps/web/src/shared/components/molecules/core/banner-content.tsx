@@ -15,3 +15,4 @@ const BannerContent = ({ label }: { label: string }) => {
 };
 
 export default BannerContent;
+//vide
