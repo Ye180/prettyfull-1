@@ -1,24 +1,24 @@
 {
-  "name": "prettyfull",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "install:fonts": "pnpm install @fontsource-variable/manrope @fontsource/bebas-neue --filter @prettyfull/ui  --filter docs --filter web --filter ui  --filter tailwind-config",
-    "dev": "turbo run dev",
-    "start:prod": "turbo run start ",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
-  },
-  "devDependencies": {
-    "prettier": "^3.6.2",
-    "turbo": "^2.5.8",
-    "typescript": "5.8.3"
-  },
-  "packageManager": "pnpm@10.18.2",
-  "engines": {
-    "node": ">=18"
-  }
+	"name": "prettyfull",
+	"private": true,
+	"scripts": {
+		"build": "turbo run build",
+		"install:fonts": "pnpm install @fontsource-variable/manrope @fontsource/bebas-neue --filter @prettyfull/ui  --filter docs --filter web --filter ui  --filter tailwind-config",
+		"dev": "turbo run dev",
+		"start:prod": "turbo run start ",
+		"lint": "turbo run lint",
+		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"check-types": "turbo run check-types",
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build"
+	},
+	"devDependencies": {
+		"prettier": "^3.6.2",
+		"turbo": "^2.5.8",
+		"typescript": "5.8.3"
+	},
+	"packageManager": "pnpm@10.18.2",
+	"engines": {
+		"node": ">=18"
+	}
 }

@@ -60,6 +60,13 @@ h6 {
 	}
 }
 
+@media (width >= 102.4rem /* 1638.4px */) {
+	.box:nth-child(1) {
+		grid-column: span 1;
+		grid-row: span 2;
+	}
+}
+
 @mesdia screen and (max-width: 40rem) {
 	.produit {
 		height: 10rem !important;
@@ -106,10 +113,10 @@ h6 {
 
 /* Masque la barre de scroll sur tous les navigateurs */
 .scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+	display: none; /* Chrome, Safari, Edge */
 }
 
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE et Edge */
-  scrollbar-width: none;     /* Firefox */
+	-ms-overflow-style: none; /* IE et Edge */
+	scrollbar-width: none; /* Firefox */
 }

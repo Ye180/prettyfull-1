@@ -3,6 +3,11 @@ export type BoxTypes = {
 	label: string;
 };
 
+export type BoxCategory = {
+	picture: string;
+	label: string;
+};
+
 // export type ProductsTypes = {
 // 	name: {
 //     	fr: string;

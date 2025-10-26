@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowIcon } from "../../../../../../packages/ui/src/icons/arrow-top.icon";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
-const HeroVideo = ({ video }: { video?: boolean }) => {
+const Hero = ({ video }: { video?: boolean }) => {
 	const t = useTranslations("HomePage.hero");
 
 	return (
@@ -91,4 +91,4 @@ const HeroVideo = ({ video }: { video?: boolean }) => {
 	);
 };
 
-export default HeroVideo;
+export default Hero;

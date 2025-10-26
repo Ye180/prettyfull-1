@@ -148,3 +148,37 @@ export const DATA_CARD = [
 		quantity: 75,
 	},
 ];
+
+
+
+export const BOX_CATEGORY: BoxTypes[] = [
+      {
+            picture: "/category/category1.jpg",
+            label: "PRETTYFULL1",
+      },
+      
+      {
+            picture: "/category/category1.jpg",
+            label: "PRETTYFULL2",
+      },
+      {
+            picture: "/category/category1.jpg",
+            label: "PRETTYFULL3",
+      },
+      {
+            picture: "/category/category1.jpg",
+            label: "PRETTYFULL4",
+      },
+       {
+            picture: "/category/category1.jpg",
+            label: "PRETTYFULL5",
+      },
+        {
+            picture: "/category/category1.jpg",
+            label: "PRETTYFULL5",
+      },
+       {
+            picture: "/category/category1.jpg",
+            label: "PRETTYFULL6",
+      },
+]
