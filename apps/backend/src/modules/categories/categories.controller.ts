@@ -15,6 +15,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRole } from '../users/schemas/user.schema';
 import { CategoriesService } from './categories.service';
+import { CreateCategoryDto } from './dto/create-category.dto';
 
 @Controller('categories')
 export class CategoriesController {
@@ -30,17 +31,6 @@ export class CategoriesController {
     @Query('includeHidden') includeHidden: boolean = false,
   ) {
     return this.categoriesService.findAll(language, includeHidden);
-  }
-
-  /**
-   * GET /categories/roots - Public
-   * Récupère les catégories racines (sans parent)
-   */
-  @Get('roots')
-  async findRootCategories(
-    @Headers('accept-language') language: string = 'fr',
-  ) {
-    return this.categoriesService.findRootCategories(language);
   }
 
   /**
@@ -84,9 +74,9 @@ export class CategoriesController {
    * Crée une nouvelle catégorie
    */
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
-  async create(@Body() createCategoryDto: any) {
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(UserRole.ADMIN)
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
 

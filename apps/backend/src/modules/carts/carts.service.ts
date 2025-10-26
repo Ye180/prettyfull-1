@@ -19,7 +19,14 @@ export class CartsService {
     userId: string,
     addToCartDto: AddToCartDto,
   ): Promise<CartResponseDto> {
-    const { productId, quantity, selectedVariants } = addToCartDto;
+    const {
+      productId,
+      quantity,
+      selectedVariants,
+      // color,
+      // unitPrice,
+      // totalPrice,
+    } = addToCartDto;
 
     if (quantity <= 0) {
       throw new BadRequestException('La quantité doit être supérieure à 0');
@@ -42,8 +49,10 @@ export class CartsService {
       // Expire le panier après 30 jours
       await this.redisClient.expire(cartKey, 30 * 24 * 60 * 60);
       return this.getCart(userId);
-    } catch (error) {
-      throw new BadRequestException("Erreur lors de l'ajout au panier");
+    } catch (error: unknown) {
+      throw new BadRequestException(
+        (error as Error).message || "Erreur lors de l'ajout au panier",
+      );
     }
   }
 
@@ -93,7 +102,9 @@ export class CartsService {
         updatedAt: new Date(),
       };
     } catch (error) {
-      throw new BadRequestException('Erreur lors de la récupération du panier');
+      throw new BadRequestException(
+        (error as Error).message || 'Erreur lors de la récupération du panier',
+      );
     }
   }
 
@@ -130,7 +141,9 @@ export class CartsService {
 
       return this.getCart(userId);
     } catch (error) {
-      throw new BadRequestException('Erreur lors de la mise à jour du panier');
+      throw new BadRequestException(
+        (error as Error).message || 'Erreur lors de la mise à jour du panier',
+      );
     }
   }
 
@@ -156,7 +169,8 @@ export class CartsService {
       return this.getCart(userId);
     } catch (error) {
       throw new BadRequestException(
-        'Erreur lors de la suppression du produit du panier',
+        (error as Error).message ||
+          'Erreur lors de la suppression du produit du panier',
       );
     }
   }
@@ -168,7 +182,9 @@ export class CartsService {
       await this.redisClient.del(cartKey);
       return { message: 'Panier vidé avec succès' };
     } catch (error) {
-      throw new BadRequestException('Erreur lors de la suppression du panier');
+      throw new BadRequestException(
+        (error as Error).message || 'Erreur lors de la suppression du panier',
+      );
     }
   }
 }

@@ -2,14 +2,14 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
-  IsMongoId,
   IsNumber,
-  IsObject,
   IsOptional,
   IsString,
   Min,
   ValidateNested,
 } from 'class-validator';
+
+// --- Sous-classes pour les objets imbriqués ---
 
 class TranslatableStringDto {
   @IsString()
@@ -17,6 +17,14 @@ class TranslatableStringDto {
 
   @IsString()
   en: string;
+}
+
+class ColorDto {
+  @IsString()
+  label: string;
+
+  @IsString()
+  code: string;
 }
 
 class PriceDto {
@@ -28,14 +36,67 @@ class PriceDto {
   currency: string;
 }
 
-class ProductVariantDto {
-  @IsString()
-  name: string;
+class PromotionDto {
+  @IsNumber()
+  reduced_price: number;
+
+  @IsNumber()
+  pourcentage: number;
+}
+
+// --- Variantes produit ---
+
+class VariableProductDto {
+  @ValidateNested()
+  @Type(() => ColorDto)
+  color: ColorDto;
 
   @IsArray()
   @IsString({ each: true })
-  options: string[];
+  size: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  image: string[];
+
+  @IsNumber()
+  quantity: number;
 }
+
+class NotVariableProductDto {
+  @ValidateNested()
+  @Type(() => ColorDto)
+  @IsOptional()
+  color?: ColorDto;
+
+  @IsArray()
+  @IsString({ each: true })
+  size: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  image: string[];
+
+  @IsNumber()
+  @IsOptional()
+  quantity?: number;
+}
+
+class SeoMetaDto {
+  @ValidateNested()
+  @Type(() => TranslatableStringDto)
+  title: TranslatableStringDto;
+
+  @ValidateNested()
+  @Type(() => TranslatableStringDto)
+  description: TranslatableStringDto;
+
+  @IsArray()
+  @IsString({ each: true })
+  keywords: string[];
+}
+
+// --- DTO principal ---
 
 export class CreateProductDto {
   @ValidateNested()
@@ -47,43 +108,64 @@ export class CreateProductDto {
   description: TranslatableStringDto;
 
   @IsString()
+  @IsOptional()
+  categoryId?: string;
+
+  @IsString()
+  @IsOptional()
+  link?: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => VariableProductDto)
+  @IsOptional()
+  variable?: VariableProductDto[];
+
+  @ValidateNested()
+  @Type(() => NotVariableProductDto)
+  @IsOptional()
+  notVariable?: NotVariableProductDto;
+
+  @IsString()
+  @IsOptional()
+  smallDescription?: string;
+
+  @IsString()
+  @IsOptional()
   sku: string;
 
   @ValidateNested()
   @Type(() => PriceDto)
   price: PriceDto;
 
+  @IsBoolean()
+  @IsOptional()
+  solde?: boolean;
+
+  @ValidateNested()
+  @Type(() => PromotionDto)
+  @IsOptional()
+  promotion?: PromotionDto;
+
+  @IsBoolean()
+  @IsOptional()
+  isLoading?: boolean;
+
+  @IsString()
+  @IsOptional()
+  label?: string;
+
+  @IsBoolean()
+  isActive: boolean;
+
+  @IsBoolean()
+  isFeatured: boolean;
+
   @IsNumber()
   @Min(0)
   stock: number;
 
-  @IsMongoId()
-  categoryId: string;
-
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  images?: string[];
-
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ProductVariantDto)
-  @IsOptional()
-  variants?: ProductVariantDto[];
-
-  @IsBoolean()
-  @IsOptional()
-  isActive?: boolean;
-
-  @IsBoolean()
-  @IsOptional()
-  isFeatured?: boolean;
-
-  @IsObject()
-  @IsOptional()
-  seoMeta?: {
-    title?: { fr: string; en: string };
-    description?: { fr: string; en: string };
-    keywords?: string[];
-  };
+  @ValidateNested()
+  @Type(() => SeoMetaDto)
+  seoMeta: SeoMetaDto;
 }

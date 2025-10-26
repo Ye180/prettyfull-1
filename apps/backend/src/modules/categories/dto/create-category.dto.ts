@@ -1,15 +1,15 @@
+import { Type } from 'class-transformer';
 import {
-  IsString,
-  IsOptional,
+  IsArray,
   IsBoolean,
   IsNumber,
-  IsArray,
-  ValidateNested,
   IsObject,
+  IsOptional,
+  IsString,
   Matches,
   Min,
+  ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 
 export class I18nFieldDto {
   @IsString()

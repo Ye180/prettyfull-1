@@ -26,8 +26,10 @@ export class WishlistsService {
             : 'Produit déjà dans la wishlist',
         added: added === 1,
       };
-    } catch (error) {
-      throw new BadRequestException("Erreur lors de l'ajout à la wishlist");
+    } catch (error: unknown) {
+      throw new BadRequestException(
+        (error as Error).message || "Erreur lors de l'ajout à la wishlist",
+      );
     }
   }
 
@@ -44,9 +46,10 @@ export class WishlistsService {
         totalItems: productIds.length,
         updatedAt: new Date(),
       };
-    } catch (error) {
+    } catch (error: unknown) {
       throw new BadRequestException(
-        'Erreur lors de la récupération de la wishlist',
+        (error as Error).message ||
+          'Erreur lors de la récupération de la wishlist',
       );
     }
   }
@@ -65,9 +68,10 @@ export class WishlistsService {
             : 'Produit non trouvé dans la wishlist',
         removed: removed === 1,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       throw new BadRequestException(
-        'Erreur lors de la suppression de la wishlist',
+        (error as Error).message ||
+          'Erreur lors de la suppression de la wishlist',
       );
     }
   }
@@ -78,9 +82,10 @@ export class WishlistsService {
     try {
       await this.redisClient.del(wishlistKey);
       return { message: 'Wishlist vidée avec succès' };
-    } catch (error) {
+    } catch (error: unknown) {
       throw new BadRequestException(
-        'Erreur lors de la suppression de la wishlist',
+        (error as Error).message ||
+          'Erreur lors de la suppression de la wishlist',
       );
     }
   }
@@ -92,9 +97,10 @@ export class WishlistsService {
       // Utilise SISMEMBER pour vérifier si un produit est dans la wishlist
       const exists = await this.redisClient.sismember(wishlistKey, productId);
       return exists === 1;
-    } catch (error) {
+    } catch (error: unknown) {
       throw new BadRequestException(
-        'Erreur lors de la vérification de la wishlist',
+        (error as Error).message ||
+          'Erreur lors de la vérification de la wishlist',
       );
     }
   }
