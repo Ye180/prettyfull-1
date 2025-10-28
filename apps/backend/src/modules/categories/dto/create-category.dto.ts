@@ -56,7 +56,7 @@ export class CreateCategoryDto {
    */
   @IsOptional()
   @IsString()
-  parentId?: string | null;
+  parent: string | null;
 
   /**
    * Codes pays ISO 3166-1 alpha-2 (ex: ['FR', 'SN', 'CI'])
@@ -78,6 +78,11 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsBoolean()
   isVisible?: boolean;
+
+  @IsOptional()
+  @IsString()
+  @IsArray()
+  children: string[];
 
   @IsOptional()
   @IsNumber()

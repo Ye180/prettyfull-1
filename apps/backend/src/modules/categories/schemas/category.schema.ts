@@ -7,11 +7,14 @@ export type CategoryDocument = Category & Document;
 
 @Schema({ timestamps: true })
 export class Category {
-  @Prop({ type: I18nStringSchema, required: true })
+  @Prop({ type: I18nStringSchema, required: true, unique: true })
   name: I18nString;
 
   @Prop({ type: I18nStringSchema })
   description?: I18nString;
+
+  @Prop({ type: Types.ObjectId, ref: 'Product' })
+  children?: Types.ObjectId[];
 
   @Prop({ required: true, unique: true, lowercase: true })
   slug: string;

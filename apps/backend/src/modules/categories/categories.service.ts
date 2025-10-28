@@ -5,6 +5,10 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import {
+  formatResponse,
+  FormatResponse,
+} from 'src/shared/utils/format-response';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category, CategoryDocument } from './schemas/category.schema';
@@ -81,6 +85,22 @@ export class CategoriesService {
     );
   }
 
+  async findByName(
+    name: string,
+    language: string = 'fr',
+  ): Promise<TransformedCategory> {
+    const category = await this.categoryModel
+      .findOne({ name: name })
+      .lean()
+      .exec();
+
+    if (!category) {
+      throw new NotFoundException('Catégorie non trouvée');
+    }
+
+    return this.transformCategory(category, language as 'fr' | 'en');
+  }
+
   async findBySlug(
     slug: string,
     language: string = 'fr',
@@ -100,6 +120,7 @@ export class CategoriesService {
 
   async create(
     createCategoryDto: CreateCategoryDto,
+    language: string,
   ): Promise<CategoryDocument> {
     // Vérifier l'unicité du slug
     const existing = await this.categoryModel.findOne({
@@ -112,9 +133,19 @@ export class CategoriesService {
       );
     }
 
+    const existingName = await this.categoryModel.findOne({
+      name: createCategoryDto.name,
+    });
+
+    if (existingName) {
+      throw new BadRequestException(
+        `Une catégorie avec le nom "${createCategoryDto.name[language]}" existe déjà`,
+      );
+    }
+
     // Calculer le niveau et le chemin
     const { level, path } = await this.calculateLevelAndPath(
-      createCategoryDto.parentId,
+      createCategoryDto.parent,
       createCategoryDto.slug,
     );
 
@@ -140,7 +171,7 @@ export class CategoriesService {
       throw new NotFoundException('Catégorie non trouvée');
     }
 
-    // Vérifier l'unicité du slug si modifié
+    // Vérifier l'unicité du slug si modifiée
     if (
       updateCategoryDto.slug &&
       updateCategoryDto.slug !== (category as any).slug
@@ -159,11 +190,11 @@ export class CategoriesService {
 
     // Si le parent change, recalculer level et path
     if (
-      updateCategoryDto.parentId !== undefined &&
-      updateCategoryDto.parentId !== (category as any).parent
+      updateCategoryDto.parent !== undefined &&
+      updateCategoryDto.parent !== (category as any).parent
     ) {
       const { level, path } = await this.calculateLevelAndPath(
-        updateCategoryDto.parentId,
+        updateCategoryDto.parent,
         updateCategoryDto.slug || (category as any).slug,
       );
 
@@ -178,7 +209,7 @@ export class CategoriesService {
   /**
    * Supprimer une catégorie (soft delete)
    */
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<FormatResponse<void>> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('ID de catégorie invalide');
     }
@@ -204,6 +235,9 @@ export class CategoriesService {
     (category as any).isActive = false;
     (category as any).isVisible = false;
     await category.save();
+    return formatResponse({
+      message: 'La catégorie a été supprimée avec succès',
+    });
   }
 
   /**

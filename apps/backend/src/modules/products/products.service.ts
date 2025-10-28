@@ -1,11 +1,16 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ClientSession, Model, Types } from 'mongoose';
 
+import {
+  FormatResponse,
+  formatResponse,
+} from 'src/shared/utils/format-response';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductDocument } from './schemas/product.schema';
@@ -95,7 +100,7 @@ export class ProductsService {
    */
   async findOne(
     id: string,
-    language: string = 'fr',
+    language: string = 'en',
   ): Promise<TransformedProduct> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('ID de produit invalide');
@@ -157,7 +162,7 @@ export class ProductsService {
   /**
    * Supprime un produit (soft delete)
    */
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<FormatResponse<ProductDocument>> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('ID de produit invalide');
     }
@@ -169,6 +174,12 @@ export class ProductsService {
     if (!result) {
       throw new NotFoundException('Produit non trouvé');
     }
+    Logger.log(`Produit avec ID ${id} a été désactivé (soft delete).`);
+
+    return formatResponse({
+      data: result,
+      message: 'Produit désactivé avec succès',
+    });
   }
 
   /**

@@ -1,59 +1,65 @@
-/**
- * DTO pour ajouter un produit au panier
- */
-export class AddToCartDto {
-  productId: string;
-  quantity: number;
-  selectedVariants?: Record<string, string>;
-}
-
-/**
- * DTO pour mettre à jour un item du panier
- */
-export class UpdateCartItemDto {
-  quantity: number;
-  selectedVariants?: Record<string, string>;
-}
-
-/**
- * DTO pour un item du panier
-//  */
-export class CartItemGoogDto {
-  productId: string;
-  quantity: number;
-  selectedVariants?: Record<string, string>;
-}
-
-/**
- * DTO de réponse pour le panier
- */
-export class CartResponseDto {
-  userId: string;
-  items: CartItemGoogDto[];
-  totalItems: number;
-  updatedAt: Date;
-}
-
-/**
- * DTO pour la suppression d'un item du panier
- */
-export class RemoveFromCartDto {
-  selectedVariants?: Record<string, string>;
-}
-
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsBoolean,
+  IsDate,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   Min,
   ValidateNested,
 } from 'class-validator';
 
-// --- Sous-classes pour objets imbriqués ---
+/**
+ * DTO pour ajouter un produit au panier
+ */
+export class AddToCartDto {
+  @IsString()
+  productId: string;
 
-class TranslatableStringDto {
+  @IsNumber()
+  @Min(1)
+  quantity: number;
+
+  @IsOptional()
+  @IsObject()
+  selectedVariants?: Record<string, string>; // ex: { color: "Black", size: "L" }
+}
+
+/**
+ * DTO pour mettre à jour un item du panier
+ */
+export class UpdateCartItemDto {
+  @IsString()
+  productId: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  quantity?: number;
+
+  @IsOptional()
+  @IsObject()
+  selectedVariants?: Record<string, string>;
+}
+
+/**
+ * DTO pour la suppression d'un item du panier
+ */
+export class RemoveFromCartDto {
+  @IsString()
+  productId: string;
+
+  @IsOptional()
+  @IsObject()
+  selectedVariants?: Record<string, string>;
+}
+
+/**
+ * Sous-classes pour objets imbriqués
+ */
+export class TranslatableStringDto {
   @IsString()
   fr: string;
 
@@ -61,7 +67,7 @@ class TranslatableStringDto {
   en: string;
 }
 
-class ColorDto {
+export class ColorDto {
   @IsString()
   label: string;
 
@@ -69,25 +75,28 @@ class ColorDto {
   code: string;
 }
 
-class PriceDto {
+export class PriceDto {
   @IsNumber()
   @Min(0)
   amount: number;
 
   @IsString()
-  currency: string;
+  currency: string; // ex: "USD"
 }
 
-class PromotionDto {
+export class PromotionDto {
   @IsNumber()
+  @Min(0)
   reduced_price: number;
 
   @IsNumber()
+  @Min(0)
   pourcentage: number;
 }
 
-// --- DTO principal pour un produit dans le panier ---
-
+/**
+ * DTO principal pour un item du panier
+ */
 export class CartItemDto {
   @IsString()
   productId: string;
@@ -136,4 +145,40 @@ export class CartItemDto {
 
   @IsBoolean()
   isActive: boolean;
+}
+
+/**
+ * DTO de réponse pour le panier complet
+ */
+export class CartResponseDto {
+  @IsString()
+  userId: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CartItemDto)
+  items: CartItemDto[];
+
+  @IsNumber()
+  totalItems: number;
+
+  @ValidateNested()
+  @Type(() => PriceDto)
+  subtotal: PriceDto;
+
+  @ValidateNested()
+  @Type(() => PriceDto)
+  codepromo?: PriceDto;
+
+  // @ValidateNested()
+  // @Type(() => PriceDto)
+  // shipping: PriceDto;
+
+  @ValidateNested()
+  @Type(() => PriceDto)
+  total: PriceDto;
+
+  @IsDate()
+  @Type(() => Date)
+  updatedAt: Date;
 }

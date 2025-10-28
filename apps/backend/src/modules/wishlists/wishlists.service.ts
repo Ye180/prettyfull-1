@@ -8,6 +8,8 @@ export class WishlistsService {
 
   private getWishlistKey(userId: string): string {
     return `wishlist:user:${userId}`;
+
+    // return `wishlist:user:${userId}`;
   }
 
   async addToWishlist(userId: string, productId: string): Promise<any> {
