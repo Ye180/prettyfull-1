@@ -1,5 +1,162 @@
-import {  BadRequestException,  Injectable,  NotFoundException,} from '@nestjs/common';import { InjectModel } from '@nestjs/mongoose';import { Model, Types } from 'mongoose';import {  CategorySchema,  CategoryDocument,} from '../../shared/schemas/category.schema';import type { CreateCategoryDto } from './dto/create-category.dto';import type { UpdateCategoryDto } from './dto/update-category.dto';/** * Interface pour une catégorie transformée avec i18n */export interface TransformedCategory {  id: string;  name: string;  slug: string;  description: string;  parentId: string | null;  level: number;  path: string[];  countries: string[];  isActive: boolean;  isVisible: boolean;  displayOrder: number;  icon?: string;  image?: string;  productCount: number;  children?: TransformedCategory[];  seoMeta?: {    title?: string;    description?: string;    keywords?: string[];  };  metadata?: any;}@Injectable()export class CategoriesService {  constructor(    @InjectModel(CategorySchema.name)    private categoryModel: Model<CategoryDocument>,  ) {}  /**   * Créer une nouvelle catégorie   */  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryDocument> {    // Vérifier que le slug est unique    const existing = await this.categoryModel.findOne({      slug: createCategoryDto.slug,    });    if (existing) {      throw new BadRequestException(        `Une catégorie avec le slug "${createCategoryDto.slug}" existe déjà`,      );    }    let level = 0;    const path: string[] = [];    let parent: CategoryDocument | null = null;    // Si une catégorie parente est spécifiée    if (createCategoryDto.parentId) {      if (!Types.ObjectId.isValid(createCategoryDto.parentId)) {        throw new BadRequestException('ID de catégorie parente invalide');      }      parent = await this.categoryModel.findById(createCategoryDto.parentId);      if (!parent) {        throw new NotFoundException('Catégorie parente non trouvée');      }      const parentData = parent as any;      level = (parentData.level || 0) + 1;      path.push(...(parentData.path || []), createCategoryDto.slug);    } else {      path.push(createCategoryDto.slug);    }    const categoryData = {      ...createCategoryDto,      parent: createCategoryDto.parentId        ? new Types.ObjectId(createCategoryDto.parentId)        : null,      level,      path,      productCount: 0,    };    const category = new this.categoryModel(categoryData);    return await category.save();  }  /**   * Récupérer toutes les catégories racines (level 0) pour un pays   */  async findRoots(    language: 'fr' | 'en' = 'fr',    country?: string,  ): Promise<TransformedCategory[]> {    const query: any = {      parent: null,      isActive: true,      isVisible: true,    };    // Filtrer par pays si spécifié    if (country) {      query.$or = [{ countries: country }, { countries: { $size: 0 } }];    }    const categories = await this.categoryModel      .find(query)      .sort({ displayOrder: 1, 'name.fr': 1 })      .lean()      .exec();    return categories.map((cat) => this.transformCategory(cat, language));  }  /**   * Récupérer les sous-catégories d'une catégorie parente   */  async findChildren(    parentId: string,    language: 'fr' | 'en' = 'fr',    country?: string,  ): Promise<TransformedCategory[]> {    if (!Types.ObjectId.isValid(parentId)) {      throw new BadRequestException('ID de catégorie invalide');    }    const query: any = {      parent: new Types.ObjectId(parentId),      isActive: true,      isVisible: true,    };    if (country) {      query.$or = [{ countries: country }, { countries: { $size: 0 } }];    }    const categories = await this.categoryModel      .find(query)      .sort({ displayOrder: 1, 'name.fr': 1 })      .lean()      .exec();    return categories.map((cat) => this.transformCategory(cat, language));  }  /**   * Récupérer l'arbre complet des catégories pour un pays   */  async findTree(    language: 'fr' | 'en' = 'fr',    country?: string,    maxDepth = 3,  ): Promise<TransformedCategory[]> {    const query: any = {      isActive: true,      isVisible: true,    };    if (country) {      query.$or = [{ countries: country }, { countries: { $size: 0 } }];    }    const allCategories = await this.categoryModel      .find(query)      .sort({ level: 1, displayOrder: 1 })      .lean()      .exec();    // Construire l'arbre hiérarchique    return this.buildTree(allCategories, null, language, 0, maxDepth);  }  /**   * Récupérer une catégorie par son ID   */  async findOne(    id: string,    language: 'fr' | 'en' = 'fr',  ): Promise<TransformedCategory> {    if (!Types.ObjectId.isValid(id)) {      throw new BadRequestException('ID de catégorie invalide');    }    const category = await this.categoryModel.findById(id).lean().exec();    if (!category) {      throw new NotFoundException('Catégorie non trouvée');    }    return this.transformCategory(category, language);  }  /**   * Récupérer une catégorie par son slug   */  async findBySlug(    slug: string,    language: 'fr' | 'en' = 'fr',  ): Promise<TransformedCategory> {    const category = await this.categoryModel      .findOne({ slug, isActive: true })      .lean()      .exec();    if (!category) {      throw new NotFoundException(`Catégorie "${slug}" non trouvée`);    }    return this.transformCategory(category, language);  }  /**   * Mettre à jour une catégorie
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+import {
+  formatResponse,
+  FormatResponse,
+} from 'src/shared/utils/format-response';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Category, CategoryDocument } from './schemas/category.schema';
+export interface TransformedCategory {
+  id: string;
+  name: string;
+  description: string;
+  slug: string;
+  parentId: string | null;
+  isVisible: boolean;
+  icon?: string;
+  image?: string;
+  productCount: number;
+  sortOrder: number;
+  children?: TransformedCategory[];
+  isActive: boolean;
+  seoMeta?: {
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  };
+  metadata?: any;
+}
+@Injectable()
+export class CategoriesService {
+  constructor(
+    @InjectModel(Category.name)
+    private categoryModel: Model<CategoryDocument>,
+  ) {}
+
+  /**
+   * Créer une nouvelle catégorie
    */
+
+  async findAll(
+    language: string = 'fr',
+    includeHidden: boolean = false,
+  ): Promise<TransformedCategory[]> {
+    const categories = await this.categoryModel
+      .find({ isVisible: includeHidden ? undefined : true })
+      .lean()
+      .exec();
+
+    return categories.map((category) =>
+      this.transformCategory(category, language as 'fr' | 'en'),
+    );
+  }
+
+  async findOne(
+    id: string,
+    language: string = 'fr',
+  ): Promise<TransformedCategory> {
+    const category = await this.categoryModel.findById(id).lean().exec();
+
+    if (!category) {
+      throw new NotFoundException('Catégorie non trouvée');
+    }
+
+    return this.transformCategory(category, language as 'fr' | 'en');
+  }
+
+  async findChildren(
+    id: string,
+    language: string = 'fr',
+  ): Promise<TransformedCategory[]> {
+    const category = await this.categoryModel.findById(id).lean().exec();
+
+    if (!category) {
+      throw new NotFoundException('Catégorie non trouvée');
+    }
+
+    return (
+      this.transformCategory(category, language as 'fr' | 'en').children || []
+    );
+  }
+
+  async findByName(
+    name: string,
+    language: string = 'fr',
+  ): Promise<TransformedCategory> {
+    const category = await this.categoryModel
+      .findOne({ name: name })
+      .lean()
+      .exec();
+
+    if (!category) {
+      throw new NotFoundException('Catégorie non trouvée');
+    }
+
+    return this.transformCategory(category, language as 'fr' | 'en');
+  }
+
+  async findBySlug(
+    slug: string,
+    language: string = 'fr',
+  ): Promise<TransformedCategory> {
+    const category = await this.categoryModel.findOne({ slug }).lean().exec();
+
+    if (!category) {
+      throw new NotFoundException('Catégorie non trouvée');
+    }
+
+    return this.transformCategory(category, language as 'fr' | 'en');
+  }
+
+  /**
+   * Créer une nouvelle catégorie
+   */
+
+  async create(
+    createCategoryDto: CreateCategoryDto,
+    language: string,
+  ): Promise<CategoryDocument> {
+    // Vérifier l'unicité du slug
+    const existing = await this.categoryModel.findOne({
+      slug: createCategoryDto.slug,
+    });
+
+    if (existing) {
+      throw new BadRequestException(
+        `Une catégorie avec le slug "${createCategoryDto.slug}" existe déjà`,
+      );
+    }
+
+    const existingName = await this.categoryModel.findOne({
+      name: createCategoryDto.name,
+    });
+
+    if (existingName) {
+      throw new BadRequestException(
+        `Une catégorie avec le nom "${createCategoryDto.name[language]}" existe déjà`,
+      );
+    }
+
+    // Calculer le niveau et le chemin
+    const { level, path } = await this.calculateLevelAndPath(
+      createCategoryDto.parent,
+      createCategoryDto.slug,
+    );
+
+    const category = new this.categoryModel({
+      ...createCategoryDto,
+      level,
+      path,
+    });
+
+    return await category.save();
+  }
   async update(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
@@ -14,7 +171,7 @@ import {  BadRequestException,  Injectable,  NotFoundException,} from '@nestjs/c
       throw new NotFoundException('Catégorie non trouvée');
     }
 
-    // Vérifier l'unicité du slug si modifié
+    // Vérifier l'unicité du slug si modifiée
     if (
       updateCategoryDto.slug &&
       updateCategoryDto.slug !== (category as any).slug
@@ -33,11 +190,11 @@ import {  BadRequestException,  Injectable,  NotFoundException,} from '@nestjs/c
 
     // Si le parent change, recalculer level et path
     if (
-      updateCategoryDto.parentId !== undefined &&
-      updateCategoryDto.parentId !== (category as any).parent?.toString()
+      updateCategoryDto.parent !== undefined &&
+      updateCategoryDto.parent !== (category as any).parent
     ) {
       const { level, path } = await this.calculateLevelAndPath(
-        updateCategoryDto.parentId,
+        updateCategoryDto.parent,
         updateCategoryDto.slug || (category as any).slug,
       );
 
@@ -52,7 +209,7 @@ import {  BadRequestException,  Injectable,  NotFoundException,} from '@nestjs/c
   /**
    * Supprimer une catégorie (soft delete)
    */
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<FormatResponse<void>> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('ID de catégorie invalide');
     }
@@ -78,6 +235,9 @@ import {  BadRequestException,  Injectable,  NotFoundException,} from '@nestjs/c
     (category as any).isActive = false;
     (category as any).isVisible = false;
     await category.save();
+    return formatResponse({
+      message: 'La catégorie a été supprimée avec succès',
+    });
   }
 
   /**
@@ -108,7 +268,7 @@ import {  BadRequestException,  Injectable,  NotFoundException,} from '@nestjs/c
   /**
    * Récupérer toutes les catégories d'un pays (admin)
    */
-  async findAll(country?: string): Promise<CategoryDocument[]> {
+  async findAllCategories(country?: string): Promise<CategoryDocument[]> {
     const query: any = {};
 
     if (country) {
@@ -124,7 +284,10 @@ import {  BadRequestException,  Injectable,  NotFoundException,} from '@nestjs/c
   /**
    * Mettre à jour le compteur de produits
    */
-  async updateProductCount(categoryId: string, increment: number): Promise<void> {
+  async updateProductCount(
+    categoryId: string,
+    increment: number,
+  ): Promise<void> {
     await this.categoryModel.findByIdAndUpdate(categoryId, {
       $inc: { productCount: increment },
     });
@@ -142,19 +305,17 @@ import {  BadRequestException,  Injectable,  NotFoundException,} from '@nestjs/c
     language: 'fr' | 'en',
   ): TransformedCategory {
     return {
-      id: category._id.toString(),
+      id: category._id,
       name: category.name[language] || category.name.fr,
       slug: category.slug,
       description: category.description[language] || category.description.fr,
-      parentId: category.parent?.toString() || null,
-      level: category.level || 0,
-      path: category.path || [],
-      countries: category.countries || [],
+      parentId: category.parent || null,
       isActive: category.isActive,
       isVisible: category.isVisible,
-      displayOrder: category.displayOrder,
+      children: category.children || [],
       icon: category.icon,
       image: category.image,
+      sortOrder: category.sortOrder,
       productCount: category.productCount || 0,
       seoMeta: category.seoMeta
         ? {
@@ -182,7 +343,7 @@ import {  BadRequestException,  Injectable,  NotFoundException,} from '@nestjs/c
     }
 
     const children = categories.filter((cat) => {
-      const catParent = cat.parent?.toString() || null;
+      const catParent = cat.parent || null;
       const targetParent = parentId?.toString() || null;
       return catParent === targetParent;
     });

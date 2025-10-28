@@ -22,7 +22,7 @@ const ModeCollection = () => {
 				</Button>
 			</div>
 			<div
-				className="relative flex items-end w-full md:w-1/2 h-[40rem] md:h-[78vh] rounded-lg overflow-hidden  bg-cover  bg-center bg-no-repeat"
+				className="relative flex items-end w-full md:w-1/2 h-[40rem] md:h-[78vh]  overflow-hidden  bg-cover  bg-center bg-no-repeat"
 				style={{ backgroundImage: `url(/home/promotion.jpg)` }}
 			>
 				<div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-t from-black/40 to-black/0" />

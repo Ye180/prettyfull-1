@@ -12,6 +12,9 @@ interface ProductGalleryProps {
 
 	activeImage: number;
 	setActiveImage: Dispatch<SetStateAction<number>>;
+	promotion?: {
+		pourcentage: number;
+	};
 }
 
 export function ProductGallery({
@@ -20,6 +23,7 @@ export function ProductGallery({
 	className,
 	activeImage,
 	setActiveImage,
+	promotion,
 }: ProductGalleryProps) {
 	return (
 		<div
@@ -56,15 +60,20 @@ export function ProductGallery({
 			</div>
 
 			{/* Image principale */}
-			<div className="relative max-xs:h-[25vh] xs:h-[70vh] bg-gray-100 min-h-[350px] hidden w-[40rem]  sm:flex">
+			<div className="relative hidden sm:flex w-fit">
 				<Image
-					src={images?.[activeImage] as string | StaticImport}
+					src={images?.[activeImage] || "/placeholder.png"}
 					alt={title}
-					fill
+					width={500}
+					height={800}
 					className="object-cover"
 					priority
-					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 				/>
+				{promotion && (
+					<span className="fond-semibold bg-red-700 text-white !text-[1.2rem] lg:!text-xs  absolute top-4 right-4 px-4 py-2 rounded-full">
+						{promotion.pourcentage}% OFF
+					</span>
+				)}
 			</div>
 
 			{/* Mobile thumbnails (dots) */}
@@ -79,8 +88,8 @@ export function ProductGallery({
 							key={index}
 							src={image}
 							alt={`${title} - vue ${index + 1}`}
-							width={300}
-							height={500}
+							width={150}
+							height={350}
 						/>
 					))}
 				</div>

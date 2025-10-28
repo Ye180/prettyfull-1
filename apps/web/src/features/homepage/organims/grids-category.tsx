@@ -1,0 +1,53 @@
+import { BOX_CATEGORY } from "@/lib/utils/constants/constants";
+import Title from "@/shared/components/molecules/core/title";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+
+const GridCategory = () => {
+	const t = useTranslations("HomePage.news");
+	return (
+		<Container maxWidth="100vw" className="w-full px-4 space-y-8 lg:px-40">
+			<Title title="Shop By Category" buttonLabel={t("viewAll")} />
+			<div className="grid gap-x-2 md:gap-4  grid-cols-3 h-[50vh] md:h-[70vh] ">
+				{BOX_CATEGORY.slice(0, 5).map((item, index) => (
+					<div
+						key={index}
+						className="relative m-2 overflow-hidden bg-gray-200 shadow-md box"
+					>
+						<Image
+							src="/category/category1.jpg"
+							alt="Category 1"
+							fill
+							className="object-cover w-full h-32 "
+						/>
+						<div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-t from-black/30 to-black/0" />
+						<div className="absolute z-10 text-white bottom-4 left-8 ">
+							<h4>{item.label}</h4>
+						</div>
+					</div>
+				))}
+
+				{BOX_CATEGORY.slice(6).map((item, index) => (
+					<div
+						key={index}
+						className="relative flex p-4 m-2 bg-gray-200 shadow-md lg:hidden "
+					>
+						<Image
+							src="/category/category1.jpg"
+							alt="Category 1"
+							fill
+							className="object-cover w-full h-32 rounded-md"
+						/>
+						<div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-t from-black/30 to-black/0" />
+						<div className="absolute z-10 text-white bottom-4 left-8 ">
+							<h4>{item.label}</h4>
+						</div>
+					</div>
+				))}
+			</div>
+		</Container>
+	);
+};
+
+export default GridCategory;

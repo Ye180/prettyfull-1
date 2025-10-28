@@ -1,15 +1,22 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { REDIS_CLIENT } from '../../shared/redis/redis.constants';
-import {
-  AddToCartDto,
-  CartResponseDto,
-  UpdateCartItemDto,
-} from './dto/cart.dto';
+import { ProductsService } from '../products/products.service';
+import { AddToCartDto, UpdateCartItemDto } from './dto/cart.dto';
 
 @Injectable()
 export class CartsService {
-  constructor(@Inject(REDIS_CLIENT) private readonly redisClient: Redis) {}
+  constructor(
+    @Inject(REDIS_CLIENT) private readonly redisClient: Redis,
+    private productService: ProductsService,
+
+    // private productModel: Model<ProductDocument>,
+  ) {}
 
   private getCartKey(userId: string): string {
     return `cart:user:${userId}`;
@@ -17,8 +24,9 @@ export class CartsService {
 
   async addToCart(
     userId: string,
+    language: string,
     addToCartDto: AddToCartDto,
-  ): Promise<CartResponseDto> {
+  ) {
     const { productId, quantity, selectedVariants } = addToCartDto;
 
     if (quantity <= 0) {
@@ -26,97 +34,212 @@ export class CartsService {
     }
 
     const cartKey = this.getCartKey(userId);
-    let itemKey = productId;
 
+    // --- Construction d’une clé stable pour Redis ---
+    let itemKey = productId;
     if (selectedVariants && Object.keys(selectedVariants).length > 0) {
-      const variantString = Object.entries(selectedVariants)
-        .sort()
-        .map(([k, v]) => `${k}=${v}`)
-        .join(',');
-      itemKey = `${productId}:${variantString}`;
+      const variants = Object.entries(selectedVariants)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('|');
+      itemKey = `${productId}|${variants}`;
     }
 
     try {
-      // Utilise HINCRBY pour incrémenter la quantité dans le hash Redis
+      // Incrémente ou crée l’item dans le panier Redis
       await this.redisClient.hincrby(cartKey, itemKey, quantity);
-      // Expire le panier après 30 jours
+
+      // Expiration du panier : 30 jours
       await this.redisClient.expire(cartKey, 30 * 24 * 60 * 60);
-      return this.getCart(userId);
-    } catch (error) {
-      throw new BadRequestException("Erreur lors de l'ajout au panier");
+
+      // Retourne le panier complet
+      // return await this.getCart(userId, language);
+    } catch (error: unknown) {
+      throw new BadRequestException(
+        (error as Error).message || "Erreur lors de l'ajout au panier",
+      );
     }
   }
 
-  async getCart(userId: string): Promise<CartResponseDto> {
+  async getCart(userId: string) {
     const cartKey = this.getCartKey(userId);
 
     try {
-      // Utilise HGETALL pour récupérer tous les items du panier
       const cartItems = await this.redisClient.hgetall(cartKey);
 
-      const items = Object.entries(cartItems).map(([itemKey, quantityStr]) => {
-        const quantity = parseInt(quantityStr, 10);
-        const parts = itemKey.split(':');
-        const productId = parts[0] || '';
-        const variantParts = parts.slice(1);
-        const selectedVariants: Record<string, string> = {};
+      // Vérifier si le panier est vide
+      if (Object.keys(cartItems).length === 0) {
+        return {
+          items: [],
+          itemsCount: 0,
+        };
+      }
 
-        if (variantParts.length > 0) {
-          const variantString = variantParts.join(':');
-          variantString.split(',').forEach((variant) => {
+      // Correction : utiliser Promise.all avec les bonnes données
+      const items = await Promise.all(
+        Object.entries(cartItems).map(async ([itemKey, quantityStr]) => {
+          const quantity = parseInt(quantityStr, 10);
+          const [productId, ...variantParts] = itemKey.split('|');
+
+          const selectedVariants: Record<string, string> = {};
+          variantParts.forEach((variant) => {
             const [key, value] = variant.split('=');
             if (key && value) {
               selectedVariants[key] = value;
             }
           });
-        }
 
-        return {
-          productId,
-          quantity,
-          selectedVariants:
-            Object.keys(selectedVariants).length > 0
-              ? selectedVariants
-              : undefined,
-        };
-      });
+          Logger.log('Fetching product for ID:', productId);
 
-      const totalItems = items.reduce(
-        (total, item) => total + item.quantity,
+          try {
+            // Récupérer les détails du produit
+            const product = await this.productService.findOne(
+              productId as string,
+              'en',
+            ); // ou la langue appropriée
+
+            return {
+              productId,
+              sku: productId,
+              name: product.name,
+              quantity,
+              unitPrice: {
+                amount: Number(product.price?.amount || 0),
+                currency: 'XOF',
+              },
+              totalPrice: {
+                amount: Number(product.price?.amount || 0) * quantity,
+                currency: 'XOF',
+              },
+              isActive: true,
+              selectedVariants:
+                Object.keys(selectedVariants).length > 0
+                  ? selectedVariants
+                  : undefined,
+            };
+          } catch (productError) {
+            Logger.error('Error fetching product:', productError);
+            // Retourner un item avec des données par défaut si le produit n'est pas trouvé
+            return {
+              productId,
+              sku: productId,
+              name: 'Produit non trouvé',
+              quantity,
+              unitPrice: {
+                amount: 0,
+                currency: 'XOF',
+              },
+              totalPrice: {
+                amount: 0,
+                currency: 'XOF',
+              },
+              isActive: false,
+              selectedVariants:
+                Object.keys(selectedVariants).length > 0
+                  ? selectedVariants
+                  : undefined,
+            };
+          }
+        }),
+      );
+
+      const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
+      const subtotalAmount = items.reduce(
+        (acc, item) => acc + item.totalPrice.amount,
         0,
       );
+
+      const codeAmount = { amount: 8, currency: 'XOF' };
+
+      Logger.log('Cart items processed:', items);
 
       return {
         userId,
         items,
         totalItems,
+        subtotal: {
+          amount: subtotalAmount,
+          currency: 'XOF',
+        },
+        codepromo: { amount: 8, currency: 'XOF' },
+        total: {
+          amount: subtotalAmount - Number(codeAmount.amount),
+          currency: 'XOF',
+        },
         updatedAt: new Date(),
       };
     } catch (error) {
-      throw new BadRequestException('Erreur lors de la récupération du panier');
+      Logger.error('Error in getCart:', error);
+      throw new BadRequestException(
+        (error as Error).message || 'Erreur lors de la récupération du panier',
+      );
     }
   }
+
+  removeCartItem = async (
+    userId: string,
+    productId: string,
+    selectedVariants?: Record<string, string>,
+  ) => {
+    const cartKey = this.getCartKey(userId);
+    let itemKey = productId;
+
+    // Correction : utiliser le même format que dans addToCart (avec | au lieu de :)
+    if (selectedVariants && Object.keys(selectedVariants).length > 0) {
+      const variants = Object.entries(selectedVariants)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('|');
+      itemKey = `${productId}|${variants}`;
+    }
+
+    try {
+      // Debug : vérifier la clé avant suppression
+      Logger.log('Attempting to remove item with key:', itemKey);
+
+      // Vérifier si l'item existe
+      const exists = await this.redisClient.hexists(cartKey, itemKey);
+      Logger.log('Item exists:', exists);
+
+      if (!exists) {
+        // Si l'item n'existe pas, lister toutes les clés pour debug
+        const allItems = await this.redisClient.hkeys(cartKey);
+        Logger.log('Available cart keys:', allItems);
+        throw new BadRequestException('Produit non trouvé dans le panier');
+      }
+
+      // Utilise HDEL pour supprimer l'item
+      const result = await this.redisClient.hdel(cartKey, itemKey);
+      Logger.log('Delete result:', result);
+
+      return this.getCart(userId);
+    } catch (error) {
+      Logger.error('Error in removeCartItem:', error);
+      throw new BadRequestException(
+        (error as Error).message ||
+          'Erreur lors de la suppression du produit du panier',
+      );
+    }
+  };
 
   async updateCartItem(
     userId: string,
     productId: string,
     updateCartItemDto: UpdateCartItemDto,
-  ): Promise<CartResponseDto> {
+  ) {
     const { quantity, selectedVariants } = updateCartItemDto;
 
-    if (quantity < 0) {
+    if ((quantity as number) < 0) {
       throw new BadRequestException('La quantité ne peut pas être négative');
     }
 
     const cartKey = this.getCartKey(userId);
     let itemKey = productId;
 
+    // Correction : utiliser le même format que dans addToCart (avec | au lieu de :)
     if (selectedVariants && Object.keys(selectedVariants).length > 0) {
-      const variantString = Object.entries(selectedVariants)
-        .sort()
-        .map(([k, v]) => `${k}=${v}`)
-        .join(',');
-      itemKey = `${productId}:${variantString}`;
+      const variants = Object.entries(selectedVariants)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('|');
+      itemKey = `${productId}|${variants}`;
     }
 
     try {
@@ -125,12 +248,14 @@ export class CartsService {
         await this.redisClient.hdel(cartKey, itemKey);
       } else {
         // Utilise HSET pour définir la nouvelle quantité
-        await this.redisClient.hset(cartKey, itemKey, quantity);
+        await this.redisClient.hset(cartKey, itemKey, quantity as number);
       }
 
       return this.getCart(userId);
     } catch (error) {
-      throw new BadRequestException('Erreur lors de la mise à jour du panier');
+      throw new BadRequestException(
+        (error as Error).message || 'Erreur lors de la mise à jour du panier',
+      );
     }
   }
 
@@ -138,16 +263,16 @@ export class CartsService {
     userId: string,
     productId: string,
     selectedVariants?: Record<string, string>,
-  ): Promise<CartResponseDto> {
+  ) {
     const cartKey = this.getCartKey(userId);
     let itemKey = productId;
 
+    // Correction : utiliser le même format que dans addToCart (avec | au lieu de :)
     if (selectedVariants && Object.keys(selectedVariants).length > 0) {
-      const variantString = Object.entries(selectedVariants)
-        .sort()
-        .map(([k, v]) => `${k}=${v}`)
-        .join(',');
-      itemKey = `${productId}:${variantString}`;
+      const variants = Object.entries(selectedVariants)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('|');
+      itemKey = `${productId}|${variants}`;
     }
 
     try {
@@ -156,7 +281,8 @@ export class CartsService {
       return this.getCart(userId);
     } catch (error) {
       throw new BadRequestException(
-        'Erreur lors de la suppression du produit du panier',
+        (error as Error).message ||
+          'Erreur lors de la suppression du produit du panier',
       );
     }
   }
@@ -168,7 +294,9 @@ export class CartsService {
       await this.redisClient.del(cartKey);
       return { message: 'Panier vidé avec succès' };
     } catch (error) {
-      throw new BadRequestException('Erreur lors de la suppression du panier');
+      throw new BadRequestException(
+        (error as Error).message || 'Erreur lors de la suppression du panier',
+      );
     }
   }
 }

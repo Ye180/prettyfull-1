@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { NotificationsModule } from '../notifications/notifications.module';
+import { CategoriesController } from './categories.controller';
+import { CategoriesService } from './categories.service';
 import { Category, CategorySchema } from './schemas/category.schema';
 
 @Module({
@@ -7,9 +10,10 @@ import { Category, CategorySchema } from './schemas/category.schema';
     MongooseModule.forFeature([
       { name: Category.name, schema: CategorySchema },
     ]),
+    NotificationsModule,
   ],
-  controllers: [],
-  providers: [],
-  exports: [],
+  controllers: [CategoriesController],
+  providers: [CategoriesService],
+  exports: [CategoriesService],
 })
 export class CategoriesModule {}

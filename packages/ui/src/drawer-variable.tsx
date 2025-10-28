@@ -130,12 +130,13 @@ const DrawerVariable = ({
 
 				<div className="h-[80vh] flex justify-around gap-10 lg:justify-center border-none ">
 					<div className="flex justify-around w-full gap-10 px-4 overflow-y-scroll sm:px-10 scrollbar-hide lg:justify-center">
-						<div className="flex flex-col w-full gap-10 sm:w-3/5 lg:justify-center sm:flex-row">
+						<div className="flex flex-col w-full gap-6 sm:w-3/5 lg:justify-center sm:flex-row">
 							<ProductGallery
 								images={variable.images}
 								title={productData.title}
 								activeImage={activeImage}
 								setActiveImage={setActiveImage}
+								promotion={productData.promotion}
 							/>
 							<ProductInfos
 								sizes={
@@ -148,6 +149,7 @@ const DrawerVariable = ({
 								setSelectedColor={handleColorChange}
 								selectedSize={selectedSize}
 								setSelectedSize={handleSizeChange}
+								promotion={productData.promotion}
 								onClick={() => {
 									handleClick();
 								}}

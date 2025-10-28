@@ -14,13 +14,14 @@ export const paths = {
     help : "/help",
     search : "/search",
     wishlist : "/wishlist",
-    profile : "/profile",
+    account : "/account",
     cart : "/cart",
     checkout : "/checkout",
-    collection : "/collection",
+    collection: "/collection",
+    faq: "/faq",
     contact : "/contact",
-    terms : "/terms",
-    privacy : "/privacy",
+    terms : "/terms-and-conditions",
+    shippingReturn: "/shipping-return",
     ...ROOTS
 }
 

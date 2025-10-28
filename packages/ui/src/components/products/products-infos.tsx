@@ -23,6 +23,9 @@ type ProductInfosProps = {
 	handleClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 	onClick: ({ size, color }: { size: string; color: string }) => void;
 	disabled?: boolean;
+	promotion?: {
+		pourcentage: number;
+	};
 };
 
 const ProductInfos = ({
@@ -35,6 +38,7 @@ const ProductInfos = ({
 	handleClick,
 	onClick,
 	disabled,
+	promotion,
 }: ProductInfosProps) => {
 	const classNames = "!font-light font-manrope !text-[1.8rem]";
 	return (
@@ -46,7 +50,12 @@ const ProductInfos = ({
 				</h4>
 
 				{/* Titre et prix */}
-				<div className="space-y-2">
+				<div className="space-y-1">
+					{promotion && (
+						<span className="font-bold text-red-700 !text-[1.5rem] lg:!text-xs    rounded-full max-sm:flex sm:hidden ">
+							{promotion.pourcentage}% OFF
+						</span>
+					)}
 					<h1 className="!text-[3rem] sm:!text-[4.8rem] font-bold ">
 						{productData.title}
 					</h1>
@@ -81,7 +90,7 @@ const ProductInfos = ({
 				/>
 
 				{/* Boutons d'action */}
-				<div className="flex gap-8 mt-15 w-[70%] items-center pb-8">
+				<div className="flex gap-8 mt-15 w-full sm:w-[70%] items-center pb-8">
 					<Button
 						variant="default"
 						className="flex-1 py-6 text-lg"

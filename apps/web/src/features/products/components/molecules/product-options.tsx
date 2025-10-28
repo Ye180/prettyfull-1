@@ -64,7 +64,7 @@ export function ProductOptions({
 					</p>
 					<span className="text-right max-sm:hidden sm:flex">Taille</span>
 				</div>
-				<div className="flex flex-wrap ">
+				<div className="flex flex-wrap gap-4 ">
 					<Size
 						selectSize={selectedSize}
 						onSizeChange={onSizeChange}

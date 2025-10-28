@@ -1,31 +1,52 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ClientSession, Model, Types } from 'mongoose';
+
 import {
-  ProductDocument,
-  ProductSchema,
-} from '../../shared/schemas/product.schema';
+  FormatResponse,
+  formatResponse,
+} from 'src/shared/utils/format-response';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Product, ProductDocument } from './schemas/product.schema';
 
 export interface TransformedProduct {
   id: string;
-  name: string;
-  description: string;
+  name: { fr: string; en: string };
+  description: { fr: string; en: string };
+  category?: string;
+  link?: string;
+  variable?: {
+    color: { label: string; code: string };
+    size: string[];
+    image: string[];
+    quantity: number;
+  }[];
+  notVariable?: {
+    color?: { label: string; code: string };
+    size: string[];
+    image: string[];
+    quantity?: number;
+  };
+  smallDescription?: string;
   sku: string;
-  price: { amount: number; currency: string };
-  stock: number;
-  category: any;
-  images: string[];
-  variants: any[];
-  isActive: boolean;
-  isFeatured: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  price: { amount: 0; currency: string };
+  solde?: boolean;
+  promotion?: { reduced_price: number; pourcentage: number };
+  isLoading?: boolean;
+  label?: string;
+  isActive: true;
+  isFeatured: true;
+  seoMeta: {
+    title: { fr: string; en: string };
+    description: { fr: string; en: string };
+    keywords: string[];
+  };
 }
 
 export interface PaginatedProducts {
@@ -39,7 +60,7 @@ export interface PaginatedProducts {
 @Injectable()
 export class ProductsService {
   constructor(
-    @InjectModel(ProductSchema.name)
+    @InjectModel(Product.name)
     private productModel: Model<ProductDocument>,
   ) {}
 
@@ -79,7 +100,7 @@ export class ProductsService {
    */
   async findOne(
     id: string,
-    language: string = 'fr',
+    language: string = 'en',
   ): Promise<TransformedProduct> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('ID de produit invalide');
@@ -141,7 +162,7 @@ export class ProductsService {
   /**
    * Supprime un produit (soft delete)
    */
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<FormatResponse<ProductDocument>> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('ID de produit invalide');
     }
@@ -153,6 +174,12 @@ export class ProductsService {
     if (!result) {
       throw new NotFoundException('Produit non trouvé');
     }
+    Logger.log(`Produit avec ID ${id} a été désactivé (soft delete).`);
+
+    return formatResponse({
+      data: result,
+      message: 'Produit désactivé avec succès',
+    });
   }
 
   /**
@@ -189,25 +216,23 @@ export class ProductsService {
    */
   private transformProduct(product: any, language: string): TransformedProduct {
     return {
-      id: product._id.toString(),
-      name: product.name[language] || product.name.fr,
-      description: product.description[language] || product.description.fr,
+      id: product._id,
+      name: product.name[language],
+      description: product.description[language],
+      category: product.category ? product.categoryId : undefined,
+      link: product.link,
+      variable: product.variable,
+      notVariable: product.notVariable,
+      smallDescription: product.smallDescription[language],
       sku: product.sku,
       price: product.price,
-      stock: product.stock,
-      category: product.category
-        ? {
-            id: product.category._id.toString(),
-            name: product.category.name[language] || product.category.name.fr,
-            slug: product.category.slug,
-          }
-        : null,
-      images: product.images || [],
-      variants: product.variants || [],
+      solde: product.solde,
+      promotion: product.promotion,
+      isLoading: product.isLoading,
+      label: product.label,
       isActive: product.isActive,
       isFeatured: product.isFeatured,
-      createdAt: product.createdAt,
-      updatedAt: product.updatedAt,
+      seoMeta: product.seoMeta,
     };
   }
 }

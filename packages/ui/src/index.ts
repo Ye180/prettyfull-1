@@ -22,6 +22,7 @@ export * from "../src/components/ui/label";
 export * from "../src/components/ui/navlink";
 export * from "../src/components/ui/scroll-area"; // <-- AJOUTEZ CETTE LIGNE
 export * from "../src/components/ui/select";
+export * from "../src/components/ui/skeleton"; // <-- AJOUTEZ CETTE LIGNE
 export * from "../src/components/ui/tabs";
 
 // --- Import des icônes ---

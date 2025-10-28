@@ -1,6 +1,6 @@
 import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
 import { BOX_DATA_SECOND } from "@/lib/utils/constants/constants";
-import ViewAll from "@/shared/components/molecules/core/view-all";
+import Title from "@/shared/components/molecules/core/title";
 import { Button } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -11,11 +11,7 @@ const TrendReport = () => {
 	const t = useTranslations("HomePage.trendReport");
 	return (
 		<Container maxWidth="100vw" className="w-full px-4 lg:px-40">
-			<div className="flex justify-between space-y-8 ">
-				<h4 className="w-fit max-md:!text-[2.5rem]"> The {t("title")}</h4>
-
-				<ViewAll>{t("viewAll")}</ViewAll>
-			</div>
+			<Title title={t("title")} buttonLabel={t("viewAll")} />
 
 			<div className="grid grid-cols-2 overflow-x-auto md:grid-cols-4 gap-x-4 md:gap-x-20 ">
 				{BOX_DATA_SECOND.map((item, index) => (

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   Param,
   Patch,
   Post,
@@ -22,9 +23,23 @@ export class CartsController {
   @Post(':userId/items')
   async addToCart(
     @Param('userId') userId: string,
+    @Headers('accept-language') language: string = 'fr',
     @Body() addToCartDto: AddToCartDto,
   ) {
-    return this.cartsService.addToCart(userId, addToCartDto);
+    return this.cartsService.addToCart(userId, language, addToCartDto);
+  }
+
+  @Delete(':userId/items/:productId')
+  async removeCartItem(
+    @Param('userId') userId: string,
+    @Param('productId') productId: string,
+    @Body('selectedVariants') selectedVariants?: Record<string, string>,
+  ) {
+    return this.cartsService.removeCartItem(
+      userId,
+      productId,
+      selectedVariants,
+    );
   }
 
   @Patch(':userId/items/:productId')

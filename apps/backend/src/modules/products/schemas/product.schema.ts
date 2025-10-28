@@ -1,124 +1,157 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
-import type { I18nString, Price } from '../../../shared/schemas/i18n.schema';
-import {
-  I18nStringSchema,
-  PriceSchema,
-} from '../../../shared/schemas/i18n.schema';
+import { Document } from 'mongoose';
 
 export type ProductDocument = Product & Document;
 
-export enum ProductStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-  OUT_OF_STOCK = 'out_of_stock',
+// --- Sous-schémas réutilisables ---
+
+@Schema({ _id: false })
+class I18nString {
+  @Prop({ type: String, required: true })
+  fr: string;
+
+  @Prop({ type: String, required: true })
+  en: string;
 }
+const I18nStringSchema = SchemaFactory.createForClass(I18nString);
+
+@Schema({ _id: false })
+class Color {
+  @Prop({ type: String, required: true })
+  label: string;
+
+  @Prop({ type: String, required: true })
+  code: string;
+}
+const ColorSchema = SchemaFactory.createForClass(Color);
+
+@Schema({ _id: false })
+class Price {
+  @Prop({ type: Number, required: true, min: 0 })
+  amount: number;
+
+  @Prop({ type: String, required: true })
+  currency: string;
+}
+const PriceSchema = SchemaFactory.createForClass(Price);
+
+@Schema({ _id: false })
+class Promotion {
+  @Prop({ type: Number, required: true })
+  reduced_price: number;
+
+  @Prop({ type: Number, required: true })
+  pourcentage: number;
+}
+const PromotionSchema = SchemaFactory.createForClass(Promotion);
+
+@Schema({ _id: false })
+class VariableProduct {
+  @Prop({ type: ColorSchema, required: true })
+  color: Color;
+
+  @Prop({ type: [String], required: true })
+  size: string[];
+
+  @Prop({ type: [String], required: true })
+  image: string[];
+
+  @Prop({ type: Number, required: true, min: 0 })
+  quantity: number;
+}
+const VariableProductSchema = SchemaFactory.createForClass(VariableProduct);
+
+@Schema({ _id: false })
+class NotVariableProduct {
+  @Prop({ type: ColorSchema })
+  color?: Color;
+
+  @Prop({ type: [String], required: true })
+  size: string[];
+
+  @Prop({ type: [String], required: true })
+  image: string[];
+
+  @Prop({ type: Number, min: 0 })
+  quantity?: number;
+}
+const NotVariableProductSchema =
+  SchemaFactory.createForClass(NotVariableProduct);
+
+@Schema({ _id: false })
+class SeoMeta {
+  @Prop({ type: I18nStringSchema, required: true })
+  title: I18nString;
+
+  @Prop({ type: I18nStringSchema, required: true })
+  description: I18nString;
+
+  @Prop({ type: [String], required: true })
+  keywords: string[];
+}
+const SeoMetaSchema = SchemaFactory.createForClass(SeoMeta);
+
+// --- SCHÉMA PRINCIPAL DU PRODUIT ---
 
 @Schema({ timestamps: true })
-export class Product {
-  @Prop({ required: true, unique: true })
-  sku: string;
-
+export class Product extends Document {
   @Prop({ type: I18nStringSchema, required: true })
   name: I18nString;
 
   @Prop({ type: I18nStringSchema, required: true })
   description: I18nString;
 
-  @Prop({ type: I18nStringSchema })
-  shortDescription?: I18nString;
-
-  @Prop({ type: PriceSchema, required: true })
-  price: Price;
-
-  @Prop({ type: PriceSchema })
-  compareAtPrice?: Price; // Prix barré
+  @Prop({ type: String })
+  category?: string;
 
   @Prop({ type: Number, required: true, min: 0 })
   stock: number;
 
-  @Prop({ type: Number, min: 0 })
-  minimumStock?: number; // Seuil d'alerte stock
+  @Prop({ type: String })
+  link?: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
-  category: Types.ObjectId;
+  @Prop({ type: [VariableProductSchema] })
+  variable?: VariableProduct[];
 
-  @Prop({ type: [String] })
-  images: string[];
+  @Prop({ type: NotVariableProductSchema })
+  notVariable?: NotVariableProduct;
 
   @Prop({ type: String })
-  thumbnail?: string;
+  smallDescription?: string;
 
-  @Prop({ type: [String] })
-  tags: string[];
+  @Prop({ type: String, required: true, unique: true })
+  sku: string;
 
-  @Prop({
-    type: [
-      {
-        name: { type: I18nStringSchema, required: true },
-        values: [{ type: I18nStringSchema, required: true }],
-      },
-    ],
-  })
-  variants?: Array<{
-    name: I18nString;
-    values: I18nString[];
-  }>;
-
-  @Prop({ type: Number, min: 0, max: 5, default: 0 })
-  rating: number;
-
-  @Prop({ type: Number, default: 0 })
-  reviewsCount: number;
-
-  @Prop({ type: String, enum: ProductStatus, default: ProductStatus.ACTIVE })
-  status: ProductStatus;
+  @Prop({ type: PriceSchema, required: true })
+  price: Price;
 
   @Prop({ type: Boolean, default: false })
+  solde?: boolean;
+
+  @Prop({ type: PromotionSchema })
+  promotion?: Promotion;
+
+  @Prop({ type: Boolean, default: false })
+  isLoading?: boolean;
+
+  @Prop({ type: String })
+  label?: string;
+
+  @Prop({ type: Boolean, required: true, default: true })
+  isActive: boolean;
+
+  @Prop({ type: Boolean, required: true, default: true })
   isFeatured: boolean;
 
-  @Prop({ type: Boolean, default: true })
-  isVisible: boolean;
-
-  @Prop({ type: Number, default: 0 })
-  weight?: number; // En grammes
-
-  @Prop({
-    type: {
-      length: Number,
-      width: Number,
-      height: Number,
-    },
-  })
-  dimensions?: {
-    length: number;
-    width: number;
-    height: number;
-  };
-
-  @Prop({ type: Object })
-  seoMeta?: {
-    title?: I18nString;
-    description?: I18nString;
-    keywords?: string[];
-  };
-
-  @Prop({ type: Number, default: 0 })
-  salesCount: number; // Compteur de ventes
+  @Prop({ type: SeoMetaSchema, required: true })
+  seoMeta: SeoMeta;
 }
 
-export const ProductSchema = SchemaFactory.createForClass(Product);
+// export const ProductSchemaDefinition = SchemaFactory.createForClass(Product);
+
+export const ProductSchemaDefinition = SchemaFactory.createForClass(Product);
 
 // Index pour la recherche
-ProductSchema.index({
-  'name.fr': 'text',
-  'name.en': 'text',
-  'description.fr': 'text',
-  'description.en': 'text',
-  tags: 'text',
-});
-
-// Index pour les performances
-ProductSchema.index({ category: 1, status: 1 });
-ProductSchema.index({ status: 1, isFeatured: -1 });
-ProductSchema.index({ 'price.amount': 1 });
+ProductSchemaDefinition.index({ name: 'text', description: 'text' });
+ProductSchemaDefinition.index({ sku: 1, isActive: 1 });
+ProductSchemaDefinition.index({ category: 1, isActive: 1 });

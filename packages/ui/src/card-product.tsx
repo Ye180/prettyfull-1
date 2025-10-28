@@ -12,7 +12,7 @@ import { CloseIcon } from "./icons/close.icon";
 import { Heart } from "./icons/heart.icon";
 import Size from "./size";
 
-const cardVariants = cva(["space-y-3 w-[100%] h-fit "], {
+const cardVariants = cva(["space-y-3 w-[100%] h-fit max-lg:pb-6 "], {
 	variants: {
 		variant: {
 			default: "tracking-wide  cursor-pointer",
@@ -160,7 +160,10 @@ export function CardProduct({
 				onClick={() => handleRoutes(link)}
 			> */}
 			{/* L'affichage d'un produit avec un produits variable */}
-			<div className="relative h-fit " onClick={() => handleRoutes(link)}>
+			<div
+				className="relative h-fit md:hover:[&>div]:opacity-100 "
+				onClick={() => handleRoutes(link)}
+			>
 				{variable?.map((variant, i) => (
 					<Image
 						key={i}
@@ -239,10 +242,32 @@ export function CardProduct({
 					close={() => updateDrawerState("showSizes", false)}
 				/>
 				{promotion && (
-					<span className="text-black font-semibold !text-[1rem] lg:!text-xs bg-light absolute top-4 right-4 px-4 py-2 rounded-full">
+					<span className="fond-semibold bg-red-700 text-white !text-[0.8rem] lg:!text-[1.2rem] lg:!text-xs  absolute top-4 left-4 px-3 py-2 rounded-full">
 						{promotion.pourcentage}% OFF
 					</span>
 				)}
+
+				{(notVariable?.size || variable) &&
+					(drawerStates.showSizes ? (
+						<div className="absolute  w-[80%] left-1/2 right-1/2  -translate-x-1/2 bg-white border-2 border-gray-200 bottom-15 text-black  text-center rounded-md text-sm font-light  p-8 shadow-lg max-md:hidden md:block">
+							<div className="flex items-center justify-between mb-6">
+								<p className="font-semibold text-[1.4rem]">Size</p>
+								<button
+									onClick={(e) => (
+										e.stopPropagation(),
+										updateDrawerState("showSizes", false)
+									)}
+									className="cursor-pointer"
+								>
+									<CloseIcon className="w-8 h-8" />
+								</button>
+							</div>
+							<Size
+								size={size}
+								onclose={() => updateDrawerState("showSizes", false)}
+							/>
+						</div>
+					) : null)}
 			</div>
 
 			<div className="space-y-3">
@@ -306,30 +331,13 @@ export function CardProduct({
 							price,
 							variable,
 							notVariable,
+							promotion,
 
 							description: smallDescription || "",
 						}}
 					/>
 				)}
 			</div>
-			{(notVariable?.size || variable) &&
-				(drawerStates.showSizes ? (
-					<div className="absolute  w-[80%] left-1/2 right-1/2  -translate-x-1/2 bg-white border-2 border-gray-200 bottom-15 text-black  text-center rounded-md text-sm font-light  p-8 shadow-lg max-md:hidden md:block">
-						<div className="flex items-center justify-between mb-6">
-							<p className="font-semibold text-[1.4rem]">Size</p>
-							<button
-								onClick={() => updateDrawerState("showSizes", false)}
-								className="cursor-pointer"
-							>
-								<CloseIcon className="w-8 h-8" />
-							</button>
-						</div>
-						<Size
-							size={size}
-							onclose={() => updateDrawerState("showSizes", false)}
-						/>
-					</div>
-				) : null)}
 		</article>
 	);
 }

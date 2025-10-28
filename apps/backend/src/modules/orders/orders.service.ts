@@ -6,14 +6,17 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ClientSession, Model, Types } from 'mongoose';
+// import { OrderDocument, PaymentStatus } from 'src/shared/schemas/order.schema';
+// import { ProductDocument } from 'src/shared/schemas/product.schema';
+import { PaymentStatus } from 'src/shared/schemas/payment.schema';
 import { NotificationsProducerService } from '../notifications/notifications.producer.service';
 import { Product, ProductDocument } from '../products/schemas/product.schema';
 import {
   Order,
   OrderDocument,
+  // OrderDocument,
   OrderStatus,
-  PaymentStatus,
-} from './schemas/order.schema';
+} from './schemas/orders.schema';
 
 export interface CreateOrderDto {
   userId: string;
@@ -219,7 +222,7 @@ export class OrdersService {
         'Erreur interne lors de la création de la commande',
       );
     } finally {
-      session.endSession();
+      await session.endSession();
     }
   }
 
@@ -458,7 +461,10 @@ export class OrdersService {
       console.log(`✅ Commande ${orderData.orderNumber} annulée avec succès`);
 
       // Envoyer la notification d'annulation
-      await this.sendOrderCancelledNotification(updatedOrder!, reason);
+      await this.sendOrderCancelledNotification(
+        updatedOrder as OrderDocument,
+        reason,
+      );
 
       return updatedOrder!;
     } catch (error) {
@@ -466,7 +472,7 @@ export class OrdersService {
       console.error("❌ Erreur lors de l'annulation de la commande:", error);
       throw error;
     } finally {
-      session.endSession();
+      await session.endSession();
     }
   }
 
@@ -477,44 +483,41 @@ export class OrdersService {
   /**
    * Envoyer une notification de commande créée
    */
-  private async sendOrderCreatedNotification(
-    order: OrderDocument,
-  ): Promise<void> {
+  private sendOrderCreatedNotification(order: OrderDocument) {
     try {
+      console.log(order);
       const orderData = order as any;
 
-      // Populate user pour obtenir l'email
-      const populatedOrder = await this.orderModel
-        .findById(order._id)
-        .populate('user')
-        .exec();
-
-      if (!populatedOrder) return;
-
-      const userData = (populatedOrder as any).user;
-
-      await this.notificationsProducer.sendOrderCreatedNotification(
-        {
-          orderId: (order._id as any).toString(),
-          orderNumber: orderData.orderNumber,
-          userId: userData._id.toString(),
-          userEmail: userData.email || orderData.shippingAddress.email,
-          userName: userData.name || orderData.shippingAddress.firstName,
-          total: orderData.totalAmount,
-          items: orderData.items.map((item: any) => ({
-            name: item.name?.fr || item.sku,
-            quantity: item.quantity,
-            price: item.unitPrice,
-          })),
-          shippingAddress: {
-            fullName: `${orderData.shippingAddress.firstName} ${orderData.shippingAddress.lastName}`,
-            street: orderData.shippingAddress.street,
-            city: orderData.shippingAddress.city,
-            country: orderData.shippingAddress.country,
-          },
-        },
-        'fr',
-      );
+      return orderData;
+      // // Populate user pour obtenir l'email
+      // const populatedOrder = await this.orderModel
+      //   .findById(order._id)
+      //   .populate('user')
+      //   .exec();
+      // if (!populatedOrder) return;
+      // const userData = (populatedOrder as any).user;
+      // await this.notificationsProducer.sendOrderCreatedNotification(
+      //   {
+      //     orderId: order._id as any,
+      //     orderNumber: orderData.orderNumber,
+      //     userId: userData._id,
+      //     userEmail: userData.email || orderData.shippingAddress.email,
+      //     userName: userData.name || orderData.shippingAddress.firstName,
+      //     total: orderData.totalAmount,
+      //     items: ((orderData.items as OrderItem[]) || [])?.map((item: any) => ({
+      //       name: item.name?.fr || item.sku,
+      //       quantity: item.quantity,
+      //       price: item.unitPrice,
+      //     })),
+      //     shippingAddress: {
+      //       fullName: `${orderData.shippingAddress.firstName} ${orderData.shippingAddress.lastName}`,
+      //       street: orderData.shippingAddress.street,
+      //       city: orderData.shippingAddress.city,
+      //       country: orderData.shippingAddress.country,
+      //     },
+      //   },
+      //   'fr',
+      // );
     } catch (error) {
       const err = error as Error;
       console.error(
@@ -533,6 +536,7 @@ export class OrdersService {
   ): Promise<void> {
     try {
       const orderData = order as any;
+      console.log(reason);
 
       const populatedOrder = await this.orderModel
         .findById(order._id)
@@ -545,9 +549,9 @@ export class OrdersService {
 
       await this.notificationsProducer.sendOrderCancelledNotification(
         {
-          orderId: (order._id as any).toString(),
+          orderId: order._id as any,
           orderNumber: orderData.orderNumber,
-          userId: userData._id.toString(),
+          userId: userData._id,
           userEmail: userData.email || orderData.shippingAddress.email,
           status: OrderStatus.CANCELLED,
         },

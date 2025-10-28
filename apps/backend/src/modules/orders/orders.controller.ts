@@ -9,13 +9,15 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { OrderStatus, PaymentStatus } from '../../shared/schemas/order.schema';
+
+import { PaymentStatus } from 'src/shared/schemas/payment.schema';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRole } from '../users/schemas/user.schema';
 import type { CreateOrderDto } from './orders.service';
 import { OrdersService } from './orders.service';
+import { OrderStatus } from './schemas/orders.schema';
 
 @Controller('orders')
 export class OrdersController {
