@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { AddressDto } from 'src/modules/address/dto/address.dto';
 
 // --- Sous-schémas réutilisables ---
 
@@ -31,11 +32,7 @@ const PaymentInfoSchema = SchemaFactory.createForClass(PaymentInfo);
 @Schema({ _id: false })
 class OrderItem {
   @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
-  productId: Types.ObjectId;
-
-  variant: string;
-
-  taille: string[];
+  product: Types.ObjectId; // Renommé de productId à product pour correspondre à l'usage
 
   @Prop({ type: String, required: true })
   sku: string;
@@ -51,6 +48,9 @@ class OrderItem {
 
   @Prop({ type: PriceSchema, required: true })
   totalPrice: Price;
+
+  @Prop({ type: Object })
+  selectedVariants?: Record<string, string>; // Ajout du champ pour stocker les variants (couleur, taille, etc.)
 }
 const OrderItemSchema = SchemaFactory.createForClass(OrderItem);
 
@@ -81,10 +81,13 @@ export class Order extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Address', required: true })
   billingAddress: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Address', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Address', required: false })
   shippingAddress: Types.ObjectId;
 
-  @Prop({ type: PaymentInfoSchema, required: true })
+  @Prop({ type: AddressDto })
+  shippingAddressInfo: AddressDto;
+
+  @Prop({ type: PaymentInfoSchema, required: false })
   payment: PaymentInfo;
 
   @Prop({ type: PriceSchema, required: true })

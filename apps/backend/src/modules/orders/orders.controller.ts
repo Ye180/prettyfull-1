@@ -15,7 +15,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRole } from '../users/schemas/user.schema';
-import type { CreateOrderDto } from './orders.service';
+// import type { CreateOrderDto } from './orders.service';
 import { OrdersService } from './orders.service';
 import { OrderStatus } from './schemas/orders.schema';
 
@@ -29,7 +29,8 @@ export class OrdersController {
    */
   @Post()
   @UseGuards(JwtAuthGuard)
-  async create(@Body() createOrderDto: CreateOrderDto) {
+  //CHAN
+  async create(@Body() createOrderDto) {
     return this.ordersService.createOrder(createOrderDto);
   }
 

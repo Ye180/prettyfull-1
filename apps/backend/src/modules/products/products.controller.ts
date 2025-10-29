@@ -53,8 +53,8 @@ export class ProductsController {
    * Crée un nouveau produit
    */
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // // @Roles(UserRole.ADMIN)
   async create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }

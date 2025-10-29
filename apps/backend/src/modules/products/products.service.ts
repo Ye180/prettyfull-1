@@ -15,18 +15,21 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductDocument } from './schemas/product.schema';
 
+interface ProductVariant {
+  color: { label: string; code: string };
+  size: string[];
+  image: string[];
+  quantity: number;
+  [key: string]: any;
+}
+
 export interface TransformedProduct {
   id: string;
   name: { fr: string; en: string };
   description: { fr: string; en: string };
   category?: string;
   link?: string;
-  variable?: {
-    color: { label: string; code: string };
-    size: string[];
-    image: string[];
-    quantity: number;
-  }[];
+  variable?: ProductVariant[];
   notVariable?: {
     color?: { label: string; code: string };
     size: string[];
@@ -120,6 +123,26 @@ export class ProductsService {
   }
 
   /**
+   * Calcule le stock total d'un produit basé sur ses variantes
+   */
+  private calculateTotalStock(product: {
+    variable?: { quantity?: number }[];
+    notVariable?: { quantity?: number };
+  }): number {
+    if (product.variable && product.variable.length > 0) {
+      return product.variable.reduce(
+        (total: number, variant: { quantity?: number }) => {
+          return total + (variant.quantity || 0);
+        },
+        0,
+      );
+    } else if (product.notVariable) {
+      return product.notVariable.quantity || 0;
+    }
+    return 0;
+  }
+
+  /**
    * Crée un nouveau produit
    */
   async create(createProductDto: CreateProductDto): Promise<ProductDocument> {
@@ -128,6 +151,7 @@ export class ProductsService {
       category: createProductDto.categoryId,
     });
 
+    // Le stock sera calculé automatiquement par le hook pre-save
     return product.save();
   }
 
@@ -148,6 +172,7 @@ export class ProductsService {
       delete updateData.categoryId;
     }
 
+    // Le stock sera recalculé automatiquement par le hook pre-update
     const product = await this.productModel
       .findByIdAndUpdate(id, updateData, { new: true })
       .exec();
@@ -183,32 +208,74 @@ export class ProductsService {
   }
 
   /**
-   * Décrémente le stock d'un produit (utilisé par OrdersService)
+   * Décrémente le stock d'une variante spécifique ou du produit simple
    */
   async decrementStock(
     productId: string,
     quantity: number,
+    selectedVariants?: Record<string, string>,
     session?: ClientSession,
   ): Promise<ProductDocument> {
     const product = await this.productModel
-      .findByIdAndUpdate(
-        productId,
-        { $inc: { stock: -quantity } },
-        { new: true, session },
-      )
+      .findById(productId)
+      .session(session as any)
       .exec();
 
     if (!product) {
       throw new NotFoundException(`Produit non trouvé: ${productId}`);
     }
 
-    if (product.stock < 0) {
-      throw new BadRequestException(
-        `Stock insuffisant pour le produit ${product.sku}`,
+    const productData = product as any;
+
+    if (selectedVariants && Object.keys(selectedVariants).length > 0) {
+      // Décrémentation pour un produit avec variantes
+      const variantIndex = (productData as ProductDocument).variable?.findIndex(
+        (v: ProductVariant) => {
+          return Object.entries(selectedVariants).every(
+            ([key, value]) => v[key]?.code === value || v[key] === value,
+          );
+        },
       );
+
+      if (variantIndex === -1 || variantIndex === undefined) {
+        throw new BadRequestException('Variante non trouvée');
+      }
+
+      const variant = productData.variable[variantIndex];
+      if (variant.quantity < quantity) {
+        throw new BadRequestException(
+          `Stock insuffisant pour cette variante du produit ${productData.sku}`,
+        );
+      }
+
+      // Décrémenter la quantité de la variante
+      productData.variable[variantIndex].quantity -= quantity;
+    } else {
+      // Décrémentation pour un produit simple (notVariable)
+      if (!productData.notVariable || !productData.notVariable.quantity) {
+        throw new BadRequestException(
+          `Produit simple sans stock: ${productData.sku}`,
+        );
+      }
+
+      if (productData.notVariable.quantity < quantity) {
+        throw new BadRequestException(
+          `Stock insuffisant pour le produit ${productData.sku}`,
+        );
+      }
+
+      productData.notVariable.quantity -= quantity;
     }
 
-    return product;
+    // Recalculer le stock total
+    productData.stock = this.calculateTotalStock(productData);
+
+    // Sauvegarder avec la session si fournie
+    const updatedProduct = await (productData as ProductDocument).save({
+      session,
+    });
+
+    return updatedProduct;
   }
 
   /**

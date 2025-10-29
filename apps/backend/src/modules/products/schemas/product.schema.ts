@@ -104,7 +104,8 @@ export class Product extends Document {
   @Prop({ type: String })
   category?: string;
 
-  @Prop({ type: Number, required: true, min: 0 })
+  // Stock calculé automatiquement - plus besoin de le rendre required
+  @Prop({ type: Number, min: 0, default: 0 })
   stock: number;
 
   @Prop({ type: String })
@@ -155,3 +156,35 @@ export const ProductSchemaDefinition = SchemaFactory.createForClass(Product);
 ProductSchemaDefinition.index({ name: 'text', description: 'text' });
 ProductSchemaDefinition.index({ sku: 1, isActive: 1 });
 ProductSchemaDefinition.index({ category: 1, isActive: 1 });
+
+// Hook pre-save pour calculer automatiquement le stock total
+ProductSchemaDefinition.pre('save', function (next) {
+  if (this.variable && this.variable.length > 0) {
+    // Calculer la somme des quantités de toutes les variantes
+    this.stock = this.variable.reduce((total, variant) => {
+      return total + (variant.quantity || 0);
+    }, 0);
+  } else if (this.notVariable) {
+    // Si pas de variantes, utiliser la quantité du produit simple
+    this.stock = this.notVariable.quantity || 0;
+  }
+  next();
+});
+
+// Hook pre-update pour recalculer le stock lors des mises à jour
+ProductSchemaDefinition.pre('findOneAndUpdate', function (next) {
+  const update = this.getUpdate() as Partial<Product>;
+
+  if (update.variable && update.variable.length > 0) {
+    update.stock = update.variable.reduce(
+      (total: number, variant: VariableProduct) => {
+        return total + (variant.quantity || 0);
+      },
+      0,
+    );
+  } else if (update.notVariable) {
+    update.stock = update.notVariable.quantity || 0;
+  }
+
+  next();
+});

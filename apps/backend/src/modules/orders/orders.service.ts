@@ -5,10 +5,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ClientSession, Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 // import { OrderDocument, PaymentStatus } from 'src/shared/schemas/order.schema';
 // import { ProductDocument } from 'src/shared/schemas/product.schema';
 import { PaymentStatus } from 'src/shared/schemas/payment.schema';
+import { AddressService } from '../address/address.service';
+import { AddressDto } from '../address/dto/address.dto';
 import { NotificationsProducerService } from '../notifications/notifications.producer.service';
 import { Product, ProductDocument } from '../products/schemas/product.schema';
 import {
@@ -18,14 +20,15 @@ import {
   OrderStatus,
 } from './schemas/orders.schema';
 
-export interface CreateOrderDto {
+export interface CreateOrderDto1 {
   userId: string;
   items: Array<{
     productId: string;
     quantity: number;
     selectedVariants?: Record<string, string>;
   }>;
-  shippingAddress: {
+  shippingAddressInfo: AddressDto;
+  billingAddressInfo?: {
     firstName: string;
     lastName: string;
     email: string;
@@ -35,17 +38,9 @@ export interface CreateOrderDto {
     postalCode?: string;
     country: string;
   };
-  billingAddress?: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    street: string;
-    city: string;
-    postalCode?: string;
-    country: string;
-  };
-  paymentMethod: string;
+  billingAddress?: string;
+  shippingAddress?: string;
+  // paymentMethod: string;
   notes?: string;
 }
 
@@ -55,6 +50,7 @@ export class OrdersService {
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     private readonly notificationsProducer: NotificationsProducerService,
+    private readonly addressService: AddressService,
   ) {}
 
   /**
@@ -71,13 +67,13 @@ export class OrdersService {
   }
 
   /**
-   * Crée une nouvelle commande avec gestion atomique des stocks
+   * Crée une nouvelle commande avec gestion atomique des stocksc
    */
-  async createOrder(createOrderDto: CreateOrderDto): Promise<OrderDocument> {
-    const session: ClientSession = await this.orderModel.db.startSession();
+  async createOrder(createOrderDto: CreateOrderDto1): Promise<OrderDocument> {
+    // const session: ClientSession = await this.orderModel.db.startSession(); // SUPPRIMÉ
 
     try {
-      session.startTransaction();
+      // session.startTransaction(); // SUPPRIMÉ
 
       // 1. Validation et récupération des produits
       const orderItems: any[] = [];
@@ -92,7 +88,7 @@ export class OrdersService {
 
         const product = await this.productModel
           .findById(item.productId)
-          .session(session)
+          // .session(session) // SUPPRIMÉ
           .exec();
 
         if (!product) {
@@ -115,6 +111,7 @@ export class OrdersService {
 
         orderItems.push({
           product: new Types.ObjectId(item.productId),
+          productId: new Types.ObjectId(item.productId),
           sku: productData.sku,
           name: productData.name || { fr: '', en: '' },
           quantity: item.quantity,
@@ -126,8 +123,21 @@ export class OrdersService {
             amount: totalPrice,
             currency: 'XOF',
           },
-          selectedVariants: item.selectedVariants || {},
+          selectedVariants: item.selectedVariants || {}, // Assurez-vous que les variants sont bien inclus
         });
+      }
+
+      const shippingAddressId = createOrderDto.shippingAddress;
+      if (createOrderDto.shippingAddressInfo) {
+        await this.addressService.createAddress({
+          ...createOrderDto.shippingAddressInfo,
+          userId: createOrderDto.userId,
+        });
+        // shippingAddressId = newAddress._id;
+      }
+
+      if (!shippingAddressId) {
+        throw new BadRequestException('Adresse de livraison manquante.');
       }
 
       // 2. Calcul des totaux (pour l'instant, pas de frais de livraison ni de taxes)
@@ -148,13 +158,12 @@ export class OrdersService {
         shippingCost,
         taxAmount,
         discountAmount,
-        totalAmount,
+        total: totalAmount, // Correction: le champ est 'total', pas 'totalAmount'
+        currency: 'XOF', // Ajout du champ 'currency' manquant
         status: OrderStatus.PENDING,
         paymentStatus: PaymentStatus.PENDING,
-        paymentMethod: createOrderDto.paymentMethod,
-        shippingAddress: createOrderDto.shippingAddress,
-        billingAddress:
-          createOrderDto.billingAddress || createOrderDto.shippingAddress,
+        shippingAddress: shippingAddressId,
+        billingAddress: createOrderDto.billingAddress || shippingAddressId,
         notes: createOrderDto.notes,
         statusHistory: [
           {
@@ -165,7 +174,7 @@ export class OrdersService {
       };
 
       const createdOrder = new this.orderModel(orderData);
-      const savedOrder = await createdOrder.save({ session });
+      const savedOrder = await createdOrder.save(/*{ session }*/); // SUPPRIMÉ
 
       // 4. Décrémentation atomique des stocks
       for (const item of createOrderDto.items) {
@@ -176,7 +185,7 @@ export class OrdersService {
               $inc: { stock: -item.quantity },
               $set: { updatedAt: new Date() },
             },
-            { session, new: true },
+            { /*session,*/ new: true },
           )
           .exec();
       }
@@ -185,7 +194,7 @@ export class OrdersService {
       for (const item of createOrderDto.items) {
         const updatedProduct = await this.productModel
           .findById(item.productId)
-          .session(session)
+          // .session(session) // SUPPRIMÉ
           .exec();
 
         if (updatedProduct && (updatedProduct as any).stock < 0) {
@@ -196,7 +205,7 @@ export class OrdersService {
       }
 
       // 6. Commit de la transaction
-      await session.commitTransaction();
+      // await session.commitTransaction(); // SUPPRIMÉ
 
       console.log(`✅ Commande ${savedOrder.orderNumber} créée avec succès`);
 
@@ -208,7 +217,7 @@ export class OrdersService {
       return savedOrder;
     } catch (error) {
       // Rollback en cas d'erreur
-      await session.abortTransaction();
+      // await session.abortTransaction(); // SUPPRIMÉ
       console.error('❌ Erreur lors de la création de la commande:', error);
 
       if (
@@ -221,9 +230,9 @@ export class OrdersService {
       throw new InternalServerErrorException(
         'Erreur interne lors de la création de la commande',
       );
-    } finally {
+    } /*finally { // SUPPRIMÉ
       await session.endSession();
-    }
+    }*/
   }
 
   /**
@@ -261,9 +270,12 @@ export class OrdersService {
 
     const transformedOrders = orders.map((order: any) => ({
       id: order._id,
+      items: order.items,
       orderNumber: order.orderNumber,
       status: order.status,
       paymentStatus: order.paymentStatus,
+      shippingAddressInfo: order.shippingAddressInfo || order.shippingAddress,
+      billingAddressInfo: order.billingAddressInfo || order.billingAddress,
       totalAmount: order.totalAmount,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
@@ -395,14 +407,14 @@ export class OrdersService {
       throw new BadRequestException('ID de commande invalide');
     }
 
-    const session: ClientSession = await this.orderModel.db.startSession();
+    // const session: ClientSession = await this.orderModel.db.startSession(); // SUPPRIMÉ
 
     try {
-      session.startTransaction();
+      // session.startTransaction(); // SUPPRIMÉ
 
       const order = await this.orderModel
         .findById(orderId)
-        .session(session)
+        // .session(session) // SUPPRIMÉ
         .exec();
 
       if (!order) {
@@ -433,7 +445,9 @@ export class OrdersService {
               $inc: { stock: item.quantity },
               $set: { updatedAt: new Date() },
             },
-            { session },
+            {
+              /*session*/
+            }, // SUPPRIMÉ
           )
           .exec();
       }
@@ -452,11 +466,11 @@ export class OrdersService {
               },
             },
           },
-          { new: true, session },
+          { new: true /*session*/ }, // SUPPRIMÉ
         )
         .exec();
 
-      await session.commitTransaction();
+      // await session.commitTransaction(); // SUPPRIMÉ
 
       console.log(`✅ Commande ${orderData.orderNumber} annulée avec succès`);
 
@@ -468,12 +482,12 @@ export class OrdersService {
 
       return updatedOrder!;
     } catch (error) {
-      await session.abortTransaction();
+      // await session.abortTransaction(); // SUPPRIMÉ
       console.error("❌ Erreur lors de l'annulation de la commande:", error);
       throw error;
-    } finally {
+    } /*finally { // SUPPRIMÉ
       await session.endSession();
-    }
+    }*/
   }
 
   // ============================================================================
@@ -510,7 +524,7 @@ export class OrdersService {
       //       price: item.unitPrice,
       //     })),
       //     shippingAddress: {
-      //       fullName: `${orderData.shippingAddress.firstName} ${orderData.shippingAddress.lastName}`,
+      //       fullName: `${orderData.shippingAddress.firstName} ${orderData.shipping`Addres`s.lastName}`,
       //       street: orderData.shippingAddress.street,
       //       city: orderData.shippingAddress.city,
       //       country: orderData.shippingAddress.country,

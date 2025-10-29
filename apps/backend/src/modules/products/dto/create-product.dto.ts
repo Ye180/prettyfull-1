@@ -163,7 +163,8 @@ export class CreateProductDto {
 
   @IsNumber()
   @Min(0)
-  stock: number;
+  @IsOptional() // Stock maintenant optionnel car calculé automatiquement
+  stock?: number;
 
   @ValidateNested()
   @Type(() => SeoMetaDto)

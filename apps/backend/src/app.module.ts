@@ -15,6 +15,7 @@ import { RedisModule } from './shared/redis';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 
 // Business modules
+import { AddressModule } from './modules/address/address.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CartsModule } from './modules/carts/carts.module';
 import { CategoriesModule } from './modules/categories/categories.module';
@@ -94,6 +95,7 @@ import { WishlistsModule } from './modules/wishlists/wishlists.module';
     OrdersModule,
     CartsModule,
     WishlistsModule,
+    AddressModule,
     NotificationsModule,
     SiteContentModule,
   ],
