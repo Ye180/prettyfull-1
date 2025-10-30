@@ -30,7 +30,7 @@ import { WishlistsModule } from './modules/wishlists/wishlists.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      cache: true,
+      // cache: true,
     }),
 
     // Base de données MongoDB
