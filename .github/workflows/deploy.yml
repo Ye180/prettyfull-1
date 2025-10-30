@@ -115,6 +115,7 @@ jobs:
             docker rm prettyfull-backend || true
             docker run -d \
               --restart always \
+              --network app-network \
               --name prettyfull-backend \
               -p 3002:7777 \
               -e NODE_ENV=production \
