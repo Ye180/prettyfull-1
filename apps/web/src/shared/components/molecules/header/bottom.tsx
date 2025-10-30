@@ -1,14 +1,20 @@
-import { SUBS_CATEGORY } from "@/lib/utils/constants/constants";
-import { NavLink } from "@prettyfull/ui";
+"use client ";
+import { Category } from "@/features/homepage/api/get-category";
+import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
+import { NavLink, Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 
 const BottomHeader = ({
 	className,
 	className_2,
+	secondary_category,
 }: {
 	className?: string;
 	className_2?: string;
+	secondary_category?: Category[];
 }) => {
+	// Placeholder for potential future data fetching
+
 	return (
 		<div
 			className={cn(
@@ -23,16 +29,21 @@ const BottomHeader = ({
 						className_2
 					)}
 				>
-					{SUBS_CATEGORY.map((link, index) => (
-						<NavLink
-							href={link.href}
-							key={index}
-							className="!text-[1.6rem] capitalize snap-center"
-						>
-							{" "}
-							{link.label}
-						</NavLink>
-					))}
+					{secondary_category ? (
+						secondary_category?.map((items: Category, index: number) => (
+							<NavLink
+								href={COLLECTION_PATHS.collectionDetail(items.slug)}
+								key={index}
+								className="!text-[1.6rem] capitalize snap-center"
+							>
+								{" "}
+								{items.name}
+							</NavLink>
+						))
+					) : (
+						<Skeleton className="h-9 w-[100%]" />
+					)}
+					{/*  */}
 				</div>
 			</div>
 		</div>

@@ -8,12 +8,7 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { UserRole } from '../users/schemas/user.schema';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 
@@ -29,8 +24,20 @@ export class CategoriesController {
   async findAll(
     @Headers('accept-language') language: string = 'fr',
     @Query('includeHidden') includeHidden: boolean = false,
+    @Query('first') first?: string,
+    @Query('second') second?: string,
   ) {
-    return this.categoriesService.findAll(language, includeHidden);
+    const firstFilter =
+      first === 'true' ? true : first === 'false' ? false : undefined;
+    const secondFilter =
+      second === 'true' ? true : second === 'false' ? false : undefined;
+
+    return this.categoriesService.findAll(
+      language,
+      includeHidden,
+      firstFilter,
+      secondFilter,
+    );
   }
 
   /**
@@ -69,6 +76,25 @@ export class CategoriesController {
     return this.categoriesService.findBySlug(slug, language);
   }
 
+  //GET category
+  @Get(':id/products')
+  async getProductOfCategory(
+    @Param('id') id: string,
+
+    // @Headers('accept-language') language: string = 'fr',
+  ) {
+    return this.categoriesService.getProductOfCategory(id);
+  }
+
+  //Get Prosucts of category by slug
+  @Get('slug/:slug/products')
+  async getProductOfCategoryBySlug(
+    @Param('slug') slug: string,
+    // @Headers('accept-language') language: string = 'fr',
+  ) {
+    return this.categoriesService.getProductOfCategoryBySlug(slug);
+  }
+
   /**
    * GET /categories/name/:name - Public
    * Récupère une catégorie par son nom
@@ -100,8 +126,8 @@ export class CategoriesController {
    * Met à jour une catégorie
    */
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(UserRole.ADMIN)
   async update(@Param('id') id: string, @Body() updateCategoryDto: any) {
     return this.categoriesService.update(id, updateCategoryDto);
   }

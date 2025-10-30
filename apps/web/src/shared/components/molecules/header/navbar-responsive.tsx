@@ -1,4 +1,5 @@
-import { NAV_LINKS, SUBS_CATEGORY } from "@/lib/utils/constants/constants";
+import { Category } from "@/features/homepage/api/get-category";
+import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
 import {
 	Accordion,
 	AccordionContent,
@@ -6,6 +7,7 @@ import {
 	AccordionTrigger,
 	NavLink,
 	ScrollArea,
+	Skeleton,
 } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -14,10 +16,19 @@ import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon
 const NavbarResponsive = ({
 	close,
 	onClick,
+	main_category,
+	secondary_category,
 }: {
 	close: () => void;
 	onClick: () => void;
+	main_category?: Category[];
+	secondary_category?: Category[];
 }) => {
+	// const {
+	// 	data: Category,
+	// 	isLoading,
+	// 	isError,
+	// } = useGetCategory({ second: true });
 	const t = useTranslations("headerResponsive");
 	return (
 		<div className="fixed z-40 w-[100vw] pb-4 space-y-4 bg-white  md:hidden top-0 right-0 -left-0 h-[100vh] overflow-hidden ">
@@ -38,31 +49,39 @@ const NavbarResponsive = ({
 						PRETTYFULL
 					</Link>
 					<div className="flex items-center px-2 space-x-6 ">
-						{NAV_LINKS.map((link, index) => (
-							<NavLink
-								key={index}
-								href={link.href}
-								className="font-extrabold !text-[1.7rem]"
-							>
-								{link.label}
-							</NavLink>
-						))}
+						{main_category ? (
+							main_category.map((items: Category, index) => (
+								<NavLink
+									key={index}
+									href={COLLECTION_PATHS.collectionDetail(items.slug)}
+									className="font-extrabold !text-[1.7rem]"
+								>
+									{items.name}
+								</NavLink>
+							))
+						) : (
+							<Skeleton className="w-full h-9 " />
+						)}
 					</div>
 				</div>
 			</div>
 
 			<ScrollArea className="py-4 border-b-8 h-[90vh] px-4">
 				<div className="flex flex-col w-full p-0 px-2 py-4 overflow-x-auto border-t border-gray-200 gap-y-2">
-					{SUBS_CATEGORY.map((link, index) => (
-						<NavLink
-							href={link.href}
-							key={index}
-							className="!text-[1.6rem] capitalize snap-center  w-full py-2 hover:bg-gray-100 rounded-md px-2 font-medium"
-						>
-							{" "}
-							{link.label}
-						</NavLink>
-					))}
+					{secondary_category ? (
+						secondary_category.map((items: Category, index: number) => (
+							<NavLink
+								href={COLLECTION_PATHS.collectionDetail(items.slug)}
+								key={index}
+								className="!text-[1.6rem] capitalize snap-center  w-full py-2 hover:bg-gray-100 rounded-md px-2 font-medium"
+							>
+								{" "}
+								{items.name}
+							</NavLink>
+						))
+					) : (
+						<Skeleton className="h-9 w-[20rem] " />
+					)}
 				</div>
 
 				<div className="p-4 border-t border-gray-200">

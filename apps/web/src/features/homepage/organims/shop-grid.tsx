@@ -13,6 +13,7 @@ const ShopGrid = () => {
 				<>
 					{Array.from({ length: 4 }).map((_, i) => (
 						<CardProduct
+							key={i}
 							variable={[
 								{
 									color: {
