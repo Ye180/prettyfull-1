@@ -6,8 +6,8 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {
-  formatResponse,
   FormatResponse,
+  formatResponse,
 } from 'src/shared/utils/format-response';
 import { Product, ProductDocument } from '../products/schemas/product.schema';
 import { CreateCategoryDto } from './dto/create-category.dto';
