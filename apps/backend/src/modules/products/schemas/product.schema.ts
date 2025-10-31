@@ -121,6 +121,9 @@ export class Product extends Document {
   smallDescription?: string;
 
   @Prop({ type: String, required: true, unique: true })
+  slug: string;
+
+  @Prop({ type: String, required: true, unique: true })
   sku: string;
 
   @Prop({ type: PriceSchema, required: true })

@@ -132,6 +132,10 @@ export class CreateProductDto {
 
   @IsString()
   @IsOptional()
+  slug: string;
+
+  @IsString()
+  @IsOptional()
   sku: string;
 
   @ValidateNested()

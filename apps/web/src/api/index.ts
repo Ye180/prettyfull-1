@@ -22,6 +22,7 @@ export const
   products: {
     getAll: '/products',
     getById: (productId: string) => `/products/${productId}`,
+    getBySlug: (productSlug: string) => `/products/slugname/${productSlug}`,
     create: '/products',
     update: (productId: string) => `/products/${productId}`,
     remove: (productId: string) => `/products/${productId}`,

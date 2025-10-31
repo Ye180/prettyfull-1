@@ -1,20 +1,24 @@
 "use client";
 
 import { SizeOption } from "@/features/products/components/molecules/product-options";
-import { NotifyMeModal } from "@/features/products/components/organims/notify-me";
 import { ProductGallery } from "@/features/products/components/organims/product-gallery";
 import ProductSuggestion from "@/features/products/components/organims/product-suggestion";
 import ProductInfos from "@/features/products/components/organims/products-info";
 import Reviews from "@/features/products/components/organims/reviews";
 import { ProductTypes } from "@/features/products/types";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import { useParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+import { useGetProductBySlug } from "../api/get-products-by-slug";
 
 const productData: ProductTypes = {
 	category: "FEMME FASHION",
-	title: "SWEET TOP",
-	price: 79000,
+	name: "SWEET TOP",
+	price: {
+		amount: 89000,
+		currency: "XOF",
+	},
 	promotion: {
 		reduced_price: 59000,
 		pourcentage: 30,
@@ -63,6 +67,16 @@ const productData: ProductTypes = {
 };
 
 export default function ProductViews() {
+	const params = useParams();
+
+	const { data: product, isLoading } = useGetProductBySlug(
+		params.productId as string
+	);
+
+	console.log("Product data from API:", product);
+
+	console.log("Params product page:", params);
+
 	const [variable, setVariable] = useState<{
 		images: string[] | StaticImport[];
 		sizes: SizeOption[] | string[];
@@ -73,10 +87,10 @@ export default function ProductViews() {
 		activeImageOne: 0,
 	});
 
-	const colorByDefault = productData?.variable
-		? productData?.variable[0]?.color.code
-		: productData.notVariable?.color
-			? productData.notVariable.color.code
+	const colorByDefault = product?.variable
+		? product?.variable[0]?.color.code
+		: product?.notVariable?.color
+			? product?.notVariable.color.code
 			: "#3b82f6";
 
 	const sizeByDefault = variable?.sizes[0] as string;
@@ -100,14 +114,14 @@ export default function ProductViews() {
 	} | null>(null);
 
 	const availableColors = useMemo(() => {
-		const colors = productData.variable?.find(
+		const colors = product?.variable?.find(
 			(v) => v.color.code === selectedColor
 		);
 
 		setVariable({
 			images:
-				((colors?.image as string[]) || productData.notVariable?.image) ?? [],
-			sizes: (colors?.size as string[]) || productData.notVariable?.size || [],
+				((colors?.image as string[]) || product?.notVariable?.image) ?? [],
+			sizes: (colors?.size as string[]) || product?.notVariable?.size || [],
 		});
 	}, [selectedColor]);
 
@@ -154,8 +168,8 @@ export default function ProductViews() {
 				<div className="flex flex-col justify-center sm:flex-row gap-x-14 ">
 					<div className="flex flex-col space-y-4 sm:space-y-8 w-fit ">
 						<ProductGallery
-							images={variable.images}
-							title={productData.title}
+							images={variable?.images}
+							title={productData?.name}
 							activeImage={activeImage}
 							setActiveImage={setActiveImage}
 							promotion={productData.promotion}
@@ -188,12 +202,12 @@ export default function ProductViews() {
 				<ProductSuggestion />
 			</Container>
 
-			<NotifyMeModal
+			{/* <NotifyMeModal
 				isOpen={isNotifyModalOpen}
 				onClose={() => setIsNotifyModalOpen(false)}
-				product={productData}
+				product={product}
 				variant={outOfStockVariant}
-			/>
+			/> */}
 		</>
 	);
 }

@@ -18,7 +18,7 @@ const DrawerVariable = ({
 	productData,
 }: {
 	label: string;
-	title: string;
+	name: string;
 	photos: string[] | StaticImport[] | undefined;
 
 	productData: CardProps;
@@ -133,7 +133,7 @@ const DrawerVariable = ({
 						<div className="flex flex-col w-full gap-6 sm:w-3/5 lg:justify-center sm:flex-row">
 							<ProductGallery
 								images={variable.images}
-								title={productData.title}
+								name={productData.name}
 								activeImage={activeImage}
 								setActiveImage={setActiveImage}
 								promotion={productData.promotion}
@@ -265,13 +265,13 @@ const DrawerVariable = ({
 													quantity: 1,
 												},
 											]}
-											price={12000}
+											price={{ amount: 12000, currency: "USD" }}
 											promotion={{
 												pourcentage: 50,
 												reduced_price: 6000,
 											}}
 											smallDescription="Top polyvalente á Manche"
-											title="Sweet-Top"
+											name="Sweet-Top"
 											// link={PRODUCT_PATHS.productDetail("SWEET-TOP")}
 										/>
 									))}

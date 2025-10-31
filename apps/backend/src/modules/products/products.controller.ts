@@ -9,12 +9,7 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { UserRole } from '../users/schemas/user.schema';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
@@ -48,6 +43,14 @@ export class ProductsController {
     return this.productsService.findOne(id, language);
   }
 
+  @Get('slugname/:slug')
+  async findOneBySlug(
+    @Param('slug') slug: string,
+    @Headers('accept-language') language: string = 'fr',
+  ) {
+    return this.productsService.findOneBySlug(slug, language);
+  }
+
   /**
    * POST /products - Admin only
    * Crée un nouveau produit
@@ -64,8 +67,8 @@ export class ProductsController {
    * Met à jour un produit
    */
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(UserRole.ADMIN)
   async update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,

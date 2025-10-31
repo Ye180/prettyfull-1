@@ -37,7 +37,7 @@ type DrawerStatesProps = typeof INITIAL_DRAWER_STATES;
 export interface CardProps
 	extends React.HTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof cardVariants> {
-	title: string;
+	name: string;
 	category?: string;
 	link?: string;
 	variable?: {
@@ -54,7 +54,7 @@ export interface CardProps
 	};
 	smallDescription?: string;
 	description?: string;
-	price: number;
+	price: { amount: number; currency: string };
 	solde?: boolean;
 	promotion?: {
 		reduced_price: number;
@@ -62,9 +62,10 @@ export interface CardProps
 	};
 	isLoading?: boolean;
 	label?: string;
+	slug?: string;
 }
 export function CardProduct({
-	title,
+	name,
 	className,
 	smallDescription,
 	price,
@@ -167,7 +168,10 @@ export function CardProduct({
 				{variable?.map((variant, i) => (
 					<Image
 						key={i}
-						src={variant.image[0] as string}
+						src={
+							(variant.image[0] as string) ||
+							"https://images.unsplash.com/photo-1761782797823-2b555af8a226?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1974"
+						}
 						alt={`Product Image ${i + 1}`}
 						width={400}
 						height={400}
@@ -203,7 +207,10 @@ export function CardProduct({
 				{/* Fallback si pas de produit */}
 				{!variable && notVariable?.image && (
 					<Image
-						src={notVariable.image[0] as string}
+						src={
+							(notVariable.image[0] as string) ||
+							"https://images.unsplash.com/photo-1761782797823-2b555af8a226?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1974"
+						}
 						alt="Product Image"
 						width={400}
 						height={400}
@@ -278,14 +285,14 @@ export function CardProduct({
 			<div className="flex justify-between items-start text-[#000] ">
 				<h4 className="tracking-[0.03em] !text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] truncate line-clamp-1">
 					{" "}
-					{title}
+					{name}
 				</h4>
 
 				{/* Correction de l'affichage des promotions */}
 				{!promotion && (
 					<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem]">
 						{" "}
-						{formatCurrency_FR(price)}
+						{formatCurrency_FR(price.amount)}
 					</h4>
 				)}
 				{promotion && (
@@ -296,7 +303,7 @@ export function CardProduct({
 								{formatCurrency_FR(promotion.reduced_price || 0)}
 							</h4>
 							<h4 className="text-grey/50 !text-2xl line-through max-md:!text-[2rem]  md:!text-[2.2rem]  whitespace-nowrap">
-								{formatCurrency_FR(price)}
+								{formatCurrency_FR(price.amount)}
 							</h4>
 						</div>
 					</>
@@ -324,11 +331,11 @@ export function CardProduct({
 				{variable && variable.length > 3 && (
 					<DrawerVariable
 						label={`+ ${variable.length + 1 - 4}`}
-						title={title}
+						name={name}
 						photos={variable?.map((v) => v.image[0]) as string[]}
 						productData={{
-							title,
-							price,
+							name,
+							price: price,
 							variable,
 							notVariable,
 							promotion,

@@ -37,6 +37,7 @@ export interface TransformedProduct {
     quantity?: number;
   };
   smallDescription?: string;
+  slug: string;
   sku: string;
   price: { amount: 0; currency: string };
   solde?: boolean;
@@ -111,6 +112,27 @@ export class ProductsService {
 
     const product = await this.productModel
       .findById(id)
+      .populate('category', 'name slug')
+      .lean()
+      .exec();
+
+    if (!product) {
+      throw new NotFoundException('Produit non trouvé');
+    }
+
+    return this.transformProduct(product, language);
+  }
+
+  async findOneBySlug(
+    slug: string,
+    language: string = 'en',
+  ): Promise<TransformedProduct> {
+    if (slug.trim() === '') {
+      throw new BadRequestException('Slug de produit invalide');
+    }
+
+    const product = await this.productModel
+      .findOne({ slug: slug })
       .populate('category', 'name slug')
       .lean()
       .exec();
@@ -291,6 +313,7 @@ export class ProductsService {
       variable: product.variable,
       notVariable: product.notVariable,
       smallDescription: product.smallDescription[language],
+      slug: product.slug,
       sku: product.sku,
       price: product.price,
       solde: product.solde,

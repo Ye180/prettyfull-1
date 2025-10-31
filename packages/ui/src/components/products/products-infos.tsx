@@ -57,7 +57,7 @@ const ProductInfos = ({
 						</span>
 					)}
 					<h1 className="!text-[3rem] sm:!text-[4.8rem] font-bold ">
-						{productData.title}
+						{productData.name}
 					</h1>
 					{productData.promotion ? (
 						<div className="block text-start ">
@@ -66,12 +66,14 @@ const ProductInfos = ({
 								{formatCurrency_FR(productData.promotion?.reduced_price || 0)}
 							</h4>
 							<h4 className="text-grey/50  line-through !text-[2rem] sm:!text-[2.8rem]   whitespace-nowrap">
-								{formatCurrency_FR(productData.price)}
+								{productData.price.amount
+									? formatCurrency_FR(productData.price.amount)
+									: ""}
 							</h4>
 						</div>
 					) : (
 						<h4 className="!text-2xl  sm:!text-3xl whitespace-nowrap">
-							{formatCurrency_FR(productData.price)}
+							{formatCurrency_FR(productData.price.amount)}
 						</h4>
 					)}
 				</div>
