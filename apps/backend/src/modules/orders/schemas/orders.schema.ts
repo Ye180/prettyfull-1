@@ -16,6 +16,14 @@ class Price {
 }
 const PriceSchema = SchemaFactory.createForClass(Price);
 
+class I18nString {
+  @Prop({ type: String, required: true })
+  fr: string;
+
+  @Prop({ type: String, required: true })
+  en: string;
+}
+
 @Schema({ _id: false })
 class PaymentInfo {
   @Prop({ type: String, required: true })
@@ -37,8 +45,8 @@ class OrderItem {
   @Prop({ type: String, required: true })
   sku: string;
 
-  @Prop({ type: String, required: true })
-  name: string;
+  @Prop({ type: I18nString, required: true })
+  name: I18nString;
 
   @Prop({ type: Number, required: true, min: 1 })
   quantity: number;

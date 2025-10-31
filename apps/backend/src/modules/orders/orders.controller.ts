@@ -34,12 +34,18 @@ export class OrdersController {
     return this.ordersService.createOrder(createOrderDto);
   }
 
+  @Get()
+  // @UseGuards(JwtAuthGuard)
+  async findAll() {
+    return this.ordersService.findAll();
+  }
+
   /**
    * GET /orders - Authenticated
    * Liste les commandes de l'utilisateur
    */
   @Get()
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async findUserOrders(
     @Query('userId') userId: string,
     @Query('page', ParseIntPipe) page: number = 1,
@@ -56,6 +62,12 @@ export class OrdersController {
   @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id);
+  }
+
+  /*Get Customer list*/
+  @Get('customer/list')
+  async getCustomerList() {
+    return this.ordersService.getCustomerList();
   }
 
   /**

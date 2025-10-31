@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -13,6 +14,7 @@ import { AddressService } from '../address/address.service';
 import { AddressDto } from '../address/dto/address.dto';
 import { NotificationsProducerService } from '../notifications/notifications.producer.service';
 import { Product, ProductDocument } from '../products/schemas/product.schema';
+import { User, UserDocument } from '../users/schemas/user.schema';
 import {
   Order,
   OrderDocument,
@@ -51,6 +53,7 @@ export class OrdersService {
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     private readonly notificationsProducer: NotificationsProducerService,
     private readonly addressService: AddressService,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
   /**
@@ -64,6 +67,29 @@ export class OrdersService {
       .toString()
       .padStart(4, '0');
     return `ORD-${dateStr}-${randomNum}`;
+  }
+
+  //Get all orders
+  async findAll(): Promise<OrderDocument[]> {
+    const orders = await this.orderModel.find().exec();
+    const transformedOrders = await Promise.all(
+      orders.map(async (order: any) => ({
+        id: order._id,
+        items: order.items,
+        user: await this.userModel.findById(order.userId).exec(),
+        orderNumber: order.orderNumber,
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+        shippingAddressInfo: order.shippingAddressInfo || order.shippingAddress,
+        billingAddressInfo: order.billingAddressInfo || order.billingAddress,
+        totalAmount: order.totalAmount,
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt,
+        itemsCount: order.items?.length || 0,
+      })),
+    );
+
+    return transformedOrders as any;
   }
 
   /**
@@ -152,7 +178,7 @@ export class OrdersService {
       // 3. Création de la commande
       const orderData = {
         orderNumber: this.generateOrderNumber(),
-        user: new Types.ObjectId(createOrderDto.userId),
+        userId: new Types.ObjectId(createOrderDto.userId),
         items: orderItems,
         subtotal: { amount: subtotalAmount, currency: 'XOF' },
         shippingCost,
@@ -256,7 +282,7 @@ export class OrdersService {
 
     const [orders, total] = await Promise.all([
       this.orderModel
-        .find({ user: new Types.ObjectId(userId) })
+        .find({ userId: new Types.ObjectId(userId) })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -271,6 +297,7 @@ export class OrdersService {
     const transformedOrders = orders.map((order: any) => ({
       id: order._id,
       items: order.items,
+      user: order.userId,
       orderNumber: order.orderNumber,
       status: order.status,
       paymentStatus: order.paymentStatus,
@@ -359,6 +386,51 @@ export class OrdersService {
       .exec();
 
     return updatedOrder!;
+  }
+
+  //do a customer list whit total spent amount and number of orders
+  async getCustomerList(): Promise<any[]> {
+    const customers = await this.orderModel
+      .aggregate([
+        {
+          $group: {
+            _id: '$userId',
+            totalSpent: { $sum: '$total.amount' },
+            orderCount: { $sum: 1 },
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'userInfo',
+          },
+        },
+        {
+          $unwind: '$userInfo',
+        },
+        {
+          $project: {
+            _id: 0,
+            userId: '$_id',
+            name: {
+              $concat: ['$userInfo.firstName', ' ', '$userInfo.lastName'],
+            },
+            email: '$userInfo.email',
+            totalSpent: 1,
+            orderCount: 1,
+          },
+        },
+        {
+          $sort: { totalSpent: -1 },
+        },
+      ])
+      .exec();
+
+    Logger.log(customers);
+
+    return customers;
   }
 
   /**

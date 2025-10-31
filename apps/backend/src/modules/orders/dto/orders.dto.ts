@@ -41,6 +41,14 @@ class PriceDto {
 //   phone?: string;
 // }
 
+class TranslatableStringDto {
+  @IsString()
+  fr: string;
+
+  @IsString()
+  en: string;
+}
+
 class PaymentInfoDto {
   @IsString()
   method: string; // ex: "credit_card", "paypal"
@@ -60,8 +68,9 @@ class OrderItemDto {
   @IsString()
   sku: string;
 
-  @IsString()
-  name: string;
+  @ValidateNested()
+  @Type(() => TranslatableStringDto)
+  name: TranslatableStringDto;
 
   @IsNumber()
   @Min(1)

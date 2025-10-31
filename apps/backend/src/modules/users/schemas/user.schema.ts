@@ -63,6 +63,9 @@ export class User {
   @Prop({ type: String, enum: Currency, default: Currency.XOF })
   preferredCurrency: Currency;
 
+  @Prop({ type: String, default: "CI" })
+  country: Currency;
+
   @Prop()
   avatar?: string;
 

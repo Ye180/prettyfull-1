@@ -33,6 +33,12 @@ export class CreateUserDto {
   role?: UserRole;
 
   @IsOptional()
+  @IsString({
+    message: 'Le nom d’utilisateur doit être une chaîne de caractères',
+  })
+  country?: string;
+
+  @IsOptional()
   @IsString({ message: "L'avatar doit être une chaîne de caractères" })
   avatar?: string;
 
