@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -9,20 +10,36 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useGetCategory } from "@/features/category/api/get-category";
+import { SelectScrollable } from "@/shared/component/select-within-search";
+import { PRODUCTS_QUERY_KEY } from "@/utils/query-keys";
+import { useQueryClient } from "@tanstack/react-query";
+import { Minus, PlusIcon } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useCreate } from "../api/create-products";
 
 export default function ProductForm() {
+	const { mutate: createProduct, isPending, isSuccess, isError } = useCreate();
+
 	const form = useForm({
 		defaultValues: {
 			nameFr: "",
 			nameEn: "",
+
 			descriptionFr: "",
 			descriptionEn: "",
-			smallDescription: "",
+			smallDescriptionFr: "",
+			smallDescriptionEn: "",
 			categoryId: "",
 			link: "",
 			sku: "",
-			priceAmount: 0,
+
+			priceAmountFr: 0,
+			priceAmountEn: 0,
+			currencyFr: "XOF",
+			currencyEn: "USD",
+
 			priceCurrency: "EUR",
 			solde: false,
 			reducedPrice: 0,
@@ -35,6 +52,7 @@ export default function ProductForm() {
 			seoTitleEn: "",
 			seoDescFr: "",
 			seoDescEn: "",
+			slug: "",
 			seoKeywords: "",
 			variable: [
 				{
@@ -50,7 +68,8 @@ export default function ProductForm() {
 				colorCode: "#FFFFFF",
 				size: "",
 				quantity: 0,
-				image: [],
+				// Changer le type pour accepter une chaîne de caractères
+				image: "", // Sera un string avec les URLs séparées par des virgules
 			},
 		},
 	});
@@ -61,6 +80,8 @@ export default function ProductForm() {
 		name: "variable",
 	});
 
+	const queryClient = useQueryClient();
+
 	// 🧠 Conversion JSON -> FormData
 	const onSubmit = async (data) => {
 		const jsonData = {
@@ -68,10 +89,23 @@ export default function ProductForm() {
 			description: { fr: data.descriptionFr, en: data.descriptionEn },
 			categoryId: data.categoryId,
 			link: data.link,
-			smallDescription: data.smallDescription,
+			smallDescription: {
+				fr: data.smallDescriptionFr,
+				en: data.smallDescriptionEn,
+			},
 			sku: data.sku,
-			price: { amount: Number(data.priceAmount), currency: data.priceCurrency },
+			price: {
+				amount: {
+					fr: Number(data.priceAmountFr),
+					en: Number(data.priceAmountEn),
+				},
+				currency: {
+					fr: data.currencyFr,
+					en: data.currencyEn,
+				},
+			},
 			solde: data.solde,
+			slug: data.slug,
 			promotion: {
 				reduced_price: Number(data.reducedPrice),
 				pourcentage: Number(data.pourcentage),
@@ -91,15 +125,18 @@ export default function ProductForm() {
 				quantity: Number(v.quantity),
 				image: v.image,
 			})),
-			notVariable: {
-				color: {
-					label: data.notVariable.colorLabel,
-					code: data.notVariable.colorCode,
-				},
-				size: data.notVariable.size.split(",").map((s) => s.trim()),
-				quantity: Number(data.notVariable.quantity),
-				image: data.notVariable.image,
-			},
+			notVariable: data.notVariable.colorLabel
+				? {
+						color: {
+							label: data.notVariable.colorLabel,
+							code: data.notVariable.colorCode,
+						},
+						size: data.notVariable.size.split(",").map((s) => s.trim()),
+						// Convertir la chaîne d'images en tableau
+						image: data.notVariable.image.split(",").map((img) => img.trim()),
+						quantity: Number(data.notVariable.quantity),
+					}
+				: null,
 		};
 
 		// Conversion en FormData
@@ -120,10 +157,30 @@ export default function ProductForm() {
 		};
 		appendFormData(jsonData);
 
-		console.log("✅ FormData prêt :", formData.entries());
-		console.log("✅ FormData prêt :", jsonData);
-		console.log("✅ FormData prêt :", formData);
+		// console.log("✅ FormData prêt :", formData.entries());
+		// console.log("✅ FormData prêt :", jsonData);
+		// console.log("✅ FormData prêt :", formData);
+
+		createProduct(jsonData, {
+			onSuccess: async () => {
+				await queryClient.invalidateQueries({
+					queryKey: [PRODUCTS_QUERY_KEY],
+				});
+
+				toast.success("Produit créé avec succès !");
+			},
+			onError: (error) => {
+				console.error("Erreur lors de la création du produit :", error);
+				toast.error("Erreur lors de la création du produit !");
+			},
+		});
 	};
+
+	const formatOptionLabel = (option) => {
+		return `${option.account} - ${option.label}`;
+	};
+
+	const { data: category } = useGetCategory();
 
 	return (
 		<Form {...form}>
@@ -183,33 +240,46 @@ export default function ProductForm() {
 						)}
 					/>
 				</div>
-				<FormField
-					control={control}
-					name="smallDescription"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Courte description</FormLabel>
-							<FormControl>
-								<Input
-									placeholder="Robe d'été élégante et légère..."
-									{...field}
-								/>
-							</FormControl>
-						</FormItem>
-					)}
-				/>
-				<div className="grid grid-cols-3 gap-4">
+				<div className="grid grid-cols-2 gap-4">
 					<FormField
 						control={control}
-						name="categoryId"
+						name="smallDescriptionFr"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Catégorie ID</FormLabel>
+								<FormLabel>Courte description (FR)</FormLabel>
 								<FormControl>
-									<Input placeholder="68fe98d69e21f9f242e9d61c" {...field} />
+									<Input
+										placeholder="Robe d'été élégante et légère..."
+										{...field}
+									/>
 								</FormControl>
 							</FormItem>
 						)}
+					/>
+					<FormField
+						control={control}
+						name="smallDescriptionEn"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Short description (EN)</FormLabel>
+								<FormControl>
+									<Input
+										placeholder="Robe d'été élégante et légère..."
+										{...field}
+									/>
+								</FormControl>
+							</FormItem>
+						)}
+					/>
+				</div>
+
+				<div className="grid grid-cols-3 gap-4">
+					<SelectScrollable
+						control={control}
+						nameId="categoryId"
+						label="Catégorie"
+						placeholder="Sélectionner une catégorie"
+						data={category}
 					/>
 					<FormField
 						control={control}
@@ -236,14 +306,62 @@ export default function ProductForm() {
 						)}
 					/>
 				</div>
+				<FormField
+					control={control}
+					name="slug"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Slug</FormLabel>
+							<FormControl>
+								<Input placeholder="robe-ete-lin" {...field} />
+							</FormControl>
+						</FormItem>
+					)}
+				/>
 				<h2 className="text-[1.5rem]! font-semibold pb-4">Prix et promotion</h2>
 				<div className="grid grid-cols-4 gap-4">
 					<FormField
 						control={control}
-						name="priceAmount"
+						name="priceAmountFr"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Prix (€)</FormLabel>
+								<FormLabel>Prix (FR:XOF)</FormLabel>
+								<FormControl>
+									<Input type="number" step="0.01" {...field} />
+								</FormControl>
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={control}
+						name="currencyFr"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Monnaie</FormLabel>
+								<FormControl>
+									<Input placeholder="XOF" {...field} />
+								</FormControl>
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={control}
+						name="priceAmountEn"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Prix (EN:USD)</FormLabel>
+								<FormControl>
+									<Input placeholder="USD" {...field} />
+								</FormControl>
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={control}
+						name="currencyEn"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Currency</FormLabel>
 								<FormControl>
 									<Input type="number" step="0.01" {...field} />
 								</FormControl>
@@ -293,7 +411,7 @@ export default function ProductForm() {
 				<h2 className="text-[1.5rem]! font-semibold pb-4">
 					Option unique (notVariable)
 				</h2>
-				<div className="border p-4 rounded-xl space-y-3 bg-muted/30">
+				<div className="p-4 space-y-3 border rounded-xl bg-muted/30">
 					<div className="grid grid-cols-2 gap-4">
 						<FormField
 							control={control}
@@ -369,11 +487,42 @@ export default function ProductForm() {
 						)}
 					/>
 				</div>
-				<h2 className="text-[1.5rem]! font-semibold pb-4">
-					Variables (couleur / taille / stock / images)
-				</h2>
+				<div className="flex items-center justify-between">
+					<h2 className="text-[1.5rem]! font-semibold pb-4">
+						Variables (couleur / taille / stock / images)
+					</h2>
+					<button
+						type="button"
+						className="h-12 w-fit"
+						onClick={() =>
+							append({
+								colorLabel: "",
+								colorCode: "#FFFFFF",
+								size: "",
+								image: [],
+								quantity: 0,
+							})
+						}
+					>
+						<PlusIcon className="inline-block p-1 mb-2 mr-2 text-white bg-black size-8 rounded-2xl" />
+					</button>
+				</div>
+
 				{fields.map((field, index) => (
-					<div key={field.id} className="border p-4 rounded-xl space-y-3">
+					<div key={field.id} className="p-4 space-y-3 border rounded-xl">
+						<div className="flex items-center justify-between">
+							<h3 className="text-[1rem]! font-semibold pb-2">
+								Variante {index + 1}
+							</h3>
+							<button
+								type="button"
+								className={"w-fit  rounded-lg!"}
+								onClick={() => remove(index)}
+							>
+								<Minus className="inline-block p-1 mb-1 mr-1 text-white bg-red-600 size-6 rounded-2xl" />
+							</button>
+						</div>
+
 						<div className="grid grid-cols-2 gap-4">
 							<FormField
 								control={control}
@@ -446,32 +595,9 @@ export default function ProductForm() {
 								</FormItem>
 							)}
 						/>
-
-						<Button
-							variant="destructive"
-							type="button"
-							className={"w-fit h-10 rounded-lg!"}
-							onClick={() => remove(index)}
-						>
-							Supprimer cette variante
-						</Button>
 					</div>
 				))}
-				<Button
-					type="button"
-					className="w-fit h-12"
-					onClick={() =>
-						append({
-							colorLabel: "",
-							colorCode: "#FFFFFF",
-							size: "",
-							image: [],
-							quantity: 0,
-						})
-					}
-				>
-					Ajouter une variante
-				</Button>
+
 				<h2 className="text-[1.5rem]! font-semibold py-4">
 					Autres informations
 				</h2>
@@ -570,7 +696,7 @@ export default function ProductForm() {
 						control={control}
 						name="seoKeywords"
 						render={({ field }) => (
-							<FormItem className="col-span-2">
+							<FormItem className="">
 								<FormLabel>SEO Mots-clés (séparés par virgules)</FormLabel>
 								<FormControl>
 									<Input {...field} placeholder="robe, femme, été, lin..." />
@@ -580,11 +706,37 @@ export default function ProductForm() {
 					/>
 				</div>
 
+				{/* <SelectWithSearch
+					options={[
+						{
+							id: "subclass1",
+							label: "Sous-classe A",
+							account: "Compte 123",
+						},
+						{
+							id: "subclass2",
+							label: "Sous-classe B",
+							account: "Compte 456",
+						},
+					]}
+					value={form.watch("seoKeywords")}
+					onChange={(value) => {
+						form.setValue("subClassId", value);
+					}}
+					placeholder="Sélectionner une sous classe"
+					searchPlaceholder="Rechercher le numero de sous classe..."
+					emptyMessage="Aucune sous classe trouvée."
+					loading={false}
+					formatOptionLabel={formatOptionLabel}
+					className="h-20 rounded-3xl border-2 border-[#dadddc] text-[1.5rem]"
+					// error={"Erreur de chargement des sous classes"}
+				/> */}
+
 				<div className="flex justify-start gap-4 pt-6">
-					<Button type="submit" className="w-fit h-12">
+					<Button type="submit" className="h-12 w-fit">
 						Enregistrer le produit
 					</Button>
-					<Button type="submit" className="w-fit h-12 bg-red-500">
+					<Button type="submit" className="h-12 bg-red-500 w-fit">
 						Annuler
 					</Button>
 				</div>

@@ -1,15 +1,20 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayMinSize,
   IsArray,
   IsBoolean,
+  IsDefined,
+  IsMongoId,
   IsNumber,
   IsOptional,
   IsString,
+  Matches,
+  Max,
   Min,
   ValidateNested,
 } from 'class-validator';
 
-// --- Sous-classes pour les objets imbriqués ---
+// --- Sous-classes ---
 
 class TranslatableStringDto {
   @IsString()
@@ -27,26 +32,44 @@ class ColorDto {
   code: string;
 }
 
-class PriceDto {
+class TranslatablePriceDto {
   @IsNumber()
   @Min(0)
-  amount: number;
+  fr: number;
 
-  @IsString()
-  currency: string;
+  @IsNumber()
+  @Min(0)
+  en: number;
+}
+
+class PriceDto {
+  @ValidateNested()
+  @Type(() => TranslatablePriceDto)
+  amount: TranslatablePriceDto;
+
+  @ValidateNested()
+  @Type(() => TranslatableStringDto)
+  currency: TranslatableStringDto;
 }
 
 class PromotionDto {
-  @IsNumber()
-  reduced_price: number;
+  @ValidateNested()
+  @Type(() => TranslatablePriceDto)
+  reduced_price: TranslatablePriceDto;
 
   @IsNumber()
+  @Min(0)
+  @Max(100)
   pourcentage: number;
 }
 
 // --- Variantes produit ---
 
 class VariableProductDto {
+  @IsOptional()
+  @IsString()
+  id?: string;
+
   @ValidateNested()
   @Type(() => ColorDto)
   color: ColorDto;
@@ -60,6 +83,7 @@ class VariableProductDto {
   image: string[];
 
   @IsNumber()
+  @Min(0)
   quantity: number;
 }
 
@@ -93,21 +117,24 @@ class SeoMetaDto {
 
   @IsArray()
   @IsString({ each: true })
+  @ArrayMinSize(1)
   keywords: string[];
 }
 
 // --- DTO principal ---
 
 export class CreateProductDto {
+  @IsDefined()
   @ValidateNested()
   @Type(() => TranslatableStringDto)
   name: TranslatableStringDto;
 
+  @IsDefined()
   @ValidateNested()
   @Type(() => TranslatableStringDto)
   description: TranslatableStringDto;
 
-  @IsString()
+  @IsMongoId()
   @IsOptional()
   categoryId?: string;
 
@@ -126,11 +153,13 @@ export class CreateProductDto {
   @IsOptional()
   notVariable?: NotVariableProductDto;
 
-  @IsString()
+  @ValidateNested()
+  @Type(() => TranslatableStringDto)
   @IsOptional()
-  smallDescription?: string;
+  smallDescription?: TranslatableStringDto;
 
   @IsString()
+  @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
   @IsOptional()
   slug: string;
 
@@ -138,6 +167,7 @@ export class CreateProductDto {
   @IsOptional()
   sku: string;
 
+  @IsDefined()
   @ValidateNested()
   @Type(() => PriceDto)
   price: PriceDto;
@@ -155,9 +185,10 @@ export class CreateProductDto {
   @IsOptional()
   isLoading?: boolean;
 
-  @IsString()
+  @ValidateNested()
+  @Type(() => TranslatableStringDto)
   @IsOptional()
-  label?: string;
+  label?: TranslatableStringDto;
 
   @IsBoolean()
   isActive: boolean;
@@ -167,9 +198,10 @@ export class CreateProductDto {
 
   @IsNumber()
   @Min(0)
-  @IsOptional() // Stock maintenant optionnel car calculé automatiquement
+  @IsOptional()
   stock?: number;
 
+  @IsDefined()
   @ValidateNested()
   @Type(() => SeoMetaDto)
   seoMeta: SeoMetaDto;

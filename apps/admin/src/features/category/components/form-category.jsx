@@ -8,7 +8,13 @@ import {
 	FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { SelectScrollable } from "@/shared/component/select-within-search";
+import { CATEGORIES_QUERY_KEY } from "@/utils/query-keys";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useCreateCategory } from "../api/create-category";
+import { useGetCategory } from "../api/get-category";
 
 function FormCategory() {
 	const form = useForm({
@@ -33,6 +39,17 @@ function FormCategory() {
 			seoKeywords: "",
 		},
 	});
+
+	const { data: category } = useGetCategory();
+
+	const {
+		mutate: createCategory,
+		isPending,
+		isSuccess,
+		isError,
+	} = useCreateCategory();
+
+	const queryClient = useQueryClient();
 
 	const onSubmit = (data) => {
 		const jsonData = {
@@ -66,14 +83,29 @@ function FormCategory() {
 			},
 		};
 
-		console.log(jsonData);
+		createCategory(jsonData, {
+			onSuccess: async () => {
+				console.log("Catégorie créée avec succès !");
+
+				toast.success("Catégorie créée avec succès !");
+
+				await queryClient.invalidateQueries({
+					queryKey: [CATEGORIES_QUERY_KEY],
+				});
+			},
+			onError: (error) => {
+				toast.error(
+					`Erreur lors de la création de la catégorie : ${error.message}`
+				);
+			},
+		});
 	};
 
 	return (
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className="grid gap-4 grid-cols-1 md:grid-cols-2 pb-8"
+				className="grid grid-cols-1 gap-4 pb-8 md:grid-cols-2"
 			>
 				<FormField
 					control={form.control}
@@ -112,6 +144,13 @@ function FormCategory() {
 							</FormControl>
 						</FormItem>
 					)}
+				/>
+				<SelectScrollable
+					control={form.control}
+					nameId="parent"
+					label="Catégorie"
+					placeholder="Sélectionner une catégorie"
+					data={category}
 				/>
 
 				{/* Description */}
@@ -320,7 +359,7 @@ function FormCategory() {
 					control={form.control}
 					name="seoKeywords"
 					render={({ field }) => (
-						<FormItem className="col-span-2">
+						<FormItem className="">
 							<FormLabel>SEO Mots-clés (séparés par des virgules)</FormLabel>
 							<FormControl>
 								<Input
@@ -332,7 +371,7 @@ function FormCategory() {
 					)}
 				/>
 				{/* <button type="submit">Submit</button> */}
-				<div className="col-span-2 w-fit flex justify-center gap-4 mt-4 items-center">
+				<div className="flex items-center justify-center col-span-2 gap-4 mt-4 w-fit">
 					<Button
 						type="submit"
 						className="  rounded-lg!  py-6  mx-auto flex justify-center items-center w-fit"

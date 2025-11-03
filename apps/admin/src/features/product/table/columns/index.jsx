@@ -14,10 +14,10 @@ export const columns = [
 				<Button
 					variant="ghost"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className=" w-fit p-0"
+					className="p-0 w-fit"
 				>
 					Nom
-					<ArrowUpDown className="h-2 w-4" />
+					<ArrowUpDown className="w-4 h-2" />
 				</Button>
 			);
 		},
@@ -29,29 +29,15 @@ export const columns = [
 				<Button
 					variant="ghost"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className=" w-fit p-0"
+					className="p-0 w-fit"
 				>
 					Slug
-					<ArrowUpDown className="h-2 w-4" />
+					<ArrowUpDown className="w-4 h-2" />
 				</Button>
 			);
 		},
 	},
-	{
-		accessorKey: "label",
-		header: ({ column }) => {
-			return (
-				<Button
-					variant="ghost"
-					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className=" w-fit p-0"
-				>
-					Nombre de produits
-					<ArrowUpDown className="h-2 w-4 " />
-				</Button>
-			);
-		},
-	},
+
 	{
 		accessorKey: "price.amount",
 		header: ({ column }) => {
@@ -59,10 +45,10 @@ export const columns = [
 				<Button
 					variant="ghost"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className=" w-fit p-0"
+					className="p-0 w-fit"
 				>
 					Prix
-					<ArrowUpDown className="h-2 w-4" />
+					<ArrowUpDown className="w-4 h-2" />
 				</Button>
 			);
 		},
@@ -74,31 +60,31 @@ export const columns = [
 				<Button
 					variant="ghost"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className=" w-fit p-0"
+					className="p-0 w-fit"
 				>
 					Devise
-					<ArrowUpDown className="h-2 w-4" />
+					<ArrowUpDown className="w-4 h-2" />
 				</Button>
 			);
 		},
 	},
 	{
-		accessorKey: "promotion.reduced_price",
+		accessorKey: "promotion.reduced_price.amount",
 		header: ({ column }) => {
 			return (
 				<Button
 					variant="ghost"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className=" w-fit p-0"
+					className="p-0 w-fit"
 				>
 					Prix réduit
-					<ArrowUpDown className="h-2 w-4" />
+					<ArrowUpDown className="w-4 h-2" />
 				</Button>
 			);
 		},
 		cell: ({ row }) => (
 			<div className="text-green-600">
-				{row.original.promotion?.reduced_price || "N/A"}
+				{row.original.promotion?.reduced_price.amount || "N/A"}
 			</div>
 		),
 	},

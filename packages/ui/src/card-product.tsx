@@ -57,7 +57,7 @@ export interface CardProps
 	price: { amount: number; currency: string };
 	solde?: boolean;
 	promotion?: {
-		reduced_price: number;
+		reduced_price: { amount: number; currency: string };
 		pourcentage: number;
 	};
 	isLoading?: boolean;
@@ -300,10 +300,11 @@ export function CardProduct({
 						<div className="block text-end ">
 							<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] whitespace-nowrap">
 								{" "}
-								{formatCurrency_FR(promotion.reduced_price || 0)}
+								{promotion.reduced_price.amount || 0}{" "}
+								{promotion.reduced_price.currency}
 							</h4>
 							<h4 className="text-grey/50 !text-2xl line-through max-md:!text-[2rem]  md:!text-[2.2rem]  whitespace-nowrap">
-								{formatCurrency_FR(price.amount)}
+								{price.amount} {promotion.reduced_price.currency}
 							</h4>
 						</div>
 					</>

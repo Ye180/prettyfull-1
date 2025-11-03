@@ -349,6 +349,7 @@ export class CategoriesService {
   ): Promise<void> {
     await this.categoryModel.findByIdAndUpdate(categoryId, {
       $inc: { productCount: increment },
+      $set: { updatedAt: new Date() },
     });
   }
 

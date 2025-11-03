@@ -39,13 +39,34 @@ export interface TransformedProduct {
   smallDescription?: string;
   slug: string;
   sku: string;
-  price: { amount: 0; currency: string };
+  price: {
+    amount: {
+      fr: number;
+      en: number;
+    };
+    currency: {
+      fr: string;
+      en: string;
+    };
+  };
   solde?: boolean;
-  promotion?: { reduced_price: number; pourcentage: number };
+  promotion?: {
+    reduced_price: {
+      amount: {
+        fr: number;
+        en: number;
+      };
+      currency: {
+        fr: string;
+        en: string;
+      };
+    };
+    pourcentage: number;
+  };
   isLoading?: boolean;
   label?: string;
-  isActive: true;
-  isFeatured: true;
+  isActive: boolean;
+  isFeatured: boolean;
   seoMeta: {
     title: { fr: string; en: string };
     description: { fr: string; en: string };
@@ -125,7 +146,7 @@ export class ProductsService {
 
   async findOneBySlug(
     slug: string,
-    language: string = 'en',
+    language: string = 'fr',
   ): Promise<TransformedProduct> {
     if (slug.trim() === '') {
       throw new BadRequestException('Slug de produit invalide');
@@ -171,9 +192,33 @@ export class ProductsService {
     const product = new this.productModel({
       ...createProductDto,
       category: createProductDto.categoryId,
+      price: {
+        amount: {
+          fr: createProductDto.price.amount.fr,
+          en: createProductDto.price.amount.en,
+        },
+        currency: {
+          fr: createProductDto.price.currency.fr,
+          en: createProductDto.price.currency.en,
+        },
+      },
+      promotion: createProductDto.promotion
+        ? {
+            reduced_price: {
+              fr: {
+                amount: createProductDto.promotion.reduced_price.fr,
+                currency: createProductDto.price.currency.fr,
+              },
+              en: {
+                amount: createProductDto.promotion.reduced_price.en,
+                currency: createProductDto.price.currency.en,
+              },
+            },
+            pourcentage: createProductDto.promotion.pourcentage,
+          }
+        : undefined,
     });
 
-    // Le stock sera calculé automatiquement par le hook pre-save
     return product.save();
   }
 
@@ -192,6 +237,35 @@ export class ProductsService {
     if (updateProductDto.categoryId) {
       updateData.category = updateProductDto.categoryId;
       delete updateData.categoryId;
+    }
+
+    // Si un price est fourni, s'assurer du bon shape (amount / currency)
+    if (updateProductDto.price) {
+      // Supporter les deux formes : nouvelle forme { amount, currency } ou ancienne forme { fr, en }
+      if ((updateProductDto.price as any).amount) {
+        updateData.price = {
+          amount: {
+            fr: (updateProductDto.price as any).amount.fr,
+            en: (updateProductDto.price as any).amount.en,
+          },
+          currency: {
+            fr: (updateProductDto.price as any).currency?.fr,
+            en: (updateProductDto.price as any).currency?.en,
+          },
+        };
+      } else {
+        // ancienne forme fallback (au cas où)
+        updateData.price = {
+          amount: {
+            fr: (updateProductDto.price as any).fr,
+            en: (updateProductDto.price as any).en,
+          },
+          currency: {
+            fr: (updateProductDto.price as any).currency ?? '',
+            en: (updateProductDto.price as any).currency ?? '',
+          },
+        };
+      }
     }
 
     // Le stock sera recalculé automatiquement par le hook pre-update
@@ -306,23 +380,45 @@ export class ProductsService {
   private transformProduct(product: any, language: string): TransformedProduct {
     return {
       id: product._id,
-      name: product.name[language],
-      description: product.description[language],
-      category: product.category ? product.categoryId : undefined,
+      name: product.name?.[language],
+      description: product.description?.[language] || '',
+      category: product.category || undefined,
       link: product.link,
-      variable: product.variable,
-      notVariable: product.notVariable,
-      smallDescription: product.smallDescription[language],
+      variable: product.variable || [],
+      notVariable: product.notVariable || undefined,
+      smallDescription: product.smallDescription?.[language],
       slug: product.slug,
       sku: product.sku,
-      price: product.price,
-      solde: product.solde,
-      promotion: product.promotion,
-      isLoading: product.isLoading,
-      label: product.label,
-      isActive: product.isActive,
-      isFeatured: product.isFeatured,
-      seoMeta: product.seoMeta,
+      price: {
+        amount: product.price?.amount?.[language] || 0,
+        currency: product.price?.currency?.[language],
+      },
+      solde: product.solde || false,
+      promotion: product.promotion
+        ? {
+            reduced_price: {
+              amount: product.promotion.reduced_price?.[language]?.amount || 0,
+              currency:
+                product.promotion.reduced_price?.[language]?.currency || '',
+            },
+            pourcentage: product.promotion.pourcentage || 0,
+          }
+        : undefined,
+      isLoading: product.isLoading || false,
+      label: product.label?.[language] || '',
+      isActive: product.isActive || false,
+      isFeatured: product.isFeatured || false,
+      seoMeta: {
+        title: {
+          fr: product.seoMeta?.title?.fr || '',
+          en: product.seoMeta?.title?.en || '',
+        },
+        description: {
+          fr: product.seoMeta?.description?.fr || '',
+          en: product.seoMeta?.description?.en || '',
+        },
+        keywords: product.seoMeta?.keywords || [],
+      },
     };
   }
 }

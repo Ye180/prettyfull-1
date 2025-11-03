@@ -6,7 +6,7 @@ import {
 	Button,
 	CardProps,
 } from "@prettyfull/ui";
-import { cn, formatCurrency_FR } from "@prettyfull/utils";
+import { cn } from "@prettyfull/utils";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
 import { ProductOptions, SizeOption } from "../molecules/product-options";
 
@@ -39,7 +39,7 @@ const ProductInfos = ({
 			<div className="space-y-3 leading-snug sm:space-y-6">
 				{/* Catégorie */}
 				<h4 className="tracking-wide !text-[1.8rem] text-gray-500 uppercase sm:!text-[2.1rem] font-bebas-neue">
-					{productData?.category}
+					{productData?.label}
 				</h4>
 
 				{/* Titre et prix */}
@@ -51,15 +51,17 @@ const ProductInfos = ({
 						<div className="block text-start ">
 							<h4 className="!text-2xl  sm:!text-3xl whitespace-nowrap">
 								{" "}
-								{formatCurrency_FR(productData.promotion?.reduced_price || 0)}
+								{productData.promotion?.reduced_price.amount || 0}{" "}
+								{productData?.price?.currency}
 							</h4>
 							<h4 className="text-grey/50  line-through !text-[2rem] sm:!text-[2.8rem]   whitespace-nowrap">
-								{formatCurrency_FR(productData.price?.amount)}
+								{productData?.price?.amount} {productData?.price?.currency}
 							</h4>
 						</div>
 					) : (
 						<h4 className="!text-2xl  sm:!text-3xl whitespace-nowrap">
-							{formatCurrency_FR(productData?.price.amount)}
+							{productData?.price.amount}
+							{productData?.price?.currency}
 						</h4>
 					)}
 				</div>
@@ -67,7 +69,7 @@ const ProductInfos = ({
 				{/* Options de produit */}
 				<ProductOptions
 					sizes={sizes as SizeOption[]}
-					variable={productData.variable}
+					variable={productData?.variable}
 					selectedSize={selectedSize}
 					selectedColor={selectedColor}
 					onColorChange={(color) => setSelectedColor(color)}
@@ -108,7 +110,7 @@ const ProductInfos = ({
 								Overview
 							</AccordionTrigger>
 							<AccordionContent>
-								<p className="text-gray-700">{productData.description}</p>
+								<p className="text-gray-700">{productData?.description}</p>
 							</AccordionContent>
 						</AccordionItem>
 						<AccordionItem value="item-2 ">

@@ -6,7 +6,12 @@ import { useQuery } from "@tanstack/react-query";
 
 export const getProductBySlug = async (slug: string): Promise<CardProps> => {
 	const response = await apiClient.get<CardProps>(
-		API_ROUTES.products.getBySlug(slug)
+		API_ROUTES.products.getBySlug(slug),
+		{
+			headers: {
+				"Accept-Language": "en",
+			},
+		}
 	);
 	return response.data;
 };

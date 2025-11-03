@@ -96,11 +96,7 @@ export class OrdersService {
    * Crée une nouvelle commande avec gestion atomique des stocksc
    */
   async createOrder(createOrderDto: CreateOrderDto1): Promise<OrderDocument> {
-    // const session: ClientSession = await this.orderModel.db.startSession(); // SUPPRIMÉ
-
     try {
-      // session.startTransaction(); // SUPPRIMÉ
-
       // 1. Validation et récupération des produits
       const orderItems: any[] = [];
       let subtotalAmount = 0;
@@ -112,10 +108,7 @@ export class OrdersService {
           );
         }
 
-        const product = await this.productModel
-          .findById(item.productId)
-          // .session(session) // SUPPRIMÉ
-          .exec();
+        const product = await this.productModel.findById(item.productId).exec();
 
         if (!product) {
           throw new NotFoundException(`Produit non trouvé: ${item.productId}`);
@@ -123,15 +116,50 @@ export class OrdersService {
 
         const productData = product as any;
 
-        // Vérification du stock
-        if (productData.stock < item.quantity) {
+        // Vérifier le stock en fonction du type de produit (variable ou non)
+        let stockQuantity = 0;
+        if (item.selectedVariants && productData.variable) {
+          // Produit avec variantes
+          const selectedEntries = Object.entries(item.selectedVariants || {});
+          const variableArray = Array.isArray(productData.variable)
+            ? (productData.variable as any[])
+            : [];
+          const variant = variableArray.find((v: any) =>
+            selectedEntries.every(([key, value]) => {
+              const field = v?.[key];
+              if (field && typeof field === 'object' && 'code' in field) {
+                return field.code === value;
+              }
+              return field === value;
+            }),
+          );
+          if (!variant) {
+            throw new BadRequestException('Variante non trouvée');
+          }
+          stockQuantity = variant.quantity;
+        } else if (productData.notVariable) {
+          // Produit sans variantes
+          stockQuantity = productData.notVariable.quantity;
+        }
+
+        if (stockQuantity < item.quantity) {
           throw new BadRequestException(
-            `Stock insuffisant pour le produit ${productData.name?.fr || productData.sku}. Stock disponible: ${productData.stock}`,
+            `Stock insuffisant pour le produit ${productData.name?.fr || productData.sku}`,
           );
         }
 
-        // Calcul du prix total pour cet item
-        const unitPrice = productData.price?.amount || 0;
+        // Calcul du prix avec gestion des promotions et devises
+        const price = productData.promotion
+          ? {
+              amount: productData.promotion.reduced_price.amount.fr,
+              currency: productData.promotion.reduced_price.currency.fr,
+            }
+          : {
+              amount: productData.price.amount.fr,
+              currency: productData.price.currency.fr,
+            };
+
+        const unitPrice = price.amount;
         const totalPrice = unitPrice * item.quantity;
         subtotalAmount += totalPrice;
 
@@ -139,18 +167,44 @@ export class OrdersService {
           product: new Types.ObjectId(item.productId),
           productId: new Types.ObjectId(item.productId),
           sku: productData.sku,
-          name: productData.name || { fr: '', en: '' },
+          name: productData.name,
           quantity: item.quantity,
           unitPrice: {
             amount: unitPrice,
-            currency: 'XOF',
+            currency: price.currency,
           },
           totalPrice: {
             amount: totalPrice,
-            currency: 'XOF',
+            currency: price.currency,
           },
-          selectedVariants: item.selectedVariants || {}, // Assurez-vous que les variants sont bien inclus
+          selectedVariants: item.selectedVariants || {},
+          promotion: productData.promotion
+            ? {
+                reduced_price: {
+                  amount: productData.promotion.reduced_price.amount,
+                  currency: productData.promotion.reduced_price.currency,
+                },
+                pourcentage: productData.promotion.pourcentage,
+              }
+            : undefined,
         });
+
+        // Décrémentation du stock
+        if (item.selectedVariants && productData.variable) {
+          await this.productModel.updateOne(
+            {
+              _id: item.productId,
+              'variable.color.code': item.selectedVariants.color,
+              'variable.size': item.selectedVariants.size,
+            },
+            { $inc: { 'variable.$.quantity': -item.quantity } },
+          );
+        } else if (productData.notVariable) {
+          await this.productModel.updateOne(
+            { _id: item.productId },
+            { $inc: { 'notVariable.quantity': -item.quantity } },
+          );
+        }
       }
 
       const shippingAddressId = createOrderDto.shippingAddress;
@@ -200,50 +254,12 @@ export class OrdersService {
       };
 
       const createdOrder = new this.orderModel(orderData);
-      const savedOrder = await createdOrder.save(/*{ session }*/); // SUPPRIMÉ
+      const savedOrder = await createdOrder.save();
 
-      // 4. Décrémentation atomique des stocks
-      for (const item of createOrderDto.items) {
-        await this.productModel
-          .findByIdAndUpdate(
-            item.productId,
-            {
-              $inc: { stock: -item.quantity },
-              $set: { updatedAt: new Date() },
-            },
-            { /*session,*/ new: true },
-          )
-          .exec();
-      }
-
-      // 5. Validation finale - vérifier qu'aucun stock n'est devenu négatif
-      for (const item of createOrderDto.items) {
-        const updatedProduct = await this.productModel
-          .findById(item.productId)
-          // .session(session) // SUPPRIMÉ
-          .exec();
-
-        if (updatedProduct && (updatedProduct as any).stock < 0) {
-          throw new BadRequestException(
-            `Transaction annulée: stock insuffisant pour ${(updatedProduct as any).sku}`,
-          );
-        }
-      }
-
-      // 6. Commit de la transaction
-      // await session.commitTransaction(); // SUPPRIMÉ
-
-      console.log(`✅ Commande ${savedOrder.orderNumber} créée avec succès`);
-
-      // 7. Ajouter à la queue de notifications (implémenté à l'étape 8)
       await this.sendOrderCreatedNotification(savedOrder);
 
       return savedOrder;
-
-      return savedOrder;
     } catch (error) {
-      // Rollback en cas d'erreur
-      // await session.abortTransaction(); // SUPPRIMÉ
       console.error('❌ Erreur lors de la création de la commande:', error);
 
       if (
@@ -256,9 +272,7 @@ export class OrdersService {
       throw new InternalServerErrorException(
         'Erreur interne lors de la création de la commande',
       );
-    } /*finally { // SUPPRIMÉ
-      await session.endSession();
-    }*/
+    }
   }
 
   /**

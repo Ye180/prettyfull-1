@@ -60,7 +60,7 @@ export class CartsService {
     }
   }
 
-  async getCart(userId: string) {
+  async getCart(userId: string, language: string = 'fr') {
     const cartKey = this.getCartKey(userId);
 
     try {
@@ -91,26 +91,38 @@ export class CartsService {
           Logger.log('Fetching product for ID:', productId);
 
           try {
-            // Récupérer les détails du produit
             const product = await this.productService.findOne(
               productId as string,
-              'en',
-            ); // ou la langue appropriée
+              language,
+            );
 
             return {
               productId,
-              sku: productId,
-              name: product.name,
+              sku: product.sku,
+              name: product.name[language],
+              image:
+                product.variable?.[0]?.image[0] ||
+                product.notVariable?.image[0],
               quantity,
               unitPrice: {
-                amount: Number(product.price?.amount || 0),
-                currency: 'XOF',
+                amount: product.price.amount[language],
+                currency: product.price.currency[language],
               },
               totalPrice: {
-                amount: Number(product.price?.amount || 0) * quantity,
-                currency: 'XOF',
+                amount: product.price.amount[language] * quantity,
+                currency: product.price.currency[language],
               },
-              isActive: true,
+              promotion: product.promotion
+                ? {
+                    reduced_price: {
+                      amount: product.promotion.reduced_price[language].amount,
+                      currency:
+                        product.promotion.reduced_price[language].currency,
+                    },
+                    pourcentage: product.promotion.pourcentage,
+                  }
+                : undefined,
+              isActive: product.isActive,
               selectedVariants:
                 Object.keys(selectedVariants).length > 0
                   ? selectedVariants
@@ -118,11 +130,12 @@ export class CartsService {
             };
           } catch (productError) {
             Logger.error('Error fetching product:', productError);
-            // Retourner un item avec des données par défaut si le produit n'est pas trouvé
             return {
               productId,
               sku: productId,
-              name: 'Produit non trouvé',
+              name: { fr: 'Produit non trouvé', en: 'Product not found' }[
+                language
+              ],
               quantity,
               unitPrice: {
                 amount: 0,
@@ -144,11 +157,13 @@ export class CartsService {
 
       const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
       const subtotalAmount = items.reduce(
-        (acc, item) => acc + item.totalPrice.amount,
+        (acc, item) =>
+          acc +
+          (item.promotion
+            ? item.promotion.reduced_price.amount * item.quantity
+            : item.totalPrice.amount),
         0,
       );
-
-      const codeAmount = { amount: 8, currency: 'XOF' };
 
       Logger.log('Cart items processed:', items);
 
@@ -160,9 +175,8 @@ export class CartsService {
           amount: subtotalAmount,
           currency: 'XOF',
         },
-        codepromo: { amount: 8, currency: 'XOF' },
         total: {
-          amount: subtotalAmount - Number(codeAmount.amount),
+          amount: subtotalAmount,
           currency: 'XOF',
         },
         updatedAt: new Date(),

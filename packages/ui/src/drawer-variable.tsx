@@ -76,8 +76,6 @@ const DrawerVariable = ({
 			setSelectedSize(null as unknown as string);
 
 			setActiveImage(0);
-
-			console.log("active image one", variable.activeImageOne);
 		},
 
 		[selectedColor]
