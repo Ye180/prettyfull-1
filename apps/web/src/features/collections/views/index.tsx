@@ -1,3 +1,5 @@
+"use client";
+
 import Banner from "@/features/collections/organims/banner";
 
 import FilterLayout from "@/features/collections/organims/filter-layout";
@@ -10,8 +12,12 @@ import NavbarCollection from "@/features/collections/organims/mini-navbar";
 
 import { ScrollArea } from "@prettyfull/ui";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+import { useGetProducts } from "../api/get-product";
 
 const CollectionViews = () => {
+	const { data: products, isLoading } = useGetProducts({ page: 1, limit: 24 });
+
+	console.log("Fetched products:", products);
 	return (
 		<div className="pb-32 space-y-16 ">
 			<div className="relative h-[20vh] md:h-[35vh] px-4 bg-white">
@@ -27,10 +33,10 @@ const CollectionViews = () => {
 				<div className="flex items-start justify-center gap-8 !w-full ">
 					<FilterLayout className="h-[200vh] mt-4 border bg-white backdrop-blur-md border-gray-200" />
 					<ScrollArea className="py-4 max-md:hidden md:flex-1 h-[200vh]  scrolbarRecomandation">
-						<GridCollectionLayout />
+						<GridCollectionLayout products={products} loading={isLoading} />
 					</ScrollArea>
 					<div className="hidden max-md:flex md:hidden">
-						<GridCollectionLayout />
+						<GridCollectionLayout products={products} loading={isLoading} />
 					</div>
 				</div>
 			</Container>

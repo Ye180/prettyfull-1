@@ -37,6 +37,12 @@ export class Category {
   @Prop({ type: Boolean, default: true })
   isActive: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  first: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  second: boolean;
+
   @Prop({ type: Boolean, default: true })
   isVisible: boolean;
 

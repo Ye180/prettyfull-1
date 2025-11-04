@@ -6,9 +6,10 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {
-  formatResponse,
   FormatResponse,
+  formatResponse,
 } from 'src/shared/utils/format-response';
+import { Product, ProductDocument } from '../products/schemas/product.schema';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category, CategoryDocument } from './schemas/category.schema';
@@ -37,6 +38,7 @@ export class CategoriesService {
   constructor(
     @InjectModel(Category.name)
     private categoryModel: Model<CategoryDocument>,
+    @InjectModel(Product.name) private productModel: Model<ProductDocument>,
   ) {}
 
   /**
@@ -46,11 +48,24 @@ export class CategoriesService {
   async findAll(
     language: string = 'fr',
     includeHidden: boolean = false,
+    first?: boolean,
+    second?: boolean,
   ): Promise<TransformedCategory[]> {
-    const categories = await this.categoryModel
-      .find({ isVisible: includeHidden ? undefined : true })
-      .lean()
-      .exec();
+    const query: any = {};
+
+    if (!includeHidden) {
+      query.isVisible = true;
+    }
+
+    if (first !== undefined) {
+      query.first = first;
+    }
+
+    if (second !== undefined) {
+      query.second = second;
+    }
+
+    const categories = await this.categoryModel.find(query).lean().exec();
 
     return categories.map((category) =>
       this.transformCategory(category, language as 'fr' | 'en'),
@@ -281,6 +296,50 @@ export class CategoriesService {
       .exec();
   }
 
+  //Get all product of the categories
+
+  async getProductOfCategory(
+    categoryId: string,
+  ): Promise<FormatResponse<ProductDocument>> {
+    if (!Types.ObjectId.isValid(categoryId)) {
+      throw new BadRequestException('ID de catégorie invalide');
+    }
+
+    const category = await this.categoryModel.findById(categoryId);
+
+    if (!category) {
+      throw new NotFoundException('Catégorie non trouvée');
+    }
+
+    const product = await this.productModel
+      .find({ category: categoryId })
+      .exec();
+
+    return formatResponse({
+      data: product,
+      message: 'Produits de la catégorie récupérés avec succès',
+    });
+  }
+
+  async getProductOfCategoryBySlug(
+    slug: string,
+  ): Promise<FormatResponse<CategoryDocument>> {
+    const category = await this.categoryModel.findOne({ slug: slug });
+
+    if (!category) {
+      throw new NotFoundException('Catégorie non trouvée');
+    }
+
+    const products = await this.productModel
+      .find({ category: category._id })
+      .exec();
+
+    return formatResponse({
+      data: products,
+      message: 'Produits de la catégorie récupérés avec succès',
+    });
+  }
+
   /**
    * Mettre à jour le compteur de produits
    */
@@ -290,6 +349,7 @@ export class CategoriesService {
   ): Promise<void> {
     await this.categoryModel.findByIdAndUpdate(categoryId, {
       $inc: { productCount: increment },
+      $set: { updatedAt: new Date() },
     });
   }
 

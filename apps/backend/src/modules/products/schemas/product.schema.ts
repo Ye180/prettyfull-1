@@ -13,6 +13,7 @@ class I18nString {
   @Prop({ type: String, required: true })
   en: string;
 }
+
 const I18nStringSchema = SchemaFactory.createForClass(I18nString);
 
 @Schema({ _id: false })
@@ -25,25 +26,34 @@ class Color {
 }
 const ColorSchema = SchemaFactory.createForClass(Color);
 
+class I18nPriceString {
+  @Prop({ type: Number, required: true })
+  fr: number;
+
+  @Prop({ type: Number, required: true })
+  en: number;
+}
+
 @Schema({ _id: false })
 class Price {
-  @Prop({ type: Number, required: true, min: 0 })
-  amount: number;
+  @Prop({
+    type: {
+      fr: { type: Number, required: true },
+      en: { type: Number, required: true },
+    },
+    required: true,
+  })
+  amount: I18nPriceString;
 
-  @Prop({ type: String, required: true })
-  currency: string;
+  @Prop({
+    type: {
+      fr: { type: String, required: true },
+      en: { type: String, required: true },
+    },
+    required: true,
+  })
+  currency: I18nString;
 }
-const PriceSchema = SchemaFactory.createForClass(Price);
-
-@Schema({ _id: false })
-class Promotion {
-  @Prop({ type: Number, required: true })
-  reduced_price: number;
-
-  @Prop({ type: Number, required: true })
-  pourcentage: number;
-}
-const PromotionSchema = SchemaFactory.createForClass(Promotion);
 
 @Schema({ _id: false })
 class VariableProduct {
@@ -75,6 +85,32 @@ class NotVariableProduct {
   @Prop({ type: Number, min: 0 })
   quantity?: number;
 }
+
+@Schema({ _id: false })
+class Promotion {
+  @Prop({
+    type: {
+      fr: {
+        amount: { type: Number, required: true },
+        currency: { type: String, required: true },
+      },
+      en: {
+        amount: { type: Number, required: true },
+        currency: { type: String, required: true },
+      },
+    },
+    required: true,
+  })
+  reduced_price: {
+    fr: { amount: number; currency: string };
+    en: { amount: number; currency: string };
+  };
+
+  @Prop({ type: Number, required: true })
+  pourcentage: number;
+}
+const PromotionSchema = SchemaFactory.createForClass(Promotion);
+
 const NotVariableProductSchema =
   SchemaFactory.createForClass(NotVariableProduct);
 
@@ -104,7 +140,8 @@ export class Product extends Document {
   @Prop({ type: String })
   category?: string;
 
-  @Prop({ type: Number, required: true, min: 0 })
+  // Stock calculé automatiquement - plus besoin de le rendre required
+  @Prop({ type: Number, min: 0, default: 0 })
   stock: number;
 
   @Prop({ type: String })
@@ -116,13 +153,16 @@ export class Product extends Document {
   @Prop({ type: NotVariableProductSchema })
   notVariable?: NotVariableProduct;
 
-  @Prop({ type: String })
-  smallDescription?: string;
+  @Prop({ type: I18nStringSchema })
+  smallDescription?: I18nString;
+
+  @Prop({ type: String, required: true, unique: true })
+  slug: string;
 
   @Prop({ type: String, required: true, unique: true })
   sku: string;
 
-  @Prop({ type: PriceSchema, required: true })
+  @Prop({ type: Price, required: true })
   price: Price;
 
   @Prop({ type: Boolean, default: false })
@@ -134,8 +174,8 @@ export class Product extends Document {
   @Prop({ type: Boolean, default: false })
   isLoading?: boolean;
 
-  @Prop({ type: String })
-  label?: string;
+  @Prop({ type: I18nStringSchema })
+  label?: I18nString;
 
   @Prop({ type: Boolean, required: true, default: true })
   isActive: boolean;
@@ -155,3 +195,35 @@ export const ProductSchemaDefinition = SchemaFactory.createForClass(Product);
 ProductSchemaDefinition.index({ name: 'text', description: 'text' });
 ProductSchemaDefinition.index({ sku: 1, isActive: 1 });
 ProductSchemaDefinition.index({ category: 1, isActive: 1 });
+
+// Hook pre-save pour calculer automatiquement le stock total
+ProductSchemaDefinition.pre('save', function (next) {
+  if (this.variable && this.variable.length > 0) {
+    // Calculer la somme des quantités de toutes les variantes
+    this.stock = this.variable.reduce((total, variant) => {
+      return total + (variant.quantity || 0);
+    }, 0);
+  } else if (this.notVariable) {
+    // Si pas de variantes, utiliser la quantité du produit simple
+    this.stock = this.notVariable.quantity || 0;
+  }
+  next();
+});
+
+// Hook pre-update pour recalculer le stock lors des mises à jour
+ProductSchemaDefinition.pre('findOneAndUpdate', function (next) {
+  const update = this.getUpdate() as Partial<Product>;
+
+  if (update.variable && update.variable.length > 0) {
+    update.stock = update.variable.reduce(
+      (total: number, variant: VariableProduct) => {
+        return total + (variant.quantity || 0);
+      },
+      0,
+    );
+  } else if (update.notVariable) {
+    update.stock = update.notVariable.quantity || 0;
+  }
+
+  next();
+});

@@ -1,9 +1,10 @@
 "use client";
 
-import { NAV_LINKS } from "@/lib/utils/constants/constants";
+import { Category } from "@/features/homepage/api/get-category";
+import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
 import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
 import { setItem } from "@/lib/utils/local-storage";
-import { Input, NavLink } from "@prettyfull/ui";
+import { Input, NavLink, Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -13,7 +14,13 @@ import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
 import { Currency } from "./currency";
 import NavbarResponsive from "./navbar-responsive";
 
-const NavBarHeaders = () => {
+const NavBarHeaders = ({
+	main_category,
+	secondary_category,
+}: {
+	main_category: Category[];
+	secondary_category: Category[];
+}) => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	const t = useTranslations("HomePage.header");
@@ -29,16 +36,20 @@ const NavBarHeaders = () => {
 						PRETTYFULL
 					</Link>
 					<div className=" max-md:hidden flex text-[1.2rem] text-black items-center space-x-6">
-						{NAV_LINKS.map((link, index) => (
-							<NavLink
-								key={index}
-								href={link.href}
-								onClick={() => setItem("links", link.label)}
-								className="font-black "
-							>
-								{link.label}
-							</NavLink>
-						))}
+						{main_category ? (
+							main_category.map((items: Category, index: number) => (
+								<NavLink
+									key={index}
+									href={COLLECTION_PATHS.collectionDetail(items.slug)}
+									onClick={() => setItem("links", items.name)}
+									className="font-black "
+								>
+									{items.name}
+								</NavLink>
+							))
+						) : (
+							<Skeleton className="h-9 w-[20rem] " />
+						)}
 					</div>
 				</div>
 				<div className="flex items-center gap-2 md:gap-6">
@@ -72,8 +83,6 @@ const NavBarHeaders = () => {
 										</p>
 									)}
 									<item.icon className="" />
-
-									{/* {item?.visible && <DropdownContentCart />} */}
 								</NavLink>
 							))}
 						</div>
@@ -93,20 +102,10 @@ const NavBarHeaders = () => {
 					<NavbarResponsive
 						close={() => setIsMobileMenuOpen(false)}
 						onClick={() => setIsMobileMenuOpen(false)}
+						main_category={main_category}
+						secondary_category={secondary_category}
 					/>
 				)}{" "}
-			</div>
-			<div className="flex items-center space-x-6 overflow-x-auto text-black md:hidden h-fit ">
-				{NAV_LINKS.map((link, index) => (
-					<NavLink
-						key={index}
-						href={link.href}
-						onClick={() => setItem("links", link.label)}
-						className="font-extrabold !text-[1.7rem]"
-					>
-						{link.label}
-					</NavLink>
-				))}
 			</div>
 		</>
 	);

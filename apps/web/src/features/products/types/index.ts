@@ -27,8 +27,11 @@ export type ProductVariable = {
 
 export type ProductTypes = {
     category?: string;
-    title: string;
-    price: number;
+    name: string;
+    price: {
+        amount: number;
+        currency: string;
+    };
     description: string;
     solde?: boolean;
     

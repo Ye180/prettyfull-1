@@ -8,6 +8,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { AddressDto } from 'src/modules/address/dto/address.dto';
 // --- Sous-DTOs ---
 
 class PriceDto {
@@ -19,25 +20,33 @@ class PriceDto {
   currency: string;
 }
 
-class AddressDto {
+// class AddressDto {
+//   @IsString()
+//   fullName: string;
+
+//   @IsString()
+//   street: string;
+
+//   @IsString()
+//   city: string;
+
+//   @IsString()
+//   postalCode: string;
+
+//   @IsString()
+//   country: string;
+
+//   @IsString()
+//   @IsOptional()
+//   phone?: string;
+// }
+
+class TranslatableStringDto {
   @IsString()
-  fullName: string;
+  fr: string;
 
   @IsString()
-  street: string;
-
-  @IsString()
-  city: string;
-
-  @IsString()
-  postalCode: string;
-
-  @IsString()
-  country: string;
-
-  @IsString()
-  @IsOptional()
-  phone?: string;
+  en: string;
 }
 
 class PaymentInfoDto {
@@ -59,12 +68,15 @@ class OrderItemDto {
   @IsString()
   sku: string;
 
-  @IsString()
-  name: string;
+  @ValidateNested()
+  @Type(() => TranslatableStringDto)
+  name: TranslatableStringDto;
 
   @IsNumber()
   @Min(1)
   quantity: number;
+
+  selectedVariants?: Record<string, string>;
 
   @ValidateNested()
   @Type(() => PriceDto)
@@ -87,6 +99,17 @@ export enum OrderStatus {
   REFUNDED = 'refunded',
 }
 
+export enum PaymentStatus {
+  PENDING = 'pending',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+  REFUNDED = 'refunded',
+}
+
+// export enum DeliveryStatus {
+
+// }
+
 // --- DTO principal ---
 
 export class CreateOrderDto {
@@ -104,11 +127,19 @@ export class CreateOrderDto {
 
   @ValidateNested()
   @Type(() => AddressDto)
-  billingAddress: AddressDto;
+  billingAddressInfo?: AddressDto;
+
+  @IsString()
+  @IsOptional()
+  billingAddress?: string;
+
+  @IsString()
+  @IsOptional()
+  shippingAddress?: string;
 
   @ValidateNested()
   @Type(() => AddressDto)
-  shippingAddress: AddressDto;
+  shippingAddressInfo?: AddressDto;
 
   @ValidateNested()
   @Type(() => PaymentInfoDto)
@@ -117,6 +148,10 @@ export class CreateOrderDto {
   @ValidateNested()
   @Type(() => PriceDto)
   subtotal: PriceDto;
+
+  @ValidateNested()
+  @Type(() => OrderItemDto)
+  selectedVariants: OrderItemDto[];
 
   @ValidateNested()
   @Type(() => PriceDto)
@@ -137,4 +172,6 @@ export class CreateOrderDto {
 
   @IsEnum(OrderStatus)
   status: OrderStatus;
+
+  notes?: string;
 }

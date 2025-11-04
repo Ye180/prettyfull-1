@@ -15,7 +15,7 @@ const PictureBar = ({
 				<Image
 					src={imageDesktop}
 					alt="desktop image"
-					layout="fill"
+					fill
 					objectFit="cover"
 					className="h-full overflow-hidden bg-center bg-no-repeat bg-cover max-lg:hidden lg:flex bg-black/60"
 				/>
@@ -24,7 +24,7 @@ const PictureBar = ({
 				<Image
 					src={imageMobile}
 					alt="phone image"
-					layout="fill"
+					fill
 					objectFit="cover"
 					className="h-full overflow-hidden bg-center bg-no-repeat bg-cover max-lg:flex lg:hidden bg-black/60"
 				/>

@@ -7,7 +7,7 @@ import { Dispatch, SetStateAction } from "react";
 
 interface ProductGalleryProps {
 	images?: string[] | StaticImport[];
-	title: string;
+	name: string;
 	className?: string;
 
 	activeImage: number;
@@ -19,7 +19,7 @@ interface ProductGalleryProps {
 
 export function ProductGallery({
 	images,
-	title,
+	name,
 	className,
 	activeImage,
 	setActiveImage,
@@ -49,7 +49,7 @@ export function ProductGallery({
 						<div className="relative w-full h-full overflow-hidden">
 							<Image
 								src={image}
-								alt={`${title} - vue ${index + 1}`}
+								alt={`${name} - vue ${index + 1}`}
 								width={80}
 								height={80}
 								className="object-cover"
@@ -63,7 +63,7 @@ export function ProductGallery({
 			<div className="relative hidden sm:flex w-fit">
 				<Image
 					src={images?.[activeImage] || "/placeholder.png"}
-					alt={title}
+					alt={name}
 					width={500}
 					height={800}
 					className="object-cover"
@@ -87,7 +87,7 @@ export function ProductGallery({
 						<Image
 							key={index}
 							src={image}
-							alt={`${title} - vue ${index + 1}`}
+							alt={`${name} - vue ${index + 1}`}
 							width={150}
 							height={350}
 						/>

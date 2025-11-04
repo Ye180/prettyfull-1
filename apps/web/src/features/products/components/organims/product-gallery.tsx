@@ -28,6 +28,14 @@ export function ProductGallery({
 }: ProductGalleryProps) {
 	const [isZoomed, setIsZoomed] = useState(false);
 
+	const swipeHandlers = useSwipeable({
+		onSwipedLeft: () =>
+			setActiveImage((prev) => (prev < images.length - 1 ? prev + 1 : 0)),
+		onSwipedRight: () =>
+			setActiveImage((prev) => (prev > 0 ? prev - 1 : images.length - 1)),
+		trackMouse: true,
+	});
+
 	if (!images || images.length === 0) {
 		return (
 			<div
@@ -39,14 +47,6 @@ export function ProductGallery({
 			</div>
 		);
 	}
-
-	const swipeHandlers = useSwipeable({
-		onSwipedLeft: () =>
-			setActiveImage((prev) => (prev < images.length - 1 ? prev + 1 : 0)),
-		onSwipedRight: () =>
-			setActiveImage((prev) => (prev > 0 ? prev - 1 : images.length - 1)),
-		trackMouse: true,
-	});
 
 	return (
 		<>

@@ -6,7 +6,7 @@ import Size from "../../../../../../../packages/ui/src/size";
 
 export interface SizeOption {
 	label: string;
-	value: string;
+	code: string;
 }
 
 interface ColorOption {
@@ -25,7 +25,7 @@ interface ProductOptionsProps {
 	}[];
 	notVariable?: {
 		color?: { label: string; code: string };
-		size: string[];
+		size: SizeOption[];
 		image: string;
 		quantity?: number;
 	};
@@ -82,8 +82,8 @@ export function ProductOptions({
 					<p className="font-semibold uppercase !text-[1.9rem] font-bebas-neue tracking-wider">
 						Color
 					</p>
-					<div className="flex flex-wrap gap-6 ">
-						{variable.map((items, index) => (
+					<div className="grid grid-cols-3 gap-6 ">
+						{variable?.map((items, index) => (
 							<button
 								key={index}
 								onClick={() => onColorChange(items.color.code)}

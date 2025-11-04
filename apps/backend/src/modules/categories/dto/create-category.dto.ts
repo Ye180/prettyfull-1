@@ -80,6 +80,14 @@ export class CreateCategoryDto {
   isVisible?: boolean;
 
   @IsOptional()
+  @IsBoolean()
+  first?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  second?: boolean;
+
+  @IsOptional()
   @IsString()
   @IsArray()
   children: string[];

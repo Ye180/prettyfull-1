@@ -1,68 +1,42 @@
-import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
-import { CardProduct, GridCardProduct } from "@prettyfull/ui";
+"use client";
 
-const GridCollectionLayout = () => {
+import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
+import ProductCardSkeleton from "@/shared/components/organims/product-loading";
+import { CardProduct, CardProps, GridCardProduct } from "@prettyfull/ui";
+
+const GridCollectionLayout = ({
+	products,
+	loading,
+}: {
+	products: CardProps[];
+	loading: boolean;
+}) => {
+	// Fetch products using the custom hook
+
+	console.log("Fetched products:", products);
+	if (!products || loading) {
+		return (
+			<div className="grid w-full grid-cols-4 gap-4 px-2 rounded-md max-sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 scrolbar ">
+				{Array.from({ length: 16 }).map((_, index) => (
+					<ProductCardSkeleton key={index} />
+				))}
+			</div>
+		);
+	}
 	return (
-		<div className="px-2  rounded-md max-md:w-full md:w-6/6 scrolbar ">
+		<div className="px-2 rounded-md max-md:w-full md:w-6/6 scrolbar ">
 			<GridCardProduct action_grid className=" max-sm:gap-y-8">
 				<>
-					{Array.from({ length: 24 }).map((_, i) => (
+					{products?.map((items: CardProps, i: number) => (
 						<div key={i} className="w-full aspect-10/9">
 							<CardProduct
-								variable={[
-									{
-										color: {
-											label: "Rouge",
-											code: "#FF0000",
-										},
-										size: ["S", "M", "L", "XL", "2XL", "3XL"],
-										image: [
-											"/assets/product_2.webp",
-											"/assets/product5.webp",
-											"/assets/product_2.webp",
-										],
-										quantity: 1,
-									},
-									{
-										color: {
-											label: "Gris",
-											code: "#373B39",
-										},
-										size: ["S", "M", "L"],
-										image: ["/assets/product5.webp", "/assets/product_2.webp"],
-										quantity: 1,
-									},
-									{
-										color: {
-											label: "Violet",
-											code: "#3C2E69",
-										},
-										size: ["S", "M", "L", "XL", "2XL", "3XL"],
-										image: ["/assets/product5.webp", "/assets/product_2.webp"],
-										quantity: 1,
-									},
-									{
-										color: {
-											label: "Jade",
-											code: "#29A383",
-										},
-										size: ["S", "M", "L"],
-										image: [
-											"/assets/product_2.webp",
-											"/assets/product5.webp",
-											"/assets/product_2.webp",
-										],
-										quantity: 1,
-									},
-								]}
-								price={12000}
-								promotion={{
-									pourcentage: 50,
-									reduced_price: 6000,
-								}}
-								smallDescription="Top polyvalente á Manche"
-								title="Sweet-Top"
-								link={PRODUCT_PATHS.productDetail("SWEET-TOP")}
+								variable={items.variable}
+								price={items.price}
+								notVariable={items.notVariable}
+								promotion={items?.promotion}
+								smallDescription={items.label}
+								name={items.name}
+								link={PRODUCT_PATHS.productDetail(items.slug as string)}
 							/>
 						</div>
 					))}

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { AddressDto } from 'src/modules/address/dto/address.dto';
 
 // --- Sous-schémas réutilisables ---
 
@@ -14,6 +15,14 @@ class Price {
   currency: string;
 }
 const PriceSchema = SchemaFactory.createForClass(Price);
+
+class I18nString {
+  @Prop({ type: String, required: true })
+  fr: string;
+
+  @Prop({ type: String, required: true })
+  en: string;
+}
 
 @Schema({ _id: false })
 class PaymentInfo {
@@ -31,17 +40,13 @@ const PaymentInfoSchema = SchemaFactory.createForClass(PaymentInfo);
 @Schema({ _id: false })
 class OrderItem {
   @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
-  productId: Types.ObjectId;
-
-  variant: string;
-
-  taille: string[];
+  product: Types.ObjectId; // Renommé de productId à product pour correspondre à l'usage
 
   @Prop({ type: String, required: true })
   sku: string;
 
-  @Prop({ type: String, required: true })
-  name: string;
+  @Prop({ type: I18nString, required: true })
+  name: I18nString;
 
   @Prop({ type: Number, required: true, min: 1 })
   quantity: number;
@@ -51,6 +56,9 @@ class OrderItem {
 
   @Prop({ type: PriceSchema, required: true })
   totalPrice: Price;
+
+  @Prop({ type: Object })
+  selectedVariants?: Record<string, string>; // Ajout du champ pour stocker les variants (couleur, taille, etc.)
 }
 const OrderItemSchema = SchemaFactory.createForClass(OrderItem);
 
@@ -81,10 +89,13 @@ export class Order extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Address', required: true })
   billingAddress: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Address', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Address', required: false })
   shippingAddress: Types.ObjectId;
 
-  @Prop({ type: PaymentInfoSchema, required: true })
+  @Prop({ type: AddressDto })
+  shippingAddressInfo: AddressDto;
+
+  @Prop({ type: PaymentInfoSchema, required: false })
   payment: PaymentInfo;
 
   @Prop({ type: PriceSchema, required: true })

@@ -13,6 +13,7 @@ const ShopGrid = () => {
 				<>
 					{Array.from({ length: 4 }).map((_, i) => (
 						<CardProduct
+							key={i}
 							variable={[
 								{
 									color: {
@@ -59,13 +60,15 @@ const ShopGrid = () => {
 									quantity: 1,
 								},
 							]}
-							price={12000}
+							price={
+								{ amount: 12000, currency: "USD" } /* Example price object */
+							}
 							promotion={{
 								pourcentage: 50,
 								reduced_price: 6000,
 							}}
 							smallDescription="Top polyvalente á Manche"
-							title="Sweet-Top"
+							name="Sweet-Top"
 							link={PRODUCT_PATHS.productDetail("SWEET-TOP")}
 						/>
 					))}
