@@ -20,7 +20,7 @@ export class CategoriesController {
    * GET /categories - Public
    * Liste toutes les catégories
    */
-  @Get()
+  @Get('')
   async findAll(
     @Headers('accept-language') language: string = 'fr',
     @Query('includeHidden') includeHidden: boolean = false,
