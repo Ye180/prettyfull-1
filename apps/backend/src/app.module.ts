@@ -84,7 +84,6 @@ import { WishlistsModule } from './modules/wishlists/wishlists.module';
 
     // Modules partagés
     RedisModule,
-
     // Modules métier
     AuthModule,
     UsersModule,
