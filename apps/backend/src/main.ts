@@ -15,9 +15,13 @@ async function bootstrap() {
   app.use(helmet());
   app.use(compression());
 
+  const allowedOrigins = configService
+    .get<string>('CORS_ORIGIN', 'http://localhost:3000')
+    .split(',')
+    .map((origin) => origin.trim());
   // CORS configuration
   app.enableCors({
-    origin: configService.get<string>('CORS_ORIGIN', 'http://localhost:3000'),
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'Content-Type',
@@ -46,7 +50,7 @@ async function bootstrap() {
 
   // Redirect root to API docs
   app.getHttpAdapter().get('', (req, res) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     res.redirect(`/${apiPrefix}/docs`);
   });
 
