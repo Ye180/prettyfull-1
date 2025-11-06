@@ -100,6 +100,40 @@ export class CategoriesService {
     );
   }
 
+  async findPrimaryCategory(
+    language: string = 'fr',
+  ): Promise<TransformedCategory[]> {
+    const categories = await this.categoryModel
+      .find({ first: true })
+      .lean()
+      .exec();
+
+    if (!categories || categories.length === 0) {
+      throw new NotFoundException('Aucune catégorie principale trouvée');
+    }
+
+    return categories.map((category) =>
+      this.transformCategory(category, language as 'fr' | 'en'),
+    );
+  }
+
+  async findSecondaryCategory(
+    language: string = 'fr',
+  ): Promise<TransformedCategory[]> {
+    const categories = await this.categoryModel
+      .find({ second: true })
+      .lean()
+      .exec();
+
+    if (!categories || categories.length === 0) {
+      throw new NotFoundException('Aucune catégorie principale trouvée');
+    }
+
+    return categories.map((category) =>
+      this.transformCategory(category, language as 'fr' | 'en'),
+    );
+  }
+
   async findByName(
     name: string,
     language: string = 'fr',
@@ -332,12 +366,49 @@ export class CategoriesService {
 
     const products = await this.productModel
       .find({ category: category._id })
+      .lean()
       .exec();
 
     return formatResponse({
       data: products,
       message: 'Produits de la catégorie récupérés avec succès',
     });
+  }
+
+  async findChildrenCategories(
+    parent: string,
+    language: string = 'fr',
+  ): Promise<TransformedCategory[]> {
+    if (!Types.ObjectId.isValid(parent)) {
+      throw new BadRequestException('ID de catégorie invalide');
+    }
+
+    const categories = await this.categoryModel
+      .find({ parent: parent })
+      .lean()
+      .exec();
+
+    const transformedCategories = categories.map((category) =>
+      this.transformCategory(category, language as 'fr' | 'en'),
+    );
+
+    return transformedCategories;
+  }
+
+  async findChildrenBySlug(
+    slug: string,
+    // language: string = 'fr',
+  ) {
+    const parentCategory = await this.categoryModel
+      .findOne({ slug: slug })
+      .lean()
+      .exec();
+
+    if (!parentCategory) {
+      throw new NotFoundException('Catégorie parente non trouvée');
+    }
+
+    // return this.findChildrenCategories(parentCategory._id.toString(), language);
   }
 
   /**

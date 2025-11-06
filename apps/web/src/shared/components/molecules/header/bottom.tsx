@@ -1,8 +1,9 @@
 "use client ";
 import { Category } from "@/features/homepage/api/get-category";
 import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
-import { NavLink, Skeleton } from "@prettyfull/ui";
+import { Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import Link from "next/link";
 
 const BottomHeader = ({
 	className,
@@ -31,14 +32,14 @@ const BottomHeader = ({
 				>
 					{secondary_category ? (
 						secondary_category?.map((items: Category, index: number) => (
-							<NavLink
+							<Link
 								href={COLLECTION_PATHS.collectionDetail(items.slug)}
 								key={index}
 								className="!text-[1.6rem] capitalize snap-center"
 							>
 								{" "}
 								{items.name}
-							</NavLink>
+							</Link>
 						))
 					) : (
 						<Skeleton className="h-9 w-[100%]" />

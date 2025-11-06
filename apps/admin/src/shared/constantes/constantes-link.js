@@ -4,6 +4,7 @@ import { ProductListIcon } from "../icons/product-list";
 export const LINK_ROUTES = [
 	// { name: "Home", path: "/" },
 	{ name: "Dashboard", path: "/", icon: HomeIcon },
+	{ name: "Site content", path: "/site-content", icon: HomeIcon },
 	{ name: "Order", path: "/order", icon: ProductListIcon },
 	{ name: "Product List", path: "/product-list", icon: ProductListIcon },
 

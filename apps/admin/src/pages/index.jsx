@@ -140,7 +140,7 @@ const Index = () => {
 					<Container>
 						<div className="grid grid-cols-2 gap-3 xl:grid-cols-4 ss:gap-4 ">
 							<div>
-								<div className="p-3 xs:p-4 border  border-Mborderborderprimary w-full rounded-lg">
+								<div className="w-full p-3 border rounded-lg xs:p-4 border-Mborderborderprimary">
 									<div className="flex items-center gap-2 mb-4 ss:gap-3">
 										<div className="flex items-center justify-center w-[38px] ss:w-11 md:w-14 h-[38px] ss:h-11 md:h-14 rounded-full bg-Msurfacesurfacesecondary border border-Mborderborderprimary">
 											<img
@@ -168,7 +168,7 @@ const Index = () => {
 								</div>
 							</div>
 							<div>
-								<div className="p-3 xs:p-4 border border-Mborderborderprimary w-full rounded-lg">
+								<div className="w-full p-3 border rounded-lg xs:p-4 border-Mborderborderprimary">
 									<div className="flex items-center gap-2 mb-4 ss:gap-3">
 										<div className="flex items-center justify-center w-[38px] ss:w-11 md:w-14 h-[38px] ss:h-11 md:h-14 rounded-full bg-Msurfacesurfacesecondary border border-Mborderborderprimary">
 											<img
@@ -196,7 +196,7 @@ const Index = () => {
 								</div>
 							</div>
 							<div>
-								<div className="p-3 xs:p-4 border border-Mborderborderprimary w-full rounded-lg">
+								<div className="w-full p-3 border rounded-lg xs:p-4 border-Mborderborderprimary">
 									<div className="flex items-center gap-2 mb-4 ss:gap-3">
 										<div className="flex items-center justify-center w-[38px] ss:w-11 md:w-14 h-[38px] ss:h-11 md:h-14 rounded-full bg-Msurfacesurfacesecondary border border-Mborderborderprimary">
 											<img
@@ -222,7 +222,7 @@ const Index = () => {
 								</div>
 							</div>
 							<div>
-								<div className="p-3 xs:p-4 border border-Mborderborderprimary w-full rounded-lg">
+								<div className="w-full p-3 border rounded-lg xs:p-4 border-Mborderborderprimary">
 									<div className="flex items-center gap-2 mb-4 ss:gap-3">
 										<div className="flex items-center justify-center w-[38px] ss:w-11 md:w-14 h-[38px] ss:h-11 md:h-6 rounded-full bg-Msurfacesurfacesecondary border border-Mborderborderprimary">
 											<img
@@ -258,7 +258,7 @@ const Index = () => {
 								<CartRevenue />
 							</Col>
 							<Col md={4} className="flex-fill">
-								<div className="h-full p-4 border border-Mborderborderprimary w-full rounded-lg flex flex-col justify-between">
+								<div className="flex flex-col justify-between w-full h-full p-4 border rounded-lg border-Mborderborderprimary">
 									<h4 className="w-full font-semibold text__20">
 										Customer Growth
 									</h4>
@@ -295,12 +295,12 @@ const Index = () => {
 													<img
 														src={originalUrl + "/api/flags/" + obj.name}
 														alt="US Flag"
-														className="w-6 h-6 rounded-full relative object-cover"
+														className="relative object-cover w-6 h-6 rounded-full"
 													/>
 													<p className="font-medium text__14">{obj.name}</p>
 												</div>
 												<div className="flex items-center gap-3">
-													<div className="w-full relative rounded-full h-2 bg-Msurfacesurfacetertiary overflow-hidden">
+													<div className="relative w-full h-2 overflow-hidden rounded-full bg-Msurfacesurfacetertiary">
 														<div
 															className="absolute top-0 left-0 h-full rounded-full bg-Msurfacesurfacebrand"
 															style={{ width: obj.percent }}

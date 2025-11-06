@@ -266,7 +266,10 @@ const DrawerVariable = ({
 											price={{ amount: 12000, currency: "USD" }}
 											promotion={{
 												pourcentage: 50,
-												reduced_price: 6000,
+												reduced_price: {
+													amount: 6000,
+													currency: "USD",
+												},
 											}}
 											smallDescription="Top polyvalente á Manche"
 											name="Sweet-Top"

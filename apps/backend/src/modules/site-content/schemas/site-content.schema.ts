@@ -1,23 +1,26 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { I18nString } from '../../../shared/schemas/i18n.schema';
 
 export type SiteContentDocument = SiteContent & Document;
 
 export enum ContentType {
-  HERO_BANNER = 'hero_banner',
-  PROMO_BANNER = 'promo_banner',
-  TEXT_BLOCK = 'text_block',
-  IMAGE_GALLERY = 'image_gallery',
-  FAQ = 'faq',
-  TERMS = 'terms',
-  PRIVACY = 'privacy',
+  SECTION = 'section',
+  BANNER = 'banner',
+  CATEGORY = 'category',
+}
+
+export class I18nString {
+  fr?: string;
+  en?: string;
 }
 
 @Schema({ timestamps: true })
 export class SiteContent {
   @Prop({ required: true, unique: true })
-  key: string; // Identifiant unique (ex: home-hero-banner)
+  key: string; // Exemple: "home-first-section"
+
+  @Prop({ type: String, ref: 'Category', required: true })
+  category: string;
 
   @Prop({ type: String, enum: ContentType, required: true })
   type: ContentType;
@@ -27,17 +30,22 @@ export class SiteContent {
     title?: I18nString;
     subtitle?: I18nString;
     description?: I18nString;
-    imageUrl?: string;
-    imageAlt?: I18nString;
-    ctaText?: I18nString;
-    ctaLink?: string;
-    items?: Array<{
-      title?: I18nString;
-      description?: I18nString;
+    image_desktop?: string;
+    image_mobile?: string;
+    video?: string;
+    paragraphe?: string;
+    textbutton?: I18nString;
+    categoryButton?: I18nString;
+    categorie?: string | Array<any>;
+    products?: Array<{
+      id?: number;
+      name?: string;
+      price?: number;
       imageUrl?: string;
-      link?: string;
     }>;
-    [key: string]: any; // Contenu flexible
+    images?: string[];
+    categories?: string[] | Array<{ name: I18nString; slug: string }>;
+    [key: string]: any;
   };
 
   @Prop({ type: Boolean, default: true })
@@ -50,12 +58,7 @@ export class SiteContent {
   publishedAt?: Date;
 
   @Prop({ type: Date })
-  expiresAt?: Date; // Pour les contenus temporaires
+  expiresAt?: Date;
 }
 
 export const SiteContentSchema = SchemaFactory.createForClass(SiteContent);
-
-// Index pour les performances
-// Note: key index is automatically created by unique: true
-SiteContentSchema.index({ type: 1, isActive: 1 });
-SiteContentSchema.index({ publishedAt: 1, expiresAt: 1 });

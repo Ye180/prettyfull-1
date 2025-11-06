@@ -1,6 +1,5 @@
 import {
 	Button,
-	CardProduct,
 	Dialog,
 	DialogContent,
 	DialogHeader,
@@ -118,7 +117,7 @@ export const NotifyMeModal = ({
 							<div className="relative w-24 h-24 bg-gray-100 rounded-md shrink-0">
 								<Image
 									src={variant.image}
-									alt={product.title}
+									alt={product.name}
 									layout="fill"
 									objectFit="cover"
 									className="rounded-md"
@@ -126,9 +125,9 @@ export const NotifyMeModal = ({
 							</div>
 							<div className="space-y-1">
 								<p className="font-semibold">
-									{product.title} - {variant.color.name}
+									{product.name} - {variant.color.name}
 								</p>
-								<p className="text-gray-500 text-md">{`$${product.price.toFixed(2)}`}</p>
+								<p className="text-gray-500 text-md">{`$${product.price}`}</p>
 							</div>
 						</div>
 
@@ -183,16 +182,16 @@ export const NotifyMeModal = ({
 						) : (
 							<GridCardProduct classGrid="grid grid-cols-2 md:grid-cols-3 gap-4">
 								<>
-									{similarProducts.map((item) => (
+									{/* {similarProducts.map((item) => (
 										<div key={item.id} className="w-full aspect-10/9">
 											<CardProduct
-												price={item.price}
+												price={item.price.amount}
 												smallDescription={item.smallDescription}
 												title={item.title}
 												notVariable={item.notVariable}
 											/>
 										</div>
-									))}
+									))} */}
 								</>
 							</GridCardProduct>
 						)}
