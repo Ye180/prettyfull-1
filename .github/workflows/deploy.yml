@@ -58,8 +58,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/${{ secrets.SERVER_USERNAME }}/apps/prettyfull/dev
-            docker compose -f docker-compose.dev.yml pull prettyfull-web
-            docker compose -f docker-compose.dev.yml up -d prettyfull-web
+            docker compose -f docker-compose.yml pull prettyfull-web
+            docker compose -f docker-compose.yml up -d prettyfull-web
 
   # Job séparé pour l'application backend
   deploy-backend:
@@ -110,5 +110,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/${{ secrets.SERVER_USERNAME }}/apps/prettyfull/dev
-            docker compose -f docker-compose.dev.yml pull prettyfull-backend
-            docker compose -f docker-compose.dev.yml up -d prettyfull-backend
+            docker compose -f docker-compose.yml pull prettyfull-backend
+            docker compose -f docker-compose.yml up -d prettyfull-backend
