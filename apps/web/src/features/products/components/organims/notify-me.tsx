@@ -14,7 +14,7 @@ import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
-import { ProductTypes } from "../../types";
+import { ProductTypes, TProduct } from "../../types";
 
 interface NotifyMeModalProps {
   isOpen: boolean;

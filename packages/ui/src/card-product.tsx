@@ -15,7 +15,7 @@ import { Heart } from "./icons/heart.icon";
 import Size from "./size";
 
 // --- IMPORTS À AJOUTER ---
-import { useAddItemToCart } from "../cart/api/add-item-to-cart";
+import { useAddItemToCart } from "../../../apps/web/src/features/cart/api/add-item-to-cart";
 // --- FIN DES IMPORTS ---
 
 const cardVariants = cva(["space-y-3 w-[100%] h-fit max-lg:pb-6 "], {
@@ -74,7 +74,7 @@ export interface CardProps
 	slug?: string;
 }
 export function CardProduct({
-	productId, // <-- Assurez-vous qu'il est reçu
+	productId, 
 	name,
 	className,
 	smallDescription,
@@ -177,12 +177,13 @@ export function CardProduct({
 			message?: string;
 		}
 		// --- FIN DES TYPES ---
+const addItemToCartMutation = useAddItemToCart();
 
-		addItemToCartMutation.mutate<void, AddItemToCartError, AddItemToCartPayload>(
+		addItemToCartMutation.mutate(
 			{
 				productId: productId,
 				quantity: 1, // Quantité par défaut de 1 depuis la carte
-				selectedVariants: variantsPayload as AddItemSelectedVariants,
+				selectedVariants: variantsPayload,
 			},
 			{
 				onSuccess: () => {
@@ -419,7 +420,7 @@ export function CardProduct({
 							variable,
 							notVariable,
 							promotion,
-
+							productId,
 							description: smallDescription || "",
 						}}
 					/>

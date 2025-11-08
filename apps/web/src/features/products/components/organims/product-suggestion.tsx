@@ -16,6 +16,8 @@ const ProductSuggestion = () => {
 					{Array.from({ length: value }).map((_, i) => (
 						<div key={i} className="w-full aspect-10/9">
 							<CardProduct
+								key={i}
+   								productId={`suggestion-${i}`}
 								notVariable={{
 									color: {
 										code: "#FF0000",

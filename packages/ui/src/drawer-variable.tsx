@@ -168,8 +168,11 @@ const DrawerVariable = ({
 								<>
 									{Array.from({ length: 2 }).map((_, index) => (
 										<CardProduct
+										 key={index}
+   										 productId={`suggestion-${index}`} 
 											variable={[
 												{
+													
 													color: {
 														label: "Rouge",
 														code: "#FF0000",

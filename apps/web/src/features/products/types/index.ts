@@ -23,7 +23,7 @@ export type TProduct = {
   _id: string; // ID de la base de données
 
   slug: string;
-  
+  name: string;
   price: {
     amount: number;
     currency: string;
