@@ -27,18 +27,61 @@ function getLocale(request: NextRequest): Locale {
   return locales[0]; // default locale
 }
 
-export function middleware(request: NextRequest) {
-  // 1- check if the pathname have a locale
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  // Get session token from cookies
+  const sessionToken = request.cookies.get("better-auth.session_token")?.value;
+
+  // Check if the pathname has a locale
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
-  if (pathnameHasLocale) return;
 
-  // 2- Redirect to default locale base on user preference
-  const locale = getLocale(request);
-  request.nextUrl.pathname = `/${locale}${pathname}`;
-  return NextResponse.redirect(request.nextUrl);
+  // Extract the path without locale
+  let pathWithoutLocale = pathname;
+  if (pathnameHasLocale) {
+    const locale = locales.find(
+      (locale) =>
+        pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+    );
+    pathWithoutLocale = pathname.replace(`/${locale}`, "") || "/";
+  }
+
+  // Define protected routes that require authentication
+  const protectedRoutes = ["/account", "/wishlist", "/checkout"];
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathWithoutLocale.startsWith(route)
+  );
+
+  // Define auth routes (login, register, etc.)
+  const authRoutes = ["/login", "/create-account"];
+  const isAuthRoute = authRoutes.some((route) =>
+    pathWithoutLocale.startsWith(route)
+  );
+
+  // If user is authenticated and trying to access auth pages, redirect to account
+  if (sessionToken && isAuthRoute) {
+    const locale = getLocale(request);
+    const redirectUrl = new URL(`/${locale}/account`, request.url);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // If user is not authenticated and trying to access protected routes, redirect to login
+  if (!sessionToken && isProtectedRoute) {
+    const locale = getLocale(request);
+    const redirectUrl = new URL(`/${locale}/login`, request.url);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // If pathname doesn't have locale, redirect to default locale
+  if (!pathnameHasLocale) {
+    const locale = getLocale(request);
+    request.nextUrl.pathname = `/${locale}${pathname}`;
+    return NextResponse.redirect(request.nextUrl);
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {

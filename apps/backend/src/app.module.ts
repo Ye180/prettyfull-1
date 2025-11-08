@@ -10,11 +10,12 @@ import { AppService } from './app.service';
 // Shared modules
 import { RedisModule } from './shared/redis';
 
-// Auth guards
+// Better Auth
+import { AuthModule } from '@thallesp/nestjs-better-auth';
+import { auth } from './auth';
 
 // Business modules
 import { AddressModule } from './modules/address/address.module';
-import { AuthModule } from './modules/auth/auth.module';
 import { CartsModule } from './modules/carts/carts.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
@@ -86,8 +87,10 @@ import { BootstrapModule } from './shared/database/bootstrap/bootstrap.module';
     // Modules partagés
     RedisModule,
 
+    // Better Auth Module
+    AuthModule.forRoot({ auth }),
+
     // Modules métier
-    AuthModule,
     UsersModule,
     ProductsModule,
     CategoriesModule,
