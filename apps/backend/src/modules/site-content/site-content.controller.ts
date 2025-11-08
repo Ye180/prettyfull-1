@@ -51,8 +51,9 @@ export class SiteContentController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  async create(@Body() createDto: CreateSiteContentDto) {
-    return this.siteContentService.create(createDto);
+  create(@Body() createDto: CreateSiteContentDto) {
+    console.log('Creating site content:', createDto);
+    // return this.siteContentService.create(createDto);
   }
 
   /**
