@@ -19,6 +19,9 @@
     "dev:components": "tsc --watch",
     "lint": "eslint src --max-warnings 0"
   },
+  "peerDependencies": {
+    "next": "^15.4.6"
+  },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.2.6",
     "@fontsource/bebas-neue": "^5.2.6",
@@ -40,7 +43,6 @@
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.544.0",
     "motion": "^12.23.11",
-    "next": "^15.4.6",
     "postcss": "^8.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

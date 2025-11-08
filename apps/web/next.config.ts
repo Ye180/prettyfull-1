@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
   /* config options here */
   output: "standalone",
   transpilePackages: ["@prettyfull/ui"],
-
   images: {
     remotePatterns: [
       {
@@ -22,4 +21,3 @@ const nextConfig: NextConfig = {
 
 const withNextIntl = createNextIntlPlugin();
 export default withNextIntl(nextConfig);
- 

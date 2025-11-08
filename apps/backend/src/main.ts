@@ -19,22 +19,21 @@ async function bootstrap() {
 
   app.use(compression());
 
-  const allowedOrigins = configService
-    .get<string>('CORS_ORIGIN', 'http://localhost:3000')
-    .split(',')
-    .map((origin) => origin.trim());
-  // CORS configuration
-  app.enableCors({
-    origin: allowedOrigins,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'Accept-Language',
-      'Accept-Currency',
-    ],
-    credentials: true,
-  });
+  // const allowedOrigins = configService
+  //   .get<string>('CORS_ORIGIN', 'http://localhost:3000')
+  //   .split(',')
+  //   .map((origin) => origin.trim());
+  // // CORS configuration
+  // app.enableCors({
+  //   origin: allowedOrigins,
+  //   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  //   allowedHeaders: [
+  //     'Content-Type',
+  //     'Authorization',
+  //     'Accept-Language',
+  //     'Accept-Currency',
+  //   ],
+  // });
 
   // Global validation pipe
   app.useGlobalPipes(

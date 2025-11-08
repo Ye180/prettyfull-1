@@ -1,20 +1,84 @@
 import { betterAuth } from 'better-auth';
 import { mongodbAdapter } from 'better-auth/adapters/mongodb';
 import { admin, multiSession } from 'better-auth/plugins';
+import * as dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
 
-// Initialisation du client MongoDB
-const databaseUrl =
-  process.env.DATABASE_URL || 'mongodb://localhost:27017/prettyfull-ecommerce';
-const client = new MongoClient(databaseUrl);
+// Charger les variables d'environnement
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+dotenv.config();
 
-// Connexion à MongoDB
-client.connect().catch((error) => {
-  console.error('MongoDB connection error:', error);
-  throw error;
-});
+// Fonction pour obtenir le client MongoDB (lazy initialization)
+let mongoClient: MongoClient | null = null;
+let db: any = null;
 
-const db = client.db();
+function getMongoDb() {
+  if (!db) {
+    const databaseUrl = process.env.DATABASE_URL;
+
+    if (!databaseUrl) {
+      throw new Error('DATABASE_URL environment variable is not defined');
+    }
+
+    mongoClient = new MongoClient(databaseUrl);
+
+    // Connexion à MongoDB
+    mongoClient.connect().catch((error) => {
+      console.error('MongoDB connection error:', error);
+      throw error;
+    });
+
+    db = mongoClient.db();
+  }
+
+  return db;
+}
+
+export const userAdditionalFields: any = {
+  // Champs existants dans votre User schema
+  lastName: {
+    type: 'string',
+    required: true,
+    defaultValue: '',
+  },
+  phone: {
+    type: 'string',
+    required: false,
+  },
+  role: {
+    type: 'string',
+    required: false,
+    defaultValue: 'user',
+  },
+  status: {
+    type: 'string',
+    required: false,
+    defaultValue: 'active',
+  },
+  preferredLanguage: {
+    type: 'string',
+    required: false,
+    defaultValue: 'fr',
+  },
+  preferredCurrency: {
+    type: 'string',
+    required: false,
+    defaultValue: 'XOF',
+  },
+  country: {
+    type: 'string',
+    required: false,
+    defaultValue: 'CI',
+  },
+  dateOfBirth: {
+    type: 'date',
+    required: false,
+  },
+  lastLoginAt: {
+    type: 'date',
+    required: false,
+  },
+};
 
 export const auth: ReturnType<typeof betterAuth> = betterAuth({
   // Base configuration
@@ -26,11 +90,11 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   // Trusted origins pour CORS
   trustedOrigins: (
     process.env.BETTER_AUTH_TRUSTED_ORIGINS ||
-    'http://localhost:3000,http://localhost:3002'
+    'http://localhost:3000,http://localhost:3001,http://localhost:3002'
   ).split(','),
 
   // MongoDB adapter
-  database: mongodbAdapter(db),
+  database: mongodbAdapter(getMongoDb()),
 
   // Email and Password configuration
   emailAndPassword: {
@@ -53,51 +117,7 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
 
   // User configuration avec champs personnalisés
   user: {
-    additionalFields: {
-      // Champs existants dans votre User schema
-      lastName: {
-        type: 'string',
-        required: true,
-        defaultValue: '',
-      },
-      phone: {
-        type: 'string',
-        required: false,
-      },
-      role: {
-        type: 'string',
-        required: true,
-        defaultValue: 'user',
-      },
-      status: {
-        type: 'string',
-        required: true,
-        defaultValue: 'active',
-      },
-      preferredLanguage: {
-        type: 'string',
-        required: true,
-        defaultValue: 'fr',
-      },
-      preferredCurrency: {
-        type: 'string',
-        required: true,
-        defaultValue: 'XOF',
-      },
-      country: {
-        type: 'string',
-        required: false,
-        defaultValue: 'CI',
-      },
-      dateOfBirth: {
-        type: 'date',
-        required: false,
-      },
-      lastLoginAt: {
-        type: 'date',
-        required: false,
-      },
-    },
+    additionalFields: userAdditionalFields,
   },
 
   // OAuth Providers (optionnel, configurer selon besoins)
