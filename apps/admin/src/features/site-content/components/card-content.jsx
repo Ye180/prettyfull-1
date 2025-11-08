@@ -16,14 +16,14 @@ const CardSiteContent = () => {
 				{bankAccounts.map((account) => (
 					<div
 						key={account.id}
-						className="w-[18rem] rounded-2xl bg-linear-to-br from-[#101f3c] via-[#0d1830] to-[#050b18] p-5 text-slate-100 shadow-xl"
+						className="w-[18rem] rounded-2xl bg-gradient-to-br from-[#101f3c] via-[#0d1830] to-[#050b18] px-3 py-3  space-y-10 text-slate-100 shadow-xl"
 					>
 						<p className="text-xs uppercase tracking-[0.2em] text-slate-300">
-							Bank account
+							Woman
 						</p>
-						<div className="mt-5 flex items-center justify-between">
+						{/* <div className="flex items-center justify-between mt-5">
 							<div className="flex items-center gap-3">
-								<div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+								<div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10">
 									<span className="text-lg font-semibold">C</span>
 								</div>
 								<div>
@@ -33,10 +33,10 @@ const CardSiteContent = () => {
 									</p>
 								</div>
 							</div>
-							<span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold uppercase text-emerald-300">
+							<span className="px-3 py-1 text-xs font-semibold uppercase rounded-full bg-emerald-500/20 text-emerald-300">
 								{account.status}
 							</span>
-						</div>
+						</div> */}
 						<div className="mt-6 space-y-1">
 							<p className="text-sm font-medium">{account.holder}</p>
 							<p className="text-sm text-slate-300">{account.address}</p>

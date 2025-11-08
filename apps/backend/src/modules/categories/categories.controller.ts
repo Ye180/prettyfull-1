@@ -125,9 +125,9 @@ export class CategoriesController {
   @Get('slug/:slug/children')
   async findChildrenBySlug(
     @Param('slug') slug: string,
-    // @Headers('accept-language') language: string = 'fr',
+    @Headers('accept-language') language: string = 'fr',
   ) {
-    return this.categoriesService.findChildrenBySlug(slug);
+    return this.categoriesService.findChildrenBySlug(slug, language);
   }
 
   /**

@@ -113,7 +113,7 @@ export const CATEGORY = [
     isVisible: true,
     displayOrder: 1,
     first: false,
-    parent: '690f461c67110a30aea4a6fe',
+    parent: '690f4d4009da252868e63258',
     children: [],
     icon: 'fa-solid fa-shoe-prints',
     image: 'https://cdn.example.com/images/categories/women-shoes.jpg',
@@ -133,38 +133,38 @@ export const CATEGORY = [
 
   //Sous categories exemple homme
 
-  // {
-  //   name: {
-  //     fr: 'Chaussures Homme',
-  //     en: 'Men Shoes',
-  //   },
-  //   slug: 'men-shoes',
-  //   description: {
-  //     fr: 'Découvrez notre collection de chaussures pour hommes : élégantes, confortables et tendance.',
-  //     en: 'Discover our collection of men shoes: stylish, comfortable, and trendy.',
-  //   },
-  //   countries: ['CI', 'SN', 'FR'],
-  //   isActive: true,
-  //   isVisible: true,
-  //   displayOrder: 1,
-  //   first: false,
-  //   parent: '690f461d67110a30aea4a704',
-  //   children: [],
-  //   icon: 'fa-solid fa-shoe-prints',
-  //   image: 'https://cdn.example.com/images/categories/men-shoes.jpg',
-  //   second: true,
-  //   seoMeta: {
-  //     title: {
-  //       fr: 'Chaussures Homme - Mode, confort et élégance',
-  //       en: 'Men Shoes - Fashion, Comfort & Elegance',
-  //     },
-  //     description: {
-  //       fr: 'Découvrez les dernières tendances en matière de chaussures pour hommes : confort, style et élégance.',
-  //       en: "Discover the latest trends in men's shoes: comfort, style, and elegance.",
-  //     },
-  //     keywords: ['chaussures', 'homme', 'mode', 'confort', 'élégance'],
-  //   },
-  // },
+  {
+    name: {
+      fr: 'Chaussures Homme',
+      en: 'Men Shoes',
+    },
+    slug: 'men-shoes',
+    description: {
+      fr: 'Découvrez notre collection de chaussures pour hommes : élégantes, confortables et tendance.',
+      en: 'Discover our collection of men shoes: stylish, comfortable, and trendy.',
+    },
+    countries: ['CI', 'SN', 'FR'],
+    isActive: true,
+    isVisible: true,
+    displayOrder: 1,
+    first: false,
+    parent: '690f4d4009da252868e63261',
+    children: [],
+    icon: 'fa-solid fa-shoe-prints',
+    image: 'https://cdn.example.com/images/categories/men-shoes.jpg',
+    second: true,
+    seoMeta: {
+      title: {
+        fr: 'Chaussures Homme - Mode, confort et élégance',
+        en: 'Men Shoes - Fashion, Comfort & Elegance',
+      },
+      description: {
+        fr: 'Découvrez les dernières tendances en matière de chaussures pour hommes : confort, style et élégance.',
+        en: "Discover the latest trends in men's shoes: comfort, style, and elegance.",
+      },
+      keywords: ['chaussures', 'homme', 'mode', 'confort', 'élégance'],
+    },
+  },
 ];
 
 export const PRODUCTS = [
@@ -181,7 +181,7 @@ export const PRODUCTS = [
       fr: 'Manteau chaud et élégant.',
       en: 'Warm and stylish coat.',
     },
-    categoryId: '690f48a15efe858eb76c759a', // Remplace par ton ID réel de catégorie
+    categoryId: '690f807d5217c04573251951', // Remplace par ton ID réel de catégorie
     link: '/produits/manteau-hiver-chien',
     slug: 'manteau-hiver-chien',
     sku: 'DOG-COAT-001',
