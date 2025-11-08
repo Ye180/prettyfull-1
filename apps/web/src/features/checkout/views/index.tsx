@@ -1,10 +1,10 @@
 "use client";
 
-import { CartSummaryType } from "@/features/cart/types";
 import { DATA_CARD } from "@/lib/utils/constants/constants";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 import CheckoutForm from "../components/organims/checkout-form";
 import CheckoutSummary from "../components/organims/checkout-summary";
+import { CartSummaryType } from "../types";
 
 const CheckoutView = () => {
 	const summary: CartSummaryType = {

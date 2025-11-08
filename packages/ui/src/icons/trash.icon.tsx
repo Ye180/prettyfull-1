@@ -1,19 +1,12 @@
-import React from "react";
 
-interface IconProps extends React.SVGProps<SVGSVGElement> {
-  size?: number;
-  color?: string;
-}
 
-export const TrashIcon: React.FC<IconProps> = ({
-  size = 24,
-  color = "currentColor",
-  ...props
-}) => (
-  <svg
+import React, { SVGProps } from "react";
+
+export const TrashIcon = ({ color = "currentColor", ...props }: SVGProps<SVGSVGElement>) => (
+ <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
+     width="24"
+    height="24"
     fill="none"
     stroke={color}
     strokeWidth="2"
@@ -29,3 +22,4 @@ export const TrashIcon: React.FC<IconProps> = ({
     <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
   </svg>
 );
+

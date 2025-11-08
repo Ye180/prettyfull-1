@@ -1,63 +1,53 @@
-"use client";
+'use client';
 
-import { FC } from "react";
-import { CartItemType } from "../../types";
-import EditItems from "../molecules/edit-items";
-import QuantitySelector from "../molecules/quantity-selector";
+import { CartItemType } from '../../types';
+import Image from 'next/image';
+import { QuantitySelector } from '../molecules/quantity-selector';
+import { EditItems } from '../molecules/edit-items';
+import  client  from '@/shared/lib/client';
 
-interface Props {
-	item: CartItemType;
-	onIncrease: (id: string) => void;
-	onDecrease: (id: string) => void;
-	onRemove: (id: string) => void;
-}
-
-const CartItem: FC<Props> = ({ item, onIncrease, onDecrease, onRemove }) => {
-	return (
-		<div className="flex justify-between py-10 border-b border-gray-200">
-			<div className="flex space-x-4 sm:space-x-8">
-				<div
-					className="relative h-[20rem] w-[15rem] sm:w-[20rem] sm:h-[22rem] rounded-md overflow-hidden bg-gray-100 aspect-square"
-					style={{
-						backgroundImage: `url(/assets/product_1.jpg)`,
-						backgroundSize: "cover",
-						backgroundPosition: "top",
-					}}
-				/>
-
-				<div className="flex flex-col justify-between space-y-4">
-					<div className="space-y-2 text-[1.5rem]">
-						<h5 className="font-semibold !text-[2.2rem] tracking-wider whitespace-nowrap">
-							{item.name}
-						</h5>
-						<p className="text-gray-500 text-md whitespace-nowrap line-clamp-1 truncate max-sm:w-[17rem]">
-							{item.description}
-						</p>
-						<p className="text-gray-500 text-md">Color: {item.color}</p>
-						<p className="text-gray-500 text-md">Size: {item.size}</p>
-					</div>
-					<QuantitySelector
-						value={item.quantity}
-						onIncrease={() => onIncrease(item.id)}
-						onDecrease={() => onDecrease(item.id)}
-					/>
-					<EditItems
-						onRemove={() => onRemove(item.id)}
-						className="max-sm:hidden"
-					/>
-				</div>
-			</div>
-			<div className="flex flex-col items-end justify-between">
-				<div className="font-semibold text-right">${item.price}</div>
-				<div className="flex pb-4 ">
-					<EditItems
-						onRemove={() => onRemove(item.id)}
-						className="flex-col max-sm:flex sm:hidden gap-y-8"
-					/>
-				</div>
-			</div>
-		</div>
-	);
+// Fonction pour obtenir l'URL de l'image (depuis l'intercepteur client)
+const getImageUrl = (path?: string) => {
+  if (!path) return '/assets/product_1.jpg'; // Image par défaut
+  if (path.startsWith('http')) return path;
+  const baseUrl = client.defaults.baseURL?.replace('/api/v1', '') || ''; 
+  return `${baseUrl}${path}`;
 };
 
-export default CartItem;
+export const CartItems = ({ items }: { items: CartItemType[] }) => {
+  return (
+    <div className="space-y-6">
+      {items.map((item) => (
+        // --- CORRECTIONS MAJEURES ICI ---
+        <div key={item.product._id} className="flex gap-4 p-4 border rounded-md">
+          <Image
+            src={getImageUrl(item.product.mainImageUrl)}
+            alt={item.product.name.fr}
+            width={100}
+            height={120}
+            className="object-cover rounded-md"
+          />
+          <div className="flex-1 flex flex-col justify-between">
+            <div>
+              <h4 className="text-lg font-semibold">{item.product.name.fr}</h4>
+              <p className="text-sm text-gray-500">
+                {/* TODO: Afficher les variantes si elles existent */}
+                {/* {item.color} / {item.size} */}
+              </p>
+              <p className="font-semibold">{item.price} FCFA</p>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <QuantitySelector
+                productId={item.product._id}
+                initialQuantity={item.quantity}
+              />
+              <EditItems productId={item.product._id} />
+            </div>
+          </div>
+        </div>
+        // --- FIN DES CORRECTIONS ---
+      ))}
+    </div>
+  );
+};

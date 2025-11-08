@@ -26,6 +26,7 @@ export class CartsController {
     @Headers('accept-language') language: string = 'fr',
     @Body() addToCartDto: AddToCartDto,
   ) {
+     console.log('🟢 Reçu du front:', addToCartDto);
     return this.cartsService.addToCart(userId, language, addToCartDto);
   }
 

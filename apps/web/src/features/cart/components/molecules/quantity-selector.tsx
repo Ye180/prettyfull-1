@@ -1,33 +1,86 @@
-"use client";
+'use client';
 
-import { FC } from "react";
-import { MinusIcon } from "../../../../../../../packages/ui/src/icons/minus.icon";
+import { useUpdateCartItem } from "../../api/update-items-in-cart";
 import { PlusIcon } from "../../../../../../../packages/ui/src/icons/plus.icon";
+import { MinusIcon } from "../../../../../../../packages/ui/src/icons/minus.icon";
+import { useRef, useEffect, useCallback } from 'react';
 
 interface Props {
-	value: number;
-	onIncrease: () => void;
-	onDecrease: () => void;
+  productId: string;
+  initialQuantity: number;
 }
 
-const QuantitySelector: FC<Props> = ({ value, onIncrease, onDecrease }) => {
+
+
+export const QuantitySelector = ({ productId, initialQuantity }: Props) => {
+	const updateMutation = useUpdateCartItem();
+
+	// Utiliser un "debounce" pour éviter de surcharger l'API
+	// L'API ne sera appelée que 500ms après que l'utilisateur ait fini de cliquer
+	const debouncedUpdate = useDebouncedCallback((newQuantity: number) => {
+		updateMutation.mutate({ productId, quantity: newQuantity });
+	}, 500);
+
+	const handleUpdate = (newQuantity: number) => {
+		if (newQuantity < 0) return;
+		
+		// Mettre à jour (avec debounce)
+		debouncedUpdate(newQuantity);
+	};
+
 	return (
-		<div className="flex items-center space-x-4 rounded-full bg-gray-100 w-fit p-3">
+		<div className="flex items-center gap-4">
 			<button
-				onClick={onDecrease}
-				className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-300 cursor-pointer"
+				onClick={() => handleUpdate(initialQuantity - 1)}
+				disabled={updateMutation.isPending}
+				className="p-1 border rounded-md"
 			>
-				<MinusIcon size={20} />
+				<MinusIcon className="w-5 h-5" />
 			</button>
-			<span className="text-lg font-medium w-12 text-center">{value}</span>
+			<span className="w-8 text-center">
+				{initialQuantity}
+			</span>
 			<button
-				onClick={onIncrease}
-				className="w-12 h-12 flex items-center justify-center rounded-full bg-black hover:bg-black/80 transition cursor-pointer"
+				onClick={() => handleUpdate(initialQuantity + 1)}
+				disabled={updateMutation.isPending}
+				className="p-1 border rounded-md"
 			>
-				<PlusIcon size={20} color="white" />
+				<PlusIcon className="w-5 h-5" />
 			</button>
 		</div>
 	);
 };
 
-export default QuantitySelector;
+function useDebouncedCallback(
+	callback: (newQuantity: number) => void,
+	delay: number
+): (newQuantity: number) => void {
+	const timeoutRef = useRef<number | null>(null);
+	const savedCb = useRef(callback);
+
+	// keep latest callback
+	useEffect(() => {
+		savedCb.current = callback;
+	}, [callback]);
+
+	// clear on unmount
+	useEffect(() => {
+		return () => {
+			if (timeoutRef.current !== null) {
+				clearTimeout(timeoutRef.current);
+				timeoutRef.current = null;
+			}
+		};
+	}, []);
+
+	return useCallback((newQuantity: number) => {
+		if (timeoutRef.current !== null) {
+			clearTimeout(timeoutRef.current);
+		}
+		timeoutRef.current = window.setTimeout(() => {
+			savedCb.current(newQuantity);
+			timeoutRef.current = null;
+		}, delay);
+	}, [delay]);
+}
+

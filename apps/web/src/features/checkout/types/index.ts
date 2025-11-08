@@ -15,3 +15,10 @@ export interface CartSummaryType {
   taxes?: number;
   total: number;
 }
+
+
+
+export interface CheckoutSummaryProps {
+  totalAmount: string; // Le sous-total calculé (ex: "150.00")
+  cartItems: CartItemType[]; // Le tableau des articles pour l'aperçu visuel
+}

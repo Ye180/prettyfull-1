@@ -1,27 +1,63 @@
-import { cn } from "@prettyfull/utils";
-import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
+'use client';
+
+import { useRemoveCartItem } from '../../api/remove-item-from-cart';
+import { useCreateWishlist } from '@/features/wishlist/api/create-wishlist';
+import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
+import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
+interface Props {
+  productId: string;
+}
 
-const EditItems = ({
-	onRemove,
-	className,
-}: {
-	onRemove: (id: string) => void;
-	className?: string;
-}) => {
-	return (
-		<div className={cn("flex sm:space-x-4  mt-2 ", className)}>
-			<div className="rounded-full border p-4 border-gray-200 hover:bg-gray-100 transition">
-				<Heart className="w-8 h-8 cursor-pointer hover:text-black" />
-			</div>
-			<div className="rounded-full border p-4 border-gray-200 hover:bg-gray-100 transition">
-				<TrashIcon
-					className="w-8 h-8 cursor-pointer hover:text-red-500"
-					onClick={() => onRemove}
-				/>
-			</div>
-		</div>
-	);
+export const EditItems = ({ productId }: Props) => {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
+  const removeMutation = useRemoveCartItem();
+  const wishlistMutation = useCreateWishlist();
+
+  const handleRemove = () => {
+    if (window.confirm('Supprimer cet article du panier ?')) {
+      removeMutation.mutate(productId);
+    }
+  };
+
+  const handleWishlist = () => {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+    
+    wishlistMutation.mutate(
+      productId,
+      {
+        onSuccess: () => {
+          alert('Ajouté à la wishlist !');
+        },
+        onError: (error) => {
+          alert(`Erreur: ${error.message || 'Impossible d\'ajouter'}`);
+        },
+      },
+    );
+  };
+
+  return (
+    <div className="flex items-center gap-4">
+      <button
+        onClick={handleWishlist}
+        disabled={wishlistMutation.isPending}
+        className="flex items-center gap-1 text-sm text-gray-600 hover:text-black"
+      >
+        <Heart className="w-5 h-5" />
+      </button>
+      <button
+        onClick={handleRemove}
+        disabled={removeMutation.isPending}
+        className="flex items-center gap-1 text-sm text-gray-600 hover:text-red-600"
+      >
+        <TrashIcon className="w-5 h-5" />
+        {removeMutation.isPending ? '...' : ''}
+      </button>
+    </div>
+  );
 };
-
-export default EditItems;

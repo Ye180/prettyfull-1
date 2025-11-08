@@ -23,7 +23,7 @@ export const
     getAll: '/products/',
     getById: (productId: string) => `/products/${productId}/`,
     getBySlug: (productSlug: string) => `/products/slugname/${productSlug}/`,
-    create: '/products',
+    create: '/products/',
     update: (productId: string) => `/products/${productId}/`,
     remove: (productId: string) => `/products/${productId}/`,
   },
@@ -32,7 +32,7 @@ export const
   categories: {
     getAll: '/categories/',
     getById: (categoryId: string) => `/categories/${categoryId}/`,
-    create: '/categories',
+    create: '/categories/',
     update: (categoryId: string) => `/categories/${categoryId}/`,
     remove: (categoryId: string) => `/categories/${categoryId}/`,
   },
@@ -52,18 +52,18 @@ export const
 
   // --- Liste de souhaits (Wishlist) ---
   wishlist: {
-    get: '/wishlists',
+    get: '/wishlists/',
     add: (productId: string) => `/wishlists/${productId}/`,
     remove: (productId: string) => `/wishlists/${productId}/`,
-    removeAll : '/wishlists',
+    removeAll : '/wishlists/',
     check: (productId: string) => `/wishlists/check/${productId}/` // Ajout de la route check
   },
 
   // --- Commandes (Orders) ---
   orders: {
-    getAll: '/orders',
+    getAll: '/orders/',
     getById: (orderId: string) => `/orders/${orderId}/`,
-    create: '/orders',
+    create: '/orders/',
     cancel: (orderId: string) => `/orders/${orderId}/cancel/`,
     updatePaymentStatus: (orderId: string) => `/orders/${orderId}/payment-status/`,
     updateOrderStatus: (orderId: string) => `/orders/${orderId}/status/`,

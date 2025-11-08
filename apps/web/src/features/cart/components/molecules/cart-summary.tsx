@@ -1,64 +1,51 @@
-"use client";
+'use client';
 
-import { CartSummaryType } from "@/features/cart/types";
-import { paths } from "@/lib/routes/paths-en";
-import { Button, DropdownMenuSeparator, Input } from "@prettyfull/ui";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { FC } from "react";
+import { CartSummaryProps } from '../../types';
+import { Button } from '@prettyfull/ui';
+import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 
-interface Props {
-	summary: CartSummaryType;
-}
+export const CartSummary = ({
+  subtotal,
+  shipping,
+  taxes,
+  total,
+}: CartSummaryProps) => {
+  const t = useTranslations('cart');
+  const router = useRouter();
 
-const CartSummary: FC<Props> = ({ summary }) => {
-	const tCart = useTranslations("Cart.product");
-	const tSummary = useTranslations("Cart.summary");
+  const handleCheckout = () => {
+    router.push('/checkout');
+  };
 
-	const router = useRouter();
-
-	return (
-		<div className="w-full py-6 bg-white sm:w-1/3">
-			<div>
-				<div className="flex flex-row justify-between gap-x-8">
-					{/* <Input className="w-full" placeholder="Code promo" /> */}
-
-					<Button className="w-fit">{tSummary("apply")}</Button>
-				</div>
-			</div>
-			<div className="py-12 text-2xl font-bold">{tSummary("title")}</div>
-			<div className="mb-6 space-y-8">
-				<div className="space-y-8">
-					<div className="flex justify-between text-md ">
-						<span>{tSummary("subtotal")}</span>
-						<span>${summary.subtotal}</span>
-					</div>
-					<div className="flex justify-between text-md ">
-						<span>{tSummary("shipping")}</span>
-						<span>${summary.shipping}</span>
-					</div>
-
-					<div className="flex justify-between text-md ">
-						<span>{tSummary("taxes")}</span>
-						<span>{summary.taxes ? `$${summary.taxes}` : "-"}</span>
-					</div>
-				</div>
-
-				<DropdownMenuSeparator />
-				<div className="flex justify-between py-6 text-lg font-semibold ">
-					<span>{tSummary("total")}</span>
-					<span>${summary.total}</span>
-				</div>
-			</div>
-			<Button
-				variant="secondary"
-				className="w-full text-white bg-black hover:bg-gray-800"
-				onClick={() => router.push(paths.checkout)}
-			>
-				{tSummary("checkout")}
-			</Button>
-		</div>
-	);
+  return (
+    <div className="p-6 bg-gray-50 rounded-lg">
+      <h3 className="text-xl font-semibold mb-4">{t('summary')}</h3>
+      <div className="space-y-2">
+        <div className="flex justify-between">
+          <p>{t('subtotal')}</p>
+          <p>{subtotal.toFixed(2)} FCFA</p>
+        </div>
+        <div className="flex justify-between">
+          <p>{t('shipping')}</p>
+          <p>{shipping > 0 ? `${shipping.toFixed(2)} FCFA` : 'Gratuit'}</p>
+        </div>
+        <div className="flex justify-between">
+          <p>{t('taxes')}</p>
+          <p>{taxes.toFixed(2)} FCFA</p>
+        </div>
+        <div className="border-t my-2 pt-2 flex justify-between font-bold text-lg">
+          <p>{t('total')}</p>
+          <p>{total.toFixed(2)} FCFA</p>
+        </div>
+      </div>
+      <Button 
+        onClick={handleCheckout} 
+        className="w-full mt-6"
+        disabled={subtotal === 0} 
+      >
+        {t('checkout')}
+      </Button>
+    </div>
+  );
 };
-
-export default CartSummary;

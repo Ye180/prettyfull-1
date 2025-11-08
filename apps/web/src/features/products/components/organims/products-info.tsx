@@ -1,143 +1,226 @@
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-	Button,
-	CardProps,
-} from "@prettyfull/ui";
-import { cn } from "@prettyfull/utils";
-import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
-import { ProductOptions, SizeOption } from "../molecules/product-options";
+'use client';
 
-type ProductInfosProps = {
-	productData: CardProps; // On utilise notre nouveau type
-	selectedColor: string;
-	setSelectedColor: (color: string) => void;
-	selectedSize: string;
-	setSelectedSize: (size: string) => void;
-	sizes: SizeOption[] | string[];
-	handleClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-	onClick: ({ size, color }: { size: string; color: string }) => void;
-	disabled?: boolean;
+// Imports React/Next
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+// Import du type TProduct
+import { TProduct } from '../../types';
+
+// Imports des hooks
+import { useAuth } from '@/hooks/useAuth';
+import { useAddItemToCart } from '@/features/cart/api/add-item-to-cart';
+import { useCreateWishlist } from '@/features/wishlist/api/create-wishlist';
+
+// Imports des composants UI et Icônes
+import { Button } from '@prettyfull/ui';
+
+// Imports des composants locaux
+import { ProductOptions } from '../molecules/product-options';
+import { NotifyMeModal } from './notify-me';
+import Reviews from './reviews';
+import { Cart } from '@/components/icons/cart.icon';
+import { Heart } from '../../../../../../../packages/ui/src/icons/heart.icon';
+
+// --- SUPPRIMÉ ---
+// Le type SelectedVariant n'est pas fourni par product-options.tsx
+/*
+type SelectedVariant = {
+  size: string;
+  color: { name: string; code: string };
+  image: string;
+  inStock: boolean;
+} | null;
+*/
+
+export const ProductsInfos = ({ product }: { product: TProduct }) => {
+  const [quantity, setQuantity] = useState(1);
+  const router = useRouter();
+  const { isAuthenticated } = useAuth(); // Hook d'authentification
+
+  // Nos hooks de mutation
+  const addItemToCartMutation = useAddItemToCart();
+  const addToWishlistMutation = useCreateWishlist();
+
+  // États pour le modal et le stock
+  const [isNotifyModalOpen, setIsNotifyModalOpen] = useState(false);
+
+  // --- CORRECTIONS ÉTAT ---
+  // Remplacer l'ancien état 'selectedVariant'
+  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedColor, setSelectedColor] = useState<string>('');
+
+  // NOTE: La logique de stock est simpliste.
+  // product-options.tsx devrait être mis à jour pour
+  // remonter si la VARIANTE (taille+couleur) est en stock.
+  // Pour l'instant, on se base sur le stock général du produit.
+  const [isVariantInStock, setIsVariantInStock] = useState(product.stock > 0);
+
+  const handleAddToCart = () => {
+    // 1. Vérifier la connexion
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+    // 2. Vérifier le produit
+    if (!product?._id) {
+      console.error('ID de produit manquant');
+      return;
+    }
+
+    // 3. Vérifier le stock
+    if (!isVariantInStock) {
+      // Pas en stock -> ouvrir le modal
+      setIsNotifyModalOpen(true);
+      return;
+    }
+    
+    // --- CORRECTION PAYLOAD ---
+    // 4. Construire l'objet des variantes pour le backend
+    const variantsPayload: Record<string, string> = {};
+    if (selectedSize) {
+      variantsPayload.size = selectedSize; // Assurez-vous que 'size' est la clé attendue
+    }
+    if (selectedColor) {
+      variantsPayload.color = selectedColor; // Assurez-vous que 'color' est la clé attendue
+    }
+
+    // 5. Si tout est OK, appeler la mutation avec les variantes
+    addItemToCartMutation.mutate(
+      {
+        productId: product._id,
+        quantity: quantity,
+        selectedVariants: variantsPayload, // <-- ENVOYER LES VARIANTES
+      },
+      {
+        onSuccess: () => {
+          console.log('Produit ajouté au panier via API !');
+          alert('Produit ajouté au panier !');
+        },
+        onError: (error) => {
+          console.error("Erreur lors de l'ajout au panier:", error);
+          alert(`Erreur: ${error.message || 'Impossible d\'ajouter au panier'}`);
+        },
+      },
+    );
+  };
+
+  // Logique pour la Wishlist
+  const handleAddToWishlist = () => {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+    if (!product?._id) {
+      console.error('ID de produit manquant');
+      return;
+    }
+
+    addToWishlistMutation.mutate(
+      product._id,
+      {
+        onSuccess: () => {
+          console.log('Produit ajouté à la wishlist !');
+          alert('Produit ajouté à la wishlist !');
+        },
+        onError: (error) => {
+          console.error("Erreur lors de l'ajout à la wishlist:", error);
+          alert(`Erreur: ${error.message || 'Impossible d\'ajouter à la wishlist'}`);
+        },
+      },
+    );
+  };
+
+  // --- CORRECTIONS CALLBACKS ---
+  // Remplacer handleVariantChange
+  
+  const handleSizeChange = (size: string) => {
+    setSelectedSize(size);
+    // TODO: Vous devriez avoir une logique ici pour vérifier
+    // le stock de la combinaison (size, selectedColor)
+    // et mettre à jour 'setIsVariantInStock'.
+  };
+
+  const handleColorChange = (colorCode: string) => {
+    setSelectedColor(colorCode);
+    // TODO: Idem, vérifier le stock pour (selectedSize, colorCode)
+  };
+
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="text-2xl font-semibold">{product.name.fr}</h1>
+        <p className="text-sm font-medium">{product.price.amount} FCFA</p>
+      </div>
+
+      <div className="h-px w-full bg-gray-200" />
+
+      {/* TODO: Ajouter un sélecteur de quantité ici, car il n'est pas dans ProductOptions */}
+      {/* Exemple : <input type="number" value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} /> */}
+
+
+      {/* --- CORRECTION PROPS --- */}
+      {/* Passer les bons props à ProductOptions */}
+      <ProductOptions
+        // Props de données (basés sur product-options.tsx)
+        variable={product.options?.variable}
+        sizes={product.options?.sizes}
+        
+        // Props d'état (basés on product-options.tsx)
+        selectedSize={selectedSize}
+        selectedColor={selectedColor}
+        onColorChange={handleColorChange}
+        onSizeChange={handleSizeChange}
+
+        // --- PROPS INCORRECTS SUPPRIMÉS ---
+        // options={product.options}
+        // value={quantity}
+        // setValue={setQuantity}
+        // onVariantChange={handleVariantChange}
+        // onStockStatusChange={setIsVariantInStock}
+      />
+
+      <div className="flex flex-col gap-4">
+        {/* Le bouton principal change de texte selon le stock */}
+        <Button
+          className="w-full"
+          onClick={handleAddToCart}
+          disabled={addItemToCartMutation.isPending}
+        >
+          <Cart />
+          {addItemToCartMutation.isPending
+            ? 'Ajout en cours...'
+            : isVariantInStock
+            ? 'Ajouter au panier'
+            : 'Me notifier'}
+        </Button>
+
+        <Button
+          variant={'secondary'}
+          className="w-full"
+          onClick={handleAddToWishlist}
+          disabled={addToWishlistMutation.isPending}
+        >
+          <Heart />
+          {addToWishlistMutation.isPending
+            ? 'Ajout...'
+            : 'Ajouter à la Wishlist'}
+        </Button>
+      </div>
+
+      {/* Le modal est prêt à être utilisé */}
+      <NotifyMeModal
+        isOpen={isNotifyModalOpen}
+        onClose={() => setIsNotifyModalOpen(false)}
+        product={product}
+        // 'variant' n'existe plus, passer les infos sélectionnées
+        variant={{ size: selectedSize, color: selectedColor }} 
+      />
+
+      <div className="h-px w-full bg-gray-200" />
+
+      <Reviews />
+    </div>
+  );
 };
-const ProductInfos = ({
-	sizes,
-	productData,
-	selectedColor,
-	setSelectedColor,
-	selectedSize,
-	setSelectedSize,
-	handleClick,
-	onClick,
-	disabled,
-}: ProductInfosProps) => {
-	const classNames = "!font-light font-manrope !text-[1.8rem]";
-
-	return (
-		<div className="w-full sm:w-fit ">
-			<div className="space-y-3 leading-snug sm:space-y-6">
-				{/* Catégorie */}
-				<h4 className="tracking-wide !text-[1.8rem] text-gray-500 uppercase sm:!text-[2.1rem] font-bebas-neue">
-					{productData?.label}
-				</h4>
-
-				{/* Titre et prix */}
-				<div className="space-y-2">
-					<h1 className="!text-[3rem] sm:!text-[4.8rem] font-bold ">
-						{productData?.name}
-					</h1>
-					{productData?.promotion ? (
-						<div className="block text-start ">
-							<h4 className="!text-2xl  sm:!text-3xl whitespace-nowrap">
-								{" "}
-								{productData.promotion?.reduced_price.amount || 0}{" "}
-								{productData?.price?.currency}
-							</h4>
-							<h4 className="text-grey/50  line-through !text-[2rem] sm:!text-[2.8rem]   whitespace-nowrap">
-								{productData?.price?.amount} {productData?.price?.currency}
-							</h4>
-						</div>
-					) : (
-						<h4 className="!text-2xl  sm:!text-3xl whitespace-nowrap">
-							{productData?.price.amount}
-							{productData?.price?.currency}
-						</h4>
-					)}
-				</div>
-
-				{/* Options de produit */}
-				<ProductOptions
-					sizes={sizes as SizeOption[]}
-					variable={productData?.variable}
-					selectedSize={selectedSize}
-					selectedColor={selectedColor}
-					onColorChange={(color) => setSelectedColor(color)}
-					onSizeChange={(selectedSize) => {
-						setSelectedSize(selectedSize);
-					}}
-					handleClick={handleClick}
-				/>
-
-				{/* Boutons d'action */}
-				<div className="flex gap-8 mt-15 w-[100%] sm:w-[70%] items-center">
-					<Button
-						variant="default"
-						className="flex-1 py-6 text-lg"
-						onClick={() =>
-							onClick({ size: selectedSize, color: selectedColor })
-						}
-						disabled={disabled}
-					>
-						Acheter
-					</Button>
-
-					<Button
-						variant="outline"
-						className="p-4 text-2xl rounded-full cursor-pointer w-fit h-fit "
-					>
-						<Heart />
-					</Button>
-				</div>
-
-				{/* Section description */}
-				<div className="pt-10 space-y-4">
-					<h4 className="!text-[4rem] font-bold">DESCRIPTION</h4>
-
-					<Accordion type="single" collapsible className="space-y-4">
-						<AccordionItem value="item-1">
-							<AccordionTrigger className={cn(classNames)}>
-								Overview
-							</AccordionTrigger>
-							<AccordionContent>
-								<p className="text-gray-700">{productData?.description}</p>
-							</AccordionContent>
-						</AccordionItem>
-						<AccordionItem value="item-2 ">
-							<AccordionTrigger className={cn(classNames)}>
-								Materials
-							</AccordionTrigger>
-							<AccordionContent>
-								<p className="text-gray-700">
-									Fabriqué en coton de haute qualité pour un confort optimal.
-								</p>
-							</AccordionContent>
-						</AccordionItem>
-						<AccordionItem value="item-3">
-							<AccordionTrigger className={cn(classNames)}>
-								Return Policy
-							</AccordionTrigger>
-							<AccordionContent>
-								<p className="text-gray-700">
-									Retours acceptés sous 14 jours dans l'emballage d'origine.
-								</p>
-							</AccordionContent>
-						</AccordionItem>
-					</Accordion>
-				</div>
-			</div>
-		</div>
-	);
-};
-
-export default ProductInfos;

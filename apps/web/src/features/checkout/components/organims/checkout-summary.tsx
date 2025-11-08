@@ -1,9 +1,9 @@
-import { CartSummaryType } from "@/features/cart/types";
 import { DATA_CARD } from "@/lib/utils/constants/constants";
 import { DropdownMenuSeparator } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import { FC } from "react";
 import VisualSummary from "../molecules/visual-sumary";
+import { CartSummaryType } from "../../types";
 
 interface Props {
 	summary: CartSummaryType;

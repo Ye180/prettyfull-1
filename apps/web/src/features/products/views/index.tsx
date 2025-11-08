@@ -3,7 +3,6 @@
 import { SizeOption } from "@/features/products/components/molecules/product-options";
 import { ProductGallery } from "@/features/products/components/organims/product-gallery";
 import ProductSuggestion from "@/features/products/components/organims/product-suggestion";
-import ProductInfos from "@/features/products/components/organims/products-info";
 import Reviews from "@/features/products/components/organims/reviews";
 import { ProductTypes } from "@/features/products/types";
 import ProductSkeleton from "@/shared/components/organims/product-fiche-loading";
@@ -13,6 +12,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 import { useGetProductBySlug } from "../api/get-products-by-slug";
+import ProductInfos from "../../../../../../packages/ui/src/components/products/products-infos";
 
 const productData: ProductTypes = {
 	category: "FEMME FASHION",
