@@ -44,7 +44,7 @@ const AddProduct = () => {
 					</SecTop>
 
 					<section className="pt-0 pb-4">
-						<Container className=" py-8">
+						<Container className="py-8 ">
 							<FormCategory />
 						</Container>
 					</section>

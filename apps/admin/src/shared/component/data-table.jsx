@@ -21,7 +21,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
-export function DataTable({ columns, data, filter, labelFiltre }) {
+export function DataTable({ columns, data, filter, labelFiltre, loading }) {
 	const [sorting, setSorting] = useState([]);
 	const [columnFilters, setColumnFilters] = useState([]);
 	const table = useReactTable({
@@ -51,7 +51,7 @@ export function DataTable({ columns, data, filter, labelFiltre }) {
 					className="max-w-sm"
 				/>
 			</div>
-			<div className="w-full overflow-hidden border border-gray-200 bg-white ">
+			<div className="w-full overflow-hidden bg-white border border-gray-200 ">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
@@ -63,14 +63,14 @@ export function DataTable({ columns, data, filter, labelFiltre }) {
 									return (
 										<TableHead
 											key={header.id}
-											className="border-x border-gray-100 py-3 px-4 text-left font-semibold text-gray-900"
+											className="px-4 py-3 font-semibold text-left text-gray-900 border-gray-100 border-x"
 										>
 											{header.isPlaceholder
 												? null
 												: flexRender(
 														header.column.columnDef.header,
 														header.getContext()
-												  )}
+													)}
 										</TableHead>
 									);
 								})}
@@ -78,12 +78,12 @@ export function DataTable({ columns, data, filter, labelFiltre }) {
 						))}
 					</TableHeader>
 					<TableBody>
-						{table.getRowModel().rows?.length ? (
+						{(table.getRowModel().rows?.length &&
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
-									className="border-b border-gray-100 transition-colors hover:bg-gray-50/50"
+									className="transition-colors border-b border-gray-100 hover:bg-gray-50/50"
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell
@@ -97,27 +97,27 @@ export function DataTable({ columns, data, filter, labelFiltre }) {
 										</TableCell>
 									))}
 								</TableRow>
-							))
-						) : (
-							<TableRow>
-								<TableCell
-									colSpan={columns.length}
-									className="h-24 text-center text-gray-500 space-y-4"
-								>
-									{Array.from({ length: 6 }).map((_, index) => (
-										<Skeleton
-											className="h-10 w-full rounded-none"
-											key={index}
-										/>
-									))}
-								</TableCell>
-							</TableRow>
-						)}
+							))) ||
+							(loading && (
+								<TableRow>
+									<TableCell
+										colSpan={columns.length}
+										className="h-24 space-y-4 text-center text-gray-500"
+									>
+										{Array.from({ length: 6 }).map((_, index) => (
+											<Skeleton
+												className="w-full h-10 rounded-none"
+												key={index}
+											/>
+										))}
+									</TableCell>
+								</TableRow>
+							))}
 					</TableBody>
 				</Table>
 			</div>
-			<div className="flex items-center justify-end space-x-2 py-4">
-				<div className="text-muted-foreground flex-1 text-sm">
+			<div className="flex items-center justify-end py-4 space-x-2">
+				<div className="flex-1 text-sm text-muted-foreground">
 					{table.getFilteredSelectedRowModel().rows.length} of{" "}
 					{table.getFilteredRowModel().rows.length} row(s) selected.
 				</div>

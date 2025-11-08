@@ -4,12 +4,13 @@ import { useGetOrders } from "../api/get-orders";
 import { columns } from "./columns";
 
 const DataTableOrders = () => {
-	const { data: orders } = useGetOrders();
+	const { data: orders, isLoading } = useGetOrders();
 
 	return (
 		<DataTable
 			columns={columns}
 			data={orders || []}
+			loading={isLoading}
 			filter="orderNumber"
 			labelFiltre="numéro de commande"
 		/>

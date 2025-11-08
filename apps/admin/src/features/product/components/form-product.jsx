@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useGetCategory } from "@/features/category/api/get-category";
+import { useGetPrimaryCategory } from "@/features/shared/api/get-primary-category";
 import { SelectScrollable } from "@/shared/component/select-within-search";
 import { PRODUCTS_QUERY_KEY } from "@/utils/query-keys";
 import { useQueryClient } from "@tanstack/react-query";
@@ -181,6 +182,8 @@ export default function ProductForm() {
 	};
 
 	const { data: category } = useGetCategory();
+
+	const { data: primaryCategories } = useGetPrimaryCategory();
 
 	return (
 		<Form {...form}>

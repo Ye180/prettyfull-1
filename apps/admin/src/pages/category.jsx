@@ -22,10 +22,10 @@ const Category = () => {
 					<div className="flex items-center gap-3">
 						<div
 							// Utilise le bon handler
-							className="cursor-pointer inline-block px-3 py-2 rounded-lg bg-black text-white"
+							className="inline-block px-3 py-2 text-white bg-black rounded-lg cursor-pointer"
 						>
 							<Link className="flex items-center gap-2" href="/add-category">
-								<p className="font-medium text__14 text-white">
+								<p className="font-medium text-white text__14">
 									Ajouter Catégorie
 								</p>
 							</Link>
@@ -34,7 +34,7 @@ const Category = () => {
 				</SecTop>
 
 				<section className="pt-0 pb-4">
-					<Container className=" py-8 ">
+					<Container className="py-8 ">
 						<DataTableCategory />
 					</Container>
 				</section>
