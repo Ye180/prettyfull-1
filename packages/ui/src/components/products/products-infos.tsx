@@ -25,6 +25,10 @@ type ProductInfosProps = {
 	disabled?: boolean;
 	promotion?: {
 		pourcentage: number;
+		reduced?: {
+			amount: number;
+			currency: string;
+		};
 	};
 };
 
@@ -63,7 +67,9 @@ const ProductInfos = ({
 						<div className="block text-start ">
 							<h4 className="!text-2xl  sm:!text-3xl whitespace-nowrap">
 								{" "}
-								{formatCurrency_FR(productData.promotion?.reduced_price || 0)}
+								{formatCurrency_FR(
+									productData.promotion?.reduced_price.amount || 0
+								)}
 							</h4>
 							<h4 className="text-grey/50  line-through !text-[2rem] sm:!text-[2.8rem]   whitespace-nowrap">
 								{productData.price.amount

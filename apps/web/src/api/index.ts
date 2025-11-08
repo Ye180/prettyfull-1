@@ -32,7 +32,12 @@ export const
   categories: {
     getAll: '/categories/',
     getById: (categoryId: string) => `/categories/${categoryId}/`,
-    create: '/categories/',
+    getPrimaryCategories: '/categories/primary-category/',
+    getSecondaireCategories: '/categories/secondary-category/',
+    getChildrenCategories: (slug:string) => `/categories/slug/${slug}/children/`,
+    getBySlug: (categorySlug: string) => `/categories/slug/${categorySlug}/`,
+    getProductsByCategoryId: (categoryId: string) => `/categories/${categoryId}/products/`,
+    create: '/categories',
     update: (categoryId: string) => `/categories/${categoryId}/`,
     remove: (categoryId: string) => `/categories/${categoryId}/`,
   },

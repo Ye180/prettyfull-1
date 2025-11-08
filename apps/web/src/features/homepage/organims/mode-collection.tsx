@@ -66,7 +66,7 @@ const ModeCollection = () => {
 									}
 									promotion={{
 										pourcentage: 50,
-										 reduced_price: {
+										reduced_price: {
 											amount: 6000,
 											currency: "USD",
 										},

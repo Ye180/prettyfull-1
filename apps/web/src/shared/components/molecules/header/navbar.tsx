@@ -1,10 +1,10 @@
 "use client";
 
 import { Category } from "@/features/homepage/api/get-category";
-import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
+import { PAGES_PATHS } from "@/lib/routes/paths-en";
 import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
 import { setItem } from "@/lib/utils/local-storage";
-import { Input, NavLink, Skeleton } from "@prettyfull/ui";
+import { Input, Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -38,14 +38,14 @@ const NavBarHeaders = ({
 					<div className=" max-md:hidden flex text-[1.2rem] text-black items-center space-x-6">
 						{main_category ? (
 							main_category.map((items: Category, index: number) => (
-								<NavLink
+								<Link
 									key={index}
-									href={COLLECTION_PATHS.collectionDetail(items.slug)}
+									href={PAGES_PATHS.pageDetail(items.slug)}
 									onClick={() => setItem("links", items.name)}
-									className="font-black "
+									className="font-black text-[#262626] hover:text-black text-[16px]"
 								>
 									{items.name}
-								</NavLink>
+								</Link>
 							))
 						) : (
 							<Skeleton className="h-9 w-[20rem] " />
@@ -67,10 +67,9 @@ const NavBarHeaders = ({
 
 						<div className="flex items-center justify-center gap-0 md:gap-2">
 							{NAV_USER_LINKS.map((item, index) => (
-								<NavLink
+								<Link
 									key={index}
 									href={item.href}
-									variant="icon"
 									aria-label="Liste de souhaits"
 									className={cn(
 										"relative p-3 text-black transition-colors rounded-full hover:bg-gray-100  hover:[&>span]:flex" +
@@ -83,7 +82,7 @@ const NavBarHeaders = ({
 										</p>
 									)}
 									<item.icon className="" />
-								</NavLink>
+								</Link>
 							))}
 						</div>
 					</div>

@@ -11,3 +11,5 @@ export const USER_QUERY_KEY = 'user-profile';
 export const CATEGORIES_QUERY_KEY = 'list-categories';
 
 export const CUSTOMERS_QUERY_KEY = 'list-customers';
+
+export const CATEGORIES_PRIMARY_QUERY_KEY = 'list-categories-primary';

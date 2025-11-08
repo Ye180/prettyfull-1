@@ -26,6 +26,7 @@ const MenuProfile = ({
 						: " top-40 opacity-0 pointer-events-none")
 				}
 			>
+				<div className="w-full h-px bg-Mborderborderprimary"></div>
 				<Link
 					href="/setting/profile"
 					onClick={() => settoogleMenuProfile(!toogleMenuProfile)}
@@ -263,7 +264,7 @@ const Layout = ({
 												</div>
 
 												<div className="flex items-center gap-3 py-4!">
-													<div className="w-12 h-12 rounded-full flex items-center justify-center border border-Mborderborderprimary">
+													<div className="flex items-center justify-center w-12 h-12 border rounded-full border-Mborderborderprimary">
 														<img
 															src={originalUrl + "/images/notification.svg"}
 															alt=""
@@ -279,7 +280,7 @@ const Layout = ({
 														<div className="flex items-center gap-2 py-4 ">
 															<img
 																src={originalUrl + "/images/avatar.png"}
-																className="w-12 h-12 rounded-full object-cover"
+																className="object-cover w-12 h-12 rounded-full"
 																alt=""
 															/>
 															<div className="hidden lg:block">

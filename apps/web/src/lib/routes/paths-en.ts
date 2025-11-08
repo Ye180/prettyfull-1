@@ -3,7 +3,8 @@
 const ROOTS = {
       auth : "/auth",
       products : "/products",
-      collections : "/collections",
+      collections: "/collections",
+       pages: "/pages",
 
 }
 
@@ -17,8 +18,8 @@ export const paths = {
     account : "/account",
     cart : "/cart",
     checkout : "/checkout",
-    collection: "/collection",
     faq: "/faq",
+    collection: "/collection",
     contact : "/contact",
     terms : "/terms-and-conditions",
     shippingReturn: "/shipping-return",
@@ -46,3 +47,11 @@ export const COLLECTION_PATHS = {
     newCollection : ROOTS.collections + "/new",
     editCollection : (id: string) => `${ROOTS.collections}/${id}/edit`,
 }
+
+export const PAGES_PATHS = {
+    pageList : ROOTS.pages,
+    pageDetail : (id: string) => `${ROOTS.pages}/${id}`,
+    newPage : ROOTS.pages + "/new",
+    editPage : (id: string) => `${ROOTS.pages}/${id}/edit`,
+}
+    

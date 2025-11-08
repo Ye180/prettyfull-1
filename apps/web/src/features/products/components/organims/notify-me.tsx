@@ -1,25 +1,21 @@
 'use client'; // Ajout du 'use client' manquant
 
 import {
-  Button,
-  CardProduct,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  GridCardProduct,
-  Input,
-  Spinner,
-} from '@prettyfull/ui';
-import { StaticImport } from 'next/dist/shared/lib/get-img-props';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-// Import de l'icône (chemin corrigé pour le monorepo)
-// Import du type TProduct (au lieu de ProductTypes)
-import { TProduct } from '../../types';
-import { CloseIcon } from '../../../../../../../packages/ui/src/icons/close.icon';
+	Button,
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	GridCardProduct,
+	Input,
+	Spinner,
+} from "@prettyfull/ui";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
+import { ProductTypes } from "../../types";
 
-// L'interface pour les props
 interface NotifyMeModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -109,26 +105,23 @@ export const NotifyMeModal = ({
               </DialogTitle>
             </DialogHeader>
 
-            <div className="flex items-center gap-6">
-              <div className="relative w-24 h-24 bg-gray-100 rounded-md shrink-0">
-                <Image
-                  src={variant.image}
-                  alt={product.name.fr} 
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-md"
-                />
-              </div>
-              <div className="space-y-1">
-                <p className="font-semibold">
-                  {product.name.fr} - {variant.color.name} 
-                </p>
-                <p className="text-gray-500 text-md">
-                  {/* CORRIGÉ: product.price.amount */}
-                  {product.price.amount.toFixed(2)} FCFA 
-                </p>
-              </div>
-            </div>
+						<div className="flex items-center gap-6">
+							<div className="relative w-24 h-24 bg-gray-100 rounded-md shrink-0">
+								<Image
+									src={variant.image}
+									alt={product.name}
+									layout="fill"
+									objectFit="cover"
+									className="rounded-md"
+								/>
+							</div>
+							<div className="space-y-1">
+								<p className="font-semibold">
+									{product.name} - {variant.color.name}
+								</p>
+								<p className="text-gray-500 text-md">{`$${product.price}`}</p>
+							</div>
+						</div>
 
             <p className="text-center text-gray-700 text-md">
               Sign up for email or text and we will notify you when{' '}
@@ -167,35 +160,36 @@ export const NotifyMeModal = ({
             </p>
           </div>
 
-          <div className="px-12 py-8 bg-gray-50">
-            <h3 className="mb-6 text-xl font-bold text-center uppercase">
-              SHOP SIMILAR
-            </h3>
-            {isLoading ? (
-              <div className="flex items-center justify-center h-48">
-                <Spinner className="w-12 h-12" />
-              </div>
-            ) : error ? (
-              <p className="text-center text-red-500">{error}</p>
-            ) : (
-              <GridCardProduct classGrid="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <>
-                  {similarProducts.map((item) => (
-                    <div key={item.id} className="w-full aspect-10/9">
-                      <CardProduct
-                        price={item.price}
-                        smallDescription={item.smallDescription}
-                        title={item.title}
-                        notVariable={item.notVariable}
-                      />
-                    </div>
-                  ))}
-                </>
-              </GridCardProduct>
-            )}
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
+					<div className="px-12 py-8 bg-gray-50">
+						<h3 className="mb-6 text-xl font-bold text-center uppercase">
+							SHOP SIMILAR
+						</h3>
+						{/* Affichage conditionnel ici */}
+						{isLoading ? (
+							<div className="flex items-center justify-center h-48">
+								<Spinner className="w-12 h-12" />
+							</div>
+						) : error ? (
+							<p className="text-center text-red-500">{error}</p>
+						) : (
+							<GridCardProduct classGrid="grid grid-cols-2 md:grid-cols-3 gap-4">
+								<>
+									{/* {similarProducts.map((item) => (
+										<div key={item.id} className="w-full aspect-10/9">
+											<CardProduct
+												price={item.price.amount}
+												smallDescription={item.smallDescription}
+												title={item.title}
+												notVariable={item.notVariable}
+											/>
+										</div>
+									))} */}
+								</>
+							</GridCardProduct>
+						)}
+					</div>
+				</div>
+			</DialogContent>
+		</Dialog>
+	);
 };

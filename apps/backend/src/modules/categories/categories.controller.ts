@@ -40,6 +40,20 @@ export class CategoriesController {
     );
   }
 
+  @Get('/primary-category')
+  async getPrimaryCategory(
+    @Headers('accept-language') language: string = 'fr',
+  ) {
+    return await this.categoriesService.findPrimaryCategory(language);
+  }
+
+  @Get('/secondary-category')
+  async getSecondaryCategory(
+    @Headers('accept-language') language: string = 'fr',
+  ) {
+    return await this.categoriesService.findSecondaryCategory(language);
+  }
+
   /**
    * GET /categories/:id - Public
    * Récupère une catégorie par son ID
@@ -105,6 +119,15 @@ export class CategoriesController {
     @Headers('accept-language') language: string = 'fr',
   ) {
     return this.categoriesService.findByName(name, language);
+  }
+
+  //Get category children by slug
+  @Get('slug/:slug/children')
+  async findChildrenBySlug(
+    @Param('slug') slug: string,
+    // @Headers('accept-language') language: string = 'fr',
+  ) {
+    return this.categoriesService.findChildrenBySlug(slug);
   }
 
   /**

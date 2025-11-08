@@ -8,6 +8,7 @@ import {
 	FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useGetPrimaryCategory } from "@/features/shared/api/get-primary-category";
 import { SelectScrollable } from "@/shared/component/select-within-search";
 import { CATEGORIES_QUERY_KEY } from "@/utils/query-keys";
 import { useQueryClient } from "@tanstack/react-query";
@@ -101,6 +102,8 @@ function FormCategory() {
 		});
 	};
 
+	const { data: primaryCategories } = useGetPrimaryCategory();
+
 	return (
 		<Form {...form}>
 			<form
@@ -150,7 +153,7 @@ function FormCategory() {
 					nameId="parent"
 					label="Catégorie"
 					placeholder="Sélectionner une catégorie"
-					data={category}
+					data={primaryCategories || []}
 				/>
 
 				{/* Description */}

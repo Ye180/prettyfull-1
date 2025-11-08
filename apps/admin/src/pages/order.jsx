@@ -262,7 +262,7 @@ const Order = () => {
 					<div className="flex items-center gap-3">
 						<a
 							href="#!"
-							className="inline-block px-3 py-2 rounded-lg bg-black text-white"
+							className="inline-block px-3 py-2 text-white bg-black rounded-lg"
 						>
 							<div className="flex items-center gap-2">
 								<ReactSVG src={originalUrl + "/images/export.svg"} />
@@ -274,13 +274,13 @@ const Order = () => {
 
 				{/* <section className="pt-0 pb-4">
 					<Container>
-						<div className="flex items-center gap-2 px-2 mb-4 w-full">
+						<div className="flex items-center w-full gap-2 px-2 mb-4">
 							<img src={originalUrl + "/images/search.svg"} alt="" />
 							<input
 								value={searchTerm}
 								onChange={(e) => setSearchTerm(e.target.value)}
 								type="text"
-								className="font-medium w-full text__14 placeholder:text-Mtexttextinvert bg-transparent border-none outline-hidden hover:focus:active:outline-hidden hover:focus:active:border-none"
+								className="w-full font-medium bg-transparent border-none text__14 placeholder:text-Mtexttextinvert outline-hidden hover:focus:active:outline-hidden hover:focus:active:border-none"
 								placeholder="Search order..."
 							/>
 						</div>
@@ -295,8 +295,7 @@ const Order = () => {
 				</section> */}
 
 				<section className="pt-0 pb-4">
-					<Container className=" py-8 ">
-						
+					<Container className="py-8 ">
 						<DataTableOrders />
 					</Container>
 				</section>

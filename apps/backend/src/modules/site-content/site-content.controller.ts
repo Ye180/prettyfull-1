@@ -1,13 +1,9 @@
 import {
   Body,
   Controller,
-  Delete,
-  Get,
-  Headers,
   Param,
   Patch,
   Post,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -26,27 +22,27 @@ export class SiteContentController {
    * GET /site-content/:key - Public
    * Récupère un contenu publié par sa clé
    */
-  @Get(':key')
-  async getByKey(
-    @Param('key') key: string,
-    @Headers('accept-language') language: string = 'fr',
-  ) {
-    return this.siteContentService.getByKey(key, language);
-  }
+  // @Get(':key')
+  // async getByKey(
+  //   @Param('key') key: string,
+  //   @Headers('accept-language') language: string = 'fr',
+  // ) {
+  //   return this.siteContentService.getByKey(key, language);
+  // }
 
-  /**
-   * GET /site-content - Admin only
-   * Liste tous les contenus
-   */
-  @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
-  async findAll(
-    @Query('type') type?: string,
-    @Query('includeInactive') includeInactive?: boolean,
-  ) {
-    return this.siteContentService.findAll(type, includeInactive);
-  }
+  // /**
+  //  * GET /site-content - Admin only
+  //  * Liste tous les contenus
+  //  */
+  // @Get()
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(UserRole.ADMIN)
+  // async findAll(
+  //   @Query('type') type?: string,
+  //   @Query('includeInactive') includeInactive?: boolean,
+  // ) {
+  //   return this.siteContentService.findAll(type, includeInactive);
+  // }
 
   /**
    * POST /site-content - Admin only
@@ -77,35 +73,35 @@ export class SiteContentController {
    * POST /site-content/:key/publish - Admin only
    * Publie un contenu
    */
-  @Post(':key/publish')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
-  async publish(
-    @Param('key') key: string,
-    @Body('publishedBy') publishedBy: string,
-  ) {
-    return this.siteContentService.publish(key, publishedBy);
-  }
+  // @Post(':key/publish')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(UserRole.ADMIN)
+  // async publish(
+  //   @Param('key') key: string,
+  //   @Body('publishedBy') publishedBy: string,
+  // ) {
+  //   return this.siteContentService.publish(key, publishedBy);
+  // }
 
-  /**
-   * POST /site-content/:key/unpublish - Admin only
-   * Dépublie un contenu
-   */
-  @Post(':key/unpublish')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
-  async unpublish(@Param('key') key: string) {
-    return this.siteContentService.unpublish(key);
-  }
+  // /**
+  //  * POST /site-content/:key/unpublish - Admin only
+  //  * Dépublie un contenu
+  //  */
+  // @Post(':key/unpublish')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(UserRole.ADMIN)
+  // async unpublish(@Param('key') key: string) {
+  //   return this.siteContentService.unpublish(key);
+  // }
 
-  /**
-   * DELETE /site-content/:key - Admin only
-   * Supprime un contenu
-   */
-  @Delete(':key')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
-  async delete(@Param('key') key: string) {
-    return this.siteContentService.delete(key);
-  }
+  // /**
+  //  * DELETE /site-content/:key - Admin only
+  //  * Supprime un contenu
+  //  */
+  // @Delete(':key')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(UserRole.ADMIN)
+  // async delete(@Param('key') key: string) {
+  //   return this.siteContentService.delete(key);
+  // }
 }
