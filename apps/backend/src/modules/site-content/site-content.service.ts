@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { SiteContent, SiteContentDocument, ContentType } from './schemas/site-content.schema';
-import { CreateSiteContentDto } from './dto/create-site-content.dto';
 import { UpdateSiteContentDto } from './dto/update-site-content.dto';
+import {
+  ContentType,
+  SiteContent,
+  SiteContentDocument,
+} from './schemas/site-content.schema';
 
 @Injectable()
 export class SiteContentService {
@@ -12,17 +15,19 @@ export class SiteContentService {
     private siteContentModel: Model<SiteContentDocument>,
   ) {}
 
-  async create(createSiteContentDto: CreateSiteContentDto): Promise<SiteContent> {
-    try {
-      const createdContent = new this.siteContentModel(createSiteContentDto);
-      return await createdContent.save();
-    } catch (error) {
-      // if (error.code === 11000) {
-      //   throw new ConflictException('Site content with this key already exists');
-      // }
-      throw error;
-    }
-  }
+  // async create(
+  //   createSiteContentDto: CreateSiteContentDto,
+  // ): Promise<SiteContent> {
+  //   try {
+  //     const createdContent = new this.siteContentModel(createSiteContentDto);
+  //     return await createdContent.save();
+  //   } catch (error) {
+  //     // if (error.code === 11000) {
+  //     //   throw new ConflictException('Site content with this key already exists');
+  //     // }
+  //     throw error;
+  //   }
+  // }
 
   async findAll(
     category?: string,
@@ -56,11 +61,14 @@ export class SiteContentService {
     return content;
   }
 
-  async update(id: string, updateSiteContentDto: UpdateSiteContentDto): Promise<SiteContent> {
+  async update(
+    id: string,
+    updateSiteContentDto: UpdateSiteContentDto,
+  ): Promise<SiteContent> {
     const updatedContent = await this.siteContentModel
       .findByIdAndUpdate(id, updateSiteContentDto, { new: true })
       .exec();
-    
+
     if (!updatedContent) {
       throw new NotFoundException(`Site content with ID ${id} not found`);
     }

@@ -465,7 +465,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 
 							{fieldSecondSection.map((field, index) => (
 								<div key={index}>
-									<div className="flex justify-between items-center mb-2">
+									<div className="flex items-center justify-between mb-2">
 										<FormLabel>Sous Catégorie {index + 1}</FormLabel>
 										<button
 											type="button"
@@ -484,7 +484,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 									/>
 								</div>
 							))}
-							<div className="flex justify-start  h-fit items-end">
+							<div className="flex items-end justify-start h-fit">
 								{/* <p>Sous Catégorie"</p> */}
 								<button
 									type="button"
@@ -678,7 +678,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 						<Separator />
 						{fieldFourSection.map((item, index) => (
 							<div key={index}>
-								<div className="flex justify-between items-center mb-2">
+								<div className="flex items-center justify-between mb-2">
 									<FormLabel>Produit {index + 1}</FormLabel>
 									<button
 										type="button"
@@ -697,7 +697,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 								/>
 							</div>
 						))}
-						<div className="flex justify-start  h-fit items-end">
+						<div className="flex items-end justify-start h-fit">
 							{/* <p>Sous Catégorie"</p> */}
 							<button
 								type="button"
@@ -787,7 +787,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 
 							{fieldFiveSection.map((item, index) => (
 								<div key={index}>
-									<div className="flex justify-between items-center mb-2">
+									<div className="flex items-center justify-between mb-2">
 										<FormLabel>Sous Categories {index + 1}</FormLabel>
 										<button
 											type="button"
@@ -806,7 +806,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 									/>
 								</div>
 							))}
-							<div className="flex justify-start  h-fit items-end">
+							<div className="flex items-end justify-start h-fit">
 								{/* <p>Sous Catégorie"</p> */}
 								<button
 									type="button"
@@ -959,7 +959,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 							<Separator />
 							{fieldSevenSection.map((item, index) => (
 								<div key={index}>
-									<div className="flex justify-between items-center mb-2">
+									<div className="flex items-center justify-between mb-2">
 										<FormLabel>Produit {index + 1}</FormLabel>
 										<button
 											type="button"
@@ -978,7 +978,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 									/>
 								</div>
 							))}
-							<div className="flex justify-start  h-fit items-end">
+							<div className="flex items-end justify-start h-fit">
 								{/* <p>Sous Catégorie"</p> */}
 								<button
 									type="button"
@@ -1117,7 +1117,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 
 							{fieldNineSection.map((item, index) => (
 								<div key={index}>
-									<div className="flex justify-between items-center mb-2">
+									<div className="flex items-center justify-between mb-2">
 										<FormLabel>Sous Categories {index + 1}</FormLabel>
 										<button
 											type="button"
@@ -1136,7 +1136,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 									/>
 								</div>
 							))}
-							<div className="flex justify-start  h-fit items-end">
+							<div className="flex items-end justify-start h-fit">
 								{/* <p>Sous Catégorie"</p> */}
 								<button
 									type="button"
