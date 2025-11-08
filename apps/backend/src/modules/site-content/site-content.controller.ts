@@ -1,15 +1,6 @@
-import {
-  Body,
-  Controller,
-  Param,
-  Patch,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { UserRole } from '../users/schemas/user.schema';
+import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
+import type { UserSession } from '@thallesp/nestjs-better-auth';
+import { Roles, Session } from '@thallesp/nestjs-better-auth';
 import { CreateSiteContentDto } from './dto/create-site-content.dto';
 import { UpdateSiteContentDto } from './dto/update-site-content.dto';
 import { SiteContentService } from './site-content.service';
@@ -23,6 +14,7 @@ export class SiteContentController {
    * Récupère un contenu publié par sa clé
    */
   // @Get(':key')
+  // @AllowAnonymous()
   // async getByKey(
   //   @Param('key') key: string,
   //   @Headers('accept-language') language: string = 'fr',
@@ -35,11 +27,11 @@ export class SiteContentController {
   //  * Liste tous les contenus
   //  */
   // @Get()
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(UserRole.ADMIN)
+  // @Roles(['admin'])
   // async findAll(
   //   @Query('type') type?: string,
   //   @Query('includeInactive') includeInactive?: boolean,
+  //   @Session() session: UserSession,
   // ) {
   //   return this.siteContentService.findAll(type, includeInactive);
   // }
@@ -49,9 +41,11 @@ export class SiteContentController {
    * Crée un nouveau contenu
    */
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
-  async create(@Body() createDto: CreateSiteContentDto) {
+  @Roles(['admin'])
+  async create(
+    @Body() createDto: CreateSiteContentDto,
+    @Session() session: UserSession,
+  ) {
     return this.siteContentService.create(createDto);
   }
 
@@ -60,11 +54,11 @@ export class SiteContentController {
    * Met à jour un contenu
    */
   @Patch(':key')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(['admin'])
   async update(
     @Param('key') key: string,
     @Body() updateDto: UpdateSiteContentDto,
+    @Session() session: UserSession,
   ) {
     return this.siteContentService.update(key, updateDto);
   }

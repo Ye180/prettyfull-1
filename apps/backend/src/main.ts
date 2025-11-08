@@ -8,7 +8,10 @@ import { swaggerSetup } from './shared/config/swagger.config';
 import { API_VERSION, APP_DESCRIPTION, APP_NAME } from './shared/constants';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // Disable body parser for Better Auth to handle raw request body
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: false,
+  });
   const configService = app.get(ConfigService);
 
   // Security middlewares
