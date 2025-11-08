@@ -23,6 +23,7 @@ import { ProductsModule } from './modules/products/products.module';
 import { SiteContentModule } from './modules/site-content/site-content.module';
 import { UsersModule } from './modules/users/users.module';
 import { WishlistsModule } from './modules/wishlists/wishlists.module';
+import { BootstrapModule } from './shared/database/bootstrap/bootstrap.module';
 
 @Module({
   imports: [
@@ -96,6 +97,7 @@ import { WishlistsModule } from './modules/wishlists/wishlists.module';
     AddressModule,
     NotificationsModule,
     SiteContentModule,
+    BootstrapModule,
   ],
   controllers: [AppController],
   providers: [
