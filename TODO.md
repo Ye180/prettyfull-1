@@ -21,3 +21,24 @@ Little more complicated but more modular.
 
 - [x] Fix Build Errors due to fontvariable font.
 - [ ] Fix UI package imports (components in ui subolder it's not infer when importing)
+
+## Backend
+
+### Storage & File Management
+
+- [x] Implement Storage Module for Garage S3-compatible uploads
+  - [x] Configure AWS SDK v3 with S3Client
+  - [x] Create StorageService with upload/delete methods
+  - [x] Create StorageController with REST endpoints
+  - [x] Add file validation (type, size, count)
+  - [x] Configure Multer for multipart/form-data
+  - [x] Add Swagger documentation
+  - [x] Create comprehensive documentation (STORAGE_MODULE_GUIDE.md)
+  - [x] Create test script (test-storage-upload.sh)
+  - [x] Add environment variables to .env.example
+  - [ ] Add authentication protection to upload endpoints
+  - [ ] Implement image compression with Sharp
+  - [ ] Add automatic thumbnail generation
+  - [ ] Add file quotas per user
+  - [ ] Integrate with ProductsModule for product images
+  - [ ] Integrate with UsersModule for avatars
