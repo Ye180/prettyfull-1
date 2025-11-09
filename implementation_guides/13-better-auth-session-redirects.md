@@ -17,18 +17,18 @@ Utilitaires pour gérer la session côté **serveur** (Server Components, Server
 
 ```typescript
 export const getServerSession = cache(async (): Promise<Session | null> => {
-  // Récupère la session depuis les cookies
-  // Appelle l'API Better Auth pour valider
-  // Cache le résultat pour éviter les appels multiples
+	// Récupère la session depuis les cookies
+	// Appelle l'API Better Auth pour valider
+	// Cache le résultat pour éviter les appels multiples
 });
 
 export async function requireAuth(): Promise<Session | null> {
-  // Vérifie si l'utilisateur est authentifié
-  // Retourne null si non authentifié
+	// Vérifie si l'utilisateur est authentifié
+	// Retourne null si non authentifié
 }
 
 export async function getCurrentUser(): Promise<ExtendedUser | null> {
-  // Retourne uniquement l'utilisateur courant
+	// Retourne uniquement l'utilisateur courant
 }
 ```
 
@@ -56,13 +56,13 @@ Hooks React pour gérer les redirections côté **client**.
 
 ```typescript
 export function useAuthRedirect(redirectTo = "/account") {
-  // Redirige les utilisateurs DÉJÀ connectés
-  // À utiliser dans les pages login/register
+	// Redirige les utilisateurs DÉJÀ connectés
+	// À utiliser dans les pages login/register
 }
 
 export function useRequireAuth(redirectTo = "/login") {
-  // Redirige les utilisateurs NON connectés
-  // À utiliser dans les pages protégées côté client
+	// Redirige les utilisateurs NON connectés
+	// À utiliser dans les pages protégées côté client
 }
 ```
 
@@ -71,8 +71,8 @@ export function useRequireAuth(redirectTo = "/login") {
 ```typescript
 // Dans une page de login (Client Component)
 export function LoginPage() {
-  useAuthRedirect("/account"); // Redirige si déjà connecté
-  // ...
+	useAuthRedirect("/account"); // Redirige si déjà connecté
+	// ...
 }
 ```
 
@@ -84,11 +84,11 @@ Composant bouton de déconnexion.
 
 ```typescript
 export function LogoutButton() {
-  const handleLogout = async () => {
-    await authClient.signOut();
-    router.push("/login");
-  };
-  // ...
+	const handleLogout = async () => {
+		await authClient.signOut();
+		router.push("/login");
+	};
+	// ...
 }
 ```
 

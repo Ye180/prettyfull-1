@@ -46,7 +46,7 @@ export class SiteContentController {
     @Body() createDto: CreateSiteContentDto,
     @Session() session: UserSession,
   ) {
-    return this.siteContentService.create(createDto);
+    // return this.siteContentService.create(createDto);
   }
 
   /**

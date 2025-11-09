@@ -60,7 +60,7 @@ const siteContentSchema = z.object({
 // type SiteContentFormValues = z.infer<typeof siteContentSchema>;
 
 // ✅ 2. Le formulaire principal
-export default function SiteContentForm({ onSubmit, defaultValues }) {
+export default function SiteContentForm() {
 	const form = useForm({
 		defaultValues: {
 			key: "",
@@ -96,13 +96,13 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 				description: { fr: "", en: "" },
 				imageUrl: "",
 				category: "",
-				products: ["default"],
+				products: [""],
 			},
 			fiveSection: {
 				title: { fr: "", en: "" },
 				category: "",
 				ctaText: { fr: "", en: "" },
-				subCategory: ["default"],
+				subCategory: [""],
 			},
 			sixSection: {
 				imageUrlDesktop: "",
@@ -113,7 +113,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 				title: { fr: "", en: "" },
 				ctaText: { fr: "", en: "" },
 				subCategory: "",
-				products: ["default"],
+				products: [""],
 			},
 			eightSection: {
 				imageUrlDesktop: "",
@@ -123,7 +123,7 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 			nineSection: {
 				title: { fr: "", en: "" },
 				ctaText: { fr: "", en: "" },
-				subCategory: ["default"],
+				subCategory: [""],
 			},
 			ten: {
 				imageUrlDesktop: "",
@@ -179,6 +179,10 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 	});
 
 	const { data: primaryCategories } = useGetPrimaryCategory();
+
+	const onSubmit = (data) => {
+		console.log("Form submitted:", data);
+	};
 
 	return (
 		<Form {...form}>
@@ -662,17 +666,12 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 								)}
 							/>
 
-							<FormField
-								control={control}
-								name="fourthSection.category"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Categorie Mére</FormLabel>
-										<FormControl>
-											<Input placeholder="Categorie..." {...field} />
-										</FormControl>
-									</FormItem>
-								)}
+							<SelectScrollable
+								control={form.control}
+								nameId={"fourthSection.category"}
+								label="Catégorie Mère"
+								placeholder="Sélectionner une catégorie"
+								data={primaryCategories || []}
 							/>
 						</div>
 						<Separator />
@@ -746,17 +745,12 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 								)}
 							/>
 
-							<FormField
-								control={control}
-								name="fiveSection.category"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Categorie Mere</FormLabel>
-										<FormControl>
-											<Input placeholder="Categories mere" {...field} />
-										</FormControl>
-									</FormItem>
-								)}
+							<SelectScrollable
+								control={form.control}
+								nameId={"fiveSection.category"}
+								label="Catégorie Mère"
+								placeholder="Sélectionner une catégorie"
+								data={primaryCategories || []}
 							/>
 							<FormField
 								control={control}
@@ -818,18 +812,6 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 									<PlusIcon className="inline-block p-1 mb-2 mr-2 text-white bg-black size-6 rounded-2xl" />
 								</button>
 							</div>
-							{/* <FormField
-								control={control}
-								name="fiveSection.subCategory"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Sous Categories </FormLabel>
-										<FormControl>
-											<Input placeholder="Ex: Sous Categorie" {...field} />
-										</FormControl>
-									</FormItem>
-								)}
-							/> */}
 						</CardContent>
 					</Card>
 
@@ -868,17 +850,13 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 									)}
 								/>
 							</div>
-							<FormField
-								control={control}
-								name="sixSection.category"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Categorie </FormLabel>
-										<FormControl>
-											<Input placeholder="https://..." {...field} />
-										</FormControl>
-									</FormItem>
-								)}
+
+							<SelectScrollable
+								control={form.control}
+								nameId={"sixSection.category"}
+								label="Catégorie Mère"
+								placeholder="Sélectionner une catégorie"
+								data={primaryCategories || []}
 							/>
 						</CardContent>
 					</Card>
@@ -944,17 +922,12 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 								)}
 							/>
 
-							<FormField
-								control={control}
-								name="sevenSection.subCategory"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Categories Mere </FormLabel>
-										<FormControl>
-											<Input placeholder="Ex: Categorie Mere" {...field} />
-										</FormControl>
-									</FormItem>
-								)}
+							<SelectScrollable
+								control={form.control}
+								nameId={"sevenSection.subCategory"}
+								label="Catégorie Mère"
+								placeholder="Sélectionner une catégorie"
+								data={primaryCategories || []}
 							/>
 							<Separator />
 							{fieldSevenSection.map((item, index) => (
@@ -1027,17 +1000,13 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 									)}
 								/>
 							</div>
-							<FormField
-								control={control}
-								name="content.imageUrl"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Categorie </FormLabel>
-										<FormControl>
-											<Input placeholder="https://..." {...field} />
-										</FormControl>
-									</FormItem>
-								)}
+
+							<SelectScrollable
+								control={form.control}
+								nameId={"eightSection.category"}
+								label="Catégorie Mère"
+								placeholder="Sélectionner une catégorie"
+								data={primaryCategories || []}
 							/>
 						</CardContent>
 					</Card>
@@ -1101,17 +1070,13 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 									</FormItem>
 								)}
 							/>
-							<FormField
-								control={control}
-								name="nineSection.subCategory"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Categories Mere </FormLabel>
-										<FormControl>
-											<Input placeholder="Ex: Categorie Mere" {...field} />
-										</FormControl>
-									</FormItem>
-								)}
+
+							<SelectScrollable
+								control={form.control}
+								nameId={"nineSection.category"}
+								label="Catégorie Mère"
+								placeholder="Sélectionner une catégorie"
+								data={primaryCategories || []}
 							/>
 							<Separator />
 
@@ -1185,113 +1150,17 @@ export default function SiteContentForm({ onSubmit, defaultValues }) {
 									)}
 								/>
 							</div>
-							<FormField
-								control={control}
-								name="ten.category"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Categorie </FormLabel>
-										<FormControl>
-											<Input placeholder="https://..." {...field} />
-										</FormControl>
-									</FormItem>
-								)}
+
+							<SelectScrollable
+								control={form.control}
+								nameId={"ten.category"}
+								label="Catégorie Mère"
+								placeholder="Sélectionner une catégorie"
+								data={primaryCategories || []}
 							/>
 						</CardContent>
 					</Card>
 				</div>
-				{/* ITEMS (tableaux dynamiques)
-				<Card className="border border-gray-200 shadow-md">
-					<CardHeader>
-						<CardTitle>Éléments associés (items)</CardTitle>
-						<CardDescription>
-							Liste de sous-blocs liés à cette section (ex: produits,
-							catégories…)
-						</CardDescription>
-					</CardHeader>
-
-					<CardContent>
-						{itemFields.map((field, index) => (
-							<div
-								key={field.id}
-								className="relative p-4 mb-3 border rounded-lg bg-gray-50"
-							>
-								<h4 className="mb-2 font-medium text-gray-700">
-									Élément #{index + 1}
-								</h4>
-								<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-									<FormField
-										control={control}
-										name={`content.items.${index}.title`}
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Titre</FormLabel>
-												<FormControl>
-													<Input placeholder="Titre..." {...field} />
-												</FormControl>
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={control}
-										name={`content.items.${index}.description`}
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Description</FormLabel>
-												<FormControl>
-													<Input placeholder="Description..." {...field} />
-												</FormControl>
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={control}
-										name={`content.items.${index}.imageUrl`}
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Image</FormLabel>
-												<FormControl>
-													<Input placeholder="https://..." {...field} />
-												</FormControl>
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={control}
-										name={`content.items.${index}.link`}
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Lien</FormLabel>
-												<FormControl>
-													<Input placeholder="/produit/..." {...field} />
-												</FormControl>
-											</FormItem>
-										)}
-									/>
-								</div>
-
-								<Button
-									type="button"
-									variant="destructive"
-									size="sm"
-									className="mt-3"
-									onClick={() => removeItem(index)}
-								>
-									Supprimer
-								</Button>
-							</div>
-						))}
-						<Button
-							type="button"
-							variant="outline"
-							onClick={() =>
-								addItem({ title: "", description: "", imageUrl: "", link: "" })
-							}
-						>
-							+ Ajouter un élément
-						</Button>
-					</CardContent>
-				</Card> */}
 
 				<CardFooter className="justify-end">
 					<Button type="submit" className="px-8 py-4 font-medium">

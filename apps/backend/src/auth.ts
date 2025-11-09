@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
 
 // Charger les variables d'environnement
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
 dotenv.config();
 
 // Fonction pour obtenir le client MongoDB (lazy initialization)
