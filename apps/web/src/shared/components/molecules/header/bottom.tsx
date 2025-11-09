@@ -1,20 +1,29 @@
 "use client ";
 import { Category } from "@/features/homepage/api/get-category";
 import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
+import { setItem } from "@/shared/lib/locale-storage";
 import { Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import Link from "next/link";
+import { useEffect } from "react";
 
 const BottomHeader = ({
 	className,
 	className_2,
 	secondary_category,
+	loading,
 }: {
 	className?: string;
 	className_2?: string;
 	secondary_category?: Category[];
+	loading?: boolean;
 }) => {
 	// Placeholder for potential future data fetching
+
+	useEffect(() => {
+		// This effect runs when secondary_category changes
+		setItem("category", secondary_category);
+	}, [secondary_category]);
 
 	return (
 		<div
@@ -30,20 +39,19 @@ const BottomHeader = ({
 						className_2
 					)}
 				>
-					{secondary_category ? (
+					{secondary_category &&
+						!loading &&
 						secondary_category?.map((items: Category, index: number) => (
 							<Link
 								href={COLLECTION_PATHS.collectionDetail(items.slug)}
 								key={index}
-								className="!text-[1.6rem] capitalize snap-center"
+								className="!text-[1.6rem] capitalize snap-center whitespace-nowrap hover:text-primary transition-all duration-300 ease-in-out "
 							>
 								{" "}
 								{items.name}
 							</Link>
-						))
-					) : (
-						<Skeleton className="h-9 w-[100%]" />
-					)}
+						))}{" "}
+					{loading && <Skeleton className="h-9 w-[100%]" />}
 					{/*  */}
 				</div>
 			</div>

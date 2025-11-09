@@ -11,6 +11,7 @@ import CategoryCollection from "@/features/collections/organims/mini-category";
 import NavbarCollection from "@/features/collections/organims/mini-navbar";
 
 import { ScrollArea } from "@prettyfull/ui";
+import { useParams } from "next/navigation";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 import { useGetProducts } from "../api/get-product";
 
@@ -18,6 +19,10 @@ const CollectionViews = () => {
 	const { data: products, isLoading } = useGetProducts({ page: 1, limit: 24 });
 
 	console.log("Fetched products:", products);
+
+	const params = useParams();
+
+	console.log("Collection Params:", params);
 	return (
 		<div className="pb-32 space-y-16 ">
 			<div className="relative h-[20vh] md:h-[35vh] px-4 bg-white">

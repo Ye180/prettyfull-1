@@ -14,6 +14,8 @@ const HomeLayout = ({
 }: PropsWithChildren<HomeLayoutProps>) => {
 	const { data: main_category } = useGetPrimaryCategory();
 
+	console.log("main_category", main_category); // Debugging line, can be removed later
+
 	return (
 		<div className="flex flex-col min-h-screen overflow-x-hidden">
 			<Header main_category={main_category} />

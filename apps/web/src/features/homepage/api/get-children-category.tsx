@@ -42,5 +42,6 @@ export const useGetChildrenCategory = (slug: string) => {
 	return useQuery({
 		queryKey: [CATEGORIES_CHILDREN_QUERY_KEY, slug],
 		queryFn: () => getChildrenCategory(slug),
+		enabled: !!slug,
 	});
 };
