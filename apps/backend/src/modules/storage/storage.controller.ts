@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import {
   MultipleUploadResponseDto,
   UploadResponseDto,
@@ -56,6 +57,7 @@ export class StorageController {
    * Upload d'une seule image
    */
   @Post('upload')
+  @AllowAnonymous()
   @ApiOperation({
     summary: "Upload d'une image",
     description: 'Upload une seule image vers Garage Storage (S3-compatible)',
@@ -114,6 +116,7 @@ export class StorageController {
    * Upload de plusieurs images
    */
   @Post('upload/multiple')
+  @AllowAnonymous()
   @ApiOperation({
     summary: 'Upload de plusieurs images',
     description:

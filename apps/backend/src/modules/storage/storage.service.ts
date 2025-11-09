@@ -52,7 +52,7 @@ export class StorageService {
         secretAccessKey,
       },
       forcePathStyle: true,
-      tls: this.endpoint.startsWith('https'), // Auto-detect TLS depuis l'endpoint
+      // tls: this.endpoint.startsWith('https'), // Auto-detect TLS depuis l'endpoint
     });
 
     this.logger.log(
