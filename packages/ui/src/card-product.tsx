@@ -1,12 +1,9 @@
-// packages/ui/src/card-product.tsx
-
 "use client";
 import { cn, data_url, formatCurrency_FR } from "@prettyfull/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { Button } from "./button";
 import DrawerCart from "./drawer-cart";
 import DrawerVariable from "./drawer-variable";
@@ -14,14 +11,14 @@ import { CloseIcon } from "./icons/close.icon";
 import { Heart } from "./icons/heart.icon";
 import Size from "./size";
 
-// --- IMPORTS À AJOUTER ---
+// (Cet import doit pointer vers le bon chemin dans votre app 'web')
 import { useAddItemToCart } from "../../../apps/web/src/features/cart/api/add-item-to-cart";
-// --- FIN DES IMPORTS ---
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 
 const cardVariants = cva(["space-y-3 w-[100%] h-fit max-lg:pb-6 "], {
 	variants: {
 		variant: {
-			default: "tracking-wide  cursor-pointer",
+			default: "tracking-wide 	cursor-pointer",
 		},
 		size: {
 			default: " ",
@@ -33,19 +30,17 @@ const cardVariants = cva(["space-y-3 w-[100%] h-fit max-lg:pb-6 "], {
 	},
 });
 
-// --- DÉFINITION QUI MANQUAIT DANS VOTRE FICHIER ---
 const INITIAL_DRAWER_STATES = {
 	showSizes: false,
 	showVariable: false,
 };
 
 type DrawerStatesProps = typeof INITIAL_DRAWER_STATES;
-// --- FIN DE LA DÉFINITION ---
 
 export interface CardProps
 	extends React.HTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof cardVariants> {
-	productId: string; // <-- TRÈS IMPORTANT
+	productId: string;
 	name: string;
 	category?: string;
 	link?: string;
@@ -74,7 +69,7 @@ export interface CardProps
 	slug?: string;
 }
 export function CardProduct({
-	productId, 
+	productId,
 	name,
 	className,
 	smallDescription,
@@ -94,8 +89,6 @@ export function CardProduct({
 
 	const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
 
-	// --- CORRIGÉ ---
-	// 'INITIAL_DRAWER_STATES' est maintenant défini en dehors de la fonction
 	const [drawerStates, setDrawerStates] = useState<DrawerStatesProps>(
 		INITIAL_DRAWER_STATES,
 	);
@@ -105,8 +98,6 @@ export function CardProduct({
 	const [selectedSize, setSelectedSize] = useState<string>("");
 	// --- FIN DE LA LOGIQUE ---
 
-	// --- CORRIGÉ ---
-	// 'DrawerStatesProps' est maintenant défini
 	const updateDrawerState = useCallback(
 		(key: keyof DrawerStatesProps, value: SetStateAction<boolean>) => {
 			setDrawerStates((prev) => ({ ...prev, [key]: value }));
@@ -143,9 +134,13 @@ export function CardProduct({
 	const handleSizeSelect = (size: string) => {
 		setSelectedSize(size);
 
-		const variantsPayload: Record<string, string> = {};
-		variantsPayload.size = size;
+		// **LA CORRECTION EST ICI**
+		// 1. On type le payload pour qu'il corresponde à ce que la mutation attend.
+		const variantsPayload: Record<string, string> = {
+			size: size,
+		};
 
+		// 2. On ajoute 'color' seulement s'il existe.
 		if (variable && variable[activeIndex]) {
 			variantsPayload.color = variable[activeIndex].color.code;
 		} else if (notVariable && notVariable.color) {
@@ -158,47 +153,30 @@ export function CardProduct({
 			selectedVariants: variantsPayload,
 		});
 
-		// On appelle la mutation directement.
-		// Le hook s'occupe de trouver le bon ID (réel ou invité).
-		// --- TYPES POUR L'AJOUT AU PANIER ---
-		interface AddItemSelectedVariants {
-			size: string;
-			color?: string;
-			[key: string]: string | undefined;
-		}
-
-		interface AddItemToCartPayload {
-			productId: string;
-			quantity: number;
-			selectedVariants: AddItemSelectedVariants;
-		}
-
-		interface AddItemToCartError {
-			message?: string;
-		}
-		// --- FIN DES TYPES ---
-const addItemToCartMutation = useAddItemToCart();
-
 		addItemToCartMutation.mutate(
 			{
 				productId: productId,
 				quantity: 1, // Quantité par défaut de 1 depuis la carte
-				selectedVariants: variantsPayload,
+				selectedVariants: variantsPayload, // <-- Cet objet est maintenant du bon type
 			},
 			{
 				onSuccess: () => {
 					console.log("Produit ajouté !");
 					alert("Produit ajouté au panier !");
-					updateDrawerState("showSizes", false);
 				},
-				onError: (error: AddItemToCartError | any) => {
+				onError: (error: any) => {
+					// Type 'any' pour l'erreur générique
 					console.error("Erreur lors de l'ajout:", error);
-					alert(`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`);
+					alert(
+						`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`,
+					);
 				},
 			},
 		);
+
+		updateDrawerState("showSizes", false);
 	};
-	console.log("🟢 CardProduct reçu:", { productId });
+	// console.log("🟢 CardProduct reçu:", { productId });
 
 	// --- FIN DE LA FONCTION ---
 
@@ -252,22 +230,19 @@ const addItemToCartMutation = useAddItemToCart();
 						width={400}
 						height={400}
 						sizes="
-
-                        (max-width: 344px) 100px,
-                        (max-width: 375px) 100px,
-                        (max-width: 639px) 150px,
-                        (max-width: 767px) 200px,
-
-                        (max-width: 989px) 250px,
-                        (max-width: 1179px) 200px,
-                        (max-width: 1366px) 250px,
-                        (max-width: 1800px) 400px,
-                        (max-width: 2800px) 400px,
-                        400px
-
-                        "
+						(max-width: 344px) 100px,
+						(max-width: 375px) 100px,
+						(max-width: 639px) 150px,
+						(max-width: 767px) 200px,
+						(max-width: 989px) 250px,
+						(max-width: 1179px) 200px,
+						(max-width: 1366px) 250px,
+						(max-width: 1800px) 400px,
+						(max-width: 2800px) 400px,
+						400px
+						"
 						className={cn(
-							"object-contain w-full h-full  transition-opacity duration-300 ",
+							"object-contain w-full h-full  transition-opacity duration-300 ",
 							i === activeIndex ? "opacity-100 " : "hidden opacity-0",
 						)}
 						priority={i === 0}
@@ -325,14 +300,14 @@ const addItemToCartMutation = useAddItemToCart();
 					close={() => updateDrawerState("showSizes", false)}
 				/>
 				{promotion && (
-					<span className="fond-semibold bg-red-700 text-white !text-[0.8rem] lg:!text-[1.2rem] lg:!text-xs  absolute top-4 left-4 px-3 py-2 rounded-full">
+					<span className="fond-semibold bg-red-700 text-white !text-[0.8rem] lg:!text-[1.2rem] lg:!text-xs  absolute top-4 left-4 px-3 py-2 rounded-full">
 						{promotion.pourcentage}% OFF
 					</span>
 				)}
 
 				{(notVariable?.size || variable) &&
 					(drawerStates.showSizes ? (
-						<div className="absolute  w-[80%] left-1/2 right-1/2  -translate-x-1/2 bg-white border-2 border-gray-200 bottom-15 text-black  text-center rounded-md text-sm font-light  p-8 shadow-lg max-md:hidden md:block">
+						<div className="absolute w-full px-4 bottom-5 bg-white border-2 border-gray-200 text-black text-center rounded-md text-sm font-light p-8 shadow-lg max-md:hidden md:block">
 							<div className="flex items-center justify-between mb-6">
 								<p className="font-semibold text-[1.4rem]">Size</p>
 								<button
@@ -346,31 +321,28 @@ const addItemToCartMutation = useAddItemToCart();
 								</button>
 							</div>
 
-							{/* --- LE COMPOSANT SIZE APPELLE handleSizeSelect --- */}
 							<Size
 								size={size}
 								selectSize={selectedSize}
-								onSizeChange={handleSizeSelect} // <--- C'est ici que la magie opère
-								onclose={() => updateDrawerState("showSizes", false)}
+								onSizeChange={handleSizeSelect}
 							/>
 						</div>
 					) : null)}
 			</div>
 
 			<div className="space-y-3">
-				<p className="text-sm  max-sm:hidden capitalize text-grey  tracking-[0.03em] font-light">
+				<p className="text-sm  max-sm:hidden capitalize text-grey  tracking-[0.03em] font-light">
 					{smallDescription}
 				</p>
 			</div>
 			<div className="flex justify-between items-start text-[#000] ">
-				<h4 className="tracking-[0.03em] !text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] truncate line-clamp-1">
+				<h4 className="tracking-[0.03em] !text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] truncate line-clamp-1">
 					{" "}
 					{name}
 				</h4>
 
-				{/* Correction de l'affichage des promotions */}
 				{!promotion && (
-					<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem]">
+					<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem]">
 						{" "}
 						{formatCurrency_FR(price.amount)}
 					</h4>
@@ -378,12 +350,12 @@ const addItemToCartMutation = useAddItemToCart();
 				{promotion && (
 					<>
 						<div className="block text-end ">
-							<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] whitespace-nowrap">
+							<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] whitespace-nowrap">
 								{" "}
 								{promotion.reduced_price.amount || 0}{" "}
 								{promotion.reduced_price.currency}
 							</h4>
-							<h4 className="text-grey/50 !text-2xl line-through max-md:!text-[2rem]  md:!text-[2.2rem]  whitespace-nowrap">
+							<h4 className="text-grey/50 !text-2xl line-through max-md:!text-[2rem]  md:!text-[2.2rem]  whitespace-nowrap">
 								{price.amount} {promotion.reduced_price.currency}
 							</h4>
 						</div>

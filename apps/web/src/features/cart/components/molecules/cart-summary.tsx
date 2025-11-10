@@ -1,51 +1,61 @@
 'use client';
 
-import { CartSummaryProps } from '../../types';
 import { Button } from '@prettyfull/ui';
-import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
 
-export const CartSummary = ({
-  subtotal,
-  shipping,
-  taxes,
-  total,
+interface CartSummaryProps {
+	subtotal?: number;
+	taxes?: number;
+	shipping?: number;
+	total?: number;
+	currency?: string;
+}
+
+const CartSummary = ({
+	subtotal = 0,
+	taxes = 0,
+	shipping = 0,
+	total = 0,
+	currency = 'USD',
 }: CartSummaryProps) => {
-  const t = useTranslations('cart');
-  const router = useRouter();
+	return (
+		<div className="w-full md:w-[320px]  p-6 bg-white h-fit">
+			<h3 className="text-lg font-semibold mb-4">Summary</h3>
 
-  const handleCheckout = () => {
-    router.push('/checkout');
-  };
+			<div className="space-y-3 text-sm text-gray-700">
+				<div className="flex justify-between">
+					<span>Subtotal</span>
+					<span>
+						{currency} {subtotal.toLocaleString()}
+					</span>
+				</div>
 
-  return (
-    <div className="p-6 bg-gray-50 rounded-lg">
-      <h3 className="text-xl font-semibold mb-4">{t('summary')}</h3>
-      <div className="space-y-2">
-        <div className="flex justify-between">
-          <p>{t('subtotal')}</p>
-          <p>{subtotal.toFixed(2)} FCFA</p>
-        </div>
-        <div className="flex justify-between">
-          <p>{t('shipping')}</p>
-          <p>{shipping > 0 ? `${shipping.toFixed(2)} FCFA` : 'Gratuit'}</p>
-        </div>
-        <div className="flex justify-between">
-          <p>{t('taxes')}</p>
-          <p>{taxes.toFixed(2)} FCFA</p>
-        </div>
-        <div className="border-t my-2 pt-2 flex justify-between font-bold text-lg">
-          <p>{t('total')}</p>
-          <p>{total.toFixed(2)} FCFA</p>
-        </div>
-      </div>
-      <Button 
-        onClick={handleCheckout} 
-        className="w-full mt-6"
-        disabled={subtotal === 0} 
-      >
-        {t('checkout')}
-      </Button>
-    </div>
-  );
+				<div className="flex justify-between">
+					<span>Estimate Shipping Costs</span>
+					<span>
+						{currency} {shipping.toLocaleString()}
+					</span>
+				</div>
+
+				<div className="flex justify-between">
+					<span>Estimate Duties And Taxes</span>
+					<span>-</span>
+				</div>
+			</div>
+
+			<hr className="my-4" />
+
+			<div className="flex justify-between text-base font-semibold">
+				<span>Total</span>
+				<span>
+					{currency} {total.toLocaleString()}
+				</span>
+			</div>
+
+			<Button className="w-full mt-6 py-3 rounded-full text-base font-medium bg-black hover:bg-gray-700 transition">
+				Checkout
+			</Button>
+		</div>
+	);
 };
+
+export default CartSummary;

@@ -397,7 +397,7 @@ export class CategoriesService {
 
   async findChildrenBySlug(
     slug: string,
-    // language: string = 'fr',
+    language: string = 'fr',
   ) {
     const parentCategory = await this.categoryModel
       .findOne({ slug: slug })
@@ -408,7 +408,7 @@ export class CategoriesService {
       throw new NotFoundException('Catégorie parente non trouvée');
     }
 
-    // return this.findChildrenCategories(parentCategory._id.toString(), language);
+    return this.findChildrenCategories(parentCategory._id.toString(), language);
   }
 
   /**

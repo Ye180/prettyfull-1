@@ -1,53 +1,131 @@
 'use client';
 
-import { CartItemType } from '../../types';
 import Image from 'next/image';
+import { useState } from 'react';
 import { QuantitySelector } from '../molecules/quantity-selector';
-import { EditItems } from '../molecules/edit-items';
-import  client  from '@/shared/lib/client';
+import client from '@/shared/lib/client';
+import { Heart } from '../../../../../../../packages/ui/src/icons/heart.icon';
+import { TrashIcon } from '../../../../../../../packages/ui/src/icons/trash.icon';
+import { useRemoveCartItem } from '../../api/remove-item-from-cart';
 
-// Fonction pour obtenir l'URL de l'image (depuis l'intercepteur client)
+interface CartItem {
+	productId: string;
+	sku: string;
+	image?: string;
+	description?: string;
+	color?: string;
+	size?: string;
+	quantity: number;
+	unitPrice?: { amount: number; currency: string };
+	selectedVariants?: Record<string, string>;
+}
+
 const getImageUrl = (path?: string) => {
-  if (!path) return '/assets/product_1.jpg'; // Image par défaut
-  if (path.startsWith('http')) return path;
-  const baseUrl = client.defaults.baseURL?.replace('/api/v1', '') || ''; 
-  return `${baseUrl}${path}`;
+	if (!path) return '/assets/product_1.jpg';
+	if (path.startsWith('http')) return path;
+	const baseUrl = client.defaults.baseURL?.replace('/api/v1', '') || '';
+	return `${baseUrl}${path}`;
 };
 
-export const CartItems = ({ items }: { items: CartItemType[] }) => {
-  return (
-    <div className="space-y-6">
-      {items.map((item) => (
-        // --- CORRECTIONS MAJEURES ICI ---
-        <div key={item.product._id} className="flex gap-4 p-4 border rounded-md">
-          <Image
-            src={getImageUrl(item.product.mainImageUrl)}
-            alt={item.product.name.fr}
-            width={100}
-            height={120}
-            className="object-cover rounded-md"
-          />
-          <div className="flex-1 flex flex-col justify-between">
-            <div>
-              <h4 className="text-lg font-semibold">{item.product.name.fr}</h4>
-              <p className="text-sm text-gray-500">
-                {/* TODO: Afficher les variantes si elles existent */}
-                {/* {item.color} / {item.size} */}
-              </p>
-              <p className="font-semibold">{item.price} FCFA</p>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <QuantitySelector
-                productId={item.product._id}
-                initialQuantity={item.quantity}
-              />
-              <EditItems productId={item.product._id} />
-            </div>
-          </div>
-        </div>
-        // --- FIN DES CORRECTIONS ---
-      ))}
-    </div>
-  );
+// 🧩 Génère une clé unique par produit + variantes
+const makeUniqueKey = (item: CartItem) =>
+	`${item.productId}-${Object.entries(item.selectedVariants || {})
+		.map(([k, v]) => `${k}-${v}`)
+		.join('-')}`;
+
+const CartItems = ({ items }: { items: CartItem[] }) => {
+	const removeItemMutation = useRemoveCartItem();
+	const [loadingId, setLoadingId] = useState<string | null>(null);
+
+	const handleRemove = async (params: { productId: string; selectedVariants?: Record<string, string> }) => {
+		try {
+			setLoadingId(params.productId);
+			await removeItemMutation.mutateAsync(params);
+		} finally {
+			setLoadingId(null);
+		}
+	};
+
+
+	return (
+		<div className="space-y-12">
+			{items.map((item) => (
+				<div
+					key={makeUniqueKey(item)}
+					className="border-b border-gray-200 pb-10 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-6"
+				>
+					{/* 🖼️ Image du produit */}
+					<div className="flex-shrink-0">
+						<Image
+							src={getImageUrl(item.image)}
+							alt={item.sku}
+							width={150}
+							height={150}
+							className="rounded-md object-cover border border-gray-100"
+						/>
+					</div>
+
+					{/* 🧾 Détails produit */}
+					<div className="flex-1 flex flex-col justify-between">
+						{/* Ligne titre + prix */}
+						<div className="flex justify-between items-start">
+							<h4 className="text-lg font-semibold text-gray-900">
+								{item.sku}
+							</h4>
+							<p className="text-lg font-semibold text-gray-800 whitespace-nowrap">
+  {item.unitPrice?.amount?.toLocaleString()} {item.unitPrice?.currency || 'USD'}
+</p>
+
+						</div>
+
+						{/* Description + variantes */}
+						<p className="text-gray-500 text-sm mt-1">{item.description}</p>
+						<div className="mt-1 text-sm text-gray-500 space-y-0.5">
+							<p>
+								Color : <span className="capitalize">{item.color || '-'}</span>
+							</p>
+							<p>
+								Size : <span>{item.size || '-'}</span>
+							</p>
+						</div>
+
+						{/* Bloc quantité + actions */}
+						<div className="mt-4 flex flex-col items-start gap-3">
+							<QuantitySelector
+								productId={item.productId}
+								initialQuantity={item.quantity}
+								selectedVariants={item.selectedVariants}
+							/>
+
+
+							<div className="flex items-center gap-4">
+								<button className="border rounded-full p-2 hover:bg-gray-100 transition">
+									<Heart size={18} />
+								</button>
+
+								<button
+									onClick={() =>
+										handleRemove({
+											productId: item.productId,
+											selectedVariants: item.selectedVariants,
+										})
+									}
+									disabled={loadingId === item.productId}
+									className={`border rounded-full p-2 transition ${loadingId === item.productId
+										? 'opacity-50 cursor-not-allowed'
+										: 'hover:bg-gray-100'
+										}`}
+								>
+									<TrashIcon size={18} />
+								</button>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			))}
+		</div>
+	);
 };
+
+export default CartItems;

@@ -4,12 +4,14 @@ import { useCallback, useMemo, useState } from "react";
 import { CardProduct, CardProps } from "./card-product";
 import { ProductGallery } from "./components/products/products-galery";
 import ProductInfos, { SizeOption } from "./components/products/products-infos";
+
 import {
 	Drawer,
 	DrawerClose,
 	DrawerContent,
 	DrawerTrigger,
 } from "./components/ui/drawer";
+
 import { Separator } from "./components/ui/separator";
 import { CloseIcon } from "./icons/close.icon";
 

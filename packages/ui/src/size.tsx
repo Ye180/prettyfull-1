@@ -7,17 +7,13 @@ const Size = ({
 	className,
 	classButton,
 	onSizeChange,
-	onclose,
 }: {
 	size: string[];
 	selectSize?: string;
 	className?: string;
 	classButton?: string;
 	onSizeChange?: (size: string) => void;
-	onclose?: (
-		e: React.MouseEvent<HTMLButtonElement>,
-		selectSize: string
-	) => void;
+	// La prop 'onclose' a été supprimée
 }) => {
 	const sizeOptions = [
 		{
@@ -52,21 +48,19 @@ const Size = ({
 
 	const handleClick = (
 		e?: React.MouseEvent<HTMLButtonElement>,
-		size?: string
+		size?: string,
 	) => {
 		e?.stopPropagation();
-
+		// Appelle uniquement onSizeChange
 		onSizeChange && onSizeChange(size as string);
-
-		onclose &&
-			onclose(e as React.MouseEvent<HTMLButtonElement>, size as string);
+		// L'appel à onclose a été supprimé
 	};
 
 	return (
 		<div
 			className={cn(
 				"grid grid-cols-4 gap-y-4 items-center gap-x-5 justify-between  ",
-				className
+				className,
 			)}
 		>
 			{sizeOptions.map((items, i) => (
@@ -83,7 +77,7 @@ const Size = ({
 							? "border-black"
 							: "border-gray-200 hover:border-gray-500",
 
-						classButton
+						classButton,
 					)}
 				>
 					{items.label}

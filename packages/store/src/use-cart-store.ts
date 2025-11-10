@@ -83,11 +83,17 @@ export const useCartStore = create<CartState>((set, get) => ({
   },
 
   // Supprime un article
-  removeItem: (productId) => {
-    set((state) => ({
-      items: state.items.filter((item) => item.product._id !== productId),
-    }));
-  },
+ removeItem: (productId: string) => {
+  set((state) => ({
+    cart: state.cart
+      ? {
+          ...state.cart,
+          items: state.cart.items.filter((i) => i.productId !== productId),
+        }
+      : state.cart,
+  }));
+},
+
 
   // Vide le panier
   clearCart: () => set({ items: [] }),

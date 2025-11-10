@@ -1,6 +1,7 @@
 "use client";
 
-import { CartView } from "@/features/cart/views";
+import CartView from "@/features/cart/views";
+
 
 
 const Cart = () => {
