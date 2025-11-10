@@ -9,6 +9,8 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import type { UserSession } from '@thallesp/nestjs-better-auth';
+import { AllowAnonymous, Roles, Session } from '@thallesp/nestjs-better-auth';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 
@@ -21,6 +23,7 @@ export class CategoriesController {
    * Liste toutes les catégories
    */
   @Get('')
+  @AllowAnonymous()
   async findAll(
     @Headers('accept-language') language: string = 'fr',
     @Query('includeHidden') includeHidden: boolean = false,
@@ -41,6 +44,7 @@ export class CategoriesController {
   }
 
   @Get('/primary-category')
+  @AllowAnonymous()
   async getPrimaryCategory(
     @Headers('accept-language') language: string = 'fr',
   ) {
@@ -48,6 +52,7 @@ export class CategoriesController {
   }
 
   @Get('/secondary-category')
+  @AllowAnonymous()
   async getSecondaryCategory(
     @Headers('accept-language') language: string = 'fr',
   ) {
@@ -59,6 +64,7 @@ export class CategoriesController {
    * Récupère une catégorie par son ID
    */
   @Get(':id')
+  @AllowAnonymous()
   async findOne(
     @Param('id') id: string,
     @Headers('accept-language') language: string = 'fr',
@@ -71,6 +77,7 @@ export class CategoriesController {
    * Récupère les sous-catégories d'une catégorie
    */
   @Get(':id/children')
+  @AllowAnonymous()
   async findChildren(
     @Param('id') id: string,
     @Headers('accept-language') language: string = 'fr',
@@ -83,6 +90,7 @@ export class CategoriesController {
    * Récupère une catégorie par son slug
    */
   @Get('slug/:slug')
+  @AllowAnonymous()
   async findBySlug(
     @Param('slug') slug: string,
     @Headers('accept-language') language: string = 'fr',
@@ -92,6 +100,7 @@ export class CategoriesController {
 
   //GET category
   @Get(':id/products')
+  @AllowAnonymous()
   async getProductOfCategory(
     @Param('id') id: string,
 
@@ -102,6 +111,7 @@ export class CategoriesController {
 
   //Get Prosucts of category by slug
   @Get('slug/:slug/products')
+  @AllowAnonymous()
   async getProductOfCategoryBySlug(
     @Param('slug') slug: string,
     // @Headers('accept-language') language: string = 'fr',
@@ -114,6 +124,7 @@ export class CategoriesController {
    * Récupère une catégorie par son nom
    */
   @Get('name/:name')
+  @AllowAnonymous()
   async findByName(
     @Param('name') name: string,
     @Headers('accept-language') language: string = 'fr',
@@ -123,6 +134,7 @@ export class CategoriesController {
 
   //Get category children by slug
   @Get('slug/:slug/children')
+  @AllowAnonymous()
   async findChildrenBySlug(
     @Param('slug') slug: string,
     // @Headers('accept-language') language: string = 'fr',
@@ -135,11 +147,11 @@ export class CategoriesController {
    * Crée une nouvelle catégorie
    */
   @Post()
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(UserRole.ADMIN)
+  @Roles(['admin'])
   async create(
     @Body() createCategoryDto: CreateCategoryDto,
     @Headers('accept-language') language: string = 'fr',
+    @Session() session: UserSession,
   ) {
     return this.categoriesService.create(createCategoryDto, language);
   }
@@ -149,9 +161,12 @@ export class CategoriesController {
    * Met à jour une catégorie
    */
   @Patch(':id')
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(UserRole.ADMIN)
-  async update(@Param('id') id: string, @Body() updateCategoryDto: any) {
+  @Roles(['admin'])
+  async update(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: any,
+    @Session() session: UserSession,
+  ) {
     return this.categoriesService.update(id, updateCategoryDto);
   }
 
@@ -160,9 +175,8 @@ export class CategoriesController {
    * Supprime une catégorie
    */
   @Delete(':id')
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(UserRole.ADMIN)
-  async remove(@Param('id') id: string) {
+  @Roles(['admin'])
+  async remove(@Param('id') id: string, @Session() session: UserSession) {
     return this.categoriesService.remove(id);
   }
 }

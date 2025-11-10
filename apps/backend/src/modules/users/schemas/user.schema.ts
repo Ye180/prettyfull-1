@@ -26,6 +26,7 @@ export enum Currency {
 }
 
 @Schema({
+  collection: 'user', // Better Auth collection name
   timestamps: true,
   toJSON: {
     transform: function (doc, ret) {
@@ -39,11 +40,11 @@ export class User {
   @Prop({ required: true, unique: true, lowercase: true })
   email: string;
 
-  @Prop({ required: true, minlength: 6 })
-  password: string;
+  @Prop({ required: false }) // Optionnel pour OAuth
+  password?: string;
 
   @Prop({ required: true })
-  firstName: string;
+  name: string; // Better Auth utilise 'name' comme champ principal
 
   @Prop({ required: true })
   lastName: string;
@@ -63,11 +64,11 @@ export class User {
   @Prop({ type: String, enum: Currency, default: Currency.XOF })
   preferredCurrency: Currency;
 
-  @Prop({ type: String, default: "CI" })
+  @Prop({ type: String, default: 'XOF' })
   country: Currency;
 
   @Prop()
-  avatar?: string;
+  image?: string; // Better Auth utilise 'image' au lieu de 'avatar'
 
   @Prop()
   dateOfBirth?: Date;
@@ -91,7 +92,7 @@ export class User {
   lastLoginAt?: Date;
 
   @Prop({ default: false })
-  isEmailVerified: boolean;
+  emailVerified: boolean; // Better Auth utilise 'emailVerified'
 
   @Prop()
   emailVerificationToken?: string;
@@ -101,19 +102,36 @@ export class User {
 
   @Prop()
   passwordResetExpires?: Date;
+
+  // Champs additionnels Better Auth (optionnel)
+  @Prop()
+  twoFactorEnabled?: boolean;
+
+  @Prop()
+  twoFactorSecret?: string;
+
+  @Prop()
+  banned?: boolean;
+
+  @Prop()
+  banReason?: string;
+
+  @Prop()
+  banExpiresAt?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
 // Hook pre-save pour hasher le mot de passe
 UserSchema.pre<UserDocument>('save', async function (next) {
-  // Ne hashe que si le mot de passe a été modifié
-  if (!this.isModified('password')) return next();
+  // Ne hashe que si le mot de passe a été modifié ou si pas de mot de passe (OAuth)
+  if (!this.isModified('password') || !this.password) return next();
 
   try {
     // Hash le mot de passe avec un salt de 12
     const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+    this.password = hashedPassword;
     next();
   } catch (error) {
     next(error as Error);
@@ -124,5 +142,6 @@ UserSchema.pre<UserDocument>('save', async function (next) {
 UserSchema.methods.comparePassword = async function (
   candidatePassword: string,
 ): Promise<boolean> {
+  if (!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
 };

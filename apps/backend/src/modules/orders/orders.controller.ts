@@ -7,14 +7,11 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 
+import type { UserSession } from '@thallesp/nestjs-better-auth';
+import { AllowAnonymous, Roles, Session } from '@thallesp/nestjs-better-auth';
 import { PaymentStatus } from 'src/shared/schemas/payment.schema';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { UserRole } from '../users/schemas/user.schema';
 // import type { CreateOrderDto } from './orders.service';
 import { OrdersService } from './orders.service';
 import { OrderStatus } from './schemas/orders.schema';
@@ -28,14 +25,12 @@ export class OrdersController {
    * Crée une nouvelle commande
    */
   @Post()
-  @UseGuards(JwtAuthGuard)
-  //CHAN
-  async create(@Body() createOrderDto) {
+  async create(@Body() createOrderDto, @Session() session: UserSession) {
     return this.ordersService.createOrder(createOrderDto);
   }
 
   @Get()
-  // @UseGuards(JwtAuthGuard)
+  @AllowAnonymous()
   async findAll() {
     return this.ordersService.findAll();
   }
@@ -44,12 +39,12 @@ export class OrdersController {
    * GET /orders - Authenticated
    * Liste les commandes de l'utilisateur
    */
-  @Get()
-  // @UseGuards(JwtAuthGuard)
+  @Get('user')
   async findUserOrders(
     @Query('userId') userId: string,
     @Query('page', ParseIntPipe) page: number = 1,
     @Query('limit', ParseIntPipe) limit: number = 10,
+    @Session() session: UserSession,
   ) {
     return this.ordersService.findUserOrders(userId, page, limit);
   }
@@ -59,13 +54,13 @@ export class OrdersController {
    * Récupère une commande par son ID
    */
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @Session() session: UserSession) {
     return this.ordersService.findOne(id);
   }
 
   /*Get Customer list*/
   @Get('customer/list')
+  @AllowAnonymous()
   async getCustomerList() {
     return this.ordersService.getCustomerList();
   }
@@ -75,11 +70,11 @@ export class OrdersController {
    * Met à jour le statut d'une commande
    */
   @Patch(':id/status')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(['admin'])
   async updateStatus(
     @Param('id') id: string,
     @Body('status') status: OrderStatus,
+    @Session() session: UserSession,
   ) {
     return this.ordersService.updateStatus(id, status);
   }
@@ -89,11 +84,11 @@ export class OrdersController {
    * Met à jour le statut de paiement
    */
   @Patch(':id/payment-status')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(['admin'])
   async updatePaymentStatus(
     @Param('id') id: string,
     @Body('paymentStatus') paymentStatus: PaymentStatus,
+    @Session() session: UserSession,
   ) {
     return this.ordersService.updatePaymentStatus(id, paymentStatus);
   }
@@ -103,8 +98,11 @@ export class OrdersController {
    * Annule une commande
    */
   @Post(':id/cancel')
-  @UseGuards(JwtAuthGuard)
-  async cancelOrder(@Param('id') id: string, @Body('reason') reason: string) {
+  async cancelOrder(
+    @Param('id') id: string,
+    @Body('reason') reason: string,
+    @Session() session: UserSession,
+  ) {
     return this.ordersService.cancelOrder(id, reason);
   }
 }

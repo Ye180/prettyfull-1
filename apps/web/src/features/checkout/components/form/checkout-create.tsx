@@ -1,150 +1,158 @@
+"use client";
+
 import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-	Input,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
 } from "@prettyfull/ui";
-import { cn } from "@prettyfull/utils";
-import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import InputSelect from "../../../../../../../packages/ui/src/input-select";
+import { cn } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 
-const CreateCheckoutForm = () => {
-	const form = useForm();
+interface CheckoutFormValues {
+  method: string;
+  address: string;
+  name: string;
+  postCode: string;
+  city: string;
+  region: string;
+  country: string;
+}
 
-	const t = useTranslations("CheckoutPage.checkoutForm");
+const CreateCheckoutForm = ({ onFormChange }: { onFormChange?: (valid: boolean) => void }) => {
+  const t = useTranslations("CheckoutPage.checkoutForm");
 
-	const tsave = useTranslations("CheckoutPage.infosCheckout");
+  const form = useForm<CheckoutFormValues>({
+    mode: "onChange",
+    defaultValues: {
+      method: "",
+      address: "",
+      name: "",
+      postCode: "",
+      city: "",
+      region: "",
+      country: "",
+    },
+  });
 
-	const classNameSelect = cn(
-		" !text-[1.7rem] py-2 hover:bg-gray-100 cursor-pointer"
-	);
+  // 🔁 Dès que le form change, on prévient le parent (CheckoutForm)
+  const isValid = form.formState.isValid;
+  if (onFormChange) onFormChange(isValid);
 
-	return (
-		<div>
-			<Form {...form}>
-				<div className="space-y-15 ">
-					<InputSelect
-						label={t("placeholderMethod")}
-						placeholder={t("placeholderMethod")}
-						classNameSelect={classNameSelect}
-						items={["Rapide", "Expedition", "Dans 3 jours"]}
-					/>
+  const classNameSelect = cn("!text-[1.7rem] py-2 hover:bg-gray-100 cursor-pointer");
 
-					<FormField
-						control={form.control}
-						name="adress"
-						render={() => (
-							<FormItem>
-								<FormLabel>{t("labelAddress")} </FormLabel>
-								<FormControl>
-									<Input placeholder={t("placeholderNumber")} />
-								</FormControl>
+  return (
+    <Form {...form}>
+      <div className="space-y-10">
+        <InputSelect
+          label={t("placeholderMethod")}
+          placeholder={t("placeholderMethod")}
+          classNameSelect={classNameSelect}
+          items={["Rapide", "Expédition", "Dans 3 jours"]}
+          onChange={(value: string) => form.setValue("method", value, { shouldValidate: true })}
+        />
 
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+        <FormField
+          control={form.control}
+          name="name"
+          rules={{ required: "Nom requis" }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("labelName")}</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder={t("placeholderLastName")} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-					<FormField
-						control={form.control}
-						name="name"
-						render={() => (
-							<FormItem>
-								<FormControl>
-									<Input label="" placeholder={t("placeholderLastName")} />
-								</FormControl>
+        <FormField
+          control={form.control}
+          name="address"
+          rules={{ required: "Adresse requise" }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("labelAddress")}</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder={t("placeholderAddress")} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="postCode"
+            rules={{ required: "Code postal requis" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("labelPostCode")}</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder={t("placeholderPostCode")} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-					<FormField
-						control={form.control}
-						name="adress"
-						render={() => (
-							<FormItem>
-								<FormControl>
-									<Input label="" placeholder={t("placeholderAddress")} />
-								</FormControl>
+          <FormField
+            control={form.control}
+            name="city"
+            rules={{ required: "Ville requise" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("labelCity")}</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder={t("placeholderCity")} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-								<FormDescription>{t("description")}</FormDescription>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="region"
+            rules={{ required: "Région requise" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("labelState")}</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder={t("placeholderState")} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-						<FormField
-							control={form.control}
-							name="postCode"
-							render={() => (
-								<FormItem>
-									<FormLabel>{t("labelPostCode")} </FormLabel>
-									<FormControl>
-										<Input label="" placeholder={t("placeholderPostCode")} />
-									</FormControl>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={form.control}
-							name="labelCity"
-							render={() => (
-								<FormItem>
-									<FormLabel>{t("labelCity")} </FormLabel>
-									<FormControl>
-										<Input label="" placeholder={t("placeholderCity")} />
-									</FormControl>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-					</div>
-					<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-						<FormField
-							control={form.control}
-							name="labelState"
-							render={() => (
-								<FormItem>
-									<FormLabel>{t("labelState")} </FormLabel>
-									<FormControl>
-										<Input label="" placeholder={t("placeholderState")} />
-									</FormControl>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={form.control}
-							name="labelCity"
-							render={() => (
-								<FormItem>
-									<FormLabel>{t("labelCountry")} </FormLabel>
-									<FormControl>
-										<Input label="" placeholder={t("placeholderCountry")} />
-									</FormControl>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-					</div>
-				</div>
-			</Form>
-		</div>
-	);
+          <FormField
+            control={form.control}
+            name="country"
+            rules={{ required: "Pays requis" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("labelCountry")}</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder={t("placeholderCountry")} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+    </Form>
+  );
 };
 
 export default CreateCheckoutForm;

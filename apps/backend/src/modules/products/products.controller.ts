@@ -10,6 +10,8 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import type { UserSession } from '@thallesp/nestjs-better-auth';
+import { AllowAnonymous, Roles, Session } from '@thallesp/nestjs-better-auth';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
@@ -23,6 +25,7 @@ export class ProductsController {
    * Liste tous les produits avec pagination
    */
   @Get()
+  @AllowAnonymous()
   async findAll(
     @Query('page', ParseIntPipe) page: number = 1,
     @Query('limit', ParseIntPipe) limit: number = 10,
@@ -36,6 +39,7 @@ export class ProductsController {
    * Récupère un produit par son ID
    */
   @Get(':id')
+  @AllowAnonymous()
   async findOne(
     @Param('id') id: string,
     @Headers('accept-language') language: string = 'fr',
@@ -44,6 +48,7 @@ export class ProductsController {
   }
 
   @Get('slugname/:slug')
+  @AllowAnonymous()
   async findOneBySlug(
     @Param('slug') slug: string,
     @Headers('accept-language') language: string = 'fr',
@@ -56,9 +61,11 @@ export class ProductsController {
    * Crée un nouveau produit
    */
   @Post()
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // // @Roles(UserRole.ADMIN)
-  async create(@Body() createProductDto: CreateProductDto) {
+  @Roles(['admin'])
+  async create(
+    @Body() createProductDto: CreateProductDto,
+    @Session() session: UserSession,
+  ) {
     return this.productsService.create(createProductDto);
   }
 
@@ -67,11 +74,11 @@ export class ProductsController {
    * Met à jour un produit
    */
   @Patch(':id')
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(UserRole.ADMIN)
+  @Roles(['admin'])
   async update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
+    @Session() session: UserSession,
   ) {
     return this.productsService.update(id, updateProductDto);
   }
@@ -81,9 +88,8 @@ export class ProductsController {
    * Supprime un produit (soft delete)
    */
   @Delete(':id')
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(UserRole.ADMIN)
-  async remove(@Param('id') id: string) {
+  @Roles(['admin'])
+  async remove(@Param('id') id: string, @Session() session: UserSession) {
     return this.productsService.remove(id);
   }
 }

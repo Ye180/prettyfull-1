@@ -1,47 +1,104 @@
-import { Skeleton } from "@prettyfull/ui";
+import { LogoutButton } from "@/features/auth/components/logout-button";
+import { getServerSession, type ExtendedUser } from "@/shared/lib/auth.server";
+import { redirect } from "next/navigation";
 
-const ProductLoading = () => (
-	<div>
-		<div className="flex flex-col space-y-3">
-			<Skeleton className="sm:h-[355px] w-[200px] h-[250px] sm:w-[300px] rounded-none" />
-			<div className="space-y-2">
-				<Skeleton className="h-9 w-[150px] sm:w-[250px] rounded-none" />
-				<Skeleton className="h-9 w-[100px] sm:w-[200px] rounded-none" />
-			</div>
-		</div>
-	</div>
-);
+const Account = async () => {
+  // Get session from server
+  const session = await getServerSession();
 
-const ProductResultLoading = () => (
-	<div className="flex space-y-2 gap-x-8">
-		<Skeleton className="h-[500px] w-1/4  rounded-none" />
-		<div className="w-1/4 space-y-2">
-			<Skeleton className="w-3/4 h-[100px] rounded-none" />
-			<Skeleton className="w-1/2 h-[150px] rounded-none" />
-		</div>
-	</div>
-);
+  // If no session, redirect to login (this is a backup, middleware should catch this)
+  if (!session?.user) {
+    redirect("/login");
+  }
 
-const ReviewLoading = () => (
-	<div className="flex items-center space-x-4">
-		<Skeleton className="w-24 h-24 rounded-full" />
-		<div className="space-y-3">
-			<Skeleton className="h-10 w-[350px]" />
-			<Skeleton className="h-10 w-[300px]" />
-		</div>
-	</div>
-);
+  const user: ExtendedUser = session.user;
 
-const Account = () => {
-	return (
-		<div className="p-4 space-y-8">
-			<ProductLoading />
+  return (
+    <div className="p-8 max-w-4xl mx-auto space-y-8">
+      <div className="space-y-4">
+        <h1 className="text-3xl font-bold">Mon Compte</h1>
+        <p className="text-muted-foreground">
+          Bienvenue sur votre espace personnel
+        </p>
+      </div>
 
-			<ProductResultLoading />
+      {/* User Info Section */}
+      <div className="bg-white p-6 rounded-lg shadow-sm border space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">Informations personnelles</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-medium text-muted-foreground">
+              Prénom
+            </label>
+            <p className="text-base">{user.name || "Non renseigné"}</p>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-muted-foreground">
+              Nom
+            </label>
+            <p className="text-base">{user.lastName || "Non renseigné"}</p>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-muted-foreground">
+              Email
+            </label>
+            <p className="text-base">{user.email}</p>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-muted-foreground">
+              Téléphone
+            </label>
+            <p className="text-base">{user.phone || "Non renseigné"}</p>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-muted-foreground">
+              Langue préférée
+            </label>
+            <p className="text-base">{user.preferredLanguage || "fr"}</p>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-muted-foreground">
+              Devise préférée
+            </label>
+            <p className="text-base">{user.preferredCurrency || "XOF"}</p>
+          </div>
+        </div>
+      </div>
 
-			<ReviewLoading />
-		</div>
-	);
+      {/* Account Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <h3 className="text-sm font-medium text-muted-foreground">Rôle</h3>
+          <p className="text-2xl font-semibold mt-2 capitalize">
+            {user.role || "user"}
+          </p>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <h3 className="text-sm font-medium text-muted-foreground">Statut</h3>
+          <p className="text-2xl font-semibold mt-2 capitalize">
+            {user.status || "active"}
+          </p>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <h3 className="text-sm font-medium text-muted-foreground">
+            Dernière connexion
+          </h3>
+          <p className="text-base mt-2">
+            {user.lastLoginAt
+              ? new Date(user.lastLoginAt).toLocaleDateString("fr-FR")
+              : "Inconnue"}
+          </p>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex justify-end">
+        <LogoutButton />
+      </div>
+    </div>
+  );
 };
 
 export default Account;

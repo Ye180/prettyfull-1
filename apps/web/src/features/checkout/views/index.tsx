@@ -27,7 +27,8 @@ const CheckoutView = () => {
 				<CheckoutForm />
 			</div>
 			<div className="w-full py-12 sm:w-1/3 ">
-				<CheckoutSummary summary={summary} />
+				{/* <CheckoutSummary summary={summary} /> */}
+				<CheckoutSummary />
 			</div>
 		</Container>
 	);

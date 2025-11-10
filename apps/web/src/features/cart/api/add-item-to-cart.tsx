@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 import client from "@/shared/lib/client";
 import { CART_QUERY_KEY } from "@/shared/utils/query-keys";
-import { useUserId } from "@/hooks/useUserId"; // <-- 1. IMPORTER LE NOUVEAU HOOK
+import { useUserId } from "@/hooks/useUserId";
 import { useCartStore } from "../../../../../../packages/store/src/use-cart-store";
 
 interface AddItemDto {
@@ -14,30 +14,37 @@ interface AddItemDto {
 	selectedVariants?: Record<string, string>;
 }
 
-// 2. SUPPRIMER 'useAuth', 'GUEST_ID_STORAGE_KEY' et la fonction 'getUserId' locale
-
 export const useAddItemToCart = (): UseMutationResult<
 	any,
 	Error,
 	AddItemDto
 > => {
 	const queryClient = useQueryClient();
-	const { setCart } = useCartStore();
-	const userId = useUserId(); // <-- 3. UTILISER LE NOUVEAU HOOK
+  // On n'a plus besoin de setCart ici car l'invalidation s'en occupe
+	// const { setCart } = useCartStore(); 
+	const userId = useUserId();
 
 	return useMutation({
 		mutationFn: async (itemDto: AddItemDto) => {
-			if (!userId) throw new Error("User ID not available"); // Sécurité
+			if (!userId) throw new Error("User ID not available");
 
 			const { data } = await client.post(`/carts/${userId}/items`, itemDto);
-			return data;
+			return data; // 'data' sera maintenant juste { success: true }
 		},
 
 		onSuccess: (data: any) => {
-			if (data && data.items) {
+      // ⬇️⬇️⬇️ MODIFICATION ⬇️⬇️⬇️
+      // Le backend ne renvoie plus le panier, donc on supprime cette logique
+      // qui essayait de mettre à jour le store manuellement.
+			/*
+      if (data && data.items) {
 				setCart(data.items);
 			}
-			// Invalider la query avec la clé exacte
+      */
+      
+			// On se contente d'invalider la query.
+      // React Query va appeler 'get-cart-by-userid.tsx' automatiquement
+      // pour rafraîchir le panier.
 			queryClient.invalidateQueries({ queryKey: [CART_QUERY_KEY, userId] });
 		},
 	});

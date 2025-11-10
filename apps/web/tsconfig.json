@@ -1,27 +1,30 @@
 {
-	"extends": "@prettyfull/typescript-config/nextjs.json",
-	"compilerOptions": {
-		"plugins": [
-			{
-				"name": "next"
-			}
-		],
-		"paths": {
-			"@/*": ["./src/*"],
-			"@prettyfull/ui": ["../../packages/ui/src"],
-			"@prettyfull/tailwind-config": [
-				"../../packages/tailwind-config/shared.styles.css"
-			]
-		}
-	},
-	"include": [
-		"next-env.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		".next/types/**/*.ts",
-		"../../packages/ui/src/*",
-		"../../packages/ui/src/layouts",
-		"src/lib/utils/local-storage.ts"
-	],
-	"exclude": ["node_modules"]
+  "extends": "@prettyfull/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "declaration": false,
+    "declarationMap": false,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@prettyfull/ui": ["../../packages/ui/src"],
+      "@prettyfull/tailwind-config": [
+        "../../packages/tailwind-config/shared.styles.css"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "../../packages/ui/src/*",
+    "../../packages/ui/src/layouts",
+    "src/lib/utils/local-storage.ts"
+  ],
+  "exclude": ["node_modules"]
 }

@@ -8,7 +8,10 @@ import { swaggerSetup } from './shared/config/swagger.config';
 import { API_VERSION, APP_DESCRIPTION, APP_NAME } from './shared/constants';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // Disable body parser for Better Auth to handle raw request body
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: false,
+  });
   const configService = app.get(ConfigService);
 
   // Security middlewares
@@ -16,22 +19,21 @@ async function bootstrap() {
 
   app.use(compression());
 
-  const allowedOrigins = configService
-    .get<string>('CORS_ORIGIN', 'http://localhost:3000')
-    .split(',')
-    .map((origin) => origin.trim());
-  // CORS configuration
-  app.enableCors({
-    origin: allowedOrigins,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'Accept-Language',
-      'Accept-Currency',
-    ],
-    credentials: true,
-  });
+  // const allowedOrigins = configService
+  //   .get<string>('CORS_ORIGIN', 'http://localhost:3000')
+  //   .split(',')
+  //   .map((origin) => origin.trim());
+  // // CORS configuration
+  // app.enableCors({
+  //   origin: allowedOrigins,
+  //   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  //   allowedHeaders: [
+  //     'Content-Type',
+  //     'Authorization',
+  //     'Accept-Language',
+  //     'Accept-Currency',
+  //   ],
+  // });
 
   // Global validation pipe
   app.useGlobalPipes(
