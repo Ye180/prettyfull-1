@@ -6,45 +6,31 @@ const GridWishlistLayout = () => {
 		<div className="w-full h-full rounded-md pb-44 ">
 			<GridCardProduct>
 				<>
-					{Array.from({ length: 15 }).map((_, i) => (
-						<div key={i} className="w-full aspect-10/9">
-							<CardProduct
-								variable={[
-									{
-										color: {
-											label: "Rouge",
-											code: "#FF0000",
-										},
-										size: ["S", "M", "L"],
-										image: ["/assets/product5.webp", "/assets/product_2.webp"],
-										quantity: 1,
-									},
-									{
-										color: {
-											label: "Vert",
-											code: "#00FF00",
-										},
-										size: ["S", "M", "L"],
-										image: ["/assets/product_2.webp", "image4.jpg"],
-										quantity: 1,
-									},
-								]}
-								price={
-									{ amount: 12000, currency: "USD" } /* Example price object */
-								}
-								promotion={{
-									pourcentage: 50,
-									reduced_price: {
-										amount: 6000,
-										currency: "USD",
-									},
-								}}
-								smallDescription="Top polyvalente á Manche"
-								name="Sweet-Top"
-								link={PRODUCT_PATHS.productDetail("SWEET-TOP")}
-							/>
-						</div>
-					))}
+					{Array.from({ length: 15 }).map((_, i) => {
+  const product = {
+    id: `product-${i}`,
+    name: `Produit ${i + 1}`,
+    price: { amount: 10000 + i * 500, currency: "FCFA" },
+    variable: [],
+    promotion: undefined,
+    smallDescription: "Description rapide",
+    link: `/produit/${i}`,
+  };
+  return (
+    <div key={product.id} className="w-full aspect-10/9">
+      <CardProduct
+        productId={product.id}
+        variable={product.variable}
+        price={product.price}
+        promotion={product.promotion}
+        smallDescription={product.smallDescription}
+        name={product.name}
+        link={product.link}
+      />
+    </div>
+  );
+})}
+
 				</>
 			</GridCardProduct>
 		</div>

@@ -26,10 +26,18 @@ const DropdownContentCart = () => {
   
   // ⬅️ 2. RÉCUPÉRER L'ÉTAT DE L'UTILISATEUR
   const { isAuthenticated, isLoading } = useAuth(); 
+const total = items.reduce(
+  (acc, item) => acc + (item.unitPrice?.amount || 0) * item.quantity,
+  0
+);
 
   const subtotal = useMemo(() => {
     return items
-      .reduce((acc, item) => acc + (item.price * item.quantity), 0)
+      .reduce(
+  (acc, item) =>
+    acc + ((item.unitPrice?.amount ?? 0) * (item.quantity ?? 0)),
+  0
+)
       .toFixed(2);
   }, [items]);
 
@@ -66,23 +74,31 @@ const DropdownContentCart = () => {
         <>
           <ScrollArea className="h-[200px] w-full pr-4">
             <div className="flex flex-col gap-4">
-              {items.map((item) => (
-                <div key={item.product._id} className="flex gap-4">
-                  <Image
-                    src={getImageUrl(item.product.mainImageUrl)}
-                    alt={item.product.name.fr}
-                    width={64}
-                    height={64}
-                    className="object-cover rounded-md"
-                  />
-                  <div className="flex flex-col">
-                    <p className="font-semibold">{item.product.name.fr}</p>
-                    <p className="text-sm text-gray-500">
-                      {item.quantity} x {item.price} FCFA
-                    </p>
-                  </div>
-                </div>
-              ))}
+            
+
+ {items.map((item) => (
+  <div key={item.product.id} className="flex gap-4">
+    <img
+      src={item.product.image || "/placeholder.jpg"}
+      alt={
+        typeof item.product.name === "string"
+          ? item.product.name
+          : (item.product.name as any)?.fr ?? ""
+      }
+      className="w-16 h-16 object-cover"
+    />
+    <div>
+      <p className="font-semibold">
+        {typeof item.product.name === "string"
+          ? item.product.name
+          : (item.product.name as any)?.fr ?? ""}
+      </p>
+      <p>
+        {item.quantity} x {item.unitPrice?.amount} {item.unitPrice?.currency}
+      </p>
+    </div>
+  </div>
+))}
             </div>
           </ScrollArea>
 

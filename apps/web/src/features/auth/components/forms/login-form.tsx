@@ -12,7 +12,7 @@ import { useRouter, useSearchParams } from "next/navigation"; // 1. Importer use
 import { useForm } from "react-hook-form";
 import Flex from "../../../../../../../packages/ui/src/layouts/helpers/flex";
 import { loginSchema, type LoginFormData } from "../../schemas/login.schema";
-import { useCartStore } from "@/stores/useCart"; // 2. Importer le store (nom corrigé)
+import { useCartStore } from "../../../../../../../packages/store/src/use-cart-store";
 
 export function LoginForm() {
   const router = useRouter();
@@ -40,7 +40,7 @@ export function LoginForm() {
     const { error } = await signIn.email({
       email: data.email,
       password: data.password,
-      guestCartId: currentCartId, // Ajout de l'ID du panier
+      // guestCartId: currentCartId, // Ajout de l'ID du panier
     });
 
     if (error) {

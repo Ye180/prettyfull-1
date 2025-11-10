@@ -1,11 +1,20 @@
-import { create } from "zustand";
+import { useCartStore } from "../../../../packages/store/src/use-cart-store";
 
-type NavigationState = {
-	currentCartId: string | null;
-	setCurrentCartId: (id: string | null) => void;
+export const useCart = () => {
+  const { items, setCart, addItem, removeItem, clearCart } = useCartStore();
+
+  const total = items.reduce(
+    (acc, item) =>
+      acc + (item.unitPrice?.amount ?? item.product.price ?? 0) * item.quantity,
+    0
+  );
+
+  return {
+    items,
+    total,
+    setCart,
+    addItem,
+    removeItem,
+    clearCart,
+  };
 };
-
-export const useCartStore = create((set) => ({
-	currentCartId: null, // Assurez-vous que cet ID est défini et persisté (ex: localStorage)
-	setCurrentCartId: (id: string | null) => set({ currentCartId: id }),
-}));

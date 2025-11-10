@@ -15,7 +15,8 @@ interface ColorOption {
 }
 
 interface ProductOptionsProps {
-	sizes?: SizeOption[];
+	  classButton?: string; 
+	 sizes?: (string | SizeOption)[];
 	colors?: ColorOption[];
 	variable?: {
 		color: { label: string; code: string };
@@ -71,7 +72,7 @@ export function ProductOptions({
 						size={sizes as []}
 						className=""
 						classButton=""
-						onclose={handleClick}
+						onClose={handleClick}
 					/>
 				</div>
 			</div>

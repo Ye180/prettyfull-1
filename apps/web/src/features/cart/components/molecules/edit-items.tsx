@@ -18,7 +18,8 @@ export const EditItems = ({ productId }: Props) => {
 
   const handleRemove = () => {
     if (window.confirm('Supprimer cet article du panier ?')) {
-      removeMutation.mutate(productId);
+	  removeMutation.mutate({ productId });
+
     }
   };
 
