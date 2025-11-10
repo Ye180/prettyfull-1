@@ -3,7 +3,12 @@ import apiClient from "@/shared/lib/client";
 import { useMutation } from "@tanstack/react-query";
 
 export const create = async (data) => {
-	const response = await apiClient.post(API_ROUTES.categories.create, data);
+	const response = await apiClient.post(API_ROUTES.categories.create, data, {
+		headers: {
+			"Content-Type": "multipart/form-data",
+		},
+	});
+
 	return response?.data;
 };
 

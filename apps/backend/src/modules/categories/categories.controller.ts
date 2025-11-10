@@ -8,7 +8,10 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import type { UserSession } from '@thallesp/nestjs-better-auth';
 import { AllowAnonymous, Roles, Session } from '@thallesp/nestjs-better-auth';
 import { CategoriesService } from './categories.service';
@@ -147,13 +150,18 @@ export class CategoriesController {
    * Crée une nouvelle catégorie
    */
   @Post()
-  @Roles(['admin'])
+  @AllowAnonymous()
+  // @Roles(['admin'])
+  @UseInterceptors(FileInterceptor('image'))
   async create(
     @Body() createCategoryDto: CreateCategoryDto,
+    @UploadedFile() image: Express.Multer.File,
     @Headers('accept-language') language: string = 'fr',
-    @Session() session: UserSession,
+    // @Session() session: UserSession,
   ) {
-    return this.categoriesService.create(createCategoryDto, language);
+    console.log('Creating category with data:', createCategoryDto.image);
+
+    return this.categoriesService.create(createCategoryDto, language, image);
   }
 
   /**

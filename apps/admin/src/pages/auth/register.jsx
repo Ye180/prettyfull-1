@@ -17,31 +17,31 @@ const Register = () => {
 				title="Shotify - Register"
 				description="Shotify - Register Desc"
 			>
-				<section className="relative bg-Msurfacesurfacesecondary w-full md:min-h-screen min-h-dvh flex items-center justify-center py-16">
+				<section className="relative flex items-center justify-center w-full py-16 bg-Msurfacesurfacesecondary md:min-h-screen min-h-dvh">
 					<Container>
 						<Row className="justify-center">
 							<Col md={5}>
 								<div className="bg-white p-4 rounded-xl border border-Mborderborderprimary shadow-[0px_4px_6px_-2px_rgba(16,24,40,0.03)]">
 									<div className="mb-10 text-center">
-										<h4 className="font-semibold text__24">
-											Let’s get started
+										<h4 className="font-bold text__32 font-BebasNeue">
+											PRETTYFULL
 										</h4>
 										<p className="text__16 text-Mtexttextsecondary">
-											Begin by creating an account
+											Commencez par créer votre compte gratuit
 										</p>
 									</div>
 
-									<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+									<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 										<Form.Group
 											className="mb-3"
 											controlId="exampleForm.ControlInput1"
 										>
 											<Form.Label className="font-normal text__14 text-[#A3A3A3]">
-												First Name
+												Prenom
 											</Form.Label>
 											<Form.Control
 												type="text"
-												placeholder="Enter First Name"
+												placeholder="Entrer votre prénom"
 												className="font-medium text__14 bg-transparent h-[54px] rounded-lg px-3 outline-hidden shadow-none focus:outline-hidden focus:shadow-none border-Mborderborderprimary focus:border-Mborderborderprimary focus:bg-transparent"
 											/>
 										</Form.Group>
@@ -50,11 +50,11 @@ const Register = () => {
 											controlId="exampleForm.ControlInput1"
 										>
 											<Form.Label className="font-normal text__14 text-[#A3A3A3]">
-												Last Name
+												Nom
 											</Form.Label>
 											<Form.Control
 												type="text"
-												placeholder="Last Name"
+												placeholder="Entrer votre nom"
 												className="font-medium text__14 bg-transparent h-[54px] rounded-lg px-3 outline-hidden shadow-none focus:outline-hidden focus:shadow-none border-Mborderborderprimary focus:border-Mborderborderprimary focus:bg-transparent"
 											/>
 										</Form.Group>
@@ -69,7 +69,7 @@ const Register = () => {
 										</Form.Label>
 										<Form.Control
 											type="email"
-											placeholder="Enter email"
+											placeholder="Entrer email"
 											className="font-medium text__14 bg-transparent h-[54px] rounded-lg px-3 outline-hidden shadow-none focus:outline-hidden focus:shadow-none border-Mborderborderprimary focus:border-Mborderborderprimary focus:bg-transparent"
 										/>
 									</Form.Group>
@@ -83,13 +83,13 @@ const Register = () => {
 										<div className="relative">
 											<Form.Control
 												type={tooglePassword ? "password" : "text"}
-												placeholder="Enter your password"
+												placeholder="Entrer votre mot de passe"
 												className="font-medium text__14 bg-transparent h-[54px] rounded-lg px-3 outline-hidden shadow-none focus:outline-hidden focus:shadow-none border-Mborderborderprimary focus:border-Mborderborderprimary focus:bg-transparent"
 											/>
 											<img
 												onClick={() => settooglePassword(!tooglePassword)}
 												src={originalUrl + "/images/eye-slash.svg"}
-												className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-4"
+												className="absolute -translate-y-1/2 cursor-pointer top-1/2 right-4"
 												alt=""
 											/>
 										</div>
@@ -117,9 +117,9 @@ const Register = () => {
 												/>
 											</div>
 											<span className="text__16 text-Mtexttextsecondary">
-												I agree to{" "}
+												Je suis en accord avec{" "}
 												<a href="#!" className="text-Mtexttextbrand">
-													privacy policy & term
+													la politique de confidentialité et les conditions
 												</a>
 											</span>
 										</div>
@@ -130,21 +130,21 @@ const Register = () => {
 											href="/auth/verification"
 											className="rounded-xl inline-block text-center font-medium text__16 text-white py-[15px]! bg-black border-Mmbg-Mmaincolorgreen btnClass w-full cursor-pointer"
 										>
-											Sign Up
+											Inscription
 										</Link>
 
-										<div className="text-center my-4">
-											<p className="text__16 font-medium text-Mtexttextsecondary">
-												Already have an account?{" "}
+										<div className="my-4 text-center">
+											<p className="font-medium text__16 text-Mtexttextsecondary">
+												J'ai deja un compte ?{" "}
 												<Link class="text-Mmaincolorgreen " href="/auth/login">
-													Sign In
+													Se connecter
 												</Link>
 											</p>
 										</div>
 
-										<div className="my-3 relative">
-											<div className="absolute h-px left-0 w-full top-1/2 -translate-y-1/2 bg-Mborderborderprimary"></div>
-											<div className="px-4 py-2 bg-white inline-block text__14  text-Mtexttextinvert relative z-2">
+										{/* <div className="relative my-3">
+											<div className="absolute left-0 w-full h-px -translate-y-1/2 top-1/2 bg-Mborderborderprimary"></div>
+											<div className="relative inline-block px-4 py-2 bg-white text__14 text-Mtexttextinvert z-2">
 												Or Sign Up with
 											</div>
 										</div>
@@ -160,7 +160,7 @@ const Register = () => {
 														className=""
 														alt=""
 													/>
-													<div className="relative z-2 font-medium text__16">
+													<div className="relative font-medium z-2 text__16">
 														Google
 													</div>
 												</div>
@@ -175,12 +175,12 @@ const Register = () => {
 														className=""
 														alt=""
 													/>
-													<div className="relative z-2 font-medium text__16">
+													<div className="relative font-medium z-2 text__16">
 														Facebook
 													</div>
 												</div>
 											</a>
-										</div>
+										</div> */}
 									</div>
 								</div>
 							</Col>

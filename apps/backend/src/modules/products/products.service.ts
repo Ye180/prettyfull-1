@@ -11,11 +11,13 @@ import {
   FormatResponse,
   formatResponse,
 } from 'src/shared/utils/format-response';
-import { CreateProductDto } from './dto/create-product.dto';
+import { StorageService } from '../storage';
+import { CreateProductDto, VariantsProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductDocument } from './schemas/product.schema';
 
 interface ProductVariant {
+  id: string;
   color: { label: string; code: string };
   size: string[];
   image: string[];
@@ -29,13 +31,8 @@ export interface TransformedProduct {
   description: { fr: string; en: string };
   category?: string;
   link?: string;
-  variable?: ProductVariant[];
-  notVariable?: {
-    color?: { label: string; code: string };
-    size: string[];
-    image: string[];
-    quantity?: number;
-  };
+  variants: ProductVariant[];
+
   smallDescription?: string;
   slug: string;
   sku: string;
@@ -87,6 +84,7 @@ export class ProductsService {
   constructor(
     @InjectModel(Product.name)
     private productModel: Model<ProductDocument>,
+    private readonly storageService: StorageService,
   ) {}
 
   /**
@@ -188,7 +186,10 @@ export class ProductsService {
   /**
    * Crée un nouveau produit
    */
-  async create(createProductDto: CreateProductDto): Promise<ProductDocument> {
+  async create(
+    createProductDto: CreateProductDto,
+    image?: Express.Multer.File[],
+  ): Promise<ProductDocument> {
     const product = new this.productModel({
       ...createProductDto,
       category: createProductDto.categoryId,
@@ -325,8 +326,8 @@ export class ProductsService {
 
     if (selectedVariants && Object.keys(selectedVariants).length > 0) {
       // Décrémentation pour un produit avec variantes
-      const variantIndex = (productData as ProductDocument).variable?.findIndex(
-        (v: ProductVariant) => {
+      const variantIndex = (productData as ProductDocument).variants?.findIndex(
+        (v) => {
           return Object.entries(selectedVariants).every(
             ([key, value]) => v[key]?.code === value || v[key] === value,
           );
@@ -375,6 +376,81 @@ export class ProductsService {
   }
 
   /**
+   * Init create: create a minimal product document (no variants/images) xof bv
+   */
+  async initCreate(
+    payload: Partial<CreateProductDto>,
+  ): Promise<ProductDocument> {
+    const doc: any = {
+      name: payload.name,
+      description: payload.description,
+      category: payload.categoryId || undefined,
+      slug: payload.slug || undefined,
+      sku: payload.sku || undefined,
+      price: payload.price || {
+        amount: { fr: 0, en: 0 },
+        currency: { fr: '', en: '' },
+      },
+      isActive: payload.isActive ?? true,
+      isFeatured: payload.isFeatured ?? false,
+      variable: [],
+      notVariable: payload.notVariable ? { ...payload.notVariable } : undefined,
+      seoMeta: payload.seoMeta || {
+        title: { fr: '', en: '' },
+        description: { fr: '', en: '' },
+        keywords: [],
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const product = new this.productModel(doc);
+    return product.save();
+  }
+
+  /**
+   * Add variants to an existing product (variants contain color/size/quantity, but no files)
+   */
+  async addVariants({
+    productId,
+    variant,
+    images,
+  }: {
+    productId: string;
+    variant: VariantsProductDto;
+    images: Express.Multer.File[];
+  }): Promise<ProductDocument> {
+    if (!Types.ObjectId.isValid(productId)) {
+      throw new BadRequestException('Invalid product id');
+    }
+    const product = await this.productModel.findById(productId).exec();
+    if (!product) throw new NotFoundException('Product not found');
+
+    const uploadedImages = await this.storageService.uploadMultipleFiles(
+      images,
+      'products',
+    );
+
+    variant.images = uploadedImages.map((img) => img.url) as any[];
+
+    product.variants = [...product.variants, variant];
+    // Normalize incoming variants and push  BB
+
+    // Recalculate stock
+    product.stock = this.calculateTotalStock(product as any);
+
+    // await this.productModel
+    //   .findByIdAndUpdate(productId, { $set: product }, { new: true })
+    //   .exec();
+
+    await this.productModel
+      .findByIdAndUpdate(productId, product, { new: true })
+      .exec();
+
+    return product.save();
+  }
+
+  /**
    * Transforme un produit pour ne retourner que la langue demandée
    */
   private transformProduct(product: any, language: string): TransformedProduct {
@@ -384,8 +460,8 @@ export class ProductsService {
       description: product.description?.[language] || '',
       category: product.category || undefined,
       link: product.link,
-      variable: product.variable || [],
-      notVariable: product.notVariable || undefined,
+      variants: product.variants || [],
+      // notVariable: product.notVariable || undefined,
       smallDescription: product.smallDescription?.[language],
       slug: product.slug,
       sku: product.sku,

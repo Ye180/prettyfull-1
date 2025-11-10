@@ -1,4 +1,3 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -6,191 +5,344 @@ import {
   IsDate,
   IsEnum,
   IsNumber,
-  IsObject,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
+import { ContentType } from '../schemas/site-content.schema';
 
-export enum ContentType {
-  SECTION = 'section',
-  BANNER = 'banner',
-  CATEGORY = 'category',
-}
-
-export class I18nString {
-  @ApiPropertyOptional({ example: 'Découvrez la beauté naturelle' })
+/* -----------------------------------------------------------
+ * 🌍 I18nString
+ * ----------------------------------------------------------- */
+export class I18nStringDto {
   @IsOptional()
   @IsString()
   fr?: string;
 
-  @ApiPropertyOptional({ example: 'Discover natural beauty' })
   @IsOptional()
   @IsString()
   en?: string;
 }
 
-export class ProductContentDto {
-  @ApiPropertyOptional()
+/* -----------------------------------------------------------
+ * 🧩 Sections DTO
+ * ----------------------------------------------------------- */
+export class BaseSectionDto {
   @IsOptional()
-  @IsNumber()
-  id?: number;
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  title?: I18nStringDto;
 
-  @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  name?: string;
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  description?: I18nStringDto;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumber()
-  price?: number;
-
-  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  imageUrl?: string;
-}
+  imageUrlDesktop?: string;
 
-export class CategoryContentDto {
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsObject()
-  name?: I18nString;
-
-  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  slug?: string;
+  imageUrlMobile?: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  imageUrl?: string;
-}
-
-export class SiteContentDto {
-  @ApiPropertyOptional({
-    example: 'https://cdn.prettyfull.shop/images/hero-desktop.jpg',
-  })
-  @IsOptional()
-  @IsString()
-  image_desktop?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  image_mobile?: string;
-
-  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   video?: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsObject()
-  title?: I18nString;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsObject()
-  subtitle?: I18nString;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsObject()
-  description?: I18nString;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsObject()
-  paragraphe?: I18nString;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsObject()
-  textbutton?: I18nString;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsObject()
-  categoryButton?: I18nString;
-
-  @ApiPropertyOptional({ type: [ProductContentDto] })
-  @IsOptional()
-  @IsArray()
-  @Type(() => ProductContentDto)
-  products?: ProductContentDto[];
-
-  @ApiPropertyOptional({ type: [CategoryContentDto] })
-  @IsOptional()
-  @IsArray()
-  @Type(() => CategoryContentDto)
-  categories?: CategoryContentDto[];
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsArray()
-  images?: string[];
-
-  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  categorie?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  videoUrl?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  devise?: string;
-
-  @ApiPropertyOptional({ example: { customField: 'valeur libre' } })
-  @IsOptional()
-  @IsObject()
-  extra?: Record<string, any>;
+  category?: string;
 }
 
-export class CreateSiteContentDto {
-  @ApiProperty({ example: '68fe98d69e21f9f242e9d61c' })
+/* 1️⃣ First Section */
+export class FirstSectionDto extends BaseSectionDto {
+  @IsOptional()
   @IsString()
-  category: string;
+  paragraphe?: string;
 
-  @ApiProperty({ example: 'home-first-section' })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  textbutton?: I18nStringDto;
+}
+
+/* 2️⃣ Second Section */
+export class SecondSectionDto {
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  title?: I18nStringDto;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  ctaText?: I18nStringDto;
+
+  @IsOptional()
+  @IsString()
+  parentCategory?: string;
+}
+
+/* 3️⃣ Third Section */
+export class ThirdSectionDto {
+  @IsOptional()
+  @IsString()
+  imageUrlDesktop?: string;
+
+  @IsOptional()
+  @IsString()
+  imageUrlMobile?: string;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
+}
+
+/* 4️⃣ Fourth Section */
+export class ProductDto {
+  @IsOptional()
+  @IsNumber()
+  id?: number;
+
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsNumber()
+  price?: number;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+}
+
+export class FourthSectionDto {
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  title?: I18nStringDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  description?: I18nStringDto;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductDto)
+  products?: ProductDto[];
+}
+
+/* 5️⃣ Five Section */
+export class FiveSectionDto {
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  title?: I18nStringDto;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  ctaText?: I18nStringDto;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  subCategory?: string[];
+}
+
+/* 6️⃣ Six Section */
+export class SixSectionDto {
+  @IsOptional()
+  @IsString()
+  imageUrlDesktop?: string;
+
+  @IsOptional()
+  @IsString()
+  imageUrlMobile?: string;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
+}
+
+/* 7️⃣ Seven Section */
+export class SevenSectionDto {
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  title?: I18nStringDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  ctaText?: I18nStringDto;
+
+  @IsOptional()
+  @IsString()
+  subCategory?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductDto)
+  products?: ProductDto[];
+}
+
+/* 8️⃣ Eight Section */
+export class EightSectionDto {
+  @IsOptional()
+  @IsString()
+  imageUrlDesktop?: string;
+
+  @IsOptional()
+  @IsString()
+  imageUrlMobile?: string;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
+}
+
+/* 9️⃣ Nine Section */
+export class NineSectionDto {
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  title?: I18nStringDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  ctaText?: I18nStringDto;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  subCategory?: string[];
+
+  @IsOptional()
+  @IsString()
+  category?: string;
+}
+
+/* 🔟 Ten Section */
+export class TenSectionDto {
+  @IsOptional()
+  @IsString()
+  imageUrlDesktop?: string;
+
+  @IsOptional()
+  @IsString()
+  imageUrlMobile?: string;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
+}
+
+/* -----------------------------------------------------------
+ * 🏗️ SiteContent DTO principal
+ * ----------------------------------------------------------- */
+export class CreateSiteContentDto {
   @IsString()
   key: string;
 
-  @ApiProperty({ enum: ContentType, example: ContentType.SECTION })
   @IsEnum(ContentType)
   type: ContentType;
 
-  @ApiProperty({ type: SiteContentDto })
-  @IsObject()
-  @Type(() => SiteContentDto)
-  content: SiteContentDto;
-
-  @ApiPropertyOptional({ example: true })
   @IsOptional()
   @IsBoolean()
-  isActive?: boolean = true;
+  isActive?: boolean;
 
-  @ApiPropertyOptional({ example: 1 })
   @IsOptional()
   @IsNumber()
   sortOrder?: number;
 
-  @ApiPropertyOptional({ example: '2025-11-06T10:00:00Z' })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nStringDto)
+  quote?: I18nStringDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => FirstSectionDto)
+  firstSection?: FirstSectionDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SecondSectionDto)
+  secondSection?: SecondSectionDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ThirdSectionDto)
+  thirdSection?: ThirdSectionDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => FourthSectionDto)
+  fourthSection?: FourthSectionDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => FiveSectionDto)
+  fiveSection?: FiveSectionDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SixSectionDto)
+  sixSection?: SixSectionDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SevenSectionDto)
+  sevenSection?: SevenSectionDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => EightSectionDto)
+  eightSection?: EightSectionDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => NineSectionDto)
+  nineSection?: NineSectionDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => TenSectionDto)
+  tenSection?: TenSectionDto;
+
   @IsOptional()
   @IsDate()
-  @Type(() => Date)
   publishedAt?: Date;
 
-  @ApiPropertyOptional({ example: null })
   @IsOptional()
   @IsDate()
-  @Type(() => Date)
   expiresAt?: Date;
 }
+
+/* -----------------------------------------------------------
+ * ✏️ DTO pour update (tout est optionnel)
+ * ----------------------------------------------------------- */
+export class UpdateSiteContentDto extends CreateSiteContentDto {}

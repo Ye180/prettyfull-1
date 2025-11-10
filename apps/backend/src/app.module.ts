@@ -22,6 +22,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { SiteContentModule } from './modules/site-content/site-content.module';
+import { StorageModule } from './modules/storage/storage.module';
 import { UsersModule } from './modules/users/users.module';
 import { WishlistsModule } from './modules/wishlists/wishlists.module';
 import { BootstrapModule } from './shared/database/bootstrap/bootstrap.module';
@@ -100,6 +101,7 @@ import { BootstrapModule } from './shared/database/bootstrap/bootstrap.module';
     AddressModule,
     NotificationsModule,
     SiteContentModule,
+    StorageModule,
     BootstrapModule,
   ],
   controllers: [AppController],

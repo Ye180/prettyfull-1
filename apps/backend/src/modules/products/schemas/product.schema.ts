@@ -56,7 +56,10 @@ class Price {
 }
 
 @Schema({ _id: false })
-class VariableProduct {
+class VariantProduct {
+  @Prop({ type: String })
+  id: string;
+
   @Prop({ type: ColorSchema, required: true })
   color: Color;
 
@@ -64,15 +67,15 @@ class VariableProduct {
   size: string[];
 
   @Prop({ type: [String], required: true })
-  image: string[];
+  images: string[];
 
   @Prop({ type: Number, required: true, min: 0 })
   quantity: number;
 }
-const VariableProductSchema = SchemaFactory.createForClass(VariableProduct);
+const VariantProductSchema = SchemaFactory.createForClass(VariantProduct);
 
 @Schema({ _id: false })
-class NotVariableProduct {
+class NotVariantProduct {
   @Prop({ type: ColorSchema })
   color?: Color;
 
@@ -111,8 +114,7 @@ class Promotion {
 }
 const PromotionSchema = SchemaFactory.createForClass(Promotion);
 
-const NotVariableProductSchema =
-  SchemaFactory.createForClass(NotVariableProduct);
+const NotVariantProductSchema = SchemaFactory.createForClass(NotVariantProduct);
 
 @Schema({ _id: false })
 class SeoMeta {
@@ -147,11 +149,11 @@ export class Product extends Document {
   @Prop({ type: String })
   link?: string;
 
-  @Prop({ type: [VariableProductSchema] })
-  variable?: VariableProduct[];
+  @Prop({ type: [VariantProductSchema] })
+  variants: VariantProduct[];
 
-  @Prop({ type: NotVariableProductSchema })
-  notVariable?: NotVariableProduct;
+  @Prop({ type: NotVariantProductSchema })
+  notVariable?: NotVariantProduct;
 
   @Prop({ type: I18nStringSchema })
   smallDescription?: I18nString;
@@ -198,9 +200,9 @@ ProductSchemaDefinition.index({ category: 1, isActive: 1 });
 
 // Hook pre-save pour calculer automatiquement le stock total
 ProductSchemaDefinition.pre('save', function (next) {
-  if (this.variable && this.variable.length > 0) {
+  if (this.variants && this.variants.length > 0) {
     // Calculer la somme des quantités de toutes les variantes
-    this.stock = this.variable.reduce((total, variant) => {
+    this.stock = this.variants.reduce((total, variant) => {
       return total + (variant.quantity || 0);
     }, 0);
   } else if (this.notVariable) {
@@ -214,9 +216,9 @@ ProductSchemaDefinition.pre('save', function (next) {
 ProductSchemaDefinition.pre('findOneAndUpdate', function (next) {
   const update = this.getUpdate() as Partial<Product>;
 
-  if (update.variable && update.variable.length > 0) {
-    update.stock = update.variable.reduce(
-      (total: number, variant: VariableProduct) => {
+  if (update.variants && update.variants.length > 0) {
+    update.stock = update.variants.reduce(
+      (total: number, variant: VariantProduct) => {
         return total + (variant.quantity || 0);
       },
       0,

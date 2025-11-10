@@ -61,6 +61,8 @@ const siteContentSchema = z.object({
 
 // ✅ 2. Le formulaire principal
 export default function SiteContentForm() {
+	const { data: primaryCategories } = useGetPrimaryCategory();
+
 	const form = useForm({
 		defaultValues: {
 			key: "",
@@ -96,13 +98,13 @@ export default function SiteContentForm() {
 				description: { fr: "", en: "" },
 				imageUrl: "",
 				category: "",
-				products: [""],
+				products: ["default"],
 			},
 			fiveSection: {
 				title: { fr: "", en: "" },
 				category: "",
 				ctaText: { fr: "", en: "" },
-				subCategory: [""],
+				subCategory: ["default"],
 			},
 			sixSection: {
 				imageUrlDesktop: "",
@@ -113,7 +115,7 @@ export default function SiteContentForm() {
 				title: { fr: "", en: "" },
 				ctaText: { fr: "", en: "" },
 				subCategory: "",
-				products: [""],
+				products: ["default"],
 			},
 			eightSection: {
 				imageUrlDesktop: "",
@@ -123,9 +125,9 @@ export default function SiteContentForm() {
 			nineSection: {
 				title: { fr: "", en: "" },
 				ctaText: { fr: "", en: "" },
-				subCategory: [""],
+				subCategory: ["default"],
 			},
-			ten: {
+			tenSection: {
 				imageUrlDesktop: "",
 				imageUrlMobile: "",
 				category: "",
@@ -177,8 +179,6 @@ export default function SiteContentForm() {
 		control,
 		name: "nineSection.subCategory",
 	});
-
-	const { data: primaryCategories } = useGetPrimaryCategory();
 
 	const onSubmit = (data) => {
 		console.log("Form submitted:", data);
@@ -1127,7 +1127,7 @@ export default function SiteContentForm() {
 							<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 								<FormField
 									control={control}
-									name="ten.imageUrlDesktop"
+									name="tenSection.imageUrlDesktop"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Image (URL-Desktop)</FormLabel>
@@ -1139,7 +1139,7 @@ export default function SiteContentForm() {
 								/>
 								<FormField
 									control={control}
-									name="ten.imageUrlMobile"
+									name="tenSection.imageUrlMobile"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Image (URL-Mobile)</FormLabel>
@@ -1153,7 +1153,7 @@ export default function SiteContentForm() {
 
 							<SelectScrollable
 								control={form.control}
-								nameId={"ten.category"}
+								nameId={"tenSection.category"}
 								label="Catégorie Mère"
 								placeholder="Sélectionner une catégorie"
 								data={primaryCategories || []}

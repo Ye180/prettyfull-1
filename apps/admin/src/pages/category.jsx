@@ -16,7 +16,7 @@ const Category = () => {
 		<Fragment>
 			<Layout title="Category" description="Category Desc" dashboard={true}>
 				<SecTop
-					title="Category List"
+					title="Liste des catégories"
 					subtitle="Gérez les catégories de votre boutique."
 				>
 					<div className="flex items-center gap-3">

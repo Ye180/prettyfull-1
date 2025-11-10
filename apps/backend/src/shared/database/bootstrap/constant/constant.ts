@@ -17,7 +17,7 @@ export const CATEGORY = [
     parent: null,
     children: [],
     icon: 'fa-solid fa-person-dress',
-    image: 'https://cdn.example.com/images/categories/woman-fashion.jpg',
+    // image: 'https://cdn.example.com/images/categories/woman-fashion.jpg',
     second: false,
     seoMeta: {
       title: {
@@ -49,7 +49,7 @@ export const CATEGORY = [
     parent: null,
     children: [],
     icon: 'fa-solid fa-person',
-    image: 'https://cdn.example.com/images/CategoriesModule/man-fashion.jpg',
+    // image: 'https://cdn.example.com/images/CategoriesModule/man-fashion.jpg',
     second: false,
     seoMeta: {
       title: {
@@ -82,7 +82,7 @@ export const CATEGORY = [
     parent: null,
     children: [],
     icon: 'fa-solid fa-person-child',
-    image: 'https://cdn.example.com/images/categories/child-fashion.jpg',
+    // image: 'https://cdn.example.com/images/categories/child-fashion.jpg',
     second: false,
     seoMeta: {
       title: {
@@ -116,7 +116,7 @@ export const CATEGORY = [
     parent: '690f4d4009da252868e63258',
     children: [],
     icon: 'fa-solid fa-shoe-prints',
-    image: 'https://cdn.example.com/images/categories/women-shoes.jpg',
+    // image: 'https://cdn.example.com/images/categories/women-shoes.jpg',
     second: true,
     seoMeta: {
       title: {
@@ -151,7 +151,7 @@ export const CATEGORY = [
     parent: '690f4d4009da252868e63261',
     children: [],
     icon: 'fa-solid fa-shoe-prints',
-    image: 'https://cdn.example.com/images/categories/men-shoes.jpg',
+    // image: 'https://cdn.example.com/images/categories/men-shoes.jpg',
     second: true,
     seoMeta: {
       title: {

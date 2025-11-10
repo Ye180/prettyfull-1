@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { StorageModule } from '../storage';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 import { ProductSchemaDefinition } from './schemas/product.schema';
@@ -13,6 +14,7 @@ import { ProductSchemaDefinition } from './schemas/product.schema';
         schema: ProductSchemaDefinition,
       },
     ]),
+    StorageModule,
   ],
   controllers: [ProductsController],
   providers: [ProductsService],

@@ -88,9 +88,9 @@ export class CreateCategoryDto {
   second?: boolean;
 
   @IsOptional()
-  @IsString()
   @IsArray()
-  children: string[];
+  @IsString({ each: true })
+  children?: string[];
 
   @IsOptional()
   @IsNumber()
@@ -102,8 +102,7 @@ export class CreateCategoryDto {
   icon?: string;
 
   @IsOptional()
-  @IsString()
-  image?: string;
+  image?: Express.Multer.File;
 
   @IsOptional()
   @ValidateNested()
