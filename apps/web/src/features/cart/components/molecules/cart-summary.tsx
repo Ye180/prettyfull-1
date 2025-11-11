@@ -1,61 +1,84 @@
-"use client";
+'use client';
 
-import { CartSummaryType } from "@/features/cart/types";
-import { paths } from "@/lib/routes/paths-en";
-import { Button, DropdownMenuSeparator, Input } from "@prettyfull/ui";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { FC } from "react";
+import { Button } from '@prettyfull/ui';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth'; // 1. Importer votre hook d'authentification
 
-interface Props {
-	summary: CartSummaryType;
+interface CartSummaryProps {
+	subtotal?: number;
+	taxes?: number;
+	shipping?: number;
+	total?: number;
+	currency?: string;
 }
 
-const CartSummary: FC<Props> = ({ summary }) => {
-	const tCart = useTranslations("Cart.product");
-	const tSummary = useTranslations("Cart.summary");
+const CartSummary = ({
+	subtotal = 0,
+	taxes = 0,
+	shipping = 0,
+	total = 0,
+	currency = 'USD',
+}: CartSummaryProps) => {
+	const router = useRouter(); // 2. Initialiser le router
+	const { isAuthenticated, isLoading } = useAuth(); // 3. Obtenir l'état de l'utilisateur depuis votre hook
 
-	const router = useRouter();
+	// 4. Logique de redirection
+	const handleCheckout = () => {
+		if (isLoading) {
+			return; // Attendre que la vérification d'auth soit terminée
+		}
+
+		if (isAuthenticated) {
+			// 5. Si connecté, aller au checkout
+			router.push('/checkout');
+		} else {
+			// 6. Si invité, aller au login en mémorisant la page de destination
+			router.push('/login?callbackUrl=/checkout');
+		}
+	};
 
 	return (
-		<div className="w-full py-6 bg-white sm:w-1/3">
-			<div>
-				<div className="flex flex-row justify-between gap-x-8">
-					{/* <Input className="w-full" placeholder="Code promo" /> */}
+		<div className="w-full md:w-[320px]  p-6 bg-white h-fit">
+			<h3 className="text-lg font-semibold mb-4">Summary</h3>
 
-					<Button className="w-fit">{tSummary("apply")}</Button>
+			<div className="space-y-3 text-sm text-gray-700">
+				<div className="flex justify-between">
+					<span>Subtotal</span>
+					<span>
+						{currency} {subtotal.toLocaleString()}
+					</span>
+				</div>
+
+				<div className="flex justify-between">
+					<span>Estimate Shipping Costs</span>
+					<span>
+						{currency} {shipping.toLocaleString()}
+					</span>
+				</div>
+
+				<div className="flex justify-between">
+					<span>Estimate Duties And Taxes</span>
+					<span>-</span>
 				</div>
 			</div>
-			<div className="py-12 text-2xl font-bold">{tSummary("title")}</div>
-			<div className="mb-6 space-y-8">
-				<div className="space-y-8">
-					<div className="flex justify-between text-md ">
-						<span>{tSummary("subtotal")}</span>
-						<span>${summary.subtotal}</span>
-					</div>
-					<div className="flex justify-between text-md ">
-						<span>{tSummary("shipping")}</span>
-						<span>${summary.shipping}</span>
-					</div>
 
-					<div className="flex justify-between text-md ">
-						<span>{tSummary("taxes")}</span>
-						<span>{summary.taxes ? `$${summary.taxes}` : "-"}</span>
-					</div>
-				</div>
+			<hr className="my-4" />
 
-				<DropdownMenuSeparator />
-				<div className="flex justify-between py-6 text-lg font-semibold ">
-					<span>{tSummary("total")}</span>
-					<span>${summary.total}</span>
-				</div>
+			<div className="flex justify-between text-base font-semibold">
+				<span>Total</span>
+				<span>
+					{currency} {total.toLocaleString()}
+				</span>
 			</div>
+
+			{/* 7. Bouton mis à jour avec onClick et état de chargement */}
 			<Button
-				variant="secondary"
-				className="w-full text-white bg-black hover:bg-gray-800"
-				onClick={() => router.push(paths.checkout)}
+				className="w-full mt-6 py-3 rounded-full text-base font-medium bg-black hover:bg-gray-700 transition"
+				onClick={handleCheckout}
+				isLoading={isLoading}
+				disabled={isLoading}
 			>
-				{tSummary("checkout")}
+				Checkout
 			</Button>
 		</div>
 	);

@@ -2,6 +2,8 @@
 
 import CartView from "@/features/cart/views";
 
+
+
 const Cart = () => {
 	return <CartView />;
 };

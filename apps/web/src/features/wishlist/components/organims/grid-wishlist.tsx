@@ -9,14 +9,15 @@ const GridWishlistLayout = () => {
 					{Array.from({ length: 15 }).map((_, i) => (
 						<div key={i} className="w-full aspect-10/9">
 							<CardProduct
-								variable={[
+								productId="wishlist-product-1"
+								variants={[
 									{
 										color: {
 											label: "Rouge",
 											code: "#FF0000",
 										},
 										size: ["S", "M", "L"],
-										image: ["/assets/product5.webp", "/assets/product_2.webp"],
+										images: ["/assets/product5.webp", "/assets/product_2.webp"],
 										quantity: 1,
 									},
 									{
@@ -25,7 +26,7 @@ const GridWishlistLayout = () => {
 											code: "#00FF00",
 										},
 										size: ["S", "M", "L"],
-										image: ["/assets/product_2.webp", "image4.jpg"],
+										images: ["/assets/product_2.webp", "image4.jpg"],
 										quantity: 1,
 									},
 								]}

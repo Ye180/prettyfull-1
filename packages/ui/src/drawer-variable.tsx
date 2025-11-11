@@ -4,12 +4,14 @@ import { useCallback, useMemo, useState } from "react";
 import { CardProduct, CardProps } from "./card-product";
 import { ProductGallery } from "./components/products/products-galery";
 import ProductInfos, { SizeOption } from "./components/products/products-infos";
+
 import {
 	Drawer,
 	DrawerClose,
 	DrawerContent,
 	DrawerTrigger,
 } from "./components/ui/drawer";
+
 import { Separator } from "./components/ui/separator";
 import { CloseIcon } from "./icons/close.icon";
 
@@ -37,13 +39,13 @@ const DrawerVariable = ({
 		activeImageOne: 0,
 	});
 
-	const colorByDefault = productData?.variable
-		? productData?.variable[0]?.color.code
+	const colorByDefault = productData?.variants
+		? productData?.variants[0]?.color.code
 		: productData.notVariable?.color
 			? productData.notVariable.color.code
 			: "#3b82f6";
 
-	const sizeByDefault = variable?.sizes[0] as string;
+	const sizeByDefault = productData?.variants?.[0]?.size?.[0] as string;
 
 	const [selectedColor, setSelectedColor] = useState<string>(
 		colorByDefault as string
@@ -57,13 +59,13 @@ const DrawerVariable = ({
 	const [disabled, setDisabled] = useState(true);
 
 	const availableColors = useMemo(() => {
-		const colors = productData.variable?.find(
+		const colors = productData.variants?.find(
 			(v) => v.color.code === selectedColor
 		);
 
 		setVariable({
 			images:
-				((colors?.image as string[]) || productData.notVariable?.image) ?? [],
+				((colors?.images as string[]) || productData.notVariable?.image) ?? [],
 			sizes: (colors?.size as string[]) || productData.notVariable?.size || [],
 		});
 	}, [selectedColor]);
@@ -93,7 +95,7 @@ const DrawerVariable = ({
 	const handleClick = () => {
 		console.log("Acheter", { size: selectedSize, color: selectedColor });
 
-		const selectedVariant = productData.variable?.find(
+		const selectedVariant = productData.variants?.find(
 			(v) =>
 				v.color.code === selectedColor &&
 				(v.size as string[])?.includes(selectedSize)
@@ -168,14 +170,16 @@ const DrawerVariable = ({
 								<>
 									{Array.from({ length: 2 }).map((_, index) => (
 										<CardProduct
-											variable={[
+											key={index}
+											productId={`suggestion-${index}`}
+											variants={[
 												{
 													color: {
 														label: "Rouge",
 														code: "#FF0000",
 													},
 													size: ["S", "M", "L", "XL", "2XL", "3XL"],
-													image: [
+													images: [
 														"/assets/product5.webp",
 														"/assets/product_2.webp",
 													],
@@ -187,7 +191,7 @@ const DrawerVariable = ({
 														code: "#00FF00",
 													},
 													size: ["S", "M", "L"],
-													image: ["/assets/product_2.webp", "image4.jpg"],
+													images: ["/assets/product_2.webp", "image4.jpg"],
 													quantity: 1,
 												},
 												{
@@ -196,7 +200,7 @@ const DrawerVariable = ({
 														code: "#FF0000",
 													},
 													size: ["S", "M", "L", "XL", "2XL", "3XL"],
-													image: [
+													images: [
 														"/assets/product5.webp",
 														"/assets/product_2.webp",
 													],
@@ -208,7 +212,7 @@ const DrawerVariable = ({
 														code: "#00FF00",
 													},
 													size: ["S", "M", "L"],
-													image: ["/assets/product_2.webp", "image4.jpg"],
+													images: ["/assets/product_2.webp", "image4.jpg"],
 													quantity: 1,
 												},
 												{
@@ -217,7 +221,7 @@ const DrawerVariable = ({
 														code: "#FF0000",
 													},
 													size: ["S", "M", "L", "XL", "2XL", "3XL"],
-													image: [
+													images: [
 														"/assets/product5.webp",
 														"/assets/product_2.webp",
 													],
@@ -229,7 +233,7 @@ const DrawerVariable = ({
 														code: "#00FF00",
 													},
 													size: ["S", "M", "L"],
-													image: ["/assets/product_2.webp", "image4.jpg"],
+													images: ["/assets/product_2.webp", "image4.jpg"],
 													quantity: 1,
 												},
 												{
@@ -238,7 +242,7 @@ const DrawerVariable = ({
 														code: "#00FF00",
 													},
 													size: ["S", "M", "L"],
-													image: ["/assets/product_2.webp", "image4.jpg"],
+													images: ["/assets/product_2.webp", "image4.jpg"],
 													quantity: 1,
 												},
 												{
@@ -247,7 +251,7 @@ const DrawerVariable = ({
 														code: "#FF0000",
 													},
 													size: ["S", "M", "L", "XL", "2XL", "3XL"],
-													image: [
+													images: [
 														"/assets/product5.webp",
 														"/assets/product_2.webp",
 													],
@@ -259,7 +263,7 @@ const DrawerVariable = ({
 														code: "#00FF00",
 													},
 													size: ["S", "M", "L"],
-													image: ["/assets/product_2.webp", "image4.jpg"],
+													images: ["/assets/product_2.webp", "image4.jpg"],
 													quantity: 1,
 												},
 											]}

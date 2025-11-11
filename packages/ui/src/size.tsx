@@ -7,17 +7,13 @@ const Size = ({
 	className,
 	classButton,
 	onSizeChange,
-	onclose,
 }: {
 	size: string[];
 	selectSize?: string;
 	className?: string;
 	classButton?: string;
 	onSizeChange?: (size: string) => void;
-	onclose?: (
-		e: React.MouseEvent<HTMLButtonElement>,
-		selectSize: string
-	) => void;
+	// La prop 'onclose' a été supprimée
 }) => {
 	const sizeOptions = [
 		{
@@ -55,11 +51,9 @@ const Size = ({
 		size?: string
 	) => {
 		e?.stopPropagation();
-
+		// Appelle uniquement onSizeChange
 		onSizeChange && onSizeChange(size as string);
-
-		onclose &&
-			onclose(e as React.MouseEvent<HTMLButtonElement>, size as string);
+		// L'appel à onclose a été supprimé
 	};
 
 	return (

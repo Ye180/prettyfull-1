@@ -1,5 +1,7 @@
 export const PRODUCTS_QUERY_KEY = 'list-products';
 
+export const PRODUCTS_QUERY_KEY_BY_SLUG = 'list-products-by-slug';
+
 export const WISHLIST_QUERY_KEY = 'list-wishlist';
 
 export const CART_QUERY_KEY = 'list-cart';

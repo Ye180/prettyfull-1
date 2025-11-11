@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@prettyfull/utils";
-import Size from "../../size";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import Size from "../../size";
 
 interface SizeOption {
 	label: string;
@@ -17,10 +17,10 @@ interface ColorOption {
 interface ProductOptionsProps {
 	sizes?: SizeOption[];
 	colors?: ColorOption[];
-	variable?: {
+	variants?: {
 		color: { label: string; code: string };
 		size: string[];
-		image: string[] | StaticImport[];
+		images: string[] | StaticImport[];
 		quantity: number;
 	}[];
 	notVariable?: {
@@ -41,7 +41,7 @@ interface ProductOptionsProps {
 }
 
 export function ProductOptions({
-	variable,
+	variants,
 	sizes,
 	selectedSize,
 	selectedColor,
@@ -67,32 +67,32 @@ export function ProductOptions({
 							size={sizes as []}
 							className="flex flex-row whitespace-nowrap"
 							classButton=""
-							onclose={handleClick}
+							// onclose={handleClick}
 						/>
 					</div>
 				</div>
 			)}
 
 			{/* Sélecteur de couleur */}
-			{variable && variable.length > 0 && (
+			{variants && variants.length > 0 && (
 				<div className="space-y-6">
 					<p className="font-semibold uppercase !text-[1.9rem] font-bebas-neue tracking-wider">
 						Color
 					</p>
 					<div className="flex flex-wrap gap-6 ">
-						{variable.map((items, index) => (
+						{variants.map((items, index) => (
 							<button
 								key={index}
 								onClick={() => onColorChange(items.color.code)}
 								className={cn(
-									"w-[13rem] h-16 border-1 flex items-center justify-center gap-2 transition-all",
+									"w-fit h-16 border-1 flex items-center justify-center gap-2 transition-all whitespace-nowrap px-3",
 									selectedColor === items.color.code
 										? "border-black"
 										: "border-gray-200 hover:border-gray-500"
 								)}
 							>
 								<span
-									className="w-5 h-5 rounded-full"
+									className="w-5 h-5 rounded-full "
 									style={{ backgroundColor: items.color.code }}
 								/>
 								{items.color.label}

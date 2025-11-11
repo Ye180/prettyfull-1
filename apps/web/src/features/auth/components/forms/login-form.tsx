@@ -5,18 +5,21 @@ import { GoogleIcon } from "@/components/icons/google-icon";
 import { useActionEvent } from "@/hooks/use-action-event";
 import { useAuthRedirect } from "@/shared/hooks/use-auth-redirect";
 import { signIn } from "@/shared/lib/auth.client";
+import { useCartStore } from "@/stores/useCart"; // 2. Importer le store (nom corrigé)
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@prettyfull/ui";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // 1. Importer useSearchParams
 import { useForm } from "react-hook-form";
 import Flex from "../../../../../../../packages/ui/src/layouts/helpers/flex";
 import { loginSchema, type LoginFormData } from "../../schemas/login.schema";
 
 export function LoginForm() {
 	const router = useRouter();
+	const searchParams = useSearchParams(); // 3. Récupérer les paramètres de l'URL
+	const callbackUrl = searchParams.get("callbackUrl"); // 4. Obtenir l'URL de redirection
 
-	// Redirect if already authenticated
+	// Redirige si déjà authentifié (ce hook existe déjà)
 	useAuthRedirect("/account");
 
 	const {
@@ -28,23 +31,28 @@ export function LoginForm() {
 	});
 
 	const { startLoading, endLoading, loading } = useActionEvent();
+	const { currentCartId } = useCartStore(); // 5. Obtenir l'ID du panier invité
+
 	const onSubmit = async (data: LoginFormData) => {
 		startLoading();
+
+		// 6. Envoyer l'email, le mot de passe ET l'ID du panier invité
 		const { error } = await signIn.email({
 			email: data.email,
 			password: data.password,
+			guestCartId: currentCartId, // Ajout de l'ID du panier
 		});
 
 		if (error) {
-			// Handle error (e.g., show notification)
+			// Gérer l'erreur
 			console.error("Login error:", error);
 			endLoading();
 			return;
 		}
 
-		// Redirect to account page after successful login
+		// 7. Rediriger vers le callbackUrl (ex: /checkout) ou /account par défaut
 		endLoading();
-		router.push("/account");
+		router.push(callbackUrl || "/account");
 	};
 
 	return (

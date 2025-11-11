@@ -4,18 +4,21 @@ import { VariantProps, cva } from "class-variance-authority";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { Button } from "./button";
 import DrawerCart from "./drawer-cart";
-import DrawerVariable from "./drawer-variable";
 import { CloseIcon } from "./icons/close.icon";
 import { Heart } from "./icons/heart.icon";
 import Size from "./size";
 
+// (Cet import doit pointer vers le bon chemin dans votre app 'web')
+import { SetStateAction, useCallback, useState } from "react";
+import { useAddItemToCart } from "../../../apps/web/src/features/cart/api/add-item-to-cart";
+import DrawerVariable from "./drawer-variable";
+
 const cardVariants = cva(["space-y-3 w-[100%] h-fit max-lg:pb-6 "], {
 	variants: {
 		variant: {
-			default: "tracking-wide  cursor-pointer",
+			default: "tracking-wide 	cursor-pointer",
 		},
 		size: {
 			default: " ",
@@ -37,13 +40,18 @@ type DrawerStatesProps = typeof INITIAL_DRAWER_STATES;
 export interface CardProps
 	extends React.HTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof cardVariants> {
+	productId: string;
 	name: string;
-	category?: string;
+	category?:
+		| {
+				name: string;
+		  }
+		| string;
 	link?: string;
-	variable?: {
+	variants?: {
 		color: { label: string; code: string };
 		size: string[];
-		image: string[] | StaticImport[];
+		images: string[] | StaticImport[];
 		quantity: number;
 	}[];
 	notVariable?: {
@@ -65,6 +73,7 @@ export interface CardProps
 	slug?: string;
 }
 export function CardProduct({
+	productId,
 	name,
 	className,
 	smallDescription,
@@ -72,7 +81,7 @@ export function CardProduct({
 	children,
 	promotion,
 	solde,
-	variable,
+	variants,
 	notVariable,
 	isLoading,
 	link,
@@ -88,7 +97,11 @@ export function CardProduct({
 		INITIAL_DRAWER_STATES
 	);
 
-	// Fonction utilitaire pour mettre à jour les états des tiroirs
+	// --- LOGIQUE D'AJOUT AU PANIER ---
+	const addItemToCartMutation = useAddItemToCart();
+	const [selectedSize, setSelectedSize] = useState<string>("");
+	// --- FIN DE LA LOGIQUE ---
+
 	const updateDrawerState = useCallback(
 		(key: keyof DrawerStatesProps, value: SetStateAction<boolean>) => {
 			setDrawerStates((prev) => ({ ...prev, [key]: value }));
@@ -110,16 +123,71 @@ export function CardProduct({
 			e.stopPropagation();
 			updateDrawerState("showSizes", !drawerStates.showSizes);
 
-			if (variable && variable[activeIndex]) {
-				setSize(variable[activeIndex].size as string[]);
+			if (variants && variants[activeIndex]) {
+				setSize(variants[activeIndex].size as string[]);
 			}
 
 			if (notVariable) {
 				setSize(notVariable.size as string[]);
 			}
 		},
-		[activeIndex, notVariable, drawerStates.showSizes, variable]
+		[
+			activeIndex,
+			notVariable,
+			drawerStates.showSizes,
+			variants,
+			updateDrawerState,
+		]
 	);
+
+	// --- FONCTION handleSizeSelect (POUR L'AJOUT AU PANIER) ---
+	const handleSizeSelect = (size: string) => {
+		setSelectedSize(size);
+
+		// **LA CORRECTION EST ICI**
+		// 1. On type le payload pour qu'il corresponde à ce que la mutation attend.
+		const variantsPayload: Record<string, string> = {
+			size: size,
+		};
+
+		// 2. On ajoute 'color' seulement s'il existe.
+		if (variants && variants[activeIndex]) {
+			variantsPayload.color = variants[activeIndex].color.code;
+		} else if (notVariable && notVariable.color) {
+			variantsPayload.color = notVariable.color.code;
+		}
+
+		console.log("Ajout au panier (invité ou loggé):", {
+			productId,
+			quantity: 1,
+			selectedVariants: variantsPayload,
+		});
+
+		addItemToCartMutation.mutate(
+			{
+				productId: productId,
+				quantity: 1, // Quantité par défaut de 1 depuis la carte
+				selectedVariants: variantsPayload, // <-- Cet objet est maintenant du bon type
+			},
+			{
+				onSuccess: () => {
+					console.log("Produit ajouté !");
+					alert("Produit ajouté au panier !");
+				},
+				onError: (error: any) => {
+					// Type 'any' pour l'erreur générique
+					console.error("Erreur lors de l'ajout:", error);
+					alert(
+						`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`
+					);
+				},
+			}
+		);
+
+		updateDrawerState("showSizes", false);
+	};
+
+	// --- FIN DE LA FONCTION ---
 
 	const handleVariantClick = ({
 		e,
@@ -133,62 +201,55 @@ export function CardProduct({
 	};
 
 	// Préchargement des images
-	useEffect(() => {
-		if (variable) {
-			const loadImages = async () => {
-				const loadPromises = variable.map((variant, index) => {
-					return new Promise<boolean>((resolve) => {
-						const img = new window.Image();
-						img.onload = () => resolve(true);
-						img.onerror = () => resolve(false);
-						img.src =
-							typeof variant.image[0] === "string" ? variant.image[0] : "src";
-					});
-				});
+	// useEffect(() => {
+	// 	if (variants) {
+	// 		const loadImages = async () => {
+	// 			const loadPromises = variants.map((variant, index) => {
+	// 				return new Promise<boolean>((resolve) => {
+	// 					const img = new window.Image();
+	// 					img.onload = () => resolve(true);
+	// 					img.onerror = () => resolve(false);
+	// 					img.src =
+	// 						typeof variant.images[0] === "string" ? variant.images[0] : "src";
+	// 				});
+	// 			});
 
-				const results = await Promise.all(loadPromises);
-				setImagesLoaded(results);
-			};
+	// 			const results = await Promise.all(loadPromises);
+	// 			setImagesLoaded(results);
+	// 		};
 
-			loadImages();
-		}
-	}, [variable]);
+	// 		loadImages();
+	// 	}
+	// }, [variants]);
 
 	return (
 		<article className={cn(cardVariants(), className)} {...props}>
-			{/* <div
-				className="bg-sky-200 max-md:h-[90%] h-[90%] md:hover:[&>div]:opacity-100 flex   justify-start items-start relative"
-				onClick={() => handleRoutes(link)}
-			> */}
-			{/* L'affichage d'un produit avec un produits variable */}
 			<div
 				className="relative h-fit md:hover:[&>div]:opacity-100 "
 				onClick={() => handleRoutes(link)}
 			>
-				{variable?.map((variant, i) => (
+				{variants?.map((variant, i) => (
 					<Image
 						key={i}
-						src={
-							(variant.image[0] as string) ||
-							"https://images.unsplash.com/photo-1761782797823-2b555af8a226?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1974"
-						}
+						src={`${
+							typeof variant.images[0] === "string"
+								? variant.images[0] + "?view=1"
+								: "src"
+						}`}
 						alt={`Product Image ${i + 1}`}
-						width={400}
-						height={400}
+						width={600}
+						height={800}
 						sizes="
-
 						(max-width: 344px) 100px,
 						(max-width: 375px) 100px,
 						(max-width: 639px) 150px,
 						(max-width: 767px) 200px,
-
 						(max-width: 989px) 250px,
 						(max-width: 1179px) 200px,
 						(max-width: 1366px) 250px,
 						(max-width: 1800px) 400px,
 						(max-width: 2800px) 400px,
 						400px
-
 						"
 						className={cn(
 							"object-contain w-full h-full  transition-opacity duration-300 ",
@@ -205,26 +266,6 @@ export function CardProduct({
 					/>
 				))}
 				{/* Fallback si pas de produit */}
-				{!variable && notVariable?.image && (
-					<Image
-						src={
-							(notVariable.image[0] as string) ||
-							"https://images.unsplash.com/photo-1761782797823-2b555af8a226?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1974"
-						}
-						alt="Product Image"
-						width={400}
-						height={400}
-						className="object-cover w-full h-full transition-opacity duration-300 "
-						priority
-						placeholder="blur"
-						blurDataURL={data_url}
-						style={
-							{
-								"--aspect-ratio-hack": "149.70059880239518%",
-							} as React.CSSProperties
-						}
-					/>
-				)}
 
 				{!drawerStates.showSizes && (
 					<div className="absolute flex items-center justify-between w-full gap-8 px-4 transition-all duration-300 ease-in-out opacity-0 bottom-5 max-md:hidden md:flex">
@@ -242,7 +283,6 @@ export function CardProduct({
 						</button>
 					</div>
 				)}
-
 				<DrawerCart
 					size={size}
 					handleClick={(e) => handleShowSizes(e)}
@@ -253,10 +293,9 @@ export function CardProduct({
 						{promotion.pourcentage}% OFF
 					</span>
 				)}
-
-				{(notVariable?.size || variable) &&
+				{(notVariable?.size || variants) &&
 					(drawerStates.showSizes ? (
-						<div className="absolute  w-[80%] left-1/2 right-1/2  -translate-x-1/2 bg-white border-2 border-gray-200 bottom-15 text-black  text-center rounded-md text-sm font-light  p-8 shadow-lg max-md:hidden md:block">
+						<div className="absolute w-full p-8 px-4 text-sm font-light text-center text-black bg-white border-2 border-gray-200 rounded-md shadow-lg bottom-5 max-md:hidden md:block">
 							<div className="flex items-center justify-between mb-6">
 								<p className="font-semibold text-[1.4rem]">Size</p>
 								<button
@@ -269,9 +308,11 @@ export function CardProduct({
 									<CloseIcon className="w-8 h-8" />
 								</button>
 							</div>
+
 							<Size
 								size={size}
-								onclose={() => updateDrawerState("showSizes", false)}
+								selectSize={selectedSize}
+								onSizeChange={handleSizeSelect}
 							/>
 						</div>
 					) : null)}
@@ -288,7 +329,6 @@ export function CardProduct({
 					{name}
 				</h4>
 
-				{/* Correction de l'affichage des promotions */}
 				{!promotion && (
 					<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem]">
 						{" "}
@@ -312,7 +352,7 @@ export function CardProduct({
 			</div>
 
 			<div className="flex items-center justify-start gap-2">
-				{variable?.slice(0, 3)?.map((variant, i) => (
+				{variants?.slice(0, 3)?.map((variant, i) => (
 					<button
 						key={i}
 						className={cn(
@@ -329,18 +369,18 @@ export function CardProduct({
 					</button>
 				))}
 
-				{variable && variable.length > 3 && (
+				{variants && variants.length > 3 && (
 					<DrawerVariable
-						label={`+ ${variable.length + 1 - 4}`}
+						label={`+ ${variants.length + 1 - 4}`}
 						name={name}
-						photos={variable?.map((v) => v.image[0]) as string[]}
+						photos={variants?.map((v) => v.images[0]) as string[]}
 						productData={{
 							name,
 							price: price,
-							variable,
+							variants,
 							notVariable,
 							promotion,
-
+							productId,
 							description: smallDescription || "",
 						}}
 					/>

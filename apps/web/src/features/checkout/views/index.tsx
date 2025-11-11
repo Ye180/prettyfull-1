@@ -1,10 +1,10 @@
 "use client";
 
-import { CartSummaryType } from "@/features/cart/types";
 import { DATA_CARD } from "@/lib/utils/constants/constants";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 import CheckoutForm from "../components/organims/checkout-form";
 import CheckoutSummary from "../components/organims/checkout-summary";
+import { CartSummaryType } from "../types";
 
 const CheckoutView = () => {
 	const summary: CartSummaryType = {
@@ -27,7 +27,8 @@ const CheckoutView = () => {
 				<CheckoutForm />
 			</div>
 			<div className="w-full py-12 sm:w-1/3 ">
-				<CheckoutSummary summary={summary} />
+				{/* <CheckoutSummary summary={summary} /> */}
+				<CheckoutSummary />
 			</div>
 		</Container>
 	);

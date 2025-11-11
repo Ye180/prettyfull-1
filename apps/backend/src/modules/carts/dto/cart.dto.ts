@@ -31,9 +31,6 @@ export class AddToCartDto {
  * DTO pour mettre à jour un item du panier
  */
 export class UpdateCartItemDto {
-  @IsString()
-  productId: string;
-
   @IsOptional()
   @IsNumber()
   @Min(1)
@@ -43,6 +40,7 @@ export class UpdateCartItemDto {
   @IsObject()
   selectedVariants?: Record<string, string>;
 }
+
 
 /**
  * DTO pour la suppression d'un item du panier

@@ -8,11 +8,12 @@ import { Input, Logo, Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useState } from "react";
 import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
 import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
 import { Currency } from "./currency";
 import NavbarResponsive from "./navbar-responsive";
+import { useCartStore } from "../../../../../../../packages/store/src/use-cart-store"; // Chemin corrigé
+import { useState } from "react";
 
 const NavBarHeaders = ({
 	main_category,

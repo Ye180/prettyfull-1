@@ -14,15 +14,22 @@ import { ScrollArea } from "@prettyfull/ui";
 import { useParams } from "next/navigation";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 import { useGetProducts } from "../api/get-product";
+import { useGetProductsBySlug } from "../api/get-product-of-cat-by-slug";
 
 const CollectionViews = () => {
 	const { data: products, isLoading } = useGetProducts({ page: 1, limit: 24 });
 
-	console.log("Fetched products:", products);
+	console.log("Fetched products1:", products);
 
 	const params = useParams();
 
 	console.log("Collection Params:", params);
+
+	const { data: productsBySlug, isLoading: isLoadingBySlug } =
+		useGetProductsBySlug(params.slug as string);
+
+	console.log("Fetched products by slug:", productsBySlug);
+	// console.log("Fetched products by slug:", isLoadingBySlug);
 	return (
 		<div className="pb-32 space-y-16 ">
 			<div className="relative h-[20vh] md:h-[35vh] px-4 bg-white">
@@ -38,10 +45,16 @@ const CollectionViews = () => {
 				<div className="flex items-start justify-center gap-8 !w-full ">
 					<FilterLayout className="h-[200vh] mt-4 border bg-white backdrop-blur-md border-gray-200" />
 					<ScrollArea className="py-4 max-md:hidden md:flex-1 h-[200vh]  scrolbarRecomandation">
-						<GridCollectionLayout products={products} loading={isLoading} />
+						<GridCollectionLayout
+							products={products}
+							loading={isLoadingBySlug}
+						/>
 					</ScrollArea>
 					<div className="hidden max-md:flex md:hidden">
-						<GridCollectionLayout products={products} loading={isLoading} />
+						<GridCollectionLayout
+							products={products}
+							loading={isLoadingBySlug}
+						/>
 					</div>
 				</div>
 			</Container>

@@ -64,7 +64,7 @@ export function ProductGallery({
 							)}
 						>
 							<Image
-								src={image}
+								src={image + "?view=1"}
 								alt={`${title} - vue ${index + 1}`}
 								width={80}
 								height={80}
@@ -79,7 +79,7 @@ export function ProductGallery({
 					onClick={() => setIsZoomed(true)}
 				>
 					<Image
-						src={images[activeImage] || "/placeholder.png"}
+						src={images[activeImage] + "?view=1" || "/placeholder.png"}
 						alt={title}
 						width={500}
 						height={800}
@@ -98,7 +98,7 @@ export function ProductGallery({
 					{images.map((image, index) => (
 						<Image
 							key={index}
-							src={image}
+							src={image + "?view=1"}
 							alt={`${title} - vue ${index + 1}`}
 							width={250}
 							height={450}
@@ -138,7 +138,7 @@ export function ProductGallery({
 							onClick={(e) => e.stopPropagation()}
 						>
 							<Image
-								src={images[activeImage] || "/placeholder.png"}
+								src={images[activeImage] + "?view=1" || "/placeholder.png"}
 								alt={title}
 								width={600}
 								height={900}
@@ -185,7 +185,7 @@ export function ProductGallery({
 									)}
 								>
 									<Image
-										src={image}
+										src={image + "?view=1"}
 										alt={`${title} miniature ${index + 1}`}
 										fill
 										className="object-cover"

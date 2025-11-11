@@ -369,9 +369,7 @@ export class CategoriesService {
     });
   }
 
-  async getProductOfCategoryBySlug(
-    slug: string,
-  ): Promise<FormatResponse<CategoryDocument>> {
+  async getProductOfCategoryBySlug(slug: string): Promise<TransformedCategory> {
     const category = await this.categoryModel.findOne({ slug: slug });
 
     if (!category) {
@@ -383,10 +381,10 @@ export class CategoriesService {
       .lean()
       .exec();
 
-    return formatResponse({
-      data: products,
+    return {
+      products: products.map((product) => transformProduct(product, 'fr')),
       message: 'Produits de la catégorie récupérés avec succès',
-    });
+    };
   }
 
   async findChildrenCategories(

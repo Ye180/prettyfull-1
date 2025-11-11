@@ -30,7 +30,8 @@ const GridCollectionLayout = ({
 					{products?.map((items: CardProps, i: number) => (
 						<div key={i} className="w-full aspect-10/9">
 							<CardProduct
-								variable={items.variable}
+								productId={items.id || items.productId}
+								variants={items.variants}
 								price={items.price}
 								notVariable={items.notVariable}
 								promotion={items?.promotion}

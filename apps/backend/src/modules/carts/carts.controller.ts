@@ -26,42 +26,42 @@ export class CartsController {
     @Headers('accept-language') language: string = 'fr',
     @Body() addToCartDto: AddToCartDto,
   ) {
+     console.log('🟢 Reçu du front:', addToCartDto);
     return this.cartsService.addToCart(userId, language, addToCartDto);
   }
 
-  @Delete(':userId/items/:productId')
-  async removeCartItem(
-    @Param('userId') userId: string,
-    @Param('productId') productId: string,
-    @Body('selectedVariants') selectedVariants?: Record<string, string>,
-  ) {
-    return this.cartsService.removeCartItem(
-      userId,
-      productId,
-      selectedVariants,
-    );
-  }
+  // @Delete(':userId/items/:productId')
+  // async removeCartItem(
+  //   @Param('userId') userId: string,
+  //   @Param('productId') productId: string,
+  //   @Body('selectedVariants') selectedVariants?: Record<string, string>,
+  // ) {
+  //   return this.cartsService.removeCartItem(
+  //     userId,
+  //     productId,
+  //     selectedVariants,
+  //   );
+  // }
 
-  @Patch(':userId/items/:productId')
-  async updateCartItem(
-    @Param('userId') userId: string,
-    @Param('productId') productId: string,
-    @Body() updateCartItemDto: UpdateCartItemDto,
-  ) {
-    return this.cartsService.updateCartItem(
-      userId,
-      productId,
-      updateCartItemDto,
-    );
-  }
+@Patch(':userId/items/:productId')
+async updateCartItem(
+  @Param('userId') userId: string,
+  @Param('productId') productId: string,
+  @Body() updateCartItemDto: UpdateCartItemDto,
+) {
+  return this.cartsService.updateCartItem(userId, productId, updateCartItemDto);
+}
 
-  @Delete(':userId/items/:productId')
-  async removeFromCart(
-    @Param('userId') userId: string,
-    @Param('productId') productId: string,
-  ) {
-    return this.cartsService.removeFromCart(userId, productId);
-  }
+
+@Delete(':userId/items/:productId')
+async removeFromCart(
+  @Param('userId') userId: string,
+  @Param('productId') productId: string,
+  @Body('selectedVariants') selectedVariants?: Record<string, string>,
+) {
+  return this.cartsService.removeCartItem(userId, productId, selectedVariants);
+}
+
 
   @Delete(':userId')
   async clearCart(@Param('userId') userId: string) {

@@ -1,39 +1,25 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { authClient } from "../lib/auth.client";
 
 /**
- * Hook to redirect authenticated users
- * Use this in auth pages (login, register) to redirect if already logged in
+ * Redirige l'utilisateur s'il est déjà connecté
+ * ✅ Supporte les redirections dynamiques via ?callbackUrl=/checkout
  */
-export function useAuthRedirect(redirectTo: string = "/account") {
+export function useAuthRedirect(defaultRedirect: string = "/account") {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, isPending } = authClient.useSession();
 
   useEffect(() => {
     if (!isPending && session) {
-      router.push(redirectTo);
+      // Vérifie si on a une URL de callback
+      const callbackUrl = searchParams.get("callbackUrl") || defaultRedirect;
+      router.push(callbackUrl);
     }
-  }, [session, isPending, router, redirectTo]);
-
-  return { session, isPending };
-}
-
-/**
- * Hook to protect client-side routes
- * Use this to redirect unauthenticated users to login
- */
-export function useRequireAuth(redirectTo: string = "/login") {
-  const router = useRouter();
-  const { data: session, isPending } = authClient.useSession();
-
-  useEffect(() => {
-    if (!isPending && !session) {
-      router.push(redirectTo);
-    }
-  }, [session, isPending, router, redirectTo]);
+  }, [session, isPending, router, searchParams, defaultRedirect]);
 
   return { session, isPending };
 }

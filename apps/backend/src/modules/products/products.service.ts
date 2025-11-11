@@ -11,6 +11,10 @@ import {
   FormatResponse,
   formatResponse,
 } from 'src/shared/utils/format-response';
+import {
+  CategoriesService,
+  TransformedCategory,
+} from '../categories/categories.service';
 import { StorageService } from '../storage';
 import { CreateProductDto, VariantsProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -29,7 +33,7 @@ export interface TransformedProduct {
   id: string;
   name: { fr: string; en: string };
   description: { fr: string; en: string };
-  category?: string;
+  category?: TransformedCategory;
   link?: string;
   variants: ProductVariant[];
 
@@ -85,6 +89,8 @@ export class ProductsService {
     @InjectModel(Product.name)
     private productModel: Model<ProductDocument>,
     private readonly storageService: StorageService,
+
+    private categoriesService: CategoriesService,
   ) {}
 
   /**
@@ -156,22 +162,36 @@ export class ProductsService {
       .lean()
       .exec();
 
+    //Je veux l'objet de LA catégorie associée à ce produit
+
+    const category = await this.categoriesService.findOne(
+      product?.category as string,
+      language,
+    );
+
+    //Attribution a la categorie produit
+    // if (product) {
+    //   product.category = category;
+    // }
+
+    const newProduct = { ...product, category };
+
     if (!product) {
       throw new NotFoundException('Produit non trouvé');
     }
 
-    return this.transformProduct(product, language);
+    return this.transformProduct(newProduct, language);
   }
 
   /**
    * Calcule le stock total d'un produit basé sur ses variantes
    */
   private calculateTotalStock(product: {
-    variable?: { quantity?: number }[];
+    variants?: { quantity?: number }[];
     notVariable?: { quantity?: number };
   }): number {
-    if (product.variable && product.variable.length > 0) {
-      return product.variable.reduce(
+    if (product.variants && product.variants.length > 0) {
+      return product.variants.reduce(
         (total: number, variant: { quantity?: number }) => {
           return total + (variant.quantity || 0);
         },
@@ -338,7 +358,7 @@ export class ProductsService {
         throw new BadRequestException('Variante non trouvée');
       }
 
-      const variant = productData.variable[variantIndex];
+      const variant = productData.variants[variantIndex];
       if (variant.quantity < quantity) {
         throw new BadRequestException(
           `Stock insuffisant pour cette variante du produit ${productData.sku}`,
@@ -346,7 +366,7 @@ export class ProductsService {
       }
 
       // Décrémenter la quantité de la variante
-      productData.variable[variantIndex].quantity -= quantity;
+      productData.variants[variantIndex].quantity -= quantity;
     } else {
       // Décrémentation pour un produit simple (notVariable)
       if (!productData.notVariable || !productData.notVariable.quantity) {
@@ -393,7 +413,7 @@ export class ProductsService {
       },
       isActive: payload.isActive ?? true,
       isFeatured: payload.isFeatured ?? false,
-      variable: [],
+      variants: [],
       notVariable: payload.notVariable ? { ...payload.notVariable } : undefined,
       seoMeta: payload.seoMeta || {
         title: { fr: '', en: '' },
@@ -449,6 +469,8 @@ export class ProductsService {
 
     return product.save();
   }
+
+  /** */
 
   /**
    * Transforme un produit pour ne retourner que la langue demandée

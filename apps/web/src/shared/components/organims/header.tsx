@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useGetChildrenCategory } from "@/features/homepage/api/get-children-category";
 import { getItem } from "@/lib/utils/local-storage";
