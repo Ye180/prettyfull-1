@@ -15,7 +15,7 @@ export const getProductBySlug = async ({
 	categorySlug: string;
 }) => {
 	const response = await apiClient.get(
-		API_ROUTES.categories.getProductsBySlug(categorySlug),
+		API_ROUTES.products.getByCategorySlug(categorySlug),
 		{
 			headers: {
 				"Accept-Language": "fr",
@@ -25,7 +25,7 @@ export const getProductBySlug = async ({
 	return response.data;
 };
 
-export const useGetProductsBySlug = (categorySlug: string) => {
+export const useGetProductsByCategorySlug = (categorySlug: string) => {
 	return useQuery({
 		queryKey: [PRODUCTS_QUERY_KEY_BY_SLUG, categorySlug],
 		queryFn: () => getProductBySlug({ categorySlug }),

@@ -24,6 +24,8 @@ export const
     getById: (productId: string) => `/products/${productId}/`,
     getBySlug: (productSlug: string) => `/products/slugname/${productSlug}/`,
     create: '/products/',
+
+    getByCategorySlug: (categorySlug: string) => `/products/category/${categorySlug}/`,
     update: (productId: string) => `/products/${productId}/`,
     remove: (productId: string) => `/products/${productId}/`,
   },

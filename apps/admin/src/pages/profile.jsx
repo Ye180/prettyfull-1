@@ -1,64 +1,56 @@
-import { signOut } from "@/shared/lib/auth-client";
+import { getSession, signIn, signOut } from "@/shared/lib/auth-client";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 
 export default function Profile() {
-	// initial undefined distinguishes "loading" from "no session"
-	// const [session, setSession] = useState(undefined); // undefined = loading
-	// const router = useRouter();
-	// const hasFetched = useRef(false);
+	const [session, setSession] = useState(undefined);
+	const router = useRouter();
+	const hasFetched = useRef(false);
 
-	// useEffect(() => {
-	// 	if (hasFetched.current) return;
-	// 	hasFetched.current = true;
-	// 	let cancelled = false;
-	// 	getSession().then((s) => {
-	// 		if (!cancelled) setSession(s);
-	// 	});
-	// 	return () => {
-	// 		cancelled = true;
-	// 	};
-	// }, []);
+	useEffect(() => {
+		if (hasFetched.current) return;
+		hasFetched.current = true;
+		let cancelled = false;
+		getSession().then((s) => !cancelled && setSession(s));
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
-	// useEffect(() => {
-	// 	// Rediriger une seule fois si pas connecté et pas déjà sur /auth/login
-	// 	if (session === null && router.pathname !== "/auth/login") {
-	// 		router.replace("/auth/login");
-	// 	}
-	// }, [session, router]);
+	useEffect(() => {
+		if (session === null && router.pathname !== "/auth/login") {
+			router.replace("/auth/login");
+		}
+	}, [session, router]);
 
-	// if (session === undefined) {
-	// 	console.log("Session utilisateur :", session);
-	// 	return <div>Chargement...</div>;
-	// }
+	if (session === undefined) return <div>Chargement...</div>;
 
-	// console.log("Session utilisateur :", session);
+	if (session && !session.user) {
+		router.replace("/auth/login");
+		return null;
+	}
 
-	// // If session resolved but user missing -> redirect (failsafe)
-	// if (session && !session.user) {
-	// 	router.replace("/auth/login");
-	// 	return null;
-	// }
-
-	// if (session === null) {
-	// 	return (
-	// 		<div>
-	// 			<h2>Connexion requise</h2>
-	// 			<button
-	// 				onClick={async () => {
-	// 					const res = await signIn({
-	// 						email: "demo@user.com",
-	// 						password: "password123",
-	// 					});
-	// 					if (res?.user) {
-	// 						setSession(res); // store session data
-	// 						router.replace("/profile");
-	// 					}
-	// 				}}
-	// 			>
-	// 				Se connecter
-	// 			</button>
-	// 		</div>
-	// 	);
-	// }
+	if (session === null) {
+		return (
+			<div>
+				<h2>Connexion requise</h2>
+				<button
+					onClick={async () => {
+						const res = await signIn({
+							email: "demo@user.com",
+							password: "password123",
+						});
+						if (res?.user) {
+							setSession(res);
+							router.replace("/profile");
+						}
+					}}
+				>
+					Se connecter
+				</button>
+			</div>
+		);
+	}
 
 	return (
 		<div>

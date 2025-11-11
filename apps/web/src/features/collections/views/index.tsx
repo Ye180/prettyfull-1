@@ -14,7 +14,7 @@ import { ScrollArea } from "@prettyfull/ui";
 import { useParams } from "next/navigation";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 import { useGetProducts } from "../api/get-product";
-import { useGetProductsBySlug } from "../api/get-product-of-cat-by-slug";
+import { useGetProductsByCategorySlug } from "../api/get-product-of-cat-by-slug";
 
 const CollectionViews = () => {
 	const { data: products, isLoading } = useGetProducts({ page: 1, limit: 24 });
@@ -26,7 +26,7 @@ const CollectionViews = () => {
 	console.log("Collection Params:", params);
 
 	const { data: productsBySlug, isLoading: isLoadingBySlug } =
-		useGetProductsBySlug(params.slug as string);
+		useGetProductsByCategorySlug(params.slug as string);
 
 	console.log("Fetched products by slug:", productsBySlug);
 	// console.log("Fetched products by slug:", isLoadingBySlug);
