@@ -395,14 +395,14 @@ export default function ProductForm() {
 	};
 
 	return (
-		<div className="w-full max-w-5xl p-6 mx-auto">
+		<div className="w-full p-6 mx-auto">
 			<ProductStepper
 				currentStep={currentStep}
 				isStep1Completed={isStep1Completed}
 			/>
 
 			<Form {...form}>
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6 ">
 					{stepComponents()}
 
 					<div className="flex items-center justify-between w-full pt-6 mt-8 border-t gap-y-8">

@@ -266,7 +266,6 @@ export function CardProduct({
 					/>
 				))}
 				{/* Fallback si pas de produit */}
-
 				{!drawerStates.showSizes && (
 					<div className="absolute flex items-center justify-between w-full gap-8 px-4 transition-all duration-300 ease-in-out opacity-0 bottom-5 max-md:hidden md:flex">
 						<Button
@@ -283,11 +282,20 @@ export function CardProduct({
 						</button>
 					</div>
 				)}
-				<DrawerCart
-					size={size}
-					handleClick={(e) => handleShowSizes(e)}
-					close={() => updateDrawerState("showSizes", false)}
-				/>
+				<div className="absolute right-0 flex items-center justify-between w-full p-2 text-2xl rounded-full cursor-pointer bottom-5">
+					<button
+						className="p-2 text-2xl rounded-full cursor-pointer w-fit bg-secondary"
+						onClick={(e) => e.stopPropagation()}
+					>
+						<Heart className="w-8 h-8" />
+					</button>
+					<DrawerCart
+						size={size}
+						handleClick={(e) => handleShowSizes(e)}
+						close={() => updateDrawerState("showSizes", false)}
+					/>
+				</div>
+
 				{promotion && (
 					<span className="fond-semibold bg-red-700 text-white !text-[0.8rem] lg:!text-[1.2rem] lg:!text-xs  absolute top-4 left-4 px-3 py-2 rounded-full">
 						{promotion.pourcentage}% OFF

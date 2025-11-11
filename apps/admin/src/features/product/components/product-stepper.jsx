@@ -34,7 +34,7 @@ export default function ProductStepper({ currentStep, isStep1Completed }) {
 										isCompleted
 											? "bg-green-600 border-green-600"
 											: isActive
-												? "bg-blue-600 border-blue-600"
+												? "bg-blue-600 border-black-600"
 												: "bg-gray-200 border-gray-300"
 									)}
 								>
@@ -66,7 +66,7 @@ export default function ProductStepper({ currentStep, isStep1Completed }) {
 									>
 										{step.name}
 									</div>
-									<div className="text-xs text-gray-500 mt-1">
+									<div className="mt-1 text-xs text-gray-500">
 										{step.description}
 									</div>
 								</div>
