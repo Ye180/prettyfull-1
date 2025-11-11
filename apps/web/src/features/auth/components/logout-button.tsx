@@ -5,17 +5,17 @@ import { useRouter } from "next/navigation";
 import { authClient } from "../../../shared/lib/auth.client";
 
 export function LogoutButton() {
-  const router = useRouter();
-  const { signOut } = authClient;
+	const router = useRouter();
+	const { signOut } = authClient;
 
-  const handleLogout = async () => {
-    await signOut();
-    router.push("/login");
-  };
+	const handleLogout = async () => {
+		await signOut();
+		router.push("/login");
+	};
 
-  return (
-    <Button onClick={handleLogout} variant="outline">
-      Se déconnecter
-    </Button>
-  );
+	return (
+		<Button onClick={handleLogout} variant="outline">
+			Se déconnecter
+		</Button>
+	);
 }

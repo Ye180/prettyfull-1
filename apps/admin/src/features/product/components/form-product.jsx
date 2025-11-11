@@ -1,76 +1,77 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useGetCategory } from "@/features/category/api/get-category";
-import { useGetPrimaryCategory } from "@/features/shared/api/get-primary-category";
-import { SelectScrollable } from "@/shared/component/select-within-search";
-import { PRODUCTS_QUERY_KEY } from "@/utils/query-keys";
+import { Form } from "@/components/ui/form";
+import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { Minus, PlusIcon } from "lucide-react";
+import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
+import { useAddVariants } from "../api/add-variants-products";
+import { useCreateInit } from "../api/create-init-products";
 import { useCreate } from "../api/create-products";
+import FormProductAddVariant from "./form-add-variant";
+import FormProductInitCreation from "./form-product-init-creation";
+// Define PRODUCTS_QUERY_KEY (assuming it's defined elsewhere, e.g., 'products')
+const PRODUCTS_QUERY_KEY = "products";
+// Assuming toast is defined globally or imported
+const toast = {
+	success: (message) => console.log(`SUCCESS: ${message}`),
+	error: (message) => console.error(`ERROR: ${message}`),
+};
 
 export default function ProductForm() {
-	const { mutate: createProduct, isPending, isSuccess, isError } = useCreate();
+	const { mutate: createProduct, isPending } = useCreate(); // Removed isSuccess, isError as they are not used immediately
+	const { mutate: createInitProduct, isPending: isInitPending } =
+		useCreateInit(); // Removed isSuccess, isError as they are not used immediately
+
+	const { mutate: addVariantProduct, isPending: isAddVariantPending } =
+		useAddVariants(); // Removed isSuccess, isError as they are not used immediately
 
 	const form = useForm({
 		defaultValues: {
-			nameFr: "",
-			nameEn: "",
+			step1: {
+				nameFr: "",
+				nameEn: "",
 
-			descriptionFr: "",
-			descriptionEn: "",
-			smallDescriptionFr: "",
-			smallDescriptionEn: "",
-			categoryId: "",
-			link: "",
-			sku: "",
+				descriptionFr: "",
+				descriptionEn: "",
+				smallDescriptionFr: "",
+				smallDescriptionEn: "",
+				categoryId: "",
+				link: "",
+				sku: "",
 
-			priceAmountFr: 0,
-			priceAmountEn: 0,
-			currencyFr: "XOF",
-			currencyEn: "USD",
+				priceAmountFr: null,
+				priceAmountEn: null,
+				currencyFr: "",
+				currencyEn: "",
 
-			priceCurrency: "EUR",
-			solde: false,
-			reducedPrice: 0,
-			pourcentage: 0,
-			label: "",
-			isActive: true,
-			isFeatured: false,
-			stock: 0,
-			seoTitleFr: "",
-			seoTitleEn: "",
-			seoDescFr: "",
-			seoDescEn: "",
-			slug: "",
-			seoKeywords: "",
-			variable: [
-				{
-					colorLabel: "",
-					colorCode: "#FFFFFF",
-					size: "",
-					quantity: 0,
-					image: [],
-				},
-			],
-			notVariable: {
-				colorLabel: "",
-				colorCode: "#FFFFFF",
-				size: "",
-				quantity: 0,
-				// Changer le type pour accepter une chaîne de caractères
-				image: "", // Sera un string avec les URLs séparées par des virgules
+				solde: false,
+				reducedPrice: 0,
+				pourcentage: 0,
+				labelFr: "", // Corrected: Should be labelFr/En to match DTO structure
+				labelEn: "",
+
+				isActive: true,
+				isFeatured: false,
+				stock: 0,
+				seoTitleFr: "",
+				seoTitleEn: "",
+				seoDescFr: "",
+				seoDescEn: "",
+				slug: "",
+				seoKeywords: "",
+			},
+			step2: {
+				variants: [
+					{
+						id: "",
+						colorLabel: "",
+						colorCode: "#FFFFFF",
+						size: [""], // Comma-separated string for react-hook-form input
+						quantity: 0,
+						image: [], // FileList or array of files
+					},
+				],
 			},
 		},
 	});
@@ -78,669 +79,218 @@ export default function ProductForm() {
 	const { control, handleSubmit } = form;
 	const { fields, append, remove } = useFieldArray({
 		control,
-		name: "variable",
+		name: "variants",
 	});
 
 	const queryClient = useQueryClient();
 
-	// 🧠 Conversion JSON -> FormData
+	const [currentStep, setCurrentStep] = useState(0);
+	const [productId, setProductId] = useState(0);
+
+	const handleNext = async (e) => {
+		e.preventDefault(); // Empêcher la soumission du formulaire
+
+		setCurrentStep((prev) => Math.min(prev + 1)); // Ajustez la
+	};
+
+	const handlePrevious = async (e) => {
+		e.preventDefault(); // Empêcher la soumission du formulaire
+
+		setCurrentStep((prev) => Math.min(prev - 1)); // Ajustez la
+	};
 	const onSubmit = async (data) => {
-		const jsonData = {
-			name: { fr: data.nameFr, en: data.nameEn },
-			description: { fr: data.descriptionFr, en: data.descriptionEn },
-			categoryId: data.categoryId,
-			link: data.link,
-			smallDescription: {
-				fr: data.smallDescriptionFr,
-				en: data.smallDescriptionEn,
-			},
-			sku: data.sku,
-			price: {
-				amount: {
-					fr: Number(data.priceAmountFr),
-					en: Number(data.priceAmountEn),
-				},
-				currency: {
-					fr: data.currencyFr,
-					en: data.currencyEn,
-				},
-			},
-			solde: data.solde,
-			slug: data.slug,
-			promotion: {
-				reduced_price: Number(data.reducedPrice),
-				pourcentage: Number(data.pourcentage),
-			},
-			isActive: data.isActive,
-			isFeatured: data.isFeatured,
-			stock: Number(data.stock),
-			label: data.label,
-			seoMeta: {
-				title: { fr: data.seoTitleFr, en: data.seoTitleEn },
-				description: { fr: data.seoDescFr, en: data.seoDescEn },
-				keywords: data.seoKeywords.split(",").map((k) => k.trim()),
-			},
-			variable: data.variable.map((v) => ({
-				color: { label: v.colorLabel, code: v.colorCode },
-				size: v.size.split(",").map((s) => s.trim()),
-				quantity: Number(v.quantity),
-				image: v.image,
-			})),
-			notVariable: data.notVariable.colorLabel
-				? {
-						color: {
-							label: data.notVariable.colorLabel,
-							code: data.notVariable.colorCode,
+		// --- API Calls based on current step ---
+
+		try {
+			if (currentStep == 0) {
+				const dataSend = {
+					name: {
+						fr: data.step1.nameFr,
+						en: data.step1.nameEn,
+					},
+					description: {
+						fr: data.step1.descriptionFr,
+						en: data.step1.descriptionEn,
+					},
+					smallDescription: {
+						fr: data.step1.smallDescriptionFr,
+						en: data.step1.smallDescriptionEn,
+					},
+
+					categoryId: data.step1.categoryId,
+					link: data.step1.link,
+					sku: data.step1.sku,
+					slug: data.step1.slug,
+					price: {
+						amount: {
+							fr: Number(data.step1.priceAmountFr),
+							en: Number(data.step1.priceAmountEn),
 						},
-						size: data.notVariable.size.split(",").map((s) => s.trim()),
-						// Convertir la chaîne d'images en tableau
-						image: data.notVariable.image.split(",").map((img) => img.trim()),
-						quantity: Number(data.notVariable.quantity),
-					}
-				: null,
-		};
+						currency: {
+							fr: data.step1.currencyFr,
+							en: data.step1.currencyEn,
+						},
+					},
+					solde: data.step1.solde,
+					promotion: data.step1.solde
+						? {
+								reduced_price: {
+									fr: Number(data.step1.reducedPrice),
+									en: Number(data.step1.reducedPrice),
+								},
+								pourcentage: Number(data.step1.pourcentage),
+							}
+						: undefined,
+					label: {
+						fr: data.step1.labelFr,
+						en: data.step1.labelEn,
+					},
+					isActive: data.step1.isActive,
+					isFeatured: data.step1.isFeatured,
+					stock: Number(data.step1.stock),
+					seoMeta: {
+						title: {
+							fr: data.step1.seoTitleFr,
+							en: data.step1.seoTitleEn,
+						},
+						description: {
+							fr: data.step1.seoDescFr,
+							en: data.step1.seoDescEn,
+						},
+						keywords: data.step1.seoKeywords
+							? data.step1.seoKeywords
+									.split(",")
+									.map((k) => k.trim())
+									.filter((k) => k)
+							: [],
+					},
+				};
 
-		// Conversion en FormData
-		const formData = new FormData();
-		const appendFormData = (obj, parentKey = "") => {
-			Object.entries(obj).forEach(([key, value]) => {
-				const formKey = parentKey ? `${parentKey}[${key}]` : key;
-				if (value instanceof File) {
-					formData.append(formKey, value);
-				} else if (Array.isArray(value)) {
-					value.forEach((v, i) => appendFormData(v, `${formKey}[${i}]`));
-				} else if (typeof value === "object" && value !== null) {
-					appendFormData(value, formKey);
-				} else {
-					formData.append(formKey, value);
-				}
-			});
-		};
-		appendFormData(jsonData);
+				createInitProduct(dataSend, {
+					// Assuming createInitProduct returns a promise
+					onSuccess: async (response) => {
+						await queryClient.invalidateQueries({
+							queryKey: [PRODUCTS_QUERY_KEY],
+						});
 
-		// console.log("✅ FormData prêt :", formData.entries());
-		// console.log("✅ FormData prêt :", jsonData);
-		// console.log("✅ FormData prêt :", formData);
-
-		createProduct(jsonData, {
-			onSuccess: async () => {
-				await queryClient.invalidateQueries({
-					queryKey: [PRODUCTS_QUERY_KEY],
+						setProductId(response._id); // Set the product ID from response if needed
+						setCurrentStep((prev) => Math.min(prev + 1, 1)); // Move to next step
+					},
+					onError: (error) => {
+						console.error(
+							"Erreur lors de la création de l'initialisation du produit :",
+							error
+						);
+						throw error; // Re-throw to be caught by outer catch
+					},
 				});
+			} else if (currentStep == 1) {
+				const formData = new FormData();
 
-				toast.success("Produit créé avec succès !");
-			},
-			onError: (error) => {
-				console.error("Erreur lors de la création du produit :", error);
-				toast.error("Erreur lors de la création du produit !");
-			},
-		});
+				const variantsData = data.step2.variants.map((v) => ({
+					id: v?.colorCode,
+					color: v?.colorLabel
+						? { label: v.colorLabel, code: v.colorCode }
+						: undefined,
+					size: v?.size
+						.split(",")
+						.map((s) => s.trim())
+						.filter((s) => s), // Split string and trim/filter empty results
+					quantity: Number(v.quantity),
+					image: Array.isArray(v.image) ? v.image : [],
+				}));
+				for (const variant of variantsData) {
+					for (const [key, value] of Object.entries(variant.color)) {
+						formData.append(`color[${key}]`, value);
+					}
+
+					variant.size.forEach((size, index) => {
+						formData.append(`size[${index}]`, size);
+					});
+					formData.append("quantity", variant.quantity);
+
+					variant.image.forEach((image) => {
+						formData.append("images", image);
+					});
+				}
+
+				const variantsPayload = {
+					productId: productId, // Assuming the product ID is returned from createInitProduct
+					data: formData,
+				};
+				addVariantProduct(variantsPayload, {
+					onSuccess: () => {
+						toast.success("Variantes ajoutées avec succès !");
+					},
+					onError: (error) => {
+						console.error("Erreur lors de l'ajout des variantes :", error);
+						toast.error("Erreur lors de l'ajout des variantes !");
+					},
+				});
+			}
+
+			toast.success("Initialisation du produit créée avec succès !");
+		} catch (error) {
+			console.error("Erreur lors de l'initialisation du produit :", error);
+			toast.error("Erreur lors de l'initialisation du produit !");
+		}
+	};
+
+	const stepComponents = () => {
+		switch (currentStep) {
+			case 0:
+				return <FormProductInitCreation control={control} form={form} />;
+			case 1:
+				return (
+					<FormProductAddVariant
+						form={form}
+						control={control}
+						fields={fields}
+						append={append}
+						remove={remove}
+					/>
+				);
+
+			default:
+				return null;
+		}
 	};
 
 	const formatOptionLabel = (option) => {
 		return `${option.account} - ${option.label}`;
 	};
 
-	const { data: category } = useGetCategory();
-
-	const { data: primaryCategories } = useGetPrimaryCategory();
+	// const { data: primaryCategories } = useGetPrimaryCategory(); // Not used, removed from JSX and kept here as reference
 
 	return (
 		<Form {...form}>
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-				<h2 className="text-[1.5rem]! font-semibold pb-4">
-					Informations générales
-				</h2>
-				<div className="grid grid-cols-2 gap-4">
-					<FormField
-						control={control}
-						name="nameFr"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Nom (FR)</FormLabel>
-								<FormControl>
-									<Input placeholder="Robe d'été en lin" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="nameEn"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Name (EN)</FormLabel>
-								<FormControl>
-									<Input placeholder="Summer linen dress" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-				</div>
-				<div className="grid grid-cols-2 gap-4">
-					<FormField
-						control={control}
-						name="descriptionFr"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Description (FR)</FormLabel>
-								<FormControl>
-									<Textarea {...field} rows={3} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="descriptionEn"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Description (EN)</FormLabel>
-								<FormControl>
-									<Textarea {...field} rows={3} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-				</div>
-				<div className="grid grid-cols-2 gap-4">
-					<FormField
-						control={control}
-						name="smallDescriptionFr"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Courte description (FR)</FormLabel>
-								<FormControl>
-									<Input
-										placeholder="Robe d'été élégante et légère..."
-										{...field}
-									/>
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="smallDescriptionEn"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Short description (EN)</FormLabel>
-								<FormControl>
-									<Input
-										placeholder="Robe d'été élégante et légère..."
-										{...field}
-									/>
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-				</div>
+				{stepComponents()}
 
-				<div className="grid grid-cols-3 gap-4">
-					<SelectScrollable
-						control={control}
-						nameId="categoryId"
-						label="Catégorie"
-						placeholder="Sélectionner une catégorie"
-						data={category}
-					/>
-					<FormField
-						control={control}
-						name="link"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Lien produit</FormLabel>
-								<FormControl>
-									<Input placeholder="/produits/robe-ete-lin" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="sku"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>SKU</FormLabel>
-								<FormControl>
-									<Input placeholder="ROBE-LIN-2025" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-				</div>
-				<FormField
-					control={control}
-					name="slug"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Slug</FormLabel>
-							<FormControl>
-								<Input placeholder="robe-ete-lin" {...field} />
-							</FormControl>
-						</FormItem>
-					)}
-				/>
-				<h2 className="text-[1.5rem]! font-semibold pb-4">Prix et promotion</h2>
-				<div className="grid grid-cols-4 gap-4">
-					<FormField
-						control={control}
-						name="priceAmountFr"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Prix (FR:XOF)</FormLabel>
-								<FormControl>
-									<Input type="number" step="0.01" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="currencyFr"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Monnaie</FormLabel>
-								<FormControl>
-									<Input placeholder="XOF" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="priceAmountEn"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Prix (EN:USD)</FormLabel>
-								<FormControl>
-									<Input placeholder="USD" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="currencyEn"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Currency</FormLabel>
-								<FormControl>
-									<Input type="number" step="0.01" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="solde"
-						render={({ field }) => (
-							<FormItem className="flex items-center gap-2">
-								<FormControl>
-									<Checkbox
-										checked={field.value}
-										onCheckedChange={field.onChange}
-									/>
-								</FormControl>
-								<FormLabel>En solde</FormLabel>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="reducedPrice"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Prix réduit (€)</FormLabel>
-								<FormControl>
-									<Input type="number" step="0.01" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="pourcentage"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Réduction (%)</FormLabel>
-								<FormControl>
-									<Input type="number" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-				</div>
-				<h2 className="text-[1.5rem]! font-semibold pb-4">
-					Option unique (notVariable)
-				</h2>
-				<div className="p-4 space-y-3 border rounded-xl bg-muted/30">
-					<div className="grid grid-cols-2 gap-4">
-						<FormField
-							control={control}
-							name="notVariable.colorLabel"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Nom de couleur</FormLabel>
-									<FormControl>
-										<Input {...field} placeholder="Vert olive" />
-									</FormControl>
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={control}
-							name="notVariable.colorCode"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Code couleur</FormLabel>
-									<FormControl className="">
-										<Input
-											className="w-24 rounded-lg!"
-											type="color"
-											{...field}
-										/>
-									</FormControl>
-								</FormItem>
-							)}
-						/>
+				<div className="flex items-center justify-between w-full mt-8 gap-y-8">
+					<div className="flex gap-x-4">
+						<Button
+							type="submit"
+							size="lg"
+							variant="default"
+							className={(cn("py-4 w-fit"), currentStep === 0 && "hidden")}
+							onClick={handlePrevious}
+						>
+							Previous
+						</Button>
+						{/* <Button
+							type="button"
+							size="lg"
+							variant="default"
+							onClick={handleNext}
+							className={(cn("py-4 w-fit "), currentStep === 1 && "hidden")}
+						>
+							Continuer
+						</Button> */}
 					</div>
 
-					<FormField
-						control={control}
-						name="notVariable.size"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>
-									Tailles disponibles (séparées par virgules)
-								</FormLabel>
-								<FormControl>
-									<Input {...field} placeholder="S, M, L" />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-
-					<FormField
-						control={control}
-						name="notVariable.quantity"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Quantité</FormLabel>
-								<FormControl>
-									<Input type="number" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-
-					<FormField
-						control={control}
-						name="notVariable.image"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Images (URLs séparées par virgules)</FormLabel>
-								<FormControl>
-									<Textarea
-										{...field}
-										placeholder="https://cdn.example.com/image1.jpg, ..."
-									/>
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-				</div>
-				<div className="flex items-center justify-between">
-					<h2 className="text-[1.5rem]! font-semibold pb-4">
-						Variables (couleur / taille / stock / images)
-					</h2>
-					<button
-						type="button"
-						className="h-12 w-fit"
-						onClick={() =>
-							append({
-								colorLabel: "",
-								colorCode: "#FFFFFF",
-								size: "",
-								image: [],
-								quantity: 0,
-							})
-						}
-					>
-						<PlusIcon className="inline-block p-1 mb-2 mr-2 text-white bg-black size-8 rounded-2xl" />
-					</button>
-				</div>
-
-				{fields.map((field, index) => (
-					<div key={field.id} className="p-4 space-y-3 border rounded-xl">
-						<div className="flex items-center justify-between">
-							<h3 className="text-[1rem]! font-semibold pb-2">
-								Variante {index + 1}
-							</h3>
-							<button
-								type="button"
-								className={"w-fit  rounded-lg!"}
-								onClick={() => remove(index)}
-							>
-								<Minus className="inline-block p-1 mb-1 mr-1 text-white bg-red-600 size-6 rounded-2xl" />
-							</button>
-						</div>
-
-						<div className="grid grid-cols-2 gap-4">
-							<FormField
-								control={control}
-								name={`variable.${index}.colorLabel`}
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Nom de couleur</FormLabel>
-										<FormControl>
-											<Input {...field} placeholder="Beige naturel" />
-										</FormControl>
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={control}
-								name={`variable.${index}.colorCode`}
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Code couleur</FormLabel>
-										<FormControl>
-											<Input
-												type="color"
-												className="w-24 rounded-lg!"
-												{...field}
-											/>
-										</FormControl>
-									</FormItem>
-								)}
-							/>
-						</div>
-
-						<FormField
-							control={control}
-							name={`variable.${index}.size`}
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Tailles (séparées par virgule)</FormLabel>
-									<FormControl>
-										<Input {...field} placeholder="XS, S, M, L" />
-									</FormControl>
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={control}
-							name={`variable.${index}.quantity`}
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Quantité</FormLabel>
-									<FormControl>
-										<Input type="number" {...field} />
-									</FormControl>
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={control}
-							name={`variable.${index}.image`}
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Images (URLs séparées par virgule)</FormLabel>
-									<FormControl>
-										<Textarea
-											{...field}
-											placeholder="https://cdn.example.com/image1.jpg, ..."
-										/>
-									</FormControl>
-								</FormItem>
-							)}
-						/>
-					</div>
-				))}
-
-				<h2 className="text-[1.5rem]! font-semibold py-4">
-					Autres informations
-				</h2>
-				<div className="grid grid-cols-3 gap-4">
-					<FormField
-						control={control}
-						name="label"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Label produit</FormLabel>
-								<FormControl>
-									<Input {...field} placeholder="Collection Été 2025" />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="stock"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Stock total</FormLabel>
-								<FormControl>
-									<Input type="number" {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="isFeatured"
-						render={({ field }) => (
-							<FormItem className="flex items-center gap-2">
-								<FormControl>
-									<Checkbox
-										checked={field.value}
-										onCheckedChange={field.onChange}
-									/>
-								</FormControl>
-								<FormLabel>Mise en avant</FormLabel>
-							</FormItem>
-						)}
-					/>
-				</div>
-				<h2 className="text-[1.5rem]! font-semibold pb-4">SEO</h2>
-				<div className="grid grid-cols-2 gap-4">
-					<FormField
-						control={control}
-						name="seoTitleFr"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>SEO Titre (FR)</FormLabel>
-								<FormControl>
-									<Input {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="seoTitleEn"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>SEO Title (EN)</FormLabel>
-								<FormControl>
-									<Input {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="seoDescFr"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>SEO Description (FR)</FormLabel>
-								<FormControl>
-									<Textarea {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="seoDescEn"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>SEO Description (EN)</FormLabel>
-								<FormControl>
-									<Textarea {...field} />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={control}
-						name="seoKeywords"
-						render={({ field }) => (
-							<FormItem className="">
-								<FormLabel>SEO Mots-clés (séparés par virgules)</FormLabel>
-								<FormControl>
-									<Input {...field} placeholder="robe, femme, été, lin..." />
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-				</div>
-
-				{/* <SelectWithSearch
-					options={[
-						{
-							id: "subclass1",
-							label: "Sous-classe A",
-							account: "Compte 123",
-						},
-						{
-							id: "subclass2",
-							label: "Sous-classe B",
-							account: "Compte 456",
-						},
-					]}
-					value={form.watch("seoKeywords")}
-					onChange={(value) => {
-						form.setValue("subClassId", value);
-					}}
-					placeholder="Sélectionner une sous classe"
-					searchPlaceholder="Rechercher le numero de sous classe..."
-					emptyMessage="Aucune sous classe trouvée."
-					loading={false}
-					formatOptionLabel={formatOptionLabel}
-					className="h-20 rounded-3xl border-2 border-[#dadddc] text-[1.5rem]"
-					// error={"Erreur de chargement des sous classes"}
-				/> */}
-
-				<div className="flex justify-start gap-4 pt-6">
-					<Button type="submit" className="h-12 w-fit">
-						Enregistrer le produit
-					</Button>
-					<Button type="submit" className="h-12 bg-red-500 w-fit">
-						Annuler
+					<Button type="submit" className="py-4 w-fit " disabled={isPending}>
+						{isPending ? "Création en cours..." : "Créer le produit"}
 					</Button>
 				</div>
 			</form>

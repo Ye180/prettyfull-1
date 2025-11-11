@@ -206,7 +206,7 @@ const Layout = ({
 												<div className={"text-Msurfacesurfaceinvert"}>
 													<ReactSVG src={originalUrl + "/images/GearSix.svg"} />
 												</div>
-												<p className="font-medium text__16 ">Setting</p>
+												<p className="font-medium text__16 ">Parametre</p>
 											</Link>
 											<div
 												onClick={handleShow}
@@ -217,7 +217,7 @@ const Layout = ({
 												<div className={"text-Msurfacesurfaceinvert"}>
 													<ReactSVG src={originalUrl + "/images/SignOut.svg"} />
 												</div>
-												<p className="font-medium text__16">Log Out</p>
+												<p className="font-medium text__16">Deconexion</p>
 											</div>
 										</div>
 									</div>
@@ -284,9 +284,7 @@ const Layout = ({
 																alt=""
 															/>
 															<div className="hidden lg:block">
-																<h5 className="font-semibold text__18">
-																	Ashlynn Carder
-																</h5>
+																<h5 className="font-semibold text__18">Awa</h5>
 																<p className="text__14 text-Mtexttextsecondary">
 																	Admin
 																</p>

@@ -1,9 +1,18 @@
-import { Button, CardProduct, GridCardProduct } from "@prettyfull/ui";
+import { useGetProducts } from "@/features/collections/api/get-product";
+import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
+import {
+	Button,
+	CardProduct,
+	CardProps,
+	GridCardProduct,
+} from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
 const ModeCollection = () => {
 	const t = useTranslations("HomePage.collection");
+
+	const { data: products, isLoading } = useGetProducts({ page: 1, limit: 24 });
 	return (
 		<Container
 			maxWidth="100vw"
@@ -46,35 +55,17 @@ const ModeCollection = () => {
 				</div>
 				<GridCardProduct classGrid="grid grid-cols-2  ">
 					<>
-						{Array.from({ length: 2 }).map((_, index) => (
+						{products?.map((items: CardProps, index: number) => (
 							<div key={index} className="w-full aspect-10/9">
 								<CardProduct
-								key={index}
-   										 productId={`suggestion-${index}`} 
-									notVariable={{
-										color: {
-											code: "#FF0000",
-											label: "Rouge",
-										},
-										image: ["/home/image.png"],
-										quantity: 1,
-										size: ["S", "M", "L"],
-									}}
-									price={
-										{
-											amount: 12000,
-											currency: "USD",
-										} /* Example price object */
-									}
-									promotion={{
-										pourcentage: 50,
-										reduced_price: {
-											amount: 6000,
-											currency: "USD",
-										},
-									}}
-									smallDescription="Top polyvalente á Manche"
-									name="Sweet-Top"
+									productId={items.id || items.productId}
+									variants={items.variants}
+									price={items.price}
+									notVariable={items.notVariable}
+									promotion={items?.promotion}
+									smallDescription={items.label}
+									name={items.name}
+									link={PRODUCT_PATHS.productDetail(items.slug as string)}
 								/>
 							</div>
 						))}

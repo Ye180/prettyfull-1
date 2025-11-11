@@ -48,7 +48,7 @@ const Size = ({
 
 	const handleClick = (
 		e?: React.MouseEvent<HTMLButtonElement>,
-		size?: string,
+		size?: string
 	) => {
 		e?.stopPropagation();
 		// Appelle uniquement onSizeChange
@@ -60,7 +60,7 @@ const Size = ({
 		<div
 			className={cn(
 				"grid grid-cols-4 gap-y-4 items-center gap-x-5 justify-between  ",
-				className,
+				className
 			)}
 		>
 			{sizeOptions.map((items, i) => (
@@ -77,7 +77,7 @@ const Size = ({
 							? "border-black"
 							: "border-gray-200 hover:border-gray-500",
 
-						classButton,
+						classButton
 					)}
 				>
 					{items.label}

@@ -23,6 +23,8 @@ export const
     getAll: '/products',
     getById: (productId: string) => `/products/${productId}`,
     create: '/products',
+    createInit: '/products/init-create-product/',
+    addVariants: (productId: string) => `/products/add-product-variant/${productId}/`,
     update: (productId: string) => `/products/${productId}`,
     remove: (productId: string) => `/products/${productId}`,
   },

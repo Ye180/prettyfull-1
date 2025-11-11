@@ -116,15 +116,15 @@ export class OrdersService {
 
         const productData = product as any;
 
-        // Vérifier le stock en fonction du type de produit (variable ou non)
+        // Vérifier le stock en fonction du type de produit (variants ou non)
         let stockQuantity = 0;
-        if (item.selectedVariants && productData.variable) {
+        if (item.selectedVariants && productData.variants) {
           // Produit avec variantes
           const selectedEntries = Object.entries(item.selectedVariants || {});
-          const variableArray = Array.isArray(productData.variable)
-            ? (productData.variable as any[])
+          const variantsArray = Array.isArray(productData.variants)
+            ? (productData.variants as any[])
             : [];
-          const variant = variableArray.find((v: any) =>
+          const variant = variantsArray.find((v: any) =>
             selectedEntries.every(([key, value]) => {
               const field = v?.[key];
               if (field && typeof field === 'object' && 'code' in field) {
@@ -190,14 +190,14 @@ export class OrdersService {
         });
 
         // Décrémentation du stock
-        if (item.selectedVariants && productData.variable) {
+        if (item.selectedVariants && productData.variants) {
           await this.productModel.updateOne(
             {
               _id: item.productId,
-              'variable.color.code': item.selectedVariants.color,
-              'variable.size': item.selectedVariants.size,
+              'variants.color.code': item.selectedVariants.color,
+              'variants.size': item.selectedVariants.size,
             },
-            { $inc: { 'variable.$.quantity': -item.quantity } },
+            { $inc: { 'variants.$.quantity': -item.quantity } },
           );
         } else if (productData.notVariable) {
           await this.productModel.updateOne(

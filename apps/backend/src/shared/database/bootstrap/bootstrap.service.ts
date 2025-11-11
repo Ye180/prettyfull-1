@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { CategoriesService } from 'src/modules/categories/categories.service';
 import { ProductsService } from 'src/modules/products/products.service';
-import { CATEGORY, PRODUCTS } from './constant/constant';
+import { PRODUCTS } from './constant/constant';
 
 @Injectable()
 export class BootstrapService implements OnApplicationBootstrap {
@@ -11,29 +11,27 @@ export class BootstrapService implements OnApplicationBootstrap {
   ) {}
 
   async bootstrapCategories(): Promise<void> {
-    try {
-      for (const category of CATEGORY) {
-        try {
-          await this.categoryService.create(category, 'system-bootstrap');
-          Logger.log(`🎉 Catégorie "${category.name.en}" créée avec succès !`);
-
-          const existing = await this.categoryService.findBySlug(category.slug);
-          if (existing) {
-            Logger.log(
-              `✅ Catégorie "${category.name.en}" déjà existante, aucune création nécessaire.`,
-            );
-            continue;
-          }
-        } catch (err) {
-          Logger.error(`Failed to create category: ${category.name.en}`, err);
-        }
-      }
-    } catch (error: any) {
-      Logger.error(
-        `❌ Erreur lors de la vérification de la catégorie: ${error.message}`,
-      );
-    }
-
+    // try {
+    //   for (const category of CATEGORY) {
+    //     try {
+    //       await this.categoryService.create(category, 'system-bootstrap');
+    //       Logger.log(`🎉 Catégorie "${category.name.en}" créée avec succès !`);
+    //       const existing = await this.categoryService.findBySlug(category.slug);
+    //       if (existing) {
+    //         Logger.log(
+    //           `✅ Catégorie "${category.name.en}" déjà existante, aucune création nécessaire.`,
+    //         );
+    //         continue;
+    //       }
+    //     } catch (err) {
+    //       Logger.error(`Failed to create category: ${category.name.en}`, err);
+    //     }
+    //   }
+    // } catch (error: any) {
+    //   Logger.error(
+    //     `❌ Erreur lors de la vérification de la catégorie: ${error.message}`,
+    //   );
+    // }
     // Sinon, la créer
   }
 

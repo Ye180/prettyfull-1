@@ -5,6 +5,8 @@ import {
   Product,
   ProductSchemaDefinition,
 } from '../products/schemas/product.schema';
+import { SiteContentModule } from '../site-content/site-content.module';
+import { StorageModule } from '../storage';
 import { CategoriesController } from './categories.controller';
 import { CategoriesService } from './categories.service';
 import { Category, CategorySchema } from './schemas/category.schema';
@@ -17,6 +19,8 @@ import { Category, CategorySchema } from './schemas/category.schema';
       { name: Product.name, schema: ProductSchemaDefinition },
     ]),
     NotificationsModule,
+    SiteContentModule,
+    StorageModule,
   ],
   controllers: [CategoriesController],
   providers: [CategoriesService],

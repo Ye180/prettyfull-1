@@ -65,10 +65,10 @@ class PromotionDto {
 
 // --- Variantes produit ---
 
-class VariableProductDto {
+export class VariantsProductDto {
   @IsOptional()
   @IsString()
-  id?: string;
+  id: string;
 
   @ValidateNested()
   @Type(() => ColorDto)
@@ -78,9 +78,8 @@ class VariableProductDto {
   @IsString({ each: true })
   size: string[];
 
-  @IsArray()
-  @IsString({ each: true })
-  image: string[];
+  @IsOptional()
+  images: any[];
 
   @IsNumber()
   @Min(0)
@@ -97,9 +96,11 @@ class NotVariableProductDto {
   @IsString({ each: true })
   size: string[];
 
+  // store filenames / URLs after binding
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  image: string[];
+  image?: string[];
 
   @IsNumber()
   @IsOptional()
@@ -144,9 +145,9 @@ export class CreateProductDto {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => VariableProductDto)
+  @Type(() => VariantsProductDto)
   @IsOptional()
-  variable?: VariableProductDto[];
+  variants?: VariantsProductDto[];
 
   @ValidateNested()
   @Type(() => NotVariableProductDto)

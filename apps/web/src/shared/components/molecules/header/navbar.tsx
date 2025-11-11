@@ -8,12 +8,13 @@ import { Input, Logo, Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useQueryState } from "nuqs";
+import { useState } from "react";
 import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
 import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
 import { Currency } from "./currency";
 import NavbarResponsive from "./navbar-responsive";
-import { useCartStore } from "../../../../../../../packages/store/src/use-cart-store"; // Chemin corrigé
-import { useState } from "react";
 
 const NavBarHeaders = ({
   main_category,
@@ -23,7 +24,8 @@ const NavBarHeaders = ({
   secondary_category: Category[];
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const pathname = usePathname();
+  const [division] = useQueryState("division");
   const t = useTranslations("HomePage.header");
 
   return (
@@ -38,16 +40,25 @@ const NavBarHeaders = ({
           </Link>
           <div className=" max-md:hidden flex text-[1.2rem] text-black items-center space-x-6">
             {main_category ? (
-              main_category.map((items: Category, index: number) => (
-                <Link
-                  key={index}
-                  href={PAGES_PATHS.pageDetail(items.slug)}
-                  onClick={() => setItem("links", items.name)}
-                  className="font-black text-[#262626] hover:text-black text-[16px]"
-                >
-                  {items.name}
-                </Link>
-              ))
+              main_category.map((items: Category, index: number) => {
+                const isActive =
+                  pathname === PAGES_PATHS.pageDetail(items.slug) ||
+                  division === items.slug;
+                return (
+                  <Link
+                    key={index}
+                    href={PAGES_PATHS.pageDetail(items.slug)}
+                    onClick={() => setItem("links", items.name)}
+                    className={cn(
+                      "font-black tracking-wide uppercase text-[#262626] hover:text-black text-sm transition-all",
+                      isActive &&
+                        "underline decoration-[3px] underline-offset-[6px]"
+                    )}
+                  >
+                    {items.name}
+                  </Link>
+                );
+              })
             ) : (
               <Skeleton className="h-9 w-[20rem] " />
             )}

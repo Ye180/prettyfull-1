@@ -1,9 +1,9 @@
 import Layout from "@/Components/Layout/Layout";
 import useHostname from "@/Components/Provider/HostnameProvider";
 import SecTop from "@/Components/Section/SecTop";
-import { Button } from "@/components/ui/button";
 import FormCategory from "@/features/category/components/form-category";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 // Ajout de useState, useEffect, useCallback
 import { Fragment } from "react";
 import { Container } from "react-bootstrap";
@@ -27,19 +27,22 @@ const AddProduct = () => {
 				<div>
 					<SecTop
 						title="Ajouter une catégorie"
-						subtitle={"Une nouvelle catégorie."}
+						subtitle={
+							"Créer une nouvelle catégorie pour organiser vos produits."
+						}
 					>
 						{/* Boutons du header */}
 						<div className="flex items-center gap-3">
-							<Button
+							<Link
+								href={`/add-product`}
 								// Bouton principal de soumission
 								// Désactiver pendant le chargement
 								className={`inline-block px-3 py-2 rounded-lg bg-black text-white `}
 							>
 								<div className="flex items-center gap-2">
-									<p className="font-medium text__14">{"Add Product"}</p>
+									<p className="font-medium text__14">{"Ajouter un produit"}</p>
 								</div>
-							</Button>
+							</Link>
 						</div>
 					</SecTop>
 

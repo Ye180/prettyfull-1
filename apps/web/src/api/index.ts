@@ -24,6 +24,8 @@ export const
     getById: (productId: string) => `/products/${productId}/`,
     getBySlug: (productSlug: string) => `/products/slugname/${productSlug}/`,
     create: '/products/',
+
+    getByCategorySlug: (categorySlug: string) => `/products/category/${categorySlug}/`,
     update: (productId: string) => `/products/${productId}/`,
     remove: (productId: string) => `/products/${productId}/`,
   },
@@ -36,7 +38,7 @@ export const
     getSecondaireCategories: '/categories/secondary-category/',
     getChildrenCategories: (slug:string) => `/categories/slug/${slug}/children/`,
     getBySlug: (categorySlug: string) => `/categories/slug/${categorySlug}/`,
-    getProductsByCategoryId: (categoryId: string) => `/categories/${categoryId}/products/`,
+    getProductsBySlug: (categorySlug: string) => `/categories/slug/${categorySlug}/products/`,
     create: '/categories',
     update: (categoryId: string) => `/categories/${categoryId}/`,
     remove: (categoryId: string) => `/categories/${categoryId}/`,

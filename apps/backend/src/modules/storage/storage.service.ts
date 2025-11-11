@@ -72,6 +72,7 @@ export class StorageService {
     filename?: string,
   ): Promise<UploadResult> {
     try {
+      //default filename to UUID if not provideddd
       // Générer un nom de fichier unique si non fourni
       const fileExtension = path.extname(file.originalname);
       const baseFilename = filename || randomUUID();

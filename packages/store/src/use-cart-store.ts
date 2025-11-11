@@ -39,42 +39,51 @@ export const useCartStore = create<CartState>((set) => ({
 
   setCart: (items) => set({ items }),
 
- addItem: (item) =>
-  set((state) => {
-    if (!item.productId) {
-      console.warn("⚠️ Tentative d'ajout d'un item sans productId");
-      return state;
-    }
+  // Ajoute ou met à jour un article
+  addItem: (item) => {
+    set((state) => {
+      const existingItemIndex = state.items.findIndex(
+        (i) => i.product._id === item.product._id, // Comparaison par l'ID du produit
+      );
+      if (existingItemIndex > -1) {
+        // Mettre à jour la quantité
+        const updatedItems = [...state.items];
+        const updatedItem = { ...updatedItems[existingItemIndex] };
+        updatedItem?.quantity += item.quantity;
+        updatedItems[existingItemIndex] = updatedItem;
+        return { items: updatedItems };
+      } else {
+        // Ajouter le nouvel article
+        return { items: [...state.items, item] };
+      }
+    });
+  },
 
-    const existingIndex = state.items.findIndex(
-      (i) => i.productId === item.productId
-    );
-
-    const updatedItems = [...state.items];
-
-    if (existingIndex === -1) {
-      // item not in cart yet — add it
-      updatedItems.push(item);
-    } else {
-      const existing = updatedItems[existingIndex]!;
-      const updatedItem: CartItem = {
-        productId: existing.productId,
-        product: existing.product,
-        quantity: (existing.quantity ?? 0) + (item.quantity ?? 0),
-        sku: existing.sku ?? item.sku,
-        unitPrice: existing.unitPrice ?? item.unitPrice,
-        selectedVariants: existing.selectedVariants ?? item.selectedVariants,
-      };
-      updatedItems[existingIndex] = updatedItem;
-    }
-
-    return { items: updatedItems };
-  }),
-
-  removeItem: (productId) =>
+  // Met à jour la quantité OU supprime l'article si quantité <= 0
+  updateQuantity: (productId, quantity) => {
     set((state) => ({
-      items: state.items.filter((i) => i.productId !== productId),
-    })),
+      items: state.items.reduce((acc, item) => {
+        if (item.product._id === productId) {
+          const newQuantity = Math.max(0, quantity);
+          if (newQuantity > 0) {
+            acc.push({ ...item, quantity: newQuantity });
+          }
+        } else {
+          acc.push(item);
+        }
+        return acc;
+      }, [] as CartItem[]), // Typer l'accumulateur pour corriger l'erreur TS
+    }));
+  },
 
-  clearCart: () => set({ items: [], currentCartId: undefined }),
+// Supprime un article
+removeItem: (productId: string) => {
+  set((state) => ({
+    items: state.items.filter((item) => item.product._id !== productId),
+  }));
+},
+
+
+  // Vide le panier
+  clearCart: () => set({ items: [] }),
 }));

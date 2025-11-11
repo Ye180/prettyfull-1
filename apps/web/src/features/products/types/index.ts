@@ -49,13 +49,13 @@ export type TProduct = {
   
   // Gérer les variantes si vous les utilisez
   notVariable?: ProductVariable;
-  variable?: ProductVariable[];
+  variants?: ProductVariable[];
 };
 
 export type ProductVariable = {
     color: { label: string; code: string };
 	size: string[];
-	image:string[] | StaticImport[];
+	images:string[] | StaticImport[];
 	quantity: number;
 };
 
@@ -73,33 +73,13 @@ export type ProductTypes = {
         reduced_price: number;
         pourcentage: number;
     };
-	notVariable?:ProductVariable; // Pour les produits sans variantes,
+  notVariable?: {
+        color?: { label: string; code: string };
+        size: string[];
+        image: string;
+        quantity?: number;
+  }; // Pour les produits sans variantes,
 
-    variable?: ProductVariable[]; // On remplace sizes, colors, images par les variantes
+    variants?: ProductVariable[]; // On remplace sizes, colors, images par les variantes
 };
 
-// export interface CardProps {
-//     title: string;
-//     link?: string;
-//     variable?: {
-//         color: { label: string; code: string };
-//         size: string[];
-//         image: Array<string>;
-//         quantity: number;
-//     }[];
-//     notVariable?: {
-//         color?: { label: string; code: string };
-//         size: string[];
-//         image: string;
-//          quantity?: number;
-//     };
-//     smallDescription?: string;
-//     price: number;
-//     solde?: boolean;
-//     promotion?: {
-//         reduced_price: number;
-//         pourcentage: number;
-//     };
-//     isLoading?: boolean;
-//     label?: string;
-// }

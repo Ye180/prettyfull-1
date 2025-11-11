@@ -50,7 +50,7 @@ const ProductInfos = ({
 			<div className="space-y-2">
 				{/* Catégorie */}
 				<h4 className="tracking-wide text-gray-500 uppercase !text-[2.1rem] font-bebas-neue">
-					{productData?.category}
+					{(productData?.category as { name: string })?.name || "Catégorie"}
 				</h4>
 
 				{/* Titre et prix */}
@@ -87,7 +87,7 @@ const ProductInfos = ({
 				{/* Options de produit */}
 				<ProductOptions
 					sizes={sizes as SizeOption[]}
-					variable={productData.variable}
+					variants={productData.variants}
 					selectedSize={selectedSize}
 					selectedColor={selectedColor}
 					onColorChange={(color) => setSelectedColor(color)}

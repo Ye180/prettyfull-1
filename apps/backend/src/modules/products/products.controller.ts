@@ -1,23 +1,28 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Headers,
+  Logger,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
-import type { UserSession } from '@thallesp/nestjs-better-auth';
-import { AllowAnonymous, Roles, Session } from '@thallesp/nestjs-better-auth';
-import { CreateProductDto } from './dto/create-product.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { AllowAnonymous, Roles } from '@thallesp/nestjs-better-auth';
+import { CreateProductDto, VariantsProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 
 @Controller('products')
 export class ProductsController {
+  private readonly logger = new Logger(ProductsController.name);
   constructor(private readonly productsService: ProductsService) {}
 
   /**
@@ -32,6 +37,15 @@ export class ProductsController {
     @Headers('accept-language') language: string = 'fr',
   ) {
     return this.productsService.findAll(page, limit, language);
+  }
+
+  @Get('/category/:slug')
+  @AllowAnonymous()
+  async findByCategorySlug(
+    @Param('slug') slug: string,
+    @Headers('accept-language') language: string = 'fr',
+  ) {
+    return this.productsService.findByCategorySlug(slug, language);
   }
 
   /**
@@ -58,15 +72,89 @@ export class ProductsController {
 
   /**
    * POST /products - Admin only
-   * Crée un nouveau produit
+   * Crée un nouveau produit avec upload d'images
    */
-  @Post()
-  @Roles(['admin'])
-  async create(
-    @Body() createProductDto: CreateProductDto,
-    @Session() session: UserSession,
+  // @Post()
+  // // @Roles(['admin'])
+  // @AllowAnonymous()
+  // @ApiConsumes('multipart/form-data')
+  // @ApiBody({
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       productData: {
+  //         type: 'string',
+  //         description: 'JSON stringifié des données du produit',
+  //       },
+  //       images: {
+  //         type: 'array',
+  //         items: {
+  //           type: 'string',
+  //           format: 'binary',
+  //         },
+  //         description: 'Images du produit',
+  //       },
+  //     },
+  //   },
+  // })
+  // @UseInterceptors(
+  //   FilesInterceptor('images', 20, {
+  //     fileFilter: (req, file, callback) => {
+  //       if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/i)) {
+  //         callback(
+  //           new Error('Seuls les fichiers images sont autorisés'),
+  //           false,
+  //         );
+  //         return;
+  //       }
+  //       callback(null, true);
+  //     },
+  //     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  //   }),
+  // )
+  // async create(
+  //   @Body('productData') createProductDto: CreateProductDto,
+  //   @UploadedFiles() images: Express.Multer.File[],
+  //   // @Session() session: UserSession,
+  // ) {
+  //   return this.productsService.create(createProductDto, images);
+  // }
+
+  /**
+   * POST /products/init-create-product
+   * Create minimal product (init), returns created product (id...)KD
+   */
+  @Post('init-create-product')
+  // @Roles(['admin'])
+  @AllowAnonymous()
+  async initCreate(@Body() payload: Partial<CreateProductDto>) {
+    // Basic validation
+    if (!payload?.name || !payload?.description) {
+      throw new BadRequestException('name and description are required');
+    }
+    return this.productsService.initCreate(payload);
+  }
+
+  /**
+   * PATCH /products/add-product-variant/:id
+   * Add one or more variants (no images) to an existing product
+   * body: { variants: VariableProductDto[] }
+   */
+  // SS
+  @Post('add-product-variant/:id')
+  @UseInterceptors(FilesInterceptor('images'))
+  // @Roles(['admin'])
+  @AllowAnonymous()
+  async addVariants(
+    @UploadedFiles() images: Express.Multer.File[],
+    @Body() variant: VariantsProductDto,
+    @Param('id') productId: string,
   ) {
-    return this.productsService.create(createProductDto);
+    return this.productsService.addVariants({
+      productId,
+      variant,
+      images,
+    });
   }
 
   /**
@@ -78,7 +166,7 @@ export class ProductsController {
   async update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
-    @Session() session: UserSession,
+    // @Session() session: UserSession,
   ) {
     return this.productsService.update(id, updateProductDto);
   }
@@ -89,7 +177,10 @@ export class ProductsController {
    */
   @Delete(':id')
   @Roles(['admin'])
-  async remove(@Param('id') id: string, @Session() session: UserSession) {
+  async remove(
+    @Param('id') id: string,
+    // @Session() session: UserSession
+  ) {
     return this.productsService.remove(id);
   }
 }

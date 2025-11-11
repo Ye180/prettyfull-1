@@ -30,8 +30,8 @@ const GridCollectionLayout = ({
 					{products?.map((items: CardProps, i: number) => (
 						<div key={i} className="w-full aspect-10/9">
 							<CardProduct
-							 productId={items.id || items.productId} 
-								variable={items.variable}
+								productId={items.id || items.productId}
+								variants={items.variants}
 								price={items.price}
 								notVariable={items.notVariable}
 								promotion={items?.promotion}
@@ -39,7 +39,6 @@ const GridCollectionLayout = ({
 								name={items.name}
 								link={PRODUCT_PATHS.productDetail(items.slug as string)}
 							/>
-
 						</div>
 					))}
 				</>

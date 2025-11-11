@@ -41,7 +41,7 @@ export const PRODUCT_PATHS = {
 
 export const COLLECTION_PATHS = {
   collectionList: ROOTS.collections,
-  collectionDetail: (id: string) => `${ROOTS.collections}/${id}`,
+  collectionDetail: (slug: string) => `${ROOTS.collections}/${slug}`,
   newCollection: ROOTS.collections + "/new",
   editCollection: (id: string) => `${ROOTS.collections}/${id}/edit`,
 };

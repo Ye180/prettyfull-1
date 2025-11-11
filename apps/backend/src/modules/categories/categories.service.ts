@@ -10,6 +10,7 @@ import {
   formatResponse,
 } from 'src/shared/utils/format-response';
 import { Product, ProductDocument } from '../products/schemas/product.schema';
+import { StorageService } from '../storage/storage.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category, CategoryDocument } from './schemas/category.schema';
@@ -39,6 +40,7 @@ export class CategoriesService {
     @InjectModel(Category.name)
     private categoryModel: Model<CategoryDocument>,
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
+    private readonly storageService: StorageService,
   ) {}
 
   /**
@@ -170,6 +172,7 @@ export class CategoriesService {
   async create(
     createCategoryDto: CreateCategoryDto,
     language: string,
+    image?: Express.Multer.File,
   ): Promise<CategoryDocument> {
     // Vérifier l'unicité du slug
     const existing = await this.categoryModel.findOne({
@@ -198,14 +201,25 @@ export class CategoriesService {
       createCategoryDto.slug,
     );
 
-    const category = new this.categoryModel({
+    const newCategoryData: any = {
       ...createCategoryDto,
       level,
       path,
-    });
+    };
+
+    if (image) {
+      const uploadedImage = await this.storageService.uploadFile(
+        image,
+        'categories',
+      );
+      newCategoryData.image = uploadedImage.url;
+    }
+
+    const category = new this.categoryModel(newCategoryData);
 
     return await category.save();
   }
+
   async update(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
@@ -355,25 +369,23 @@ export class CategoriesService {
     });
   }
 
-  async getProductOfCategoryBySlug(
-    slug: string,
-  ): Promise<FormatResponse<CategoryDocument>> {
-    const category = await this.categoryModel.findOne({ slug: slug });
+  // async getProductOfCategoryBySlug(slug: string): Promise<TransformedCategory> {
+  //   const category = await this.categoryModel.findOne({ slug: slug });
 
-    if (!category) {
-      throw new NotFoundException('Catégorie non trouvée');
-    }
+  //   if (!category) {
+  //     throw new NotFoundException('Catégorie non trouvée');
+  //   }
 
-    const products = await this.productModel
-      .find({ category: category._id })
-      .lean()
-      .exec();
+  //   const products = await this.productModel
+  //     .find({ category: category._id })
+  //     .lean()
+  //     .exec();
 
-    return formatResponse({
-      data: products,
-      message: 'Produits de la catégorie récupérés avec succès',
-    });
-  }
+  //   return {
+  //     products: products.map((product) => transformProduct(product, 'fr')),
+  //     message: 'Produits de la catégorie récupérés avec succès',
+  //   };
+  // }
 
   async findChildrenCategories(
     parent: string,
@@ -395,10 +407,7 @@ export class CategoriesService {
     return transformedCategories;
   }
 
-  async findChildrenBySlug(
-    slug: string,
-    language: string = 'fr',
-  ) {
+  async findChildrenBySlug(slug: string, language: string = 'fr') {
     const parentCategory = await this.categoryModel
       .findOne({ slug: slug })
       .lean()

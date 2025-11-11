@@ -11,15 +11,20 @@ const meta: Meta<typeof CardProduct> = {
 	tags: ["autodocs"],
 	args: {
 		onClick: fn(),
-		notVariable: {
-			color: { label: "Rouge", code: "#FF0000" },
-			size: ["S", "M", "L"],
-			image: "/assets/product_2.webp",
-			quantity: 1,
-		},
+		variants: [
+			{
+				color: { label: "Rouge", code: "#FF0000" },
+				size: ["S", "M", "L"],
+				images: ["/assets/product_1.jpg", "/assets/product_2.webp"],
+				quantity: 1,
+			},
+		],
 		smallDescription: "Top polyvalente á Manche",
 		title: "Sweet-Top",
-		price: 12000,
+		price: {
+			amount: 12000,
+			currency: "XAF",
+		},
 	},
 
 	argTypes: {
@@ -49,18 +54,27 @@ export const SoldeProduct: Story = {
 	args: {
 		onClick: fn(),
 
-		notVariable: {
-			color: { label: "Rouge", code: "#FF0000" },
-			size: ["S", "M", "L"],
-			image: "/assets/product_1.jpg",
-			quantity: 1,
-		},
+		variants: [
+			{
+				color: { label: "Rouge", code: "#FF0000" },
+				size: ["S", "M", "L"],
+				images: ["/assets/product_1.jpg", "/assets/product_2.webp"],
+				quantity: 1,
+			},
+		],
 		smallDescription: "Top polyvalente á Manche",
 		className: "w-[35rem] h-[55rem]",
 		title: "Sweet-Top",
-		price: 12000,
+		price: {
+			amount: 12000,
+			currency: "XAF",
+		},
 		promotion: {
-			reduced_price: 6000,
+			reduced_price: {
+				amount: 12000,
+
+				currency: "XAF",
+			},
 			pourcentage: 50,
 		},
 	},
@@ -72,19 +86,23 @@ export const VariableProduct: Story = {
 
 		smallDescription: "Top polyvalente á Manche",
 		title: "Sweet-Top",
-		price: 12000,
+		price: {
+			amount: 12000,
+
+			currency: "XAF",
+		},
 		className: "w-[35rem] h-[55rem]",
-		variable: [
+		variants: [
 			{
 				color: { label: "Rouge", code: "#FF0000" },
 				size: ["S", "M", "L"],
-				image: ["/assets/product_1.jpg", "/assets/product_2.webp"],
+				images: ["/assets/product_1.jpg", "/assets/product_2.webp"],
 				quantity: 1,
 			},
 			{
 				color: { label: "Vert", code: "#00FF00" },
 				size: ["S", "M", "L"],
-				image: ["/assets/product_2.webp", "image4.jpg"],
+				images: ["/assets/product_2.webp", "image4.jpg"],
 				quantity: 1,
 			},
 		],

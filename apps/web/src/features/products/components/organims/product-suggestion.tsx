@@ -17,7 +17,7 @@ const ProductSuggestion = () => {
 						<div key={i} className="w-full aspect-10/9">
 							<CardProduct
 								key={i}
-   								productId={`suggestion-${i}`}
+								productId={`suggestion-${i}`}
 								notVariable={{
 									color: {
 										code: "#FF0000",

@@ -4,6 +4,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Post,
   Query,
@@ -33,7 +34,8 @@ const imageFileFilter = (
   file: Express.Multer.File,
   callback: (error: Error | null, acceptFile: boolean) => void,
 ) => {
-  if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
+  // allow case-insensitive mime types (e.g. IMAGE/JPEG)
+  if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/i)) {
     callback(
       new BadRequestException(
         'Seuls les fichiers images sont autorisés (jpg, jpeg, png, gif, webp)',
@@ -205,7 +207,7 @@ export class StorageController {
     // Vérifier si le fichier existe avant de le supprimer
     const exists = await this.storageService.fileExists(key);
     if (!exists) {
-      throw new BadRequestException('Fichier non trouvé');
+      throw new NotFoundException('Fichier non trouvé');
     }
 
     await this.storageService.deleteFile(key);

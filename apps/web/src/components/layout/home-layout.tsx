@@ -12,7 +12,12 @@ const HomeLayout = ({
 	children,
 	className,
 }: PropsWithChildren<HomeLayoutProps>) => {
-	const { data: main_category } = useGetPrimaryCategory();
+	const {
+		data: main_category,
+		isLoading,
+		isError,
+		error,
+	} = useGetPrimaryCategory();
 
 	return (
 		<div className="flex flex-col min-h-screen overflow-x-hidden">
