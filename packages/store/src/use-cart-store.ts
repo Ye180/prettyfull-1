@@ -14,21 +14,20 @@ export interface CartItem {
   productId: string;
   product: CartProduct;
   quantity: number;
-  sku?: string; 
+  sku?: string;
   unitPrice?: { amount: number; currency: string };
   selectedVariants?: Record<string, string>;
 }
-
 
 export interface CartState {
   items: CartItem[];
   currentCartId?: string;
   setCart: (items: CartItem[]) => void;
   addItem: (item: CartItem) => void;
+  updateQuantity: (productId: string, quantity: number) => void;
   removeItem: (productId: string) => void;
   clearCart: () => void;
 }
-
 // --- Store
 export const useCartStore = create<CartState>((set) => ({
   items: [],
@@ -43,14 +42,18 @@ export const useCartStore = create<CartState>((set) => ({
   addItem: (item) => {
     set((state) => {
       const existingItemIndex = state.items.findIndex(
-        (i) => i.product._id === item.product._id, // Comparaison par l'ID du produit
+        (i) => i.product.id === item.product.id
       );
       if (existingItemIndex > -1) {
         // Mettre à jour la quantité
         const updatedItems = [...state.items];
-        const updatedItem = { ...updatedItems[existingItemIndex] };
-        updatedItem?.quantity += item.quantity;
-        updatedItems[existingItemIndex] = updatedItem;
+        const existingItem = updatedItems[existingItemIndex];
+        if (existingItem) {
+          updatedItems[existingItemIndex] = {
+            ...existingItem,
+            quantity: existingItem.quantity + item.quantity,
+          };
+        }
         return { items: updatedItems };
       } else {
         // Ajouter le nouvel article
@@ -63,7 +66,7 @@ export const useCartStore = create<CartState>((set) => ({
   updateQuantity: (productId, quantity) => {
     set((state) => ({
       items: state.items.reduce((acc, item) => {
-        if (item.product._id === productId) {
+        if (item.product.id === productId) {
           const newQuantity = Math.max(0, quantity);
           if (newQuantity > 0) {
             acc.push({ ...item, quantity: newQuantity });
@@ -72,17 +75,16 @@ export const useCartStore = create<CartState>((set) => ({
           acc.push(item);
         }
         return acc;
-      }, [] as CartItem[]), // Typer l'accumulateur pour corriger l'erreur TS
+      }, [] as CartItem[]),
     }));
   },
 
-// Supprime un article
-removeItem: (productId: string) => {
-  set((state) => ({
-    items: state.items.filter((item) => item.product._id !== productId),
-  }));
-},
-
+  // Supprime un article
+  removeItem: (productId: string) => {
+    set((state) => ({
+      items: state.items.filter((item) => item.product.id !== productId),
+    }));
+  },
 
   // Vide le panier
   clearCart: () => set({ items: [] }),
