@@ -88,10 +88,10 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   basePath: '/api/v1/auth',
 
   // Trusted origins pour CORS
-  trustedOrigins: (
-    process.env.BETTER_AUTH_TRUSTED_ORIGINS ||
-    'http://localhost:3000,http://localhost:3001,http://localhost:3002'
-  ).split(','),
+  trustedOrigins:
+    'http://localhost:3000,http://localhost:3001,http://localhost:3002'.split(
+      ',',
+    ),
 
   // MongoDB adapter
   database: mongodbAdapter(getMongoDb()),
