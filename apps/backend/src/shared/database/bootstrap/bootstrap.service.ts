@@ -69,7 +69,7 @@ export class BootstrapService implements OnApplicationBootstrap {
 
   async run(): Promise<void> {
     await this.bootstrapCategories();
-    await this.bootstrapProducts();
+    // await this.bootstrapProducts();
     await this.bootstrapUsers();
   }
 

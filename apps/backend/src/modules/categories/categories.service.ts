@@ -136,6 +136,22 @@ export class CategoriesService {
     );
   }
 
+  /**
+   * Récupère toutes les catégories qui ont un parent (sous-catégories)
+   */
+  async findAllWithParent(
+    language: string = 'fr',
+  ): Promise<TransformedCategory[]> {
+    const categories = await this.categoryModel
+      .find({ parent: { $ne: null } })
+      .lean()
+      .exec();
+
+    return categories.map((category) =>
+      this.transformCategory(category, language as 'fr' | 'en'),
+    );
+  }
+
   async findByName(
     name: string,
     language: string = 'fr',
@@ -417,7 +433,10 @@ export class CategoriesService {
       throw new NotFoundException('Catégorie parente non trouvée');
     }
 
-    return this.findChildrenCategories(parentCategory._id.toString(), language);
+    return this.findChildrenCategories(
+      (parentCategory._id as Types.ObjectId).toHexString(),
+      language,
+    );
   }
 
   /**

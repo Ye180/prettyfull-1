@@ -147,12 +147,27 @@ export class ProductsController {
   @AllowAnonymous()
   async addVariants(
     @UploadedFiles() images: Express.Multer.File[],
-    @Body() variant: VariantsProductDto,
+    @Body('variants') variants: VariantsProductDto[] = [],
     @Param('id') productId: string,
   ) {
+    // Accept either a parsed array or a JSON string (multipart sends strings)
+    let parsedVariants: any = variants as any;
+    if (typeof parsedVariants === 'string') {
+      try {
+        parsedVariants = JSON.parse(parsedVariants);
+      } catch {
+        throw new BadRequestException('Invalid JSON for variants');
+      }
+    }
+
+    if (!Array.isArray(parsedVariants) || parsedVariants.length === 0) {
+      throw new BadRequestException(
+        'variants array is required and cannot be empty',
+      );
+    }
     return this.productsService.addVariants({
       productId,
-      variant,
+      variants: parsedVariants,
       images,
     });
   }
