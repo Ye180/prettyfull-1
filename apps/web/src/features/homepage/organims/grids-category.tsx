@@ -21,7 +21,11 @@ const GridCategory = () => {
 							className="relative m-2 overflow-hidden bg-gray-200 shadow-md box"
 						>
 							<Image
-								src={`https://dev-storage.prettyfull.shop/api/browse/prettyfull/categories/product_2.jpg?view=1`}
+								src={`${
+									typeof item.image === "string"
+										? item.image + "?view=1"
+										: `https://dev-storage.prettyfull.shop/api/browse/prettyfull/categories/product_2.jpg?view=1`
+								}`}
 								alt={`${item.name} - vue ${index + 1}`}
 								fill
 								className="object-cover w-full h-32 "
@@ -40,7 +44,11 @@ const GridCategory = () => {
 							className="relative flex p-4 m-2 bg-gray-200 shadow-md lg:hidden "
 						>
 							<Image
-								src={`https://dev-storage.prettyfull.shop/api/browse/prettyfull/categories/product_2.jpg?view=1`}
+								src={`${
+									typeof item.image === "string"
+										? item.image + "?view=1"
+										: `https://dev-storage.prettyfull.shop/api/browse/prettyfull/categories/product_2.jpg?view=1`
+								}`}
 								alt="Category 1"
 								fill
 								className="object-cover w-full h-32 rounded-md"
