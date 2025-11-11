@@ -68,22 +68,31 @@ class PromotionDto {
 export class VariantsProductDto {
   @IsOptional()
   @IsString()
-  id: string;
-
-  @ValidateNested()
-  @Type(() => ColorDto)
-  color: ColorDto;
-
-  @IsArray()
-  @IsString({ each: true })
-  size: string[];
+  id?: string;
 
   @IsOptional()
-  images: any[];
+  @ValidateNested()
+  @Type(() => ColorDto)
+  color?: ColorDto;
 
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  size?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  images?: string[];
+
+  @IsOptional()
   @IsNumber()
-  @Min(0)
-  quantity: number;
+  quantity?: number;
+
+  // Nouveau champ pour mapper les fichiers uploadés
+  @IsOptional()
+  @IsString()
+  imageField?: string;
 }
 
 class NotVariableProductDto {

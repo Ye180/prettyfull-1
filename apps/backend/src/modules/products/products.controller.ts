@@ -14,7 +14,7 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { AllowAnonymous, Roles } from '@thallesp/nestjs-better-auth';
 import { CreateProductDto, VariantsProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -142,11 +142,11 @@ export class ProductsController {
    */
   // SS
   @Post('add-product-variant/:id')
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(AnyFilesInterceptor())
   // @Roles(['admin'])
   @AllowAnonymous()
   async addVariants(
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFiles() files: Express.Multer.File[],
     @Body('variants') variants: VariantsProductDto[] = [],
     @Param('id') productId: string,
   ) {
@@ -168,7 +168,7 @@ export class ProductsController {
     return this.productsService.addVariants({
       productId,
       variants: parsedVariants,
-      images,
+      files,
     });
   }
 
