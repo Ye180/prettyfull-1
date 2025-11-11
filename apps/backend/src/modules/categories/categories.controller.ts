@@ -112,7 +112,7 @@ export class CategoriesController {
     return this.categoriesService.getProductOfCategory(id);
   }
 
-  // //Get Prosucts of category by slug
+  //Get Prosucts of category by slug
   // @Get('slug/:slug/products')
   // @AllowAnonymous()
   // async getProductOfCategoryBySlug(

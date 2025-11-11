@@ -8,20 +8,24 @@ import {
 	FormField,
 	FormItem,
 	FormLabel,
+	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useGetPrimaryCategory } from "@/features/shared/api/get-primary-category";
 import { SelectScrollable } from "@/shared/component/select-within-search";
 import { CATEGORIES_QUERY_KEY } from "@/utils/query-keys";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useCreateCategory } from "../api/create-category";
 import { useGetCategory } from "../api/get-category";
+import { categorySchema } from "../schemas/category-schema";
 
 function FormCategory() {
 	const form = useForm({
+		resolver: zodResolver(categorySchema),
 		defaultValues: {
 			nameFr: "",
 			nameEn: "",
@@ -205,10 +209,11 @@ function FormCategory() {
 							name="nameFr"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Nom (FR)</FormLabel>
+									<FormLabel>Nom (FR) *</FormLabel>
 									<FormControl>
 										<Input placeholder="Chaussures de sport" {...field} />
 									</FormControl>
+									<FormMessage />
 								</FormItem>
 							)}
 						/>
@@ -217,10 +222,11 @@ function FormCategory() {
 							name="nameEn"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Name (EN)</FormLabel>
+									<FormLabel>Name (EN) *</FormLabel>
 									<FormControl>
 										<Input placeholder="Sports Shoes" {...field} />
 									</FormControl>
+									<FormMessage />
 								</FormItem>
 							)}
 						/>
@@ -233,10 +239,11 @@ function FormCategory() {
 							name="slug"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Slug</FormLabel>
+									<FormLabel>Slug *</FormLabel>
 									<FormControl>
 										<Input placeholder="sports-shoes" {...field} />
 									</FormControl>
+									<FormMessage />
 								</FormItem>
 							)}
 						/>
@@ -257,13 +264,14 @@ function FormCategory() {
 							name="descriptionFr"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Description (FR)</FormLabel>
+									<FormLabel>Description (FR) *</FormLabel>
 									<FormControl>
 										<Input
 											placeholder="Des baskets et chaussures..."
 											{...field}
 										/>
 									</FormControl>
+									<FormMessage />
 								</FormItem>
 							)}
 						/>
@@ -272,13 +280,14 @@ function FormCategory() {
 							name="descriptionEn"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Description (EN)</FormLabel>
+									<FormLabel>Description (EN) *</FormLabel>
 									<FormControl>
 										<Input
 											placeholder="Sneakers and sports shoes..."
 											{...field}
 										/>
 									</FormControl>
+									<FormMessage />
 								</FormItem>
 							)}
 						/>
@@ -296,6 +305,7 @@ function FormCategory() {
 								<FormControl>
 									<Input placeholder="CI, SN, FR" {...field} />
 								</FormControl>
+								<FormMessage />
 							</FormItem>
 						)}
 					/>
@@ -375,6 +385,7 @@ function FormCategory() {
 									<FormControl>
 										<Input type="number" {...field} />
 									</FormControl>
+									<FormMessage />
 								</FormItem>
 							)}
 						/>
@@ -391,6 +402,7 @@ function FormCategory() {
 											{...field}
 										/>
 									</FormControl>
+									<FormMessage />
 								</FormItem>
 							)}
 						/>
@@ -413,6 +425,7 @@ function FormCategory() {
 										}}
 									/>
 								</FormControl>
+								<FormMessage />
 							</FormItem>
 						)}
 					/>
@@ -495,14 +508,15 @@ function FormCategory() {
 						<Button
 							type="submit"
 							disabled={isPending}
-							className="flex items-center justify-center py-6 mx-auto rounded-lg w-fit"
+							className="flex items-center justify-center py-6 mx-auto rounded-lg w-fit disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							{isPending ? "Enregistrement..." : "Enregistrer"}
 						</Button>
 						<Button
 							type="button"
 							onClick={() => form.reset()}
-							className="flex items-center justify-center py-6 mx-auto bg-red-600 rounded-lg w-fit"
+							disabled={isPending}
+							className="flex items-center justify-center py-6 mx-auto bg-red-600 rounded-lg w-fit disabled:opacity-50"
 						>
 							Annuler
 						</Button>

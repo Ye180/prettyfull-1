@@ -15,8 +15,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import type { UserSession } from '@thallesp/nestjs-better-auth';
-import { AllowAnonymous, Roles, Session } from '@thallesp/nestjs-better-auth';
+import { AllowAnonymous, Roles } from '@thallesp/nestjs-better-auth';
 import { CreateProductDto, VariantsProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
@@ -38,6 +37,15 @@ export class ProductsController {
     @Headers('accept-language') language: string = 'fr',
   ) {
     return this.productsService.findAll(page, limit, language);
+  }
+
+  @Get('/category/:slug')
+  @AllowAnonymous()
+  async findByCategorySlug(
+    @Param('slug') slug: string,
+    @Headers('accept-language') language: string = 'fr',
+  ) {
+    return this.productsService.findByCategorySlug(slug, language);
   }
 
   /**
@@ -158,54 +166,10 @@ export class ProductsController {
   async update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
-    @Session() session: UserSession,
+    // @Session() session: UserSession,
   ) {
     return this.productsService.update(id, updateProductDto);
   }
-
-  /**
-   * PUT /products/bind-image-product/:id
-   * Upload images and bind them to variants or notVariable.
-   * Expects multipart/form-data with files field name "images" (multiple).
-   * Optional body field "imagesMap": JSON string that maps originalname => target
-   * Example imagesMap:
-   * [
-   *   { "filename": "img1.jpg", "target": { "type":"variable", "index":0 } },
-   *   { "filename": "img2.jpg", "target": { "type":"notVariable" } }
-   * ]
-   */
-  // @Put('bind-image-product/:id')
-  // @ApiConsumes('multipart/form-data')
-  // @ApiBody({
-  //   schema: {
-  //     type: 'object',
-  //     properties: {
-  //       images: {
-  //         type: 'array',
-  //         items: { type: 'string', format: 'binary' },
-  //       },
-  //       imagesMap: {
-  //         type: 'string',
-  //         description: 'JSON string mapping filenames to targets',
-  //       },
-  //     },
-  //   },
-  // })
-  // @UseInterceptors(
-  //   FilesInterceptor('images', 50, {
-  //     limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit for example
-  //   }),
-  // )
-  // // @Roles(['admin'])
-  // @AllowAnonymous()
-  // async bindImages(
-  //   @Param('id') id: string,
-  //   @UploadedFiles() images: Express.Multer.File[],
-  //   @Body('imagesMap') imagesMapStr?: string,
-  // ) {
-  //   const imagesMap = imagesMapStr ? JSON.parse(imagesMapStr) : undefined;
-  //   return this.productsService.bindImages(id, images || [], imagesMap);
-  // }
 
   /**
    * DELETE /products/:id - Admin only
@@ -213,7 +177,10 @@ export class ProductsController {
    */
   @Delete(':id')
   @Roles(['admin'])
-  async remove(@Param('id') id: string, @Session() session: UserSession) {
+  async remove(
+    @Param('id') id: string,
+    // @Session() session: UserSession
+  ) {
     return this.productsService.remove(id);
   }
 }

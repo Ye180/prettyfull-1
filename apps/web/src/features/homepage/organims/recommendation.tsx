@@ -1,6 +1,8 @@
+import { useGetProducts } from "@/features/collections/api/get-product";
 import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
 import {
 	CardProduct,
+	CardProps,
 	GridCardProduct,
 	Tabs,
 	TabsContent,
@@ -13,6 +15,8 @@ import Container from "../../../../../../packages/ui/src/layouts/helpers/contain
 const Recommendation = () => {
 	const t = useTranslations("HomePage.recommendation");
 
+	const { data: products, isLoading } = useGetProducts({ page: 1, limit: 24 });
+
 	const TABS = {
 		for_you: t("forYou"),
 		woman: t("woman"),
@@ -23,33 +27,17 @@ const Recommendation = () => {
 		return (
 			<GridCardProduct>
 				<>
-					{Array.from({ length: value }).map((_, i) => (
+					{products?.map((items: CardProps, i: number) => (
 						<div key={i} className="w-full aspect-10/9">
 							<CardProduct
-								key={i}
-   								productId={`suggestion-${i}`} 
-								notVariable={{
-									color: {
-										code: "#FF0000",
-										label: "Rouge",
-									},
-									image: ["/assets/product_1.jpg"],
-									quantity: 1,
-									size: ["S", "M", "L"],
-								}}
-								price={
-									{ amount: 12000, currency: "USD" } /* Example price object */
-								}
-								promotion={{
-									pourcentage: 50,
-									reduced_price: {
-										amount: 6000,
-										currency: "USD",
-									},
-								}}
-								smallDescription="Top polyvalente á Manche"
-								name="Sweet-Top"
-								link={PRODUCT_PATHS.productDetail("SWEET-TOP")}
+								productId={items.id || items.productId}
+								variants={items.variants}
+								price={items.price}
+								notVariable={items.notVariable}
+								promotion={items?.promotion}
+								smallDescription={items.label}
+								name={items.name}
+								link={PRODUCT_PATHS.productDetail(items.slug as string)}
 							/>
 						</div>
 					))}
