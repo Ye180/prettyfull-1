@@ -1,3 +1,5 @@
+"use client";
+
 import HomeView from "@/features/homepage/views/home.view";
 
 async function Page() {

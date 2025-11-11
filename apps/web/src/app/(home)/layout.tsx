@@ -1,11 +1,11 @@
-"use client"; 
+"use client";
 
 import HomeLayout from "@/components/layout/home-layout";
+// import { useCartSync } from "@/hooks/useCartSync";
 import { PropsWithChildren } from "react";
-import { useCartSync } from "@/hooks/useCartSync"; 
 
 const HomeRootLayout = ({ children }: PropsWithChildren<{}>) => {
-	useCartSync();
+	// useCartSync();
 
 	return <HomeLayout children={children} />;
 };
