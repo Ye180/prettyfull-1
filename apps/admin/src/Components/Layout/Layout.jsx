@@ -1,3 +1,4 @@
+import { Logo } from "@/features/shared/components/molecules/logo";
 import { LINK_ROUTES } from "@/shared/constantes/constantes-link";
 import Head from "next/head";
 import Link from "next/link";
@@ -164,13 +165,8 @@ const Layout = ({
 								}
 							>
 								<div className="flex flex-wrap h-full gap-y-4">
-									<div className="w-full space-y-18">
-										<Link
-											href="/"
-											className="text-[1.5rem] font-black tracking-wider text-black font-BebasNeue text-decoration-none "
-										>
-											PRETTYFULL
-										</Link>
+									<div className="w-full space-y-4">
+										<Logo />
 
 										<div className="grid grid-cols-1 gap-2 pt-10">
 											{LINK_ROUTES.map((link, index) => (
