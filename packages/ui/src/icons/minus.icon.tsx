@@ -1,10 +1,19 @@
-import React, { SVGProps } from "react";
+import React from "react";
 
-export const MinusIcon = ({ color = "currentColor", ...props }: SVGProps<SVGSVGElement>) => (
+interface IconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number;
+  color?: string;
+}
+
+export const MinusIcon = ({
+  size = 24,
+  color = "currentColor",
+  ...props
+}: IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
+    width={size}
+    height={size}
     fill="none"
     stroke={color}
     strokeWidth="2"
@@ -12,9 +21,7 @@ export const MinusIcon = ({ color = "currentColor", ...props }: SVGProps<SVGSVGE
     strokeLinejoin="round"
     viewBox="0 0 24 24"
     {...props}
-
   >
     <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
 );
-

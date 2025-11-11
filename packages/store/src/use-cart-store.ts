@@ -1,100 +1,80 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
-// --- Définition des types ---
-
-/**
- * Représentation minimale de l'objet Produit (TProduct)
- * tel que 'populé' par le service de panier du backend.
- */
-interface CartProduct {
-  _id: string;
-  name: { fr: string; en: string };
-  price: { amount: number; currency: string };
-  mainImageUrl?: string;
-  slug?: string;
-  // ... autres champs si nécessaires (ex: stock)
+// --- Types
+export interface CartProduct {
+  id: string;
+  name: string;
+  description?: string;
+  image?: string;
+  price?: number;
+  sku?: string;
 }
 
-/**
- * C'est le type 'CartItem' qui correspond EXACTEMENT
- * au schéma du backend (backend/src/modules/carts/schemas/carts.schema.ts).
- */
 export interface CartItem {
-  product: CartProduct; // Le produit est un objet imbriqué
+  productId: string;
+  product: CartProduct;
   quantity: number;
-  price: number; // Le prix unitaire au moment de l'ajout
+  sku?: string; 
+  unitPrice?: { amount: number; currency: string };
+  selectedVariants?: Record<string, string>;
 }
 
-/**
- * L'état global du panier
- */
-interface CartState {
+
+export interface CartState {
   items: CartItem[];
-  // Action pour hydrater le store (depuis l'API)
+  currentCartId?: string;
   setCart: (items: CartItem[]) => void;
-  // Actions locales (appelées par les mutations React Query)
   addItem: (item: CartItem) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
   removeItem: (productId: string) => void;
   clearCart: () => void;
 }
 
-export const useCartStore = create<CartState>((set, get) => ({
+// --- Store
+export const useCartStore = create<CartState>((set) => ({
   items: [],
+  currentCartId:
+    typeof window !== "undefined"
+      ? localStorage.getItem("guest_cart_id") || undefined
+      : undefined,
 
-  // Action pour remplacer le panier local par celui de l'API
   setCart: (items) => set({ items }),
 
-  // Ajoute ou met à jour un article
-  addItem: (item) => {
-    set((state) => {
-      const existingItemIndex = state.items.findIndex(
-        (i) => i.product._id === item.product._id, // Comparaison par l'ID du produit
-      );
-      if (existingItemIndex > -1) {
-        // Mettre à jour la quantité
-        const updatedItems = [...state.items];
-        const updatedItem = { ...updatedItems[existingItemIndex] };
-        updatedItem.quantity += item.quantity;
-        updatedItems[existingItemIndex] = updatedItem;
-        return { items: updatedItems };
-      } else {
-        // Ajouter le nouvel article
-        return { items: [...state.items, item] };
-      }
-    });
-  },
+ addItem: (item) =>
+  set((state) => {
+    if (!item.productId) {
+      console.warn("⚠️ Tentative d'ajout d'un item sans productId");
+      return state;
+    }
 
-  // Met à jour la quantité OU supprime l'article si quantité <= 0
-  updateQuantity: (productId, quantity) => {
+    const existingIndex = state.items.findIndex(
+      (i) => i.productId === item.productId
+    );
+
+    const updatedItems = [...state.items];
+
+    if (existingIndex === -1) {
+      // item not in cart yet — add it
+      updatedItems.push(item);
+    } else {
+      const existing = updatedItems[existingIndex]!;
+      const updatedItem: CartItem = {
+        productId: existing.productId,
+        product: existing.product,
+        quantity: (existing.quantity ?? 0) + (item.quantity ?? 0),
+        sku: existing.sku ?? item.sku,
+        unitPrice: existing.unitPrice ?? item.unitPrice,
+        selectedVariants: existing.selectedVariants ?? item.selectedVariants,
+      };
+      updatedItems[existingIndex] = updatedItem;
+    }
+
+    return { items: updatedItems };
+  }),
+
+  removeItem: (productId) =>
     set((state) => ({
-      items: state.items.reduce((acc, item) => {
-        if (item.product._id === productId) {
-          const newQuantity = Math.max(0, quantity);
-          if (newQuantity > 0) {
-            acc.push({ ...item, quantity: newQuantity });
-          }
-        } else {
-          acc.push(item);
-        }
-        return acc;
-      }, [] as CartItem[]), // Typer l'accumulateur pour corriger l'erreur TS
-    }));
-  },
+      items: state.items.filter((i) => i.productId !== productId),
+    })),
 
-  // Supprime un article
- removeItem: (productId: string) => {
-  set((state) => ({
-    cart: state.cart
-      ? {
-          ...state.cart,
-          items: state.cart.items.filter((i) => i.productId !== productId),
-        }
-      : state.cart,
-  }));
-},
-
-
-  // Vide le panier
-  clearCart: () => set({ items: [] }),
+  clearCart: () => set({ items: [], currentCartId: undefined }),
 }));

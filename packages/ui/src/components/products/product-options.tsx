@@ -67,7 +67,7 @@ export function ProductOptions({
 							size={sizes as []}
 							className="flex flex-row whitespace-nowrap"
 							classButton=""
-							onclose={handleClick}
+							onClose={handleClick}
 						/>
 					</div>
 				</div>
