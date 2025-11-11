@@ -179,7 +179,6 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException('Produit non trouvé');
     }
-
     return this.transformProduct(newProduct, language);
   }
 
@@ -206,23 +205,26 @@ export class ProductsService {
     categorySlug: string,
     language: string = 'fr',
   ): Promise<TransformedProduct[]> {
-    if (!categorySlug) {
-      throw new BadRequestException('Slug de catégorie invalide');
-    }
-
     const category = await this.categoriesService.findBySlug(
       categorySlug,
       language,
     );
 
-    console.log('Found category for slug:', category.id.toString());
     if (!category) {
       throw new NotFoundException('Catégorie non trouvée');
     }
 
-    return this.findByCategoryId(category.id.toString(), language);
-  }
+    const products = await this.productModel
+      .find({
+        category: category.id.toString(),
+        isActive: true,
+      })
+      // .populate('category', 'name slug')
+      .lean()
+      .exec();
 
+    return products.map((product) => this.transformProduct(product, language));
+  }
   /**
    * Calcule le stock total d'un produit basé sur ses variantes
    */

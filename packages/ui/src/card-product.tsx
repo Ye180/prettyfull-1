@@ -16,230 +16,230 @@ import { useAddItemToCart } from "../../../apps/web/src/features/cart/api/add-it
 import DrawerVariable from "./drawer-variable";
 
 const cardVariants = cva(["space-y-3 w-[100%] h-fit max-lg:pb-6 "], {
-	variants: {
-		variant: {
-			default: "tracking-wide 	cursor-pointer",
-		},
-		size: {
-			default: " ",
-		},
-	},
-	defaultVariants: {
-		variant: "default",
-		size: "default",
-	},
+  variants: {
+    variant: {
+      default: "tracking-wide 	cursor-pointer",
+    },
+    size: {
+      default: " ",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+    size: "default",
+  },
 });
 
 const INITIAL_DRAWER_STATES = {
-	showSizes: false,
-	showVariable: false,
+  showSizes: false,
+  showVariable: false,
 };
 
 type DrawerStatesProps = typeof INITIAL_DRAWER_STATES;
 
 export interface CardProps
-	extends React.HTMLAttributes<HTMLDivElement>,
-		VariantProps<typeof cardVariants> {
-	productId: string;
-	name: string;
-	category?:
-		| {
-				name: string;
-		  }
-		| string;
-	link?: string;
-	variants?: {
-		color: { label: string; code: string };
-		size: string[];
-		images: string[] | StaticImport[];
-		quantity: number;
-	}[];
-	notVariable?: {
-		color?: { label: string; code: string };
-		size: string[];
-		image: string[] | StaticImport[];
-		quantity?: number;
-	};
-	smallDescription?: string;
-	description?: string;
-	price: { amount: number; currency: string };
-	solde?: boolean;
-	promotion?: {
-		reduced_price: { amount: number; currency: string };
-		pourcentage: number;
-	};
-	isLoading?: boolean;
-	label?: string;
-	slug?: string;
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof cardVariants> {
+  productId: string;
+  name: string;
+  category?:
+    | {
+        name: string;
+      }
+    | string;
+  link?: string;
+  variants?: {
+    color: { label: string; code: string };
+    size: string[];
+    images: string[] | StaticImport[];
+    quantity: number;
+  }[];
+  notVariable?: {
+    color?: { label: string; code: string };
+    size: string[];
+    image: string[] | StaticImport[];
+    quantity?: number;
+  };
+  smallDescription?: string;
+  description?: string;
+  price: { amount: number; currency: string };
+  solde?: boolean;
+  promotion?: {
+    reduced_price: { amount: number; currency: string };
+    pourcentage: number;
+  };
+  isLoading?: boolean;
+  label?: string;
+  slug?: string;
 }
 export function CardProduct({
-	productId,
-	name,
-	className,
-	smallDescription,
-	price,
-	children,
-	promotion,
-	solde,
-	variants,
-	notVariable,
-	isLoading,
-	link,
-	...props
+  productId,
+  name,
+  className,
+  smallDescription,
+  price,
+  children,
+  promotion,
+  solde,
+  variants,
+  notVariable,
+  isLoading,
+  link,
+  ...props
 }: CardProps) {
-	const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-	const router = useRouter();
+  const router = useRouter();
 
-	const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
 
-	const [drawerStates, setDrawerStates] = useState<DrawerStatesProps>(
-		INITIAL_DRAWER_STATES
-	);
+  const [drawerStates, setDrawerStates] = useState<DrawerStatesProps>(
+    INITIAL_DRAWER_STATES
+  );
 
-	// --- LOGIQUE D'AJOUT AU PANIER ---
-	const addItemToCartMutation = useAddItemToCart();
-	const [selectedSize, setSelectedSize] = useState<string>("");
-	// --- FIN DE LA LOGIQUE ---
+  // --- LOGIQUE D'AJOUT AU PANIER ---
+  const addItemToCartMutation = useAddItemToCart();
+  const [selectedSize, setSelectedSize] = useState<string>("");
+  // --- FIN DE LA LOGIQUE ---
 
-	const updateDrawerState = useCallback(
-		(key: keyof DrawerStatesProps, value: SetStateAction<boolean>) => {
-			setDrawerStates((prev) => ({ ...prev, [key]: value }));
-		},
-		[]
-	);
+  const updateDrawerState = useCallback(
+    (key: keyof DrawerStatesProps, value: SetStateAction<boolean>) => {
+      setDrawerStates((prev) => ({ ...prev, [key]: value }));
+    },
+    []
+  );
 
-	const [size, setSize] = useState<string[]>([]);
+  const [size, setSize] = useState<string[]>([]);
 
-	const handleRoutes = (link?: string) => {
-		if (link) {
-			router.push(link);
-		}
-	};
+  const handleRoutes = (link?: string) => {
+    if (link) {
+      router.push(link);
+    }
+  };
 
-	// Gestion de l'affichage des tailles
-	const handleShowSizes = useCallback(
-		(e: React.MouseEvent<HTMLButtonElement>) => {
-			e.stopPropagation();
-			updateDrawerState("showSizes", !drawerStates.showSizes);
+  // Gestion de l'affichage des tailles
+  const handleShowSizes = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      updateDrawerState("showSizes", !drawerStates.showSizes);
 
-			if (variants && variants[activeIndex]) {
-				setSize(variants[activeIndex].size as string[]);
-			}
+      if (variants && variants[activeIndex]) {
+        setSize(variants[activeIndex].size as string[]);
+      }
 
-			if (notVariable) {
-				setSize(notVariable.size as string[]);
-			}
-		},
-		[
-			activeIndex,
-			notVariable,
-			drawerStates.showSizes,
-			variants,
-			updateDrawerState,
-		]
-	);
+      if (notVariable) {
+        setSize(notVariable.size as string[]);
+      }
+    },
+    [
+      activeIndex,
+      notVariable,
+      drawerStates.showSizes,
+      variants,
+      updateDrawerState,
+    ]
+  );
 
-	// --- FONCTION handleSizeSelect (POUR L'AJOUT AU PANIER) ---
-	const handleSizeSelect = (size: string) => {
-		setSelectedSize(size);
+  // --- FONCTION handleSizeSelect (POUR L'AJOUT AU PANIER) ---
+  const handleSizeSelect = (size: string) => {
+    setSelectedSize(size);
 
-		// **LA CORRECTION EST ICI**
-		// 1. On type le payload pour qu'il corresponde à ce que la mutation attend.
-		const variantsPayload: Record<string, string> = {
-			size: size,
-		};
+    // **LA CORRECTION EST ICI**
+    // 1. On type le payload pour qu'il corresponde à ce que la mutation attend.
+    const variantsPayload: Record<string, string> = {
+      size: size,
+    };
 
-		// 2. On ajoute 'color' seulement s'il existe.
-		if (variants && variants[activeIndex]) {
-			variantsPayload.color = variants[activeIndex].color.code;
-		} else if (notVariable && notVariable.color) {
-			variantsPayload.color = notVariable.color.code;
-		}
+    // 2. On ajoute 'color' seulement s'il existe.
+    if (variants && variants[activeIndex]) {
+      variantsPayload.color = variants[activeIndex].color.code;
+    } else if (notVariable && notVariable.color) {
+      variantsPayload.color = notVariable.color.code;
+    }
 
-		console.log("Ajout au panier (invité ou loggé):", {
-			productId,
-			quantity: 1,
-			selectedVariants: variantsPayload,
-		});
+    console.log("Ajout au panier (invité ou loggé):", {
+      productId,
+      quantity: 1,
+      selectedVariants: variantsPayload,
+    });
 
-		addItemToCartMutation.mutate(
-			{
-				productId: productId,
-				quantity: 1, // Quantité par défaut de 1 depuis la carte
-				selectedVariants: variantsPayload, // <-- Cet objet est maintenant du bon type
-			},
-			{
-				onSuccess: () => {
-					console.log("Produit ajouté !");
-					alert("Produit ajouté au panier !");
-				},
-				onError: (error: any) => {
-					// Type 'any' pour l'erreur générique
-					console.error("Erreur lors de l'ajout:", error);
-					alert(
-						`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`
-					);
-				},
-			}
-		);
+    addItemToCartMutation.mutate(
+      {
+        productId: productId,
+        quantity: 1, // Quantité par défaut de 1 depuis la carte
+        selectedVariants: variantsPayload, // <-- Cet objet est maintenant du bon type
+      },
+      {
+        onSuccess: () => {
+          console.log("Produit ajouté !");
+          alert("Produit ajouté au panier !");
+        },
+        onError: (error: any) => {
+          // Type 'any' pour l'erreur générique
+          console.error("Erreur lors de l'ajout:", error);
+          alert(
+            `Erreur: ${error?.message || "Impossible d'ajouter au panier"}`
+          );
+        },
+      }
+    );
 
-		updateDrawerState("showSizes", false);
-	};
+    updateDrawerState("showSizes", false);
+  };
 
-	// --- FIN DE LA FONCTION ---
+  // --- FIN DE LA FONCTION ---
 
-	const handleVariantClick = ({
-		e,
-		index,
-	}: {
-		e: React.MouseEvent<HTMLButtonElement>;
-		index: number;
-	}) => {
-		setActiveIndex(index);
-		e.stopPropagation();
-	};
+  const handleVariantClick = ({
+    e,
+    index,
+  }: {
+    e: React.MouseEvent<HTMLButtonElement>;
+    index: number;
+  }) => {
+    setActiveIndex(index);
+    e.stopPropagation();
+  };
 
-	// Préchargement des images
-	// useEffect(() => {
-	// 	if (variants) {
-	// 		const loadImages = async () => {
-	// 			const loadPromises = variants.map((variant, index) => {
-	// 				return new Promise<boolean>((resolve) => {
-	// 					const img = new window.Image();
-	// 					img.onload = () => resolve(true);
-	// 					img.onerror = () => resolve(false);
-	// 					img.src =
-	// 						typeof variant.images[0] === "string" ? variant.images[0] : "src";
-	// 				});
-	// 			});
+  // Préchargement des images
+  // useEffect(() => {
+  // 	if (variants) {
+  // 		const loadImages = async () => {
+  // 			const loadPromises = variants.map((variant, index) => {
+  // 				return new Promise<boolean>((resolve) => {
+  // 					const img = new window.Image();
+  // 					img.onload = () => resolve(true);
+  // 					img.onerror = () => resolve(false);
+  // 					img.src =
+  // 						typeof variant.images[0] === "string" ? variant.images[0] : "src";
+  // 				});
+  // 			});
 
-	// 			const results = await Promise.all(loadPromises);
-	// 			setImagesLoaded(results);
-	// 		};
+  // 			const results = await Promise.all(loadPromises);
+  // 			setImagesLoaded(results);
+  // 		};
 
-	// 		loadImages();
-	// 	}
-	// }, [variants]);
+  // 		loadImages();
+  // 	}
+  // }, [variants]);
 
-	return (
-		<article className={cn(cardVariants(), className)} {...props}>
-			<div
-				className="relative h-fit md:hover:[&>div]:opacity-100 "
-				onClick={() => handleRoutes(link)}
-			>
-				{variants?.map((variant, i) => (
-					<Image
-						key={i}
-						src={`${
-							typeof variant.images[0] === "string"
-								? variant.images[0] + "?view=1"
-								: "src"
-						}`}
-						alt={`Product Image ${i + 1}`}
-						width={600}
-						height={800}
-						sizes="
+  return (
+    <article className={cn(cardVariants(), className)} {...props}>
+      <div
+        className="relative h-fit  md:hover:[&>div]:opacity-100 "
+        onClick={() => handleRoutes(link)}
+      >
+        {variants?.map((variant, i) => (
+          <Image
+            key={i}
+            src={`${
+              typeof variant.images[0] === "string"
+                ? variant.images[0] + "?view=1"
+                : "src"
+            }`}
+            alt={`Product Image ${i + 1}`}
+            width={600}
+            height={800}
+            sizes="
 						(max-width: 344px) 100px,
 						(max-width: 375px) 100px,
 						(max-width: 639px) 150px,
@@ -251,141 +251,141 @@ export function CardProduct({
 						(max-width: 2800px) 400px,
 						400px
 						"
-						className={cn(
-							"object-contain w-full h-full  transition-opacity duration-300 ",
-							i === activeIndex ? "opacity-100 " : "hidden opacity-0"
-						)}
-						priority={i === 0}
-						placeholder="blur"
-						blurDataURL={data_url}
-						style={
-							{
-								"--aspect-ratio-hack": "149.70059880239518%",
-							} as React.CSSProperties
-						}
-					/>
-				))}
-				{/* Fallback si pas de produit */}
+            className={cn(
+              "object-contain w-full h-full  transition-opacity duration-300 ",
+              i === activeIndex ? "opacity-100 " : "hidden opacity-0"
+            )}
+            priority={i === 0}
+            placeholder="blur"
+            blurDataURL={data_url}
+            style={
+              {
+                "--aspect-ratio-hack": "149.70059880239518%",
+              } as React.CSSProperties
+            }
+          />
+        ))}
+        {/* Fallback si pas de produit */}
 
-				{!drawerStates.showSizes && (
-					<div className="absolute flex items-center justify-between w-full gap-8 px-4 transition-all duration-300 ease-in-out opacity-0 bottom-5 max-md:hidden md:flex">
-						<Button
-							className="pt-4 pb-5 px-4 w-2/3 text-[1.4rem] font-medium"
-							onClick={(e) => handleShowSizes(e)}
-						>
-							Ajouter au panier
-						</Button>
-						<button
-							className="p-4 text-2xl rounded-full cursor-pointer w-fit bg-secondary"
-							onClick={(e) => e.stopPropagation()}
-						>
-							<Heart />
-						</button>
-					</div>
-				)}
-				<DrawerCart
-					size={size}
-					handleClick={(e) => handleShowSizes(e)}
-					close={() => updateDrawerState("showSizes", false)}
-				/>
-				{promotion && (
-					<span className="fond-semibold bg-red-700 text-white !text-[0.8rem] lg:!text-[1.2rem] lg:!text-xs  absolute top-4 left-4 px-3 py-2 rounded-full">
-						{promotion.pourcentage}% OFF
-					</span>
-				)}
-				{(notVariable?.size || variants) &&
-					(drawerStates.showSizes ? (
-						<div className="absolute w-full p-8 px-4 text-sm font-light text-center text-black bg-white border-2 border-gray-200 rounded-md shadow-lg bottom-5 max-md:hidden md:block">
-							<div className="flex items-center justify-between mb-6">
-								<p className="font-semibold text-[1.4rem]">Size</p>
-								<button
-									onClick={(e) => (
-										e.stopPropagation(),
-										updateDrawerState("showSizes", false)
-									)}
-									className="cursor-pointer"
-								>
-									<CloseIcon className="w-8 h-8" />
-								</button>
-							</div>
+        {!drawerStates.showSizes && (
+          <div className="absolute flex items-center justify-between w-full gap-8 px-4 transition-all duration-300 ease-in-out opacity-0 bottom-5 max-md:hidden md:flex">
+            <Button
+              className="pt-4 pb-5 px-4 w-2/3 text-[1.4rem] font-medium"
+              onClick={(e) => handleShowSizes(e)}
+            >
+              Ajouter au panier
+            </Button>
+            <button
+              className="p-4 text-2xl rounded-full cursor-pointer w-fit bg-secondary"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Heart />
+            </button>
+          </div>
+        )}
+        <DrawerCart
+          size={size}
+          handleClick={(e) => handleShowSizes(e)}
+          close={() => updateDrawerState("showSizes", false)}
+        />
+        {promotion && (
+          <span className="fond-semibold bg-red-700 text-white !text-[0.8rem] lg:!text-[1.2rem] lg:!text-xs  absolute top-4 left-4 px-3 py-2 rounded-full">
+            {promotion.pourcentage}% OFF
+          </span>
+        )}
+        {(notVariable?.size || variants) &&
+          (drawerStates.showSizes ? (
+            <div className="absolute w-full p-8 px-4 text-sm font-light text-center text-black bg-white border-2 border-gray-200 rounded-md shadow-lg bottom-5 max-md:hidden md:block">
+              <div className="flex items-center justify-between mb-6">
+                <p className="font-semibold text-[1.4rem]">Size</p>
+                <button
+                  onClick={(e) => (
+                    e.stopPropagation(),
+                    updateDrawerState("showSizes", false)
+                  )}
+                  className="cursor-pointer"
+                >
+                  <CloseIcon className="w-8 h-8" />
+                </button>
+              </div>
 
-							<Size
-								size={size}
-								selectSize={selectedSize}
-								onSizeChange={handleSizeSelect}
-							/>
-						</div>
-					) : null)}
-			</div>
+              <Size
+                size={size}
+                selectSize={selectedSize}
+                onSizeChange={handleSizeSelect}
+              />
+            </div>
+          ) : null)}
+      </div>
 
-			<div className="space-y-3">
-				<p className="text-sm  max-sm:hidden capitalize text-grey  tracking-[0.03em] font-light">
-					{smallDescription}
-				</p>
-			</div>
-			<div className="flex justify-between items-start text-[#000] ">
-				<h4 className="tracking-[0.03em] !text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] truncate line-clamp-1">
-					{" "}
-					{name}
-				</h4>
+      <div className="space-y-3">
+        <p className="text-sm  max-sm:hidden capitalize text-grey  tracking-[0.03em] font-light">
+          {smallDescription}
+        </p>
+      </div>
+      <div className="flex justify-between items-start text-[#000] ">
+        <h4 className="tracking-[0.03em] !text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] truncate line-clamp-1">
+          {" "}
+          {name}
+        </h4>
 
-				{!promotion && (
-					<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem]">
-						{" "}
-						{formatCurrency_FR(price.amount)}
-					</h4>
-				)}
-				{promotion && (
-					<>
-						<div className="block text-end ">
-							<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] whitespace-nowrap">
-								{" "}
-								{promotion.reduced_price.amount || 0}{" "}
-								{promotion.reduced_price.currency}
-							</h4>
-							<h4 className="text-grey/50 !text-2xl line-through max-md:!text-[2rem]  md:!text-[2.2rem]  whitespace-nowrap">
-								{price.amount} {promotion.reduced_price.currency}
-							</h4>
-						</div>
-					</>
-				)}
-			</div>
+        {!promotion && (
+          <h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem]">
+            {" "}
+            {formatCurrency_FR(price.amount)}
+          </h4>
+        )}
+        {promotion && (
+          <>
+            <div className="block text-end ">
+              <h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] whitespace-nowrap">
+                {" "}
+                {promotion.reduced_price.amount || 0}{" "}
+                {promotion.reduced_price.currency}
+              </h4>
+              <h4 className="text-grey/50 !text-2xl line-through max-md:!text-[2rem]  md:!text-[2.2rem]  whitespace-nowrap">
+                {price.amount} {promotion.reduced_price.currency}
+              </h4>
+            </div>
+          </>
+        )}
+      </div>
 
-			<div className="flex items-center justify-start gap-2">
-				{variants?.slice(0, 3)?.map((variant, i) => (
-					<button
-						key={i}
-						className={cn(
-							"h-fit w-fit p-[2px] border bg-white flex justify-center items-center rounded-full transition-all duration-200",
-							i === activeIndex ? "border-black shadow-md" : "border-gray-300"
-						)}
-						onClick={(e) => handleVariantClick({ e, index: i })}
-						disabled={drawerStates.showSizes}
-					>
-						<span
-							className={cn("h-5 w-5 rounded-full cursor-pointer")}
-							style={{ backgroundColor: variant.color.code }}
-						></span>
-					</button>
-				))}
+      <div className="flex items-center justify-start gap-2">
+        {variants?.slice(0, 3)?.map((variant, i) => (
+          <button
+            key={i}
+            className={cn(
+              "h-fit w-fit p-[2px] border bg-white flex justify-center items-center rounded-full transition-all duration-200",
+              i === activeIndex ? "border-black shadow-md" : "border-gray-300"
+            )}
+            onClick={(e) => handleVariantClick({ e, index: i })}
+            disabled={drawerStates.showSizes}
+          >
+            <span
+              className={cn("h-5 w-5 rounded-full cursor-pointer")}
+              style={{ backgroundColor: variant.color.code }}
+            ></span>
+          </button>
+        ))}
 
-				{variants && variants.length > 3 && (
-					<DrawerVariable
-						label={`+ ${variants.length + 1 - 4}`}
-						name={name}
-						photos={variants?.map((v) => v.images[0]) as string[]}
-						productData={{
-							name,
-							price: price,
-							variants,
-							notVariable,
-							promotion,
-							productId,
-							description: smallDescription || "",
-						}}
-					/>
-				)}
-			</div>
-		</article>
-	);
+        {variants && variants.length > 3 && (
+          <DrawerVariable
+            label={`+ ${variants.length + 1 - 4}`}
+            name={name}
+            photos={variants?.map((v) => v.images[0]) as string[]}
+            productData={{
+              name,
+              price: price,
+              variants,
+              notVariable,
+              promotion,
+              productId,
+              description: smallDescription || "",
+            }}
+          />
+        )}
+      </div>
+    </article>
+  );
 }
