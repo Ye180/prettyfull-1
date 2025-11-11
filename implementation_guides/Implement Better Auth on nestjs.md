@@ -11,7 +11,7 @@ Install the library in your NestJS project:
 npm install @thallesp/nestjs-better-auth
 
 # Using yarn
-yarn add @thallesp/nestjs-better-auth
+yarn add @thallesp/nestjs-better-**auth**
 
 # Using pnpm
 pnpm add @thallesp/nestjs-better-auth
@@ -63,14 +63,14 @@ import { AuthModule } from "@thallesp/nestjs-better-auth";
 import { auth } from "./auth";
 
 @Module({
-  imports: [AuthModule.forRoot({ auth })],
+  imports: [AuthModule.forRoot({ auth })],****
 })
 export class AppModule {}
 ```
 
 ## Route Protection
 
-**Global by default**: An `AuthGuard` is registered globally by this module. All routes are protected unless you explicitly allow access with `@AllowAnonymous()` or mark them as optional with `@OptionalAuth()`.
+**Global by default**: An `AuthGuard` is registered globally by this module. All routes are protected unless you explicitly allow access with `@AllowAnonymous()` or **mark** them as optional with `@OptionalAuth()`.
 
 GraphQL is supported and works the same way as REST: the global guard applies to resolvers too, and you can use `@AllowAnonymous()`/`@OptionalAuth()` on queries and mutations.
 

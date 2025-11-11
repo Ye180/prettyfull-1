@@ -2,10 +2,10 @@
 
 import HomeView from "@/features/homepage/views/home.view";
 
-async function Page() {
-	// { params }: { params: Promise<{ lang: string }> }
-	// const { lang } = await params;
-	return <HomeView />;
+function Page() {
+  // Client components cannot be async
+  // If you need server-side data, remove "use client" or fetch data client-side
+  return <HomeView />;
 }
 
 export default Page;
