@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import Container from '../../../../../../packages/ui/src/layouts/helpers/container';
-import { useCartStore } from '../../../../../../packages/store/src/use-cart-store';
-import { useGetCart } from '../api/get-cart-by-userid';
-import CartItems from '@/features/cart/components/organims/cart-items';
-import CartSummary from '@/features/cart/components/molecules/cart-summary';
+import CartSummary from "@/features/cart/components/molecules/cart-summary";
+import CartItems from "@/features/cart/components/organims/cart-items";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
+import { useCartStore } from "../../../../../../packages/store/src/use-cart-store";
+import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+import { useGetCart } from "../api/get-cart-by-userid";
 
 const TAX_RATE = 0.18;
 const SHIPPING_FEE = 10; // valeur comme dans ta capture (ShopHere)
@@ -32,19 +32,24 @@ const CartView = () => {
 		const shippingCalc =
 			subtotalCalc > FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
 		const totalCalc = subtotalCalc + shippingCalc + taxesCalc;
-		return { subtotal: subtotalCalc, shipping: shippingCalc, taxes: taxesCalc, total: totalCalc };
+		return {
+			subtotal: subtotalCalc,
+			shipping: shippingCalc,
+			taxes: taxesCalc,
+			total: totalCalc,
+		};
 	}, [items]);
 
 	if (isLoading)
-		return <p className="text-center py-24">Chargement du panier...</p>;
+		return <p className="py-24 text-center">Chargement du panier...</p>;
 
 	if (items.length === 0)
 		return (
 			<div className="flex flex-col items-center gap-8 py-24">
 				<h1 className="text-2xl font-semibold">Votre panier est vide</h1>
 				<button
-					onClick={() => router.push('/')}
-					className="px-6 py-3 bg-black text-white rounded-full hover:bg-black/80 transition"
+					onClick={() => router.push("/")}
+					className="px-6 py-3 text-white transition bg-black rounded-full hover:bg-black/80"
 				>
 					Continuer mes achats
 				</button>
@@ -52,9 +57,9 @@ const CartView = () => {
 		);
 
 	return (
-		<Container className="flex flex-col md:flex-row md:justify-between gap-16 py-12 px-6 md:px-24">
+		<Container className="flex flex-col gap-16 px-6 py-12 md:flex-row md:justify-between md:px-24">
 			<div className="flex-1">
-				<h2 className="text-2xl font-bold mb-8">Bag</h2>
+				<h2 className="mb-8 text-2xl font-bold">Bag</h2>
 				<CartItems items={items} />
 			</div>
 
