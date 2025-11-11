@@ -1,16 +1,19 @@
 "use client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { PropsWithChildren } from "react";
+import { buildProvidersTree } from "../lib/provider-tree";
 import { queryConfig } from "../lib/react-query";
 
 export const queryClient = new QueryClient({
-	defaultOptions: queryConfig,
+  defaultOptions: queryConfig,
 });
 
-// const ProviderTree = [QueryClientProvider, { client: queryClient }];
+const ProviderTree = buildProvidersTree([
+  [QueryClientProvider, { client: queryClient }],
+  [NuqsAdapter, {}],
+]);
 
 export const Provider = ({ children }: PropsWithChildren) => {
-	return (
-		<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-	);
+  return <ProviderTree>{children}</ProviderTree>;
 };
