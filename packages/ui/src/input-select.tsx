@@ -19,6 +19,7 @@ const InputSelect = ({
 	placeholder: string;
 	classNameSelect: string;
 	items: string[];
+	  onChange?: (value: string) => void;
 }) => {
 	return (
 		<Select>

@@ -78,6 +78,8 @@
 
 			"placeholderLastName": "Enter your first and last name...",
 
+			  "labelName": "Name",
+      "labelEmail": "Email",
 			"placeholderAddress": "Enter your address...",
 
 			"labelPostCode": "Enter your postal code",

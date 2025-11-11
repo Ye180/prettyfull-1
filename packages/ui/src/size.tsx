@@ -13,7 +13,7 @@ const Size = ({
 	className?: string;
 	classButton?: string;
 	onSizeChange?: (size: string) => void;
-	// La prop 'onclose' a été supprimée
+	 onClose?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
 	const sizeOptions = [
 		{

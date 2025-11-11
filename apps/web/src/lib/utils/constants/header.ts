@@ -1,7 +1,8 @@
-import { Cart } from "@/components/icons/cart.icon";
+// import { Cart } from "@/components/icons/cart.icon";
 import { paths } from "@/lib/routes/paths-en";
 import { Heart, } from "../../../../../../packages/ui/src/icons/heart.icon";
 import { UserIcon } from "../../../../../../packages/ui/src/icons/user.icon";
+import { Cart } from "@/components/icons/cart.icon";
 
 export const NAV_USER_LINKS = [
       { icon: Heart, href: paths.wishlist, infos: { count:  2} },                                        
