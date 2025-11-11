@@ -15,7 +15,21 @@ const CheckoutSummary = () => {
       {/* SECTION: Produits visuels */}
       <div className="flex flex-col pb-8 space-y-10">
         {items.map((item) => (
-          <VisualSummary key={item.productId} item={item} />
+		<VisualSummary
+  key={item.productId}
+  item={{
+    id: item.productId,
+    name: item.product.name,
+    description: item.product.description || "",
+    color: item.selectedVariants?.color || "",
+    size: item.selectedVariants?.size || "",
+    image: item.product.image || "",
+    price: item.unitPrice?.amount || 0,
+    quantity: item.quantity,
+  }}
+/>
+
+
         ))}
       </div>
 

@@ -40,7 +40,7 @@ export function LoginForm() {
 		const { error } = await signIn.email({
 			email: data.email,
 			password: data.password,
-			guestCartId: currentCartId, // Ajout de l'ID du panier
+			// guestCartId: currentCartId, // Ajout de l'ID du panier
 		});
 
 		if (error) {

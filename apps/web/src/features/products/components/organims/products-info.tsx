@@ -74,7 +74,7 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
       setIsNotifyModalOpen(true);
       return;
     }
-    
+
     // --- CORRECTION PAYLOAD ---
     // 4. Construire l'objet des variantes pour le backend
     const variantsPayload: Record<string, string> = {};
@@ -133,7 +133,7 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
 
   // --- CORRECTIONS CALLBACKS ---
   // Remplacer handleVariantChange
-  
+
   const handleSizeChange = (size: string) => {
     setSelectedSize(size);
     // TODO: Vous devriez avoir une logique ici pour vérifier
@@ -150,7 +150,13 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold">{product.name.fr}</h1>
+        <h1 className="text-2xl font-semibold">
+          {typeof product.name === "string"
+            ? product.name
+            : (product.name as any)?.fr ?? ""}
+        </h1>
+
+
         <p className="text-sm font-medium">{product.price.amount} FCFA</p>
       </div>
 
@@ -163,23 +169,29 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
       {/* --- CORRECTION PROPS --- */}
       {/* Passer les bons props à ProductOptions */}
       <ProductOptions
-        // Props de données (basés sur product-options.tsx)
-        variable={product.options?.variable}
-        sizes={product.options?.sizes}
-        
-        // Props d'état (basés on product-options.tsx)
-        selectedSize={selectedSize}
-        selectedColor={selectedColor}
-        onColorChange={handleColorChange}
-        onSizeChange={handleSizeChange}
+  variable={
+    product.options?.sizes || product.options?.colors
+      ? [
+          {
+            color: product.options?.colors?.[0]
+              ? { label: product.options.colors[0].name, code: product.options.colors[0].code }
+              : { label: "", code: "" },
+            size: product.options?.sizes || [],
+            image: product.images || [],
+            quantity: 1,
+          },
+        ]
+      : []
+  }
+  sizes={product.options?.sizes || []}
+  selectedSize={selectedSize}
+  onSizeChange={handleSizeChange}
+  selectedColor={selectedColor}
+  onColorChange={handleColorChange}
+  classButton="my-4"
+  className="w-full"
+/>
 
-        // --- PROPS INCORRECTS SUPPRIMÉS ---
-        // options={product.options}
-        // value={quantity}
-        // setValue={setQuantity}
-        // onVariantChange={handleVariantChange}
-        // onStockStatusChange={setIsVariantInStock}
-      />
 
       <div className="flex flex-col gap-4">
         {/* Le bouton principal change de texte selon le stock */}
@@ -192,8 +204,8 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
           {addItemToCartMutation.isPending
             ? 'Ajout en cours...'
             : isVariantInStock
-            ? 'Ajouter au panier'
-            : 'Me notifier'}
+              ? 'Ajouter au panier'
+              : 'Me notifier'}
         </Button>
 
         <Button
@@ -210,13 +222,18 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
       </div>
 
       {/* Le modal est prêt à être utilisé */}
-      <NotifyMeModal
-        isOpen={isNotifyModalOpen}
-        onClose={() => setIsNotifyModalOpen(false)}
-        product={product}
-        // 'variant' n'existe plus, passer les infos sélectionnées
-        variant={{ size: selectedSize, color: selectedColor }} 
-      />
+
+     <NotifyMeModal
+  isOpen={isNotifyModalOpen}
+  onClose={() => setIsNotifyModalOpen(false)}
+  product={product}
+  variant={{
+    size: selectedSize,
+    color: { name: selectedColor, code: selectedColor },
+    image: product.images?.[0] || "",
+  }}
+/>
+
 
       <div className="h-px w-full bg-gray-200" />
 

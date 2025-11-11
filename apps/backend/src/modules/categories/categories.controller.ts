@@ -112,15 +112,15 @@ export class CategoriesController {
     return this.categoriesService.getProductOfCategory(id);
   }
 
-  //Get Prosucts of category by slug
-  @Get('slug/:slug/products')
-  @AllowAnonymous()
-  async getProductOfCategoryBySlug(
-    @Param('slug') slug: string,
-    // @Headers('accept-language') language: string = 'fr',
-  ) {
-    return this.categoriesService.getProductOfCategoryBySlug(slug);
-  }
+  // //Get Prosucts of category by slug
+  // @Get('slug/:slug/products')
+  // @AllowAnonymous()
+  // async getProductOfCategoryBySlug(
+  //   @Param('slug') slug: string,
+  //   // @Headers('accept-language') language: string = 'fr',
+  // ) {
+  //   return this.categoriesService.getProductOfCategoryBySlug(slug);
+  // }
 
   /**
    * GET /categories/name/:name - Public

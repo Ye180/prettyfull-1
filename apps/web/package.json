@@ -11,7 +11,7 @@
 	"dependencies": {
 		"@fontsource-variable/manrope": "^5.2.6",
 		"@fontsource/bebas-neue": "^5.2.6",
-		"@hookform/resolvers": "^5.2.1",
+		"@hookform/resolvers": "^5.2.2",
 		"@prettyfull/ui": "workspace:*",
 		"@prettyfull/utils": "workspace:*",
 		"@sanity/image-url": "^1.2.0",
@@ -31,7 +31,7 @@
 		"react-swipeable": "^7.0.2",
 		"tailwind-merge": "^3.3.1",
 		"web": "link:",
-		"zod": "^4.0.14",
+		"zod": "^4.1.12",
 		"zustand": "^4.5.2"
 	},
 	"devDependencies": {

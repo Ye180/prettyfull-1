@@ -369,23 +369,23 @@ export class CategoriesService {
     });
   }
 
-  async getProductOfCategoryBySlug(slug: string): Promise<TransformedCategory> {
-    const category = await this.categoryModel.findOne({ slug: slug });
+  // async getProductOfCategoryBySlug(slug: string): Promise<TransformedCategory> {
+  //   const category = await this.categoryModel.findOne({ slug: slug });
 
-    if (!category) {
-      throw new NotFoundException('Catégorie non trouvée');
-    }
+  //   if (!category) {
+  //     throw new NotFoundException('Catégorie non trouvée');
+  //   }
 
-    const products = await this.productModel
-      .find({ category: category._id })
-      .lean()
-      .exec();
+  //   const products = await this.productModel
+  //     .find({ category: category._id })
+  //     .lean()
+  //     .exec();
 
-    return {
-      products: products.map((product) => transformProduct(product, 'fr')),
-      message: 'Produits de la catégorie récupérés avec succès',
-    };
-  }
+  //   return {
+  //     products: products.map((product) => transformProduct(product, 'fr')),
+  //     message: 'Produits de la catégorie récupérés avec succès',
+  //   };
+  // }
 
   async findChildrenCategories(
     parent: string,
