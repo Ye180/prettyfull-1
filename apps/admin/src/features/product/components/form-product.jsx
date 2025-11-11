@@ -1,8 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useAddVariants } from "../api/add-variants-products";
@@ -10,6 +10,7 @@ import { useCreateInit } from "../api/create-init-products";
 import { useCreate } from "../api/create-products";
 import FormProductAddVariant from "./form-add-variant";
 import FormProductInitCreation from "./form-product-init-creation";
+import ProductStepper from "./product-stepper";
 // Define PRODUCTS_QUERY_KEY (assuming it's defined elsewhere, e.g., 'products')
 const PRODUCTS_QUERY_KEY = "products";
 // Assuming toast is defined globally or imported
@@ -19,14 +20,23 @@ const toast = {
 };
 
 export default function ProductForm() {
-	const { mutate: createProduct, isPending } = useCreate(); // Removed isSuccess, isError as they are not used immediately
+	const router = useRouter();
+	const { mutate: createProduct, isPending } = useCreate();
 	const { mutate: createInitProduct, isPending: isInitPending } =
-		useCreateInit(); // Removed isSuccess, isError as they are not used immediately
+		useCreateInit();
 
 	const { mutate: addVariantProduct, isPending: isAddVariantPending } =
-		useAddVariants(); // Removed isSuccess, isError as they are not used immediately
+		useAddVariants();
+
+	const queryClient = useQueryClient();
+
+	const [currentStep, setCurrentStep] = useState(0);
+	const [productId, setProductId] = useState(null);
+	const [isStep1Completed, setIsStep1Completed] = useState(false);
 
 	const form = useForm({
+		mode: "onChange",
+		// Réinitialiser le formulaire lors du changement d'étape
 		defaultValues: {
 			step1: {
 				nameFr: "",
@@ -42,13 +52,13 @@ export default function ProductForm() {
 
 				priceAmountFr: null,
 				priceAmountEn: null,
-				currencyFr: "",
-				currencyEn: "",
+				currencyFr: "XOF",
+				currencyEn: "USD",
 
 				solde: false,
 				reducedPrice: 0,
 				pourcentage: 0,
-				labelFr: "", // Corrected: Should be labelFr/En to match DTO structure
+				labelFr: "",
 				labelEn: "",
 
 				isActive: true,
@@ -64,182 +74,287 @@ export default function ProductForm() {
 			step2: {
 				variants: [
 					{
-						id: "",
 						colorLabel: "",
 						colorCode: "#FFFFFF",
-						size: [""], // Comma-separated string for react-hook-form input
+						size: "",
 						quantity: 0,
-						image: [], // FileList or array of files
+						image: [],
 					},
 				],
 			},
 		},
 	});
 
-	const { control, handleSubmit } = form;
+	const { control, handleSubmit, trigger, getValues, formState } = form;
 	const { fields, append, remove } = useFieldArray({
 		control,
-		name: "variants",
+		name: "step2.variants",
 	});
 
-	const queryClient = useQueryClient();
-
-	const [currentStep, setCurrentStep] = useState(0);
-	const [productId, setProductId] = useState(0);
-
+	// Valider et passer à l'étape suivante
 	const handleNext = async (e) => {
-		e.preventDefault(); // Empêcher la soumission du formulaire
-
-		setCurrentStep((prev) => Math.min(prev + 1)); // Ajustez la
+		e.preventDefault();
+		if (currentStep === 0) {
+			// Déclenche la validation de tous les champs step1
+			const isValid = await trigger([
+				"step1.nameFr",
+				"step1.nameEn",
+				"step1.descriptionFr",
+				"step1.descriptionEn",
+				"step1.smallDescriptionFr",
+				"step1.smallDescriptionEn",
+				"step1.categoryId",
+				"step1.link",
+				"step1.sku",
+				"step1.slug",
+				"step1.priceAmountFr",
+				"step1.priceAmountEn",
+				"step1.currencyFr",
+				"step1.currencyEn",
+				"step1.stock",
+				"step1.seoTitleFr",
+				"step1.seoTitleEn",
+				"step1.seoDescFr",
+				"step1.seoDescEn",
+			]);
+			// Si en solde, valider aussi les champs promotion
+			if (getValues("step1.solde")) {
+				const promoValid = await trigger([
+					"step1.reducedPrice",
+					"step1.pourcentage",
+				]);
+				if (!promoValid) {
+					toast.error("Veuillez corriger les erreurs de promotion");
+					return;
+				}
+			}
+			if (!isValid) {
+				toast.error(
+					"Veuillez remplir tous les champs obligatoires avant de continuer"
+				);
+				return;
+			}
+			await submitStep1(getValues("step1"));
+		}
 	};
 
-	const handlePrevious = async (e) => {
-		e.preventDefault(); // Empêcher la soumission du formulaire
-
-		setCurrentStep((prev) => Math.min(prev - 1)); // Ajustez la
+	const handlePrevious = (e) => {
+		e.preventDefault();
+		// Ne pas permettre de revenir en arrière si le produit a déjà été créé
+		if (productId) {
+			toast.error(
+				"Vous ne pouvez plus modifier l'étape 1 après la création du produit"
+			);
+			return;
+		}
+		setCurrentStep(0);
 	};
-	const onSubmit = async (data) => {
-		// --- API Calls based on current step ---
 
-		try {
-			if (currentStep == 0) {
-				const dataSend = {
-					name: {
-						fr: data.step1.nameFr,
-						en: data.step1.nameEn,
-					},
-					description: {
-						fr: data.step1.descriptionFr,
-						en: data.step1.descriptionEn,
-					},
-					smallDescription: {
-						fr: data.step1.smallDescriptionFr,
-						en: data.step1.smallDescriptionEn,
-					},
-
-					categoryId: data.step1.categoryId,
-					link: data.step1.link,
-					sku: data.step1.sku,
-					slug: data.step1.slug,
-					price: {
-						amount: {
-							fr: Number(data.step1.priceAmountFr),
-							en: Number(data.step1.priceAmountEn),
+	// Soumettre step1 et créer le produit initial
+	const submitStep1 = async (step1Data) => {
+		const dataSend = {
+			name: {
+				fr: step1Data.nameFr,
+				en: step1Data.nameEn,
+			},
+			description: {
+				fr: step1Data.descriptionFr,
+				en: step1Data.descriptionEn,
+			},
+			smallDescription: {
+				fr: step1Data.smallDescriptionFr,
+				en: step1Data.smallDescriptionEn,
+			},
+			categoryId: step1Data.categoryId,
+			link: step1Data.link,
+			sku: step1Data.sku,
+			slug: step1Data.slug,
+			price: {
+				amount: {
+					fr: Number(step1Data.priceAmountFr),
+					en: Number(step1Data.priceAmountEn),
+				},
+				currency: {
+					fr: step1Data.currencyFr,
+					en: step1Data.currencyEn,
+				},
+			},
+			solde: step1Data.solde,
+			promotion: step1Data.solde
+				? {
+						reduced_price: {
+							fr: Number(step1Data.reducedPrice),
+							en: Number(step1Data.reducedPrice),
 						},
-						currency: {
-							fr: data.step1.currencyFr,
-							en: data.step1.currencyEn,
-						},
-					},
-					solde: data.step1.solde,
-					promotion: data.step1.solde
-						? {
-								reduced_price: {
-									fr: Number(data.step1.reducedPrice),
-									en: Number(data.step1.reducedPrice),
-								},
-								pourcentage: Number(data.step1.pourcentage),
-							}
-						: undefined,
-					label: {
-						fr: data.step1.labelFr,
-						en: data.step1.labelEn,
-					},
-					isActive: data.step1.isActive,
-					isFeatured: data.step1.isFeatured,
-					stock: Number(data.step1.stock),
-					seoMeta: {
-						title: {
-							fr: data.step1.seoTitleFr,
-							en: data.step1.seoTitleEn,
-						},
-						description: {
-							fr: data.step1.seoDescFr,
-							en: data.step1.seoDescEn,
-						},
-						keywords: data.step1.seoKeywords
-							? data.step1.seoKeywords
-									.split(",")
-									.map((k) => k.trim())
-									.filter((k) => k)
-							: [],
-					},
-				};
-
-				createInitProduct(dataSend, {
-					// Assuming createInitProduct returns a promise
-					onSuccess: async (response) => {
-						await queryClient.invalidateQueries({
-							queryKey: [PRODUCTS_QUERY_KEY],
-						});
-
-						setProductId(response._id); // Set the product ID from response if needed
-						setCurrentStep((prev) => Math.min(prev + 1, 1)); // Move to next step
-					},
-					onError: (error) => {
-						console.error(
-							"Erreur lors de la création de l'initialisation du produit :",
-							error
-						);
-						throw error; // Re-throw to be caught by outer catch
-					},
-				});
-			} else if (currentStep == 1) {
-				const formData = new FormData();
-
-				const variantsData = data.step2.variants.map((v) => ({
-					id: v?.colorCode,
-					color: v?.colorLabel
-						? { label: v.colorLabel, code: v.colorCode }
-						: undefined,
-					size: v?.size
-						.split(",")
-						.map((s) => s.trim())
-						.filter((s) => s), // Split string and trim/filter empty results
-					quantity: Number(v.quantity),
-					image: Array.isArray(v.image) ? v.image : [],
-				}));
-				for (const variant of variantsData) {
-					for (const [key, value] of Object.entries(variant.color)) {
-						formData.append(`color[${key}]`, value);
+						pourcentage: Number(step1Data.pourcentage),
 					}
+				: undefined,
+			label: {
+				fr: step1Data.labelFr,
+				en: step1Data.labelEn,
+			},
+			isActive: step1Data.isActive,
+			isFeatured: step1Data.isFeatured,
+			stock: Number(step1Data.stock),
+			seoMeta: {
+				title: {
+					fr: step1Data.seoTitleFr,
+					en: step1Data.seoTitleEn,
+				},
+				description: {
+					fr: step1Data.seoDescFr,
+					en: step1Data.seoDescEn,
+				},
+				keywords: step1Data.seoKeywords
+					? step1Data.seoKeywords
+							.split(",")
+							.map((k) => k.trim())
+							.filter((k) => k)
+					: [],
+			},
+		};
 
-					variant.size.forEach((size, index) => {
-						formData.append(`size[${index}]`, size);
-					});
-					formData.append("quantity", variant.quantity);
+		createInitProduct(dataSend, {
+			onSuccess: async (response) => {
+				await queryClient.invalidateQueries({
+					queryKey: [PRODUCTS_QUERY_KEY],
+				});
 
-					variant.image.forEach((image) => {
-						formData.append("images", image);
+				setProductId(response._id);
+				setIsStep1Completed(true);
+				setCurrentStep(1);
+				toast.success(
+					"Produit créé avec succès ! Ajoutez maintenant les variantes"
+				);
+			},
+			onError: (error) => {
+				console.error(
+					"Erreur lors de la création de l'initialisation du produit :",
+					error
+				);
+				toast.error("Erreur lors de la création du produit !");
+			},
+		});
+	};
+
+	// Soumettre step2 et créer les variantes
+	const onSubmit = async (data) => {
+		if (currentStep === 0) {
+			// Si on est à l'étape 1, appeler handleNext qui gère la validation
+			await handleNext(new Event("submit"));
+			return;
+		}
+
+		if (currentStep === 1) {
+			// Vérifier qu'on a un productId
+			if (!productId) {
+				toast.error("Erreur : Aucun produit créé. Veuillez recommencer.");
+				return;
+			}
+
+			const step2Data = getValues("step2");
+
+			// Valider step2 manuellement avec Zod
+			const { productStep2Schema } = await import("../schema/product-schema");
+			const validation = productStep2Schema.safeParse(step2Data);
+
+			if (!validation.success) {
+				const errors = validation.error?.errors || [];
+				console.log("Erreurs de validation step2:", errors);
+
+				if (errors.length) {
+					errors.forEach((error) => {
+						const fieldPath = `step2.${error.path.join(".")}`;
+						form.setError(fieldPath, {
+							type: "manual",
+							message: error.message,
+						});
 					});
 				}
 
-				const variantsPayload = {
-					productId: productId, // Assuming the product ID is returned from createInitProduct
-					data: formData,
-				};
-				addVariantProduct(variantsPayload, {
-					onSuccess: () => {
-						toast.success("Variantes ajoutées avec succès !");
-					},
-					onError: (error) => {
-						console.error("Erreur lors de l'ajout des variantes :", error);
-						toast.error("Erreur lors de l'ajout des variantes !");
-					},
-				});
+				toast.error("Veuillez corriger les erreurs dans les variantes");
+				return;
 			}
 
-			toast.success("Initialisation du produit créée avec succès !");
-		} catch (error) {
-			console.error("Erreur lors de l'initialisation du produit :", error);
-			toast.error("Erreur lors de l'initialisation du produit !");
+			// Vérifier les doublons manuellement aussi
+			const colorCodes = step2Data.variants.map((v) =>
+				v.colorCode.toLowerCase()
+			);
+			const uniqueColorCodes = new Set(colorCodes);
+			if (colorCodes.length !== uniqueColorCodes.size) {
+				toast.error(
+					"Vous ne pouvez pas créer deux variantes avec la même couleur"
+				);
+				return;
+			}
+
+			// Vérifier qu'on a au moins une variante
+			if (!step2Data.variants || step2Data.variants.length === 0) {
+				toast.error("Vous devez créer au moins une variante");
+				return;
+			}
+
+			// 1) Construire le tableau variants conforme au DTO backend
+			const variantsArray = (step2Data.variants || []).map((v) => {
+				const sizes = (v?.size || "")
+					.split(",")
+					.map((s) => s.trim())
+					.filter(Boolean);
+				return {
+					// id est optionnel côté DTO, on peut l'omettre
+					color:
+						v?.colorLabel && v?.colorCode
+							? { label: v.colorLabel, code: v.colorCode }
+							: undefined,
+					size: sizes,
+					quantity: Number(v?.quantity ?? 0),
+				};
+			});
+
+			// 2) Rassembler tous les fichiers images des variantes en un seul champ 'images'
+			const allFiles = (step2Data.variants || [])
+				.flatMap((v) => (Array.isArray(v?.image) ? v.image : []))
+				.filter(Boolean);
+
+			// 3) Créer le FormData en envoyant
+			//    - variants: string JSON de l'array
+			//    - images: tous les fichiers (répétés)
+			const formData = new FormData();
+			formData.append("variants", JSON.stringify(variantsArray));
+			allFiles.forEach((file) => formData.append("images", file));
+
+			const variantsPayload = {
+				productId,
+				data: formData,
+			};
+
+			addVariantProduct(variantsPayload, {
+				onSuccess: async () => {
+					await queryClient.invalidateQueries({
+						queryKey: [PRODUCTS_QUERY_KEY],
+					});
+					toast.success("Produit créé avec succès avec toutes ses variantes !");
+					// Redirection automatique vers la liste des produits
+					router.push("/product-list");
+				},
+				onError: (error) => {
+					console.error("Erreur lors de l'ajout des variantes :", error);
+					toast.error("Erreur lors de l'ajout des variantes !");
+				},
+			});
 		}
 	};
 
 	const stepComponents = () => {
 		switch (currentStep) {
 			case 0:
-				return <FormProductInitCreation control={control} form={form} />;
+				return (
+					<FormProductInitCreation
+						control={control}
+						form={form}
+						isDisabled={isStep1Completed}
+					/>
+				);
 			case 1:
 				return (
 					<FormProductAddVariant
@@ -256,44 +371,66 @@ export default function ProductForm() {
 		}
 	};
 
-	const formatOptionLabel = (option) => {
-		return `${option.account} - ${option.label}`;
-	};
-
-	// const { data: primaryCategories } = useGetPrimaryCategory(); // Not used, removed from JSX and kept here as reference
-
 	return (
-		<Form {...form}>
-			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-				{stepComponents()}
+		<div className="w-full max-w-5xl p-6 mx-auto">
+			<ProductStepper
+				currentStep={currentStep}
+				isStep1Completed={isStep1Completed}
+			/>
 
-				<div className="flex items-center justify-between w-full mt-8 gap-y-8">
-					<div className="flex gap-x-4">
-						<Button
-							type="submit"
-							size="lg"
-							variant="default"
-							className={(cn("py-4 w-fit"), currentStep === 0 && "hidden")}
-							onClick={handlePrevious}
-						>
-							Previous
-						</Button>
-						{/* <Button
-							type="button"
-							size="lg"
-							variant="default"
-							onClick={handleNext}
-							className={(cn("py-4 w-fit "), currentStep === 1 && "hidden")}
-						>
-							Continuer
-						</Button> */}
+			<Form {...form}>
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+					{stepComponents()}
+
+					<div className="flex items-center justify-between w-full pt-6 mt-8 border-t gap-y-8">
+						<div className="flex gap-x-4">
+							{currentStep === 1 && (
+								<Button
+									type="button"
+									size="lg"
+									variant="outline"
+									onClick={handlePrevious}
+									disabled={productId !== null}
+									className="py-4 w-fit"
+								>
+									Retour
+								</Button>
+							)}
+						</div>
+
+						<div className="flex gap-x-4">
+							{currentStep === 0 ? (
+								<Button
+									type="button"
+									size="lg"
+									variant="default"
+									onClick={handleNext}
+									disabled={isInitPending || isStep1Completed}
+									className="py-4 w-fit"
+								>
+									{isInitPending
+										? "Création en cours..."
+										: isStep1Completed
+											? "Produit créé ✓"
+											: "Créer le produit et continuer"}
+								</Button>
+							) : (
+								<Button
+									type="submit"
+									size="lg"
+									variant="default"
+									disabled={isAddVariantPending || !productId}
+									className="py-4 w-fit"
+								>
+									{isAddVariantPending
+										? "Ajout en cours..."
+										: "Ajouter les variantes"}
+								</Button>
+							)}
+						</div>
 					</div>
-
-					<Button type="submit" className="py-4 w-fit " disabled={isPending}>
-						{isPending ? "Création en cours..." : "Créer le produit"}
-					</Button>
-				</div>
-			</form>
-		</Form>
+				</form>
+			</Form>
+		</div>
 	);
 }

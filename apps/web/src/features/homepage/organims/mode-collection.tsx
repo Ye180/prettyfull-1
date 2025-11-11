@@ -55,7 +55,7 @@ const ModeCollection = () => {
 				</div>
 				<GridCardProduct classGrid="grid grid-cols-2  ">
 					<>
-						{products?.map((items: CardProps, index: number) => (
+						{products?.slice(0, 2).map((items: CardProps, index: number) => (
 							<div key={index} className="w-full aspect-10/9">
 								<CardProduct
 									productId={items.id || items.productId}
