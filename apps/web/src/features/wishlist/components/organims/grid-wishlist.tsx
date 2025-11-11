@@ -20,6 +20,7 @@ const GridWishlistLayout = () => {
 								<CardProduct
 									productId={product.id}
 									variable={product.variable}
+									
 									price={product.price}
 									promotion={product.promotion}
 									smallDescription={product.smallDescription}

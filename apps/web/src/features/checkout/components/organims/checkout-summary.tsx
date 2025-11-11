@@ -19,7 +19,7 @@ const CheckoutSummary = () => {
   key={item.productId}
   item={{
     id: item.productId,
-    name: item.product.name,
+    name: item.product?.name ?? "Unknown product",
     description: item.product.description || "",
     color: item.selectedVariants?.color || "",
     size: item.selectedVariants?.size || "",

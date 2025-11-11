@@ -66,9 +66,10 @@
 	},
 	"CheckoutPage": {
 		"checkoutForm": {
+			"labelName": "Nom",
+      "labelEmail": "Email",
 			"labelMethod": "Comment souhaitez-vous recevoir votre commande ?",
 			"placeholderMethod": "Entrez votre méthode de livraison...",
-
 			"labelAddress": "Entrer votre numero, nom et adresse",
 			"placeholderNumber": "Entrez votre numéro de téléphone...",
 			"placeholderLastName": "Entrez votre nom et prénom...",

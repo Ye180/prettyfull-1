@@ -5,7 +5,6 @@ import { GoogleIcon } from "@/components/icons/google-icon";
 import { useActionEvent } from "@/hooks/use-action-event";
 import { useAuthRedirect } from "@/shared/hooks/use-auth-redirect";
 import { signIn } from "@/shared/lib/auth.client";
-import { useCartStore } from "@/stores/useCart"; // 2. Importer le store (nom corrigé)
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@prettyfull/ui";
 import Link from "next/link";
@@ -13,6 +12,7 @@ import { useRouter, useSearchParams } from "next/navigation"; // 1. Importer use
 import { useForm } from "react-hook-form";
 import Flex from "../../../../../../../packages/ui/src/layouts/helpers/flex";
 import { loginSchema, type LoginFormData } from "../../schemas/login.schema";
+import { useCartStore } from "../../../../../../../packages/store/src/use-cart-store";
 
 export function LoginForm() {
 	const router = useRouter();

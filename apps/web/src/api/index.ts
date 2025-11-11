@@ -7,7 +7,8 @@ export const
   auth: {
     login: '/auth/login/',
     register: '/auth/register/',
-    getProfile: '/auth/profile/',
+    getProfile: '/auth/session/',
+
   },
 
   // --- Utilisateurs (Users) ---

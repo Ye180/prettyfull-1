@@ -4,14 +4,27 @@ import { useGetChildrenCategory } from "@/features/homepage/api/get-children-cat
 import { getItem } from "@/lib/utils/local-storage";
 import { useParams } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { useMemo } from "react";
+// Importe useState et useEffect
+import { useMemo, useState, useEffect } from "react";
 import BottomHeader from "../molecules/header/bottom";
 import NavBarHeaders from "../molecules/header/navbar";
 
 const Header = ({ main_category }: { main_category: any }) => {
   const params = useParams();
   const [division] = useQueryState("division");
-  const category = getItem("category");
+
+  // 1. Initialise la catégorie à 'undefined' (comme sur le serveur)
+  const [category, setCategory] = useState<any>(undefined);
+
+  // 2. Utilise useEffect pour charger la donnée du localStorage CÔTÉ CLIENT,
+  //    après le premier rendu.
+  useEffect(() => {
+    // Ce code ne s'exécute QUE dans le navigateur
+    const storedCategory = getItem("category");
+    if (storedCategory) {
+      setCategory(storedCategory);
+    }
+  }, []); // Le tableau vide signifie "exécute-moi une seule fois au chargement"
 
   const { data: children_category, isLoading: secondaryLoading } =
     useGetChildrenCategory(params.id as string);
@@ -38,6 +51,8 @@ const Header = ({ main_category }: { main_category: any }) => {
           secondary_category={children_category}
         />
         <BottomHeader
+          // 3. Le premier rendu sera `children_category || undefined`
+          //    Le second rendu (après le useEffect) sera `children_category || [données du local storage]`
           secondary_category={children_category || category}
           loading={secondaryLoading}
           parentSlug={parentSlug}
