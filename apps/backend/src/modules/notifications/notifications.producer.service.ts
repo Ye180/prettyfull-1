@@ -1,209 +1,173 @@
-import { InjectQueue } from '@nestjs/bull';
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
-import type { Queue } from 'bull';
-import type {
-  NotificationJob,
-  OrderCreatedPayload,
-  OrderStatusPayload,
-  PasswordResetPayload,
-  WelcomeEmailPayload,
+import { Queue, Job } from 'bullmq';
+import {
+  NotificationQueue,
+  NotificationJobName,
+  OrderConfirmationData,
+  NewOrderAdminData,
+  OrderShipmentData,
 } from './types/notification.types';
-import { NotificationType } from './types/notification.types';
 
 /**
- * Producer Service pour ajouter des jobs de notification dans la queue Bull
+ * ============================================================================
+ * NOTIFICATIONS PRODUCER SERVICE - BullMQ
+ * ============================================================================
+ *
+ * Service producteur pour ajouter des jobs de notification dans les queues.
+ * Chaque type de notification a sa propre queue pour un meilleur contrôle.
+ *
+ * Usage:
+ * - Injecter ce service dans les modules Orders/Products
+ * - Appeler les méthodes appropriées après les événements métier
+ * ============================================================================
  */
 @Injectable()
 export class NotificationsProducerService {
   private readonly logger = new Logger(NotificationsProducerService.name);
 
   constructor(
-    @InjectQueue('notifications') private readonly notificationsQueue: Queue,
+    @InjectQueue(NotificationQueue.ORDER_CONFIRMATION)
+    private readonly orderConfirmationQueue: Queue,
+    @InjectQueue(NotificationQueue.NEW_ORDER_ADMIN)
+    private readonly newOrderAdminQueue: Queue,
+    @InjectQueue(NotificationQueue.ORDER_SHIPMENT)
+    private readonly orderShipmentQueue: Queue,
   ) {}
 
   /**
-   * Envoyer une notification de commande créée
+   * Mettre en file d'attente une confirmation de commande pour le client
    */
-  async sendOrderCreatedNotification(
-    payload: OrderCreatedPayload,
-    language = 'fr',
-  ): Promise<void> {
+  async queueOrderConfirmation(
+    data: OrderConfirmationData,
+  ): Promise<Job<OrderConfirmationData>> {
     try {
-      const job: NotificationJob = {
-        type: NotificationType.ORDER_CREATED,
-        payload,
-        metadata: { language, priority: 1 },
-      };
-
-      await this.notificationsQueue.add(NotificationType.ORDER_CREATED, job, {
-        priority: 1,
-        attempts: 3,
-        backoff: {
-          type: 'exponential',
-          delay: 2000,
+      const job = await this.orderConfirmationQueue.add(
+        NotificationJobName.SEND_ORDER_CONFIRMATION,
+        data,
+        {
+          priority: 1,
+          attempts: 3,
+          backoff: {
+            type: 'exponential',
+            delay: 2000,
+          },
         },
-      });
+      );
 
       this.logger.log(
-        `Order created notification queued for order: ${payload.orderNumber}`,
+        `Order confirmation notification queued: ${data.orderId} (Job ID: ${job.id})`,
       );
+
+      return job;
     } catch (error) {
       const err = error as Error;
       this.logger.error(
-        `Failed to queue order created notification: ${err.message}`,
+        `Failed to queue order confirmation: ${err.message}`,
         err.stack,
       );
+      throw error;
     }
   }
 
   /**
-   * Envoyer une notification de changement de statut
+   * Mettre en file d'attente une notification admin pour nouvelle commande
    */
-  async sendOrderStatusNotification(
-    payload: OrderStatusPayload,
-    language = 'fr',
-  ): Promise<void> {
+  async queueNewOrderAdmin(
+    data: NewOrderAdminData,
+  ): Promise<Job<NewOrderAdminData>> {
     try {
-      const job: NotificationJob = {
-        type: NotificationType.ORDER_CONFIRMED,
-        payload,
-        metadata: { language, priority: 2 },
-      };
-
-      await this.notificationsQueue.add(`order_status_${payload.status}`, job, {
-        priority: 2,
-        attempts: 3,
-        backoff: {
-          type: 'exponential',
-          delay: 2000,
+      const job = await this.newOrderAdminQueue.add(
+        NotificationJobName.SEND_NEW_ORDER_NOTIFICATION,
+        data,
+        {
+          priority: 2,
+          attempts: 3,
+          backoff: {
+            type: 'exponential',
+            delay: 2000,
+          },
         },
-      });
+      );
 
       this.logger.log(
-        `Order status notification queued for order: ${payload.orderNumber} (status: ${payload.status})`,
+        `New order admin notification queued: ${data.orderId} (Job ID: ${job.id})`,
       );
+
+      return job;
     } catch (error) {
       const err = error as Error;
       this.logger.error(
-        `Failed to queue order status notification: ${err.message}`,
+        `Failed to queue new order admin notification: ${err.message}`,
         err.stack,
       );
+      throw error;
     }
   }
 
   /**
-   * Envoyer une notification de commande annulée
+   * Mettre en file d'attente un email de code de livraison
    */
-  async sendOrderCancelledNotification(
-    payload: OrderStatusPayload,
-    language = 'fr',
-  ): Promise<void> {
+  async queueOrderShipment(
+    data: OrderShipmentData,
+  ): Promise<Job<OrderShipmentData>> {
     try {
-      const job: NotificationJob = {
-        type: NotificationType.ORDER_CANCELLED,
-        payload,
-        metadata: { language, priority: 1 },
-      };
-
-      await this.notificationsQueue.add(NotificationType.ORDER_CANCELLED, job, {
-        priority: 1,
-        attempts: 3,
-        backoff: {
-          type: 'exponential',
-          delay: 2000,
+      const job = await this.orderShipmentQueue.add(
+        NotificationJobName.SEND_SHIPMENT_CODE,
+        data,
+        {
+          priority: 1,
+          attempts: 3,
+          backoff: {
+            type: 'exponential',
+            delay: 2000,
+          },
         },
-      });
+      );
 
       this.logger.log(
-        `Order cancelled notification queued for order: ${payload.orderNumber}`,
+        `Order shipment notification queued: ${data.orderId} (Job ID: ${job.id})`,
       );
+
+      return job;
     } catch (error) {
       const err = error as Error;
       this.logger.error(
-        `Failed to queue order cancelled notification: ${err.message}`,
+        `Failed to queue order shipment notification: ${err.message}`,
         err.stack,
       );
+      throw error;
     }
   }
 
   /**
-   * Envoyer un email de bienvenue (bonus)
-   */
-  async sendWelcomeEmail(
-    payload: WelcomeEmailPayload,
-    language = 'fr',
-  ): Promise<void> {
-    try {
-      const job: NotificationJob = {
-        type: NotificationType.WELCOME_EMAIL,
-        payload,
-        metadata: { language, priority: 3 },
-      };
-
-      await this.notificationsQueue.add(NotificationType.WELCOME_EMAIL, job, {
-        priority: 3,
-        attempts: 2,
-        backoff: {
-          type: 'exponential',
-          delay: 5000,
-        },
-      });
-
-      this.logger.log(`Welcome email queued for user: ${payload.userEmail}`);
-    } catch (error) {
-      const err = error as Error;
-      this.logger.error(
-        `Failed to queue welcome email: ${err.message}`,
-        err.stack,
-      );
-    }
-  }
-
-  /**
-   * Envoyer un email de réinitialisation de mot de passe (bonus)
-   */
-  async sendPasswordResetEmail(
-    payload: PasswordResetPayload,
-    language = 'fr',
-  ): Promise<void> {
-    try {
-      const job: NotificationJob = {
-        type: NotificationType.PASSWORD_RESET,
-        payload,
-        metadata: { language, priority: 1 },
-      };
-
-      await this.notificationsQueue.add(NotificationType.PASSWORD_RESET, job, {
-        priority: 1,
-        attempts: 3,
-        backoff: {
-          type: 'exponential',
-          delay: 1000,
-        },
-      });
-
-      this.logger.log(
-        `Password reset email queued for user: ${payload.userEmail}`,
-      );
-    } catch (error) {
-      const err = error as Error;
-      this.logger.error(
-        `Failed to queue password reset email: ${err.message}`,
-        err.stack,
-      );
-    }
-  }
-
-  /**
-   * Obtenir des statistiques de la queue (pour monitoring)
+   * Obtenir des statistiques des queues (pour monitoring)
    */
   async getQueueStats() {
+    const [orderConfirmationStats, newOrderAdminStats, orderShipmentStats] =
+      await Promise.all([
+        this.getQueueStatsForQueue(this.orderConfirmationQueue),
+        this.getQueueStatsForQueue(this.newOrderAdminQueue),
+        this.getQueueStatsForQueue(this.orderShipmentQueue),
+      ]);
+
+    return {
+      orderConfirmation: orderConfirmationStats,
+      newOrderAdmin: newOrderAdminStats,
+      orderShipment: orderShipmentStats,
+    };
+  }
+
+  /**
+   * Obtenir les statistiques d'une queue spécifique
+   */
+  private async getQueueStatsForQueue(queue: Queue) {
     const [waiting, active, completed, failed, delayed] = await Promise.all([
-      this.notificationsQueue.getWaitingCount(),
-      this.notificationsQueue.getActiveCount(),
-      this.notificationsQueue.getCompletedCount(),
-      this.notificationsQueue.getFailedCount(),
-      this.notificationsQueue.getDelayedCount(),
+      queue.getWaitingCount(),
+      queue.getActiveCount(),
+      queue.getCompletedCount(),
+      queue.getFailedCount(),
+      queue.getDelayedCount(),
     ]);
 
     return {

@@ -645,17 +645,18 @@ export class OrdersService {
 
       if (!populatedOrder) return;
 
-      const userData = (populatedOrder as any).user;
-
-      await this.notificationsProducer.sendOrderCancelledNotification(
-        {
-          orderId: order._id as any,
-          orderNumber: orderData.orderNumber,
-          userId: userData._id,
-          userEmail: userData.email || orderData.shippingAddress.email,
-          status: OrderStatus.CANCELLED,
-        },
-        'fr',
+      // TODO Module 2: Implémenter template email annulation commande
+      // const userData = (populatedOrder as any).user;
+      // await this.notificationsProducer.queueOrderCancellation({
+      //   orderId: order._id.toString(),
+      //   orderNumber: orderData.orderNumber,
+      //   customerEmail: userData.email || orderData.shippingAddress.email,
+      //   customerName: userData.name || orderData.shippingAddress.fullName,
+      //   reason,
+      //   language: 'fr',
+      // });
+      console.log(
+        `📧 Order cancelled notification skipped (template not implemented yet): ${orderData.orderNumber}`,
       );
     } catch (error) {
       const err = error as Error;

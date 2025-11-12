@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle commande</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #dc2626;
+            color: white;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .info-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .address-block {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #dc2626;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ Nouvelle Commande Reçue</h1>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Commande #</div>
+                <div class="info-value">{{orderId}}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Montant total</div>
+                <div class="info-value">{{formatCurrency totalAmount.amount totalAmount.currency}}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Articles</div>
+                <div class="info-value">{{itemsCount}}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Date</div>
+                <div class="info-value">{{formatDate orderDate 'fr'}}</div>
+            </div>
+        </div>
+
+        <h3>Informations Client</h3>
+        <div class="address-block">
+            <p><strong>Nom:</strong> {{customerName}}</p>
+            <p><strong>Email:</strong> <a href="mailto:{{customerEmail}}">{{customerEmail}}</a></p>
+            {{#if customerPhone}}
+            <p><strong>Téléphone:</strong> {{customerPhone}}</p>
+            {{/if}}
+        </div>
+
+        <h3>Adresse de livraison</h3>
+        <div class="address-block">
+            <p>{{shippingAddress.street}}<br>
+            {{shippingAddress.city}}<br>
+            {{shippingAddress.country}}</p>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="{{adminUrl}}/orders/{{orderId}}" class="btn">
+                Voir la commande dans l'admin
+            </a>
+        </div>
+    </div>
+</body>
+</html>
