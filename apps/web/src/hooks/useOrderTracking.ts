@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * ============================================================================
@@ -46,7 +46,8 @@ export interface UseOrderTrackingReturn {
 
 export function useOrderTracking(
   orderId: string,
-  apiBaseUrl: string = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7777',
+  apiBaseUrl: string = process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:7777"
 ): UseOrderTrackingReturn {
   const [status, setStatus] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -61,7 +62,7 @@ export function useOrderTracking(
 
   const connect = useCallback(() => {
     if (!orderId) {
-      setError('Order ID is required');
+      setError("Order ID is required");
       return;
     }
 
@@ -72,21 +73,21 @@ export function useOrderTracking(
       }
 
       const url = `${apiBaseUrl}/orders/${orderId}/track`;
-      console.log('🔌 Connecting to SSE:', url);
+      console.log("🔌 Connecting to SSE:", url);
 
       const eventSource = new EventSource(url);
       eventSourceRef.current = eventSource;
 
       eventSource.onopen = () => {
-        console.log('✅ SSE connection established');
+        console.log("✅ SSE connection established");
         setIsConnected(true);
         setError(null);
       };
 
-      eventSource.addEventListener('status-update', (event: MessageEvent) => {
+      eventSource.addEventListener("status-update", (event: MessageEvent) => {
         try {
           const data: OrderStatusUpdate = JSON.parse(event.data);
-          console.log('📦 Status update received:', data);
+          console.log("📦 Status update received:", data);
 
           setStatus(data.status);
           setMessage(data.message);
@@ -96,29 +97,29 @@ export function useOrderTracking(
           // Ajouter à l'historique
           setHistory((prev) => [...prev, data]);
         } catch (err) {
-          console.error('❌ Failed to parse SSE data:', err);
+          console.error("❌ Failed to parse SSE data:", err);
         }
       });
 
       eventSource.onerror = (err) => {
-        console.error('❌ SSE connection error:', err);
+        console.error("❌ SSE connection error:", err);
         setIsConnected(false);
-        setError('Connection lost. Reconnecting...');
+        setError("Connection lost. Reconnecting...");
 
         // Tenter une reconnexion après 5 secondes
         reconnectTimeoutRef.current = setTimeout(() => {
-          console.log('🔄 Attempting to reconnect...');
+          console.log("🔄 Attempting to reconnect...");
           connect();
         }, 5000);
       };
     } catch (err) {
-      console.error('❌ Failed to establish SSE connection:', err);
-      setError('Failed to connect');
+      console.error("❌ Failed to establish SSE connection:", err);
+      setError("Failed to connect");
     }
   }, [orderId, apiBaseUrl]);
 
   const reconnect = useCallback(() => {
-    console.log('🔄 Manual reconnect triggered');
+    console.log("🔄 Manual reconnect triggered");
     connect();
   }, [connect]);
 
@@ -127,7 +128,7 @@ export function useOrderTracking(
 
     // Cleanup
     return () => {
-      console.log('🧹 Cleaning up SSE connection');
+      console.log("🧹 Cleaning up SSE connection");
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
         eventSourceRef.current = null;

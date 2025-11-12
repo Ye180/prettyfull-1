@@ -1,5 +1,4 @@
-import React from 'react';
-import { useOrderTracking } from '../hooks/useOrderTracking';
+import { useOrderTracking } from "../hooks/useOrderTracking";
 
 /**
  * ============================================================================
@@ -15,28 +14,31 @@ interface OrderTrackingProps {
 }
 
 const statusIcons: Record<string, string> = {
-  pending: '⏳',
-  paid: '💳',
-  confirmed: '✅',
-  processing: '📦',
-  shipped: '🚚',
-  delivered: '🎉',
-  cancelled: '❌',
-  refunded: '💰',
+  pending: "⏳",
+  paid: "💳",
+  confirmed: "✅",
+  processing: "📦",
+  shipped: "🚚",
+  delivered: "🎉",
+  cancelled: "❌",
+  refunded: "💰",
 };
 
 const statusColors: Record<string, string> = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  paid: 'bg-blue-100 text-blue-800',
-  confirmed: 'bg-green-100 text-green-800',
-  processing: 'bg-purple-100 text-purple-800',
-  shipped: 'bg-indigo-100 text-indigo-800',
-  delivered: 'bg-green-100 text-green-800',
-  cancelled: 'bg-red-100 text-red-800',
-  refunded: 'bg-gray-100 text-gray-800',
+  pending: "bg-yellow-100 text-yellow-800",
+  paid: "bg-blue-100 text-blue-800",
+  confirmed: "bg-green-100 text-green-800",
+  processing: "bg-purple-100 text-purple-800",
+  shipped: "bg-indigo-100 text-indigo-800",
+  delivered: "bg-green-100 text-green-800",
+  cancelled: "bg-red-100 text-red-800",
+  refunded: "bg-gray-100 text-gray-800",
 };
 
-export function OrderTrackingComponent({ orderId, className = '' }: OrderTrackingProps) {
+export function OrderTrackingComponent({
+  orderId,
+  className = "",
+}: OrderTrackingProps) {
   const {
     status,
     message,
@@ -71,7 +73,10 @@ export function OrderTrackingComponent({ orderId, className = '' }: OrderTrackin
       {/* Order Number */}
       {metadata?.orderNumber && (
         <p className="text-gray-600 mb-4">
-          Commande: <span className="font-mono font-semibold">{metadata.orderNumber}</span>
+          Commande:{" "}
+          <span className="font-mono font-semibold">
+            {metadata.orderNumber}
+          </span>
         </p>
       )}
 
@@ -79,17 +84,17 @@ export function OrderTrackingComponent({ orderId, className = '' }: OrderTrackin
       {status && (
         <div className="mb-6">
           <div className="flex items-center gap-3">
-            <span className="text-4xl">{statusIcons[status] || '📋'}</span>
+            <span className="text-4xl">{statusIcons[status] || "📋"}</span>
             <div>
               <div
-                className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${statusColors[status] || 'bg-gray-100 text-gray-800'}`}
+                className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${statusColors[status] || "bg-gray-100 text-gray-800"}`}
               >
                 {status.toUpperCase()}
               </div>
               {message && <p className="mt-2 text-gray-700">{message}</p>}
               {timestamp && (
                 <p className="text-sm text-gray-500 mt-1">
-                  {new Date(timestamp).toLocaleString('fr-FR')}
+                  {new Date(timestamp).toLocaleString("fr-FR")}
                 </p>
               )}
             </div>
@@ -121,20 +126,22 @@ export function OrderTrackingComponent({ orderId, className = '' }: OrderTrackin
             {history.map((item, index) => (
               <div key={index} className="flex gap-3 items-start">
                 <div className="flex flex-col items-center">
-                  <span className="text-2xl">{statusIcons[item.status] || '•'}</span>
+                  <span className="text-2xl">
+                    {statusIcons[item.status] || "•"}
+                  </span>
                   {index < history.length - 1 && (
                     <div className="w-0.5 h-8 bg-gray-300 my-1"></div>
                   )}
                 </div>
                 <div className="flex-1 pb-4">
                   <div
-                    className={`inline-block px-2 py-1 rounded text-xs font-semibold ${statusColors[item.status] || 'bg-gray-100 text-gray-800'}`}
+                    className={`inline-block px-2 py-1 rounded text-xs font-semibold ${statusColors[item.status] || "bg-gray-100 text-gray-800"}`}
                   >
                     {item.status}
                   </div>
                   <p className="text-sm text-gray-700 mt-1">{item.message}</p>
                   <p className="text-xs text-gray-500 mt-1">
-                    {new Date(item.timestamp).toLocaleString('fr-FR')}
+                    {new Date(item.timestamp).toLocaleString("fr-FR")}
                   </p>
                 </div>
               </div>

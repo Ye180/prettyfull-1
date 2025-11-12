@@ -119,6 +119,25 @@ export class Order extends Document {
     default: OrderStatus.PENDING,
   })
   status: OrderStatus;
+
+  // Delivery fields (Module 4)
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  driverId?: Types.ObjectId;
+
+  @Prop({ type: String, length: 6, uppercase: true })
+  validationCode?: string;
+
+  @Prop({ type: Date })
+  estimatedDelivery?: Date;
+
+  @Prop({ type: Date })
+  assignedAt?: Date;
+
+  @Prop({ type: String })
+  deliveryNote?: string;
+
+  @Prop({ type: String })
+  signatureUrl?: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

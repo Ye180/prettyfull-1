@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Subject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 /**
@@ -31,7 +31,7 @@ export class OrderEventsService {
 
   // Subject pour tous les événements de commande
   private orderStatusUpdates$ = new Subject<OrderStatusEvent>();
-  
+
   // Subject pour les notifications admin de nouvelles commandes
   private newOrderNotifications$ = new Subject<NewOrderAdminEvent>();
 
@@ -60,7 +60,7 @@ export class OrderEventsService {
    */
   subscribeToOrder(orderId: string): Observable<OrderStatusEvent> {
     this.logger.log(`📺 Client subscribed to order ${orderId}`);
-    
+
     return this.orderStatusUpdates$.pipe(
       filter((event) => event.orderId === orderId),
       map((event) => {
@@ -77,7 +77,7 @@ export class OrderEventsService {
    */
   subscribeToNewOrders(): Observable<NewOrderAdminEvent> {
     this.logger.log(`📺 Admin subscribed to new order notifications`);
-    
+
     return this.newOrderNotifications$;
   }
 

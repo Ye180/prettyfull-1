@@ -717,4 +717,243 @@ export class OrdersService {
       // Ne pas bloquer le processus d'annulation si la notification échoue
     }
   }
+
+  /**
+   * Module 4: Delivery System - Generate 6-character validation code
+   */
+  private generateValidationCode(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    return Array.from({ length: 6 }, () =>
+      chars.charAt(Math.floor(Math.random() * chars.length)),
+    ).join('');
+  }
+
+  /**
+   * Module 4: Assign driver to order (Admin only)
+   */
+  async assignDriver(
+    orderId: string,
+    driverId: string,
+    estimatedDelivery: Date,
+  ): Promise<Order> {
+    // Validate ObjectId
+    if (!Types.ObjectId.isValid(orderId)) {
+      throw new BadRequestException("L'ID de la commande n'est pas valide");
+    }
+    if (!Types.ObjectId.isValid(driverId)) {
+      throw new BadRequestException("L'ID du livreur n'est pas valide");
+    }
+
+    // Find order
+    const order = await this.orderModel.findById(orderId).lean();
+    if (!order) {
+      throw new NotFoundException('Commande introuvable');
+    }
+
+    // Verify driver exists
+    const driver = await this.userModel.findById(driverId).lean();
+    if (!driver) {
+      throw new NotFoundException('Livreur introuvable');
+    }
+
+    // Generate validation code
+    const validationCode = this.generateValidationCode();
+
+    // Update order
+    const updatedOrder = await this.orderModel
+      .findByIdAndUpdate(
+        orderId,
+        {
+          driverId: new Types.ObjectId(driverId),
+          validationCode,
+          estimatedDelivery,
+          assignedAt: new Date(),
+          status: OrderStatus.SHIPPED, // Transition to SHIPPED when assigned
+        },
+        { new: true },
+      )
+      .populate('userId', 'name email')
+      .populate('shippingAddress')
+      .lean();
+
+    if (!updatedOrder) {
+      throw new InternalServerErrorException(
+        "Erreur lors de l'assignation du livreur",
+      );
+    }
+
+    // Send email with validation code (Module 2 integration)
+    try {
+      const userData = (updatedOrder as any).userId;
+      const shippingData = (updatedOrder as any).shippingAddress;
+
+      await this.notificationsProducer.queueOrderShipment({
+        orderId: (updatedOrder._id as Types.ObjectId).toString(),
+        customerEmail: userData?.email || shippingData?.email || '',
+        customerName: userData?.name || shippingData?.fullName || '',
+        trackingCode: validationCode,
+        carrier: 'Livreur interne',
+        estimatedDelivery: estimatedDelivery,
+        items: updatedOrder.items.map((item: any) => ({
+          name: item.name?.fr || item.name?.en || 'Produit',
+          quantity: item.quantity,
+        })),
+        language: 'fr', // TODO: Get from order/user preferences
+      });
+      this.logger.log(
+        `📧 Email de livraison envoyé avec code ${validationCode} pour commande ${updatedOrder.orderNumber}`,
+      );
+    } catch (error) {
+      const err = error as Error;
+      this.logger.error(
+        `❌ Erreur lors de l'envoi de l'email de livraison: ${err.message}`,
+      );
+      // Continue even if email fails
+    }
+
+    // Emit SSE event (Module 3 integration)
+    this.orderEventsService.emitOrderStatusUpdate({
+      orderId: (updatedOrder._id as Types.ObjectId).toString(),
+      status: OrderStatus.SHIPPED,
+      timestamp: new Date(),
+      message: `Commande assignée au livreur. Code de validation: ${validationCode}`,
+      metadata: {
+        validationCode,
+        estimatedDelivery: estimatedDelivery.toISOString(),
+      },
+    });
+
+    this.logger.log(
+      `✅ Livreur ${driverId} assigné à la commande ${order.orderNumber} avec code ${validationCode}`,
+    );
+
+    return updatedOrder;
+  }
+
+  /**
+   * Module 4: Get driver's assigned orders (Driver only)
+   */
+  async getDriverOrders(
+    driverId: string,
+    filters?: {
+      status?: OrderStatus;
+      startDate?: Date;
+      endDate?: Date;
+    },
+  ): Promise<Order[]> {
+    if (!Types.ObjectId.isValid(driverId)) {
+      throw new BadRequestException("L'ID du livreur n'est pas valide");
+    }
+
+    const query: any = {
+      driverId: new Types.ObjectId(driverId),
+    };
+
+    // Apply filters
+    if (filters?.status) {
+      query.status = filters.status;
+    }
+
+    if (filters?.startDate || filters?.endDate) {
+      query.assignedAt = {};
+      if (filters.startDate) {
+        query.assignedAt.$gte = filters.startDate;
+      }
+      if (filters.endDate) {
+        query.assignedAt.$lte = filters.endDate;
+      }
+    }
+
+    const orders = await this.orderModel
+      .find(query)
+      .populate('userId', 'name email')
+      .populate('shippingAddress')
+      .sort({ assignedAt: -1 })
+      .lean();
+
+    this.logger.log(
+      `📦 Récupération de ${orders.length} commandes pour le livreur ${driverId}`,
+    );
+
+    return orders;
+  }
+
+  /**
+   * Module 4: Validate delivery with code (Driver only)
+   */
+  async validateDelivery(
+    orderId: string,
+    driverId: string,
+    validationCode: string,
+    deliveryNote?: string,
+    signatureUrl?: string,
+  ): Promise<Order> {
+    // Validate ObjectId
+    if (!Types.ObjectId.isValid(orderId)) {
+      throw new BadRequestException("L'ID de la commande n'est pas valide");
+    }
+
+    // Find order
+    const order = await this.orderModel.findById(orderId).lean();
+    if (!order) {
+      throw new NotFoundException('Commande introuvable');
+    }
+
+    // Verify driver is assigned to this order
+    if (!order.driverId || order.driverId.toString() !== driverId) {
+      throw new BadRequestException("Vous n'êtes pas assigné à cette commande");
+    }
+
+    // Verify validation code
+    if (order.validationCode !== validationCode.toUpperCase()) {
+      throw new BadRequestException('Code de validation incorrect');
+    }
+
+    // Verify order is in correct status
+    if (order.status !== OrderStatus.SHIPPED) {
+      throw new BadRequestException(
+        'Cette commande ne peut pas être validée (statut incorrect)',
+      );
+    }
+
+    // Update order to DELIVERED
+    const updatedOrder = await this.orderModel
+      .findByIdAndUpdate(
+        orderId,
+        {
+          status: OrderStatus.DELIVERED,
+          deliveryNote,
+          signatureUrl,
+          deliveredAt: new Date(),
+        },
+        { new: true },
+      )
+      .lean();
+
+    if (!updatedOrder) {
+      throw new InternalServerErrorException(
+        'Erreur lors de la validation de la livraison',
+      );
+    }
+
+    // Emit SSE event (Module 3 integration)
+    this.orderEventsService.emitOrderStatusUpdate({
+      orderId: (updatedOrder._id as Types.ObjectId).toString(),
+      status: OrderStatus.DELIVERED,
+      timestamp: new Date(),
+      message: 'Commande livrée avec succès',
+      metadata: {
+        deliveryNote,
+        signatureUrl,
+      },
+    });
+
+    // TODO: Send delivery confirmation email to customer (Module 2 - create template)
+
+    this.logger.log(
+      `✅ Livraison validée pour commande ${order.orderNumber} par livreur ${driverId}`,
+    );
+
+    return updatedOrder;
+  }
 }

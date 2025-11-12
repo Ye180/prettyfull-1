@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * ============================================================================
@@ -44,11 +44,14 @@ export interface UseAdminLiveOrdersReturn {
 }
 
 export function useAdminLiveOrders(
-  apiBaseUrl: string = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7777',
-  authToken?: string, // Bearer token pour authentification admin
+  apiBaseUrl: string = process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:7777",
+  authToken?: string // Bearer token pour authentification admin
 ): UseAdminLiveOrdersReturn {
   const [orders, setOrders] = useState<NewOrderNotification[]>([]);
-  const [latestOrder, setLatestOrder] = useState<NewOrderNotification | null>(null);
+  const [latestOrder, setLatestOrder] = useState<NewOrderNotification | null>(
+    null
+  );
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,60 +71,63 @@ export function useAdminLiveOrders(
         ? `${apiBaseUrl}/orders/admin/live?token=${authToken}`
         : `${apiBaseUrl}/orders/admin/live`;
 
-      console.log('🔌 Admin connecting to SSE:', url);
+      console.log("🔌 Admin connecting to SSE:", url);
 
       const eventSource = new EventSource(url);
       eventSourceRef.current = eventSource;
 
       eventSource.onopen = () => {
-        console.log('✅ Admin SSE connection established');
+        console.log("✅ Admin SSE connection established");
         setIsConnected(true);
         setError(null);
       };
 
-      eventSource.addEventListener('new-order', (event: MessageEvent) => {
+      eventSource.addEventListener("new-order", (event: MessageEvent) => {
         try {
           const data: NewOrderNotification = JSON.parse(event.data);
-          console.log('🛒 New order notification received:', data);
+          console.log("🛒 New order notification received:", data);
 
           setLatestOrder(data);
           setOrders((prev) => [data, ...prev]); // Plus récent en premier
 
           // Optionnel: Jouer un son de notification
-          if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification('Nouvelle Commande!', {
+          if (
+            "Notification" in window &&
+            Notification.permission === "granted"
+          ) {
+            new Notification("Nouvelle Commande!", {
               body: `${data.orderNumber} - ${data.customerName} - ${data.totalAmount.amount} ${data.totalAmount.currency}`,
-              icon: '/icon-order.png',
+              icon: "/icon-order.png",
             });
           }
 
           // Optionnel: Jouer un son
-          const audio = new Audio('/sounds/notification.mp3');
-          audio.play().catch((err) => console.log('Audio play failed:', err));
+          const audio = new Audio("/sounds/notification.mp3");
+          audio.play().catch((err) => console.log("Audio play failed:", err));
         } catch (err) {
-          console.error('❌ Failed to parse admin SSE data:', err);
+          console.error("❌ Failed to parse admin SSE data:", err);
         }
       });
 
       eventSource.onerror = (err) => {
-        console.error('❌ Admin SSE connection error:', err);
+        console.error("❌ Admin SSE connection error:", err);
         setIsConnected(false);
-        setError('Connection lost. Reconnecting...');
+        setError("Connection lost. Reconnecting...");
 
         // Tenter une reconnexion après 5 secondes
         reconnectTimeoutRef.current = setTimeout(() => {
-          console.log('🔄 Attempting to reconnect admin SSE...');
+          console.log("🔄 Attempting to reconnect admin SSE...");
           connect();
         }, 5000);
       };
     } catch (err) {
-      console.error('❌ Failed to establish admin SSE connection:', err);
-      setError('Failed to connect');
+      console.error("❌ Failed to establish admin SSE connection:", err);
+      setError("Failed to connect");
     }
   }, [apiBaseUrl, authToken]);
 
   const reconnect = useCallback(() => {
-    console.log('🔄 Manual admin reconnect triggered');
+    console.log("🔄 Manual admin reconnect triggered");
     connect();
   }, [connect]);
 
@@ -132,7 +138,7 @@ export function useAdminLiveOrders(
 
   useEffect(() => {
     // Demander permission pour notifications desktop
-    if ('Notification' in window && Notification.permission === 'default') {
+    if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
 
@@ -140,7 +146,7 @@ export function useAdminLiveOrders(
 
     // Cleanup
     return () => {
-      console.log('🧹 Cleaning up admin SSE connection');
+      console.log("🧹 Cleaning up admin SSE connection");
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
         eventSourceRef.current = null;

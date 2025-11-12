@@ -1,13 +1,14 @@
 # Module 3: SSE pour Tracking Temps Réel - Complété ✅
 
 **Date de complétion**: 12 novembre 2025  
-**Statut**: Production-ready avec frontend hooks React  
+**Statut**: Production-ready avec frontend hooks React
 
 ---
 
 ## 📋 Objectif du Module
 
 Implémenter Server-Sent Events (SSE) pour tracking temps réel:
+
 - Streaming de mises à jour de statut de commande pour les clients
 - Notifications live de nouvelles commandes pour les admins
 - Hooks React réutilisables pour le frontend
@@ -24,11 +25,13 @@ Implémenter Server-Sent Events (SSE) pour tracking temps réel:
 Service central pour gestion des événements SSE utilisant RxJS Subjects.
 
 **Responsabilités**:
+
 - Maintient des Subjects RxJS pour broadcast d'événements
 - Filtre les événements par commande (orderId)
 - Gère les abonnements SSE
 
 **Méthodes Principales**:
+
 ```typescript
 emitOrderStatusUpdate(event: OrderStatusUpdate): void
 emitNewOrderNotification(event: NewOrderAdminEvent): void
@@ -38,6 +41,7 @@ getActiveSubscribersCount(): { orderUpdates: number; newOrders: number }
 ```
 
 **Interfaces**:
+
 ```typescript
 interface OrderStatusEvent {
   orderId: string;
@@ -61,6 +65,7 @@ interface NewOrderAdminEvent {
 Trois nouveaux endpoints ajoutés:
 
 **A. Client Tracking SSE**
+
 ```typescript
 GET /orders/:id/track
 Accept: text/event-stream
@@ -76,6 +81,7 @@ Data: {
 ```
 
 **B. Admin Live Orders SSE**
+
 ```typescript
 GET /orders/admin/live
 Accept: text/event-stream
@@ -93,6 +99,7 @@ Data: {
 ```
 
 **C. Admin Monitoring**
+
 ```typescript
 GET /orders/admin/subscribers
 Authorization: Bearer <admin_token>
@@ -109,16 +116,19 @@ Response: {
 Émission automatique d'événements SSE lors de:
 
 **A. Création de commande** (`createOrder`)
+
 - Émet `NewOrderAdminEvent` pour dashboard admin
 - Notification temps réel dès création confirmée
 - Inclut détails complets (numéro, client, montant)
 
 **B. Changement de statut** (`updateStatus`)
+
 - Émet `OrderStatusEvent` pour clients suivant la commande
 - Messages personnalisés selon le statut (pending, paid, confirmed, processing, shipped, delivered, cancelled, refunded)
 - Historique de statuts maintenu
 
 **Messages de Statut Français**:
+
 ```typescript
 {
   PENDING: 'Commande en attente de paiement',
@@ -141,19 +151,20 @@ Response: {
 Hook pour tracking client d'une commande spécifique.
 
 **Usage**:
+
 ```tsx
-import { useOrderTracking } from '@/hooks/useOrderTracking';
+import { useOrderTracking } from "@/hooks/useOrderTracking";
 
 function OrderPage({ orderId }) {
   const {
-    status,           // Current status
-    message,          // Localized message
-    timestamp,        // Last update time
-    metadata,         // Extra data (orderNumber, previousStatus)
-    isConnected,      // SSE connection state
-    error,            // Error message if any
-    history,          // Full status history
-    reconnect         // Manual reconnect function
+    status, // Current status
+    message, // Localized message
+    timestamp, // Last update time
+    metadata, // Extra data (orderNumber, previousStatus)
+    isConnected, // SSE connection state
+    error, // Error message if any
+    history, // Full status history
+    reconnect, // Manual reconnect function
   } = useOrderTracking(orderId);
 
   return (
@@ -161,13 +172,14 @@ function OrderPage({ orderId }) {
       <h2>Statut: {status}</h2>
       <p>{message}</p>
       <p>Mise à jour: {timestamp?.toLocaleString()}</p>
-      {isConnected ? '🟢 En direct' : '🔴 Déconnecté'}
+      {isConnected ? "🟢 En direct" : "🔴 Déconnecté"}
     </div>
   );
 }
 ```
 
 **Features**:
+
 - Auto-reconnection sur erreur (5s délai)
 - Historique complet des updates
 - Gestion d'état de connexion
@@ -175,6 +187,7 @@ function OrderPage({ orderId }) {
 - TypeScript typings complets
 
 **Configuration**:
+
 ```typescript
 useOrderTracking(
   orderId: string,
@@ -187,17 +200,18 @@ useOrderTracking(
 Hook pour dashboard admin recevant notifications de nouvelles commandes.
 
 **Usage**:
+
 ```tsx
-import { useAdminLiveOrders } from '@/hooks/useAdminLiveOrders';
+import { useAdminLiveOrders } from "@/hooks/useAdminLiveOrders";
 
 function AdminDashboard() {
   const {
-    orders,          // Array of new order notifications
-    latestOrder,     // Most recent order
-    isConnected,     // SSE connection state
-    error,           // Error message
-    clearOrders,     // Clear notifications list
-    reconnect        // Manual reconnect
+    orders, // Array of new order notifications
+    latestOrder, // Most recent order
+    isConnected, // SSE connection state
+    error, // Error message
+    clearOrders, // Clear notifications list
+    reconnect, // Manual reconnect
   } = useAdminLiveOrders(apiBaseUrl, authToken);
 
   return (
@@ -215,6 +229,7 @@ function AdminDashboard() {
 ```
 
 **Features**:
+
 - Desktop notifications (si permission accordée)
 - Son de notification personnalisable
 - Liste chronologique (plus récent en premier)
@@ -223,6 +238,7 @@ function AdminDashboard() {
 - Auth token support (Bearer)
 
 **Configuration**:
+
 ```typescript
 useAdminLiveOrders(
   apiBaseUrl?: string,      // Default: process.env.NEXT_PUBLIC_API_URL
@@ -231,6 +247,7 @@ useAdminLiveOrders(
 ```
 
 **Desktop Notifications**:
+
 ```typescript
 // Permissions demandées automatiquement au mount
 // Notification affichée à chaque nouvelle commande:
@@ -246,8 +263,9 @@ useAdminLiveOrders(
 Composant UI complet pré-stylé pour tracking de commande.
 
 **Usage**:
+
 ```tsx
-import OrderTrackingComponent from '@/components/OrderTracking';
+import OrderTrackingComponent from "@/components/OrderTracking";
 
 function OrderDetailsPage({ orderId }) {
   return (
@@ -259,6 +277,7 @@ function OrderDetailsPage({ orderId }) {
 ```
 
 **Features**:
+
 - Timeline visuelle avec icônes par statut
 - Badges colorés selon statut
 - Historique complet avec timestamps
@@ -268,6 +287,7 @@ function OrderDetailsPage({ orderId }) {
 - Animation pulse pour connexion active
 
 **Status Icons & Colors**:
+
 ```typescript
 {
   pending: { icon: '⏳', color: 'yellow' },
@@ -308,25 +328,30 @@ function OrderDetailsPage({ orderId }) {
 ### Test Client Tracking
 
 **1. Via curl**:
+
 ```bash
 curl -N -H "Accept: text/event-stream" \
   http://localhost:7777/orders/<orderId>/track
 ```
 
 **2. Via navigateur**:
-```javascript
-const eventSource = new EventSource('http://localhost:7777/orders/<orderId>/track');
 
-eventSource.addEventListener('status-update', (event) => {
-  console.log('Update:', JSON.parse(event.data));
+```javascript
+const eventSource = new EventSource(
+  "http://localhost:7777/orders/<orderId>/track"
+);
+
+eventSource.addEventListener("status-update", (event) => {
+  console.log("Update:", JSON.parse(event.data));
 });
 
 eventSource.onerror = (err) => {
-  console.error('SSE Error:', err);
+  console.error("SSE Error:", err);
 };
 ```
 
 **3. Simuler changement statut**:
+
 ```bash
 # En tant qu'admin, changer le statut
 curl -X PATCH http://localhost:7777/orders/<orderId>/status \
@@ -340,6 +365,7 @@ curl -X PATCH http://localhost:7777/orders/<orderId>/status \
 ### Test Admin Live Orders
 
 **1. Connexion SSE Admin**:
+
 ```bash
 curl -N -H "Accept: text/event-stream" \
   -H "Authorization: Bearer <admin_token>" \
@@ -347,6 +373,7 @@ curl -N -H "Accept: text/event-stream" \
 ```
 
 **2. Créer nouvelle commande**:
+
 ```bash
 curl -X POST http://localhost:7777/orders \
   -H "Content-Type: application/json" \
@@ -360,6 +387,7 @@ curl -X POST http://localhost:7777/orders \
 ```
 
 **3. Monitoring connexions actives**:
+
 ```bash
 curl -H "Authorization: Bearer <admin_token>" \
   http://localhost:7777/orders/admin/subscribers
@@ -374,6 +402,7 @@ curl -H "Authorization: Bearer <admin_token>" \
 ### Logs Backend
 
 **Connection Events**:
+
 ```
 📺 Client subscribed to order 673332cd51ae39eb4e3f0d08
 📡 Broadcasting status update for order 673332cd51ae39eb4e3f0d08: shipped
@@ -382,6 +411,7 @@ curl -H "Authorization: Bearer <admin_token>" \
 ```
 
 **Admin Notifications**:
+
 ```
 📺 Admin subscribed to new order notifications
 📡 Broadcasting new order notification: ORD-20251112-0002
@@ -391,18 +421,21 @@ curl -H "Authorization: Bearer <admin_token>" \
 ### Performance Considerations
 
 **Scalabilité**:
+
 - RxJS Subjects sont memory-efficient
 - Auto-cleanup des observables on client disconnect
 - Pas de polling HTTP (économie bande passante)
 - Connexions SSE légères (one-way stream)
 
 **Limitations**:
+
 - EventSource ne supporte pas auth headers (utiliser query params ou cookies)
 - Reconnexion automatique intégrée navigateurs
 - Pas de binary data (text-only)
 - HTTP/1.1: max 6 connexions par domaine (utiliser HTTP/2)
 
 **Optimisations**:
+
 - Activer HTTP/2 en production
 - Utiliser reverse proxy (nginx) pour gérer connexions persistantes
 - Rate limiting par IP pour éviter abus
@@ -415,16 +448,19 @@ curl -H "Authorization: Bearer <admin_token>" \
 ### Authentication
 
 **Client Tracking**:
+
 - `@AllowAnonymous()` → Permet tracking sans auth
 - Client reçoit lien avec orderId (share-able)
 - Pas de données sensibles exposées (seulement statut)
 
 **Admin Dashboard**:
+
 - `@Roles(['admin'])` → Requires admin role
 - Bearer token required
 - EventSource limitations: token en query param ou cookie
 
 **Recommandations**:
+
 - Utiliser cookies HttpOnly pour auth admin SSE
 - CORS configuré pour domaines frontend autorisés
 - Rate limiting sur endpoints SSE
@@ -433,11 +469,13 @@ curl -H "Authorization: Bearer <admin_token>" \
 ### Data Privacy
 
 **Client Side**:
+
 - Pas d'email, téléphone, ou adresse dans events
 - Seulement: statut, message, orderNumber
 - Metadata minimale (previousStatus)
 
 **Admin Side**:
+
 - customerName générique (à enrichir avec populate)
 - Pas de données bancaires
 - Montant total only (pas de détails items)
@@ -450,10 +488,10 @@ curl -H "Authorization: Bearer <admin_token>" \
 
 ```tsx
 // app/orders/[id]/track/page.tsx
-'use client';
+"use client";
 
-import { useParams } from 'next/navigation';
-import OrderTrackingComponent from '@/components/OrderTracking';
+import { useParams } from "next/navigation";
+import OrderTrackingComponent from "@/components/OrderTracking";
 
 export default function TrackOrderPage() {
   const params = useParams();
@@ -472,10 +510,10 @@ export default function TrackOrderPage() {
 
 ```tsx
 // app/admin/dashboard/page.tsx
-'use client';
+"use client";
 
-import { useAdminLiveOrders } from '@/hooks/useAdminLiveOrders';
-import { useSession } from '@/hooks/useSession'; // Votre hook d'auth
+import { useAdminLiveOrders } from "@/hooks/useAdminLiveOrders";
+import { useSession } from "@/hooks/useSession"; // Votre hook d'auth
 
 export default function AdminDashboard() {
   const { token } = useSession(); // Get admin bearer token
@@ -599,6 +637,7 @@ ADMIN_URL=https://admin.prettyfull.com
 ### Module 4: Système de Livraison
 
 SSE sera étendu pour:
+
 - Notification livreur lors d'assignation
 - Tracking GPS temps réel du livreur
 - Updates live pour le client (position livreur)

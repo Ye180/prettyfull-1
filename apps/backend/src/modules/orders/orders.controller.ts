@@ -2,16 +2,16 @@ import {
   Body,
   Controller,
   Get,
+  MessageEvent,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
   Sse,
-  MessageEvent,
 } from '@nestjs/common';
-import { Observable, interval } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import type { UserSession } from '@thallesp/nestjs-better-auth';
 import { AllowAnonymous, Roles, Session } from '@thallesp/nestjs-better-auth';
@@ -167,5 +167,117 @@ export class OrdersController {
     @Session() session: UserSession,
   ) {
     return this.ordersService.cancelOrder(id, reason);
+  }
+
+  /**
+   * Module 4: POST /admin/orders/:orderId/assign-driver
+   * Admin assigne un livreur à une commande
+   */
+  @Post('admin/:orderId/assign-driver')
+  @Roles(['admin'])
+  async assignDriver(
+    @Param('orderId') orderId: string,
+    @Body() assignDriverDto: { driverId: string; estimatedDelivery: string },
+  ) {
+    const estimatedDelivery = new Date(assignDriverDto.estimatedDelivery);
+    const order = await this.ordersService.assignDriver(
+      orderId,
+      assignDriverDto.driverId,
+      estimatedDelivery,
+    );
+
+    return {
+      success: true,
+      message: 'Livreur assigné avec succès',
+      data: {
+        orderId: (order._id as any).toString(),
+        orderNumber: order.orderNumber,
+        driverId: order.driverId?.toString(),
+        validationCode: order.validationCode,
+        estimatedDelivery: order.estimatedDelivery,
+        status: order.status,
+      },
+    };
+  }
+
+  /**
+   * Module 4: GET /driver/me/orders
+   * Livreur récupère ses commandes assignées
+   */
+  @Get('driver/me/orders')
+  @Roles(['driver'])
+  async getDriverOrders(
+    @Session() session: UserSession,
+    @Query('status') status?: OrderStatus,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    const filters: any = {};
+    if (status) filters.status = status;
+    if (startDate) filters.startDate = new Date(startDate);
+    if (endDate) filters.endDate = new Date(endDate);
+
+    const orders = await this.ordersService.getDriverOrders(
+      session.user.id,
+      filters,
+    );
+
+    return {
+      success: true,
+      data: orders.map((order: any) => ({
+        orderId: (order._id as any)?.toString(),
+        orderNumber: order.orderNumber,
+        status: order.status,
+        validationCode: order.validationCode,
+        estimatedDelivery: order.estimatedDelivery,
+        assignedAt: order.assignedAt,
+        shippingAddress: order.shippingAddress,
+        items: order.items,
+        customer: order.userId
+          ? {
+              name: order.userId.name,
+              email: order.userId.email,
+            }
+          : null,
+      })),
+      count: orders.length,
+    };
+  }
+
+  /**
+   * Module 4: POST /driver/orders/:orderId/validate-delivery
+   * Livreur valide la livraison avec le code
+   */
+  @Post('driver/:orderId/validate-delivery')
+  @Roles(['driver'])
+  async validateDelivery(
+    @Param('orderId') orderId: string,
+    @Body()
+    validateDto: {
+      validationCode: string;
+      deliveryNote?: string;
+      signatureUrl?: string;
+    },
+    @Session() session: UserSession,
+  ) {
+    const order = await this.ordersService.validateDelivery(
+      orderId,
+      session.user.id,
+      validateDto.validationCode,
+      validateDto.deliveryNote,
+      validateDto.signatureUrl,
+    );
+
+    return {
+      success: true,
+      message: 'Livraison validée avec succès',
+      data: {
+        orderId: (order._id as any).toString(),
+        orderNumber: order.orderNumber,
+        status: order.status,
+        deliveredAt: (order as any).deliveredAt,
+        deliveryNote: order.deliveryNote,
+      },
+    };
   }
 }
