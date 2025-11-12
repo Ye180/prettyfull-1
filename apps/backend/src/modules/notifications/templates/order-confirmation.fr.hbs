@@ -1,179 +1,183 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang='fr'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     <title>Confirmation de commande</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #000;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: 700;
-        }
-        .order-info {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-        .order-info p {
-            margin: 5px 0;
-        }
-        .items {
-            margin: 20px 0;
-        }
-        .item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .item:last-child {
-            border-bottom: none;
-        }
-        .item-image {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 4px;
-            margin-right: 15px;
-        }
-        .item-details {
-            flex: 1;
-        }
-        .item-name {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        .item-quantity {
-            color: #666;
-            font-size: 14px;
-        }
-        .item-price {
-            font-weight: 600;
-            text-align: right;
-        }
-        .totals {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px solid #000;
-        }
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-        }
-        .total-row.final {
-            font-size: 20px;
-            font-weight: 700;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
-        }
-        .address {
-            margin-top: 30px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-        }
-        .address h3 {
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-        .footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      .container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #000;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+      }
+      .order-info {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+      .order-info p {
+        margin: 5px 0;
+      }
+      .items {
+        margin: 20px 0;
+      }
+      .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+      }
+      .item:last-child {
+        border-bottom: none;
+      }
+      .item-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 15px;
+      }
+      .item-details {
+        flex: 1;
+      }
+      .item-name {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+      .item-quantity {
+        color: #666;
+        font-size: 14px;
+      }
+      .item-price {
+        font-weight: 600;
+        text-align: right;
+      }
+      .totals {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px solid #000;
+      }
+      .total-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0;
+      }
+      .total-row.final {
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #ddd;
+      }
+      .address {
+        margin-top: 30px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 4px;
+      }
+      .address h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+      .footer {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>✓ Commande confirmée</h1>
-        </div>
+  </head>
+  <body>
+    <div class='container'>
+      <div class='header'>
+        <h1>✓ Commande confirmée</h1>
+      </div>
 
-        <p>Bonjour {{customerName}},</p>
-        <p>Nous avons bien reçu votre commande et nous vous remercions de votre confiance !</p>
+      <p>Bonjour {{customerName}},</p>
+      <p>Nous avons bien reçu votre commande et nous vous remercions de votre
+        confiance !</p>
 
-        <div class="order-info">
-            <p><strong>Numéro de commande:</strong> {{orderId}}</p>
-            <p><strong>Date:</strong> {{formatDate orderDate 'fr'}}</p>
-        </div>
+      <div class='order-info'>
+        <p><strong>Numéro de commande:</strong> {{orderId}}</p>
+        <p><strong>Date:</strong> {{formatDate orderDate 'fr'}}</p>
+      </div>
 
-        <h2>Détails de la commande</h2>
-        <div class="items">
-            {{#each items}}
-            <div class="item">
-                {{#if image}}
-                <img src="{{image}}" alt="{{name}}" class="item-image">
-                {{/if}}
-                <div class="item-details">
-                    <div class="item-name">{{name}}</div>
-                    <div class="item-quantity">Quantité: {{quantity}}</div>
-                </div>
-                <div class="item-price">
-                    {{formatCurrency price.amount price.currency}}
-                </div>
+      <h2>Détails de la commande</h2>
+      <div class='items'>
+        {{#each items}}
+          <div class='item'>
+            {{#if image}}
+              <img src='{{image}}' alt='{{name}}' class='item-image' />
+            {{/if}}
+            <div class='item-details'>
+              <div class='item-name'>{{name}}</div>
+              <div class='item-quantity'>Quantité: {{quantity}}</div>
             </div>
-            {{/each}}
-        </div>
-
-        <div class="totals">
-            <div class="total-row">
-                <span>Sous-total:</span>
-                <span>{{formatCurrency subtotal.amount subtotal.currency}}</span>
+            <div class='item-price'>
+              {{formatCurrency price.amount price.currency}}
             </div>
-            <div class="total-row">
-                <span>Livraison:</span>
-                <span>{{formatCurrency shipping.amount shipping.currency}}</span>
-            </div>
-            <div class="total-row final">
-                <span>Total:</span>
-                <span>{{formatCurrency total.amount total.currency}}</span>
-            </div>
-        </div>
+          </div>
+        {{/each}}
+      </div>
 
-        <div class="address">
-            <h3>Adresse de livraison</h3>
-            <p>{{shippingAddress.street}}<br>
-            {{shippingAddress.postalCode}} {{shippingAddress.city}}<br>
-            {{shippingAddress.country}}</p>
+      <div class='totals'>
+        <div class='total-row'>
+          <span>Sous-total:</span>
+          <span>{{formatCurrency subtotal.amount subtotal.currency}}</span>
         </div>
+        <div class='total-row'>
+          <span>Livraison:</span>
+          <span>{{formatCurrency shipping.amount shipping.currency}}</span>
+        </div>
+        <div class='total-row final'>
+          <span>Total:</span>
+          <span>{{formatCurrency total.amount total.currency}}</span>
+        </div>
+      </div>
 
-        <div class="footer">
-            <p>Vous recevrez un email avec votre code de suivi dès que votre commande sera expédiée.</p>
-            <p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>
-            <p style="margin-top: 20px;">
-                <strong>L'équipe PrettyFull</strong><br>
-                <a href="mailto:contact@prettyfull.com">contact@prettyfull.com</a>
-            </p>
-        </div>
+      <div class='address'>
+        <h3>Adresse de livraison</h3>
+        <p>{{shippingAddress.street}}<br />
+          {{shippingAddress.postalCode}}
+          {{shippingAddress.city}}<br />
+          {{shippingAddress.country}}</p>
+      </div>
+
+      <div class='footer'>
+        <p>Vous recevrez un email avec votre code de suivi dès que votre
+          commande sera expédiée.</p>
+        <p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>
+        <p style='margin-top: 20px;'>
+          <strong>L'équipe PrettyFull</strong><br />
+          <a href='mailto:contact@prettyfull.com'>contact@prettyfull.com</a>
+        </p>
+      </div>
     </div>
-</body>
+  </body>
 </html>

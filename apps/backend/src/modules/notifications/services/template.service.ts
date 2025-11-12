@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as Handlebars from 'handlebars';
 import * as fs from 'fs';
+import * as Handlebars from 'handlebars';
 import * as path from 'path';
 
 /**
@@ -65,11 +65,11 @@ export class TemplateService {
   /**
    * Rend un template avec des données
    */
-  async render(
+  render(
     templateName: string,
     data: Record<string, any>,
     language: 'fr' | 'en' = 'fr',
-  ): Promise<string> {
+  ): string {
     try {
       // Construire le nom du fichier avec la langue
       const templateFileName = `${templateName}.${language}.hbs`;

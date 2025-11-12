@@ -1,11 +1,11 @@
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
-import { Queue, Job } from 'bullmq';
+import { Job, Queue } from 'bullmq';
 import {
-  NotificationQueue,
-  NotificationJobName,
-  OrderConfirmationData,
   NewOrderAdminData,
+  NotificationJobName,
+  NotificationQueue,
+  OrderConfirmationData,
   OrderShipmentData,
 } from './types/notification.types';
 

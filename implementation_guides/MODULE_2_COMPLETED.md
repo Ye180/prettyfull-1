@@ -1,13 +1,14 @@
 # Module 2: Système de Notifications avec BullMQ - Complété ✅
 
 **Date de complétion**: $(date)  
-**Statut**: Production-ready avec email templates  
+**Statut**: Production-ready avec email templates
 
 ---
 
 ## 📋 Objectif du Module
 
 Implémenter un système de notifications robuste avec:
+
 - Files d'attente BullMQ pour traitement asynchrone
 - Envoi d'emails via SMTP (Nodemailer)
 - Templates HTML avec Handlebars
@@ -32,13 +33,15 @@ order-shipment-code        → Codes de suivi livraison
 ### Composants Créés
 
 #### 1. **EmailService** (`services/email.service.ts`)
+
 - **Rôle**: Envoi d'emails via Nodemailer/SMTP
 - **Méthodes**:
   - `sendEmail(emailData)`: Envoi email avec gestion d'erreur
   - `verifyConnection()`: Health check SMTP
-- **Configuration**: Variables d'environnement SMTP_*
+- **Configuration**: Variables d'environnement SMTP\_\*
 
 #### 2. **TemplateService** (`services/template.service.ts`)
+
 - **Rôle**: Rendu de templates Handlebars avec helpers personnalisés
 - **Méthodes**:
   - `render(templateName, data, language)`: Rendu template bilingue
@@ -47,6 +50,7 @@ order-shipment-code        → Codes de suivi livraison
 - **Cache**: Map<string, HandlebarsTemplateDelegate> pour performances
 
 #### 3. **NotificationsProducerService** (`notifications.producer.service.ts`)
+
 - **Rôle**: Enqueue des jobs dans les queues BullMQ
 - **Méthodes**:
   - `queueOrderConfirmation(data)`: Enqueue confirmation client
@@ -56,14 +60,16 @@ order-shipment-code        → Codes de suivi livraison
 - **Retour**: Job<T> pour tracking (job.id, job.progress, etc.)
 
 #### 4. **OrderConfirmationProcessor** (`notifications.processor.ts`)
+
 - **Rôle**: Worker BullMQ pour confirmations de commande
-- **Process**: 
+- **Process**:
   1. Render template avec langue client
   2. Envoi email via EmailService
   3. Log succès avec messageId SMTP
   4. Retour NotificationJobResult
 
 #### 5. **NewOrderAdminProcessor** (`notifications.processor.ts`)
+
 - **Rôle**: Worker BullMQ pour notifications admin
 - **Process**:
   1. Render template admin (français)
@@ -72,6 +78,7 @@ order-shipment-code        → Codes de suivi livraison
   4. Warn si échecs partiels
 
 #### 6. **OrderShipmentProcessor** (`notifications.processor.ts`)
+
 - **Rôle**: Worker BullMQ pour codes de suivi
 - **Process**:
   1. Render template avec langue client
@@ -84,24 +91,28 @@ order-shipment-code        → Codes de suivi livraison
 ## 📧 Email Templates Créés
 
 ### 1. **order-confirmation.fr.hbs** / **order-confirmation.en.hbs**
+
 - Confirmation de commande client
 - Détails complets: items, totaux, adresse livraison
 - Design responsive avec CSS inline
 - Variables: `customerName`, `items[]`, `subtotal`, `shipping`, `total`, `shippingAddress`
 
 ### 2. **new-order-admin.hbs**
+
 - Notification admin nouvelle commande
 - Grille d'infos: date, montant, articles, client
 - Lien vers panneau admin
 - Variables: `orderId`, `orderDate`, `totalAmount`, `itemsCount`, `customerName`, `customerEmail`, `customerPhone`, `shippingAddress`
 
 ### 3. **order-shipment.fr.hbs** / **order-shipment.en.hbs**
+
 - Email code de suivi livraison
 - Box de tracking avec code, transporteur, date estimée
 - Liste articles expédiés
 - Variables: `trackingCode`, `carrier`, `estimatedDelivery`, `trackingUrl`, `items[]`, `customerName`
 
 **Features communes**:
+
 - Responsive design (mobile-first)
 - CSS inline pour compatibilité email
 - Helpers Handlebars: `{{formatCurrency}}`, `{{formatDate}}`, `{{#each}}`, `{{#if}}`
@@ -146,20 +157,23 @@ REDIS_PASSWORD=
 ## 📊 Types et Interfaces
 
 ### NotificationQueue (enum)
+
 ```typescript
-ORDER_CONFIRMATION = 'order-confirmation-client'
-NEW_ORDER_ADMIN = 'new-order-admin'
-ORDER_SHIPMENT = 'order-shipment-code'
+ORDER_CONFIRMATION = "order-confirmation-client";
+NEW_ORDER_ADMIN = "new-order-admin";
+ORDER_SHIPMENT = "order-shipment-code";
 ```
 
 ### NotificationJobName (enum)
+
 ```typescript
-SEND_ORDER_CONFIRMATION = 'send-order-confirmation'
-SEND_NEW_ORDER_NOTIFICATION = 'send-new-order-notification'
-SEND_SHIPMENT_CODE = 'send-shipment-code'
+SEND_ORDER_CONFIRMATION = "send-order-confirmation";
+SEND_NEW_ORDER_NOTIFICATION = "send-new-order-notification";
+SEND_SHIPMENT_CODE = "send-shipment-code";
 ```
 
 ### OrderConfirmationData
+
 ```typescript
 {
   orderId: string;
@@ -172,20 +186,30 @@ SEND_SHIPMENT_CODE = 'send-shipment-code'
     price: { amount: number; currency: string };
     image?: string;
   }>;
-  subtotal: { amount: number; currency: string };
-  shipping: { amount: number; currency: string };
-  total: { amount: number; currency: string };
+  subtotal: {
+    amount: number;
+    currency: string;
+  }
+  shipping: {
+    amount: number;
+    currency: string;
+  }
+  total: {
+    amount: number;
+    currency: string;
+  }
   shippingAddress: {
     street: string;
     city: string;
     postalCode: string;
     country: string;
-  };
-  language: 'fr' | 'en';
+  }
+  language: "fr" | "en";
 }
 ```
 
 ### NewOrderAdminData
+
 ```typescript
 {
   orderId: string;
@@ -205,6 +229,7 @@ SEND_SHIPMENT_CODE = 'send-shipment-code'
 ```
 
 ### OrderShipmentData
+
 ```typescript
 {
   orderId: string;
@@ -223,6 +248,7 @@ SEND_SHIPMENT_CODE = 'send-shipment-code'
 ```
 
 ### NotificationJobResult
+
 ```typescript
 {
   success: boolean;
@@ -239,12 +265,12 @@ SEND_SHIPMENT_CODE = 'send-shipment-code'
 ### Exemple: Créer une commande et envoyer notifications
 
 ```typescript
-import { NotificationsProducerService } from '../notifications/notifications.producer.service';
+import { NotificationsProducerService } from "../notifications/notifications.producer.service";
 
 @Injectable()
 export class OrdersService {
   constructor(
-    private readonly notificationsProducer: NotificationsProducerService,
+    private readonly notificationsProducer: NotificationsProducerService
   ) {}
 
   async createOrder(createOrderDto: CreateOrderDto) {
@@ -257,7 +283,7 @@ export class OrdersService {
       customerEmail: order.customer.email,
       customerName: order.customer.name,
       orderDate: order.createdAt,
-      items: order.items.map(item => ({
+      items: order.items.map((item) => ({
         name: item.productName,
         quantity: item.quantity,
         price: item.price,
@@ -267,11 +293,11 @@ export class OrdersService {
       shipping: order.shipping,
       total: order.total,
       shippingAddress: order.shippingAddress,
-      language: order.customer.language || 'fr',
+      language: order.customer.language || "fr",
     });
 
     // 3. Enqueue notification admin
-    const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
+    const adminEmails = process.env.ADMIN_EMAILS?.split(",") || [];
     await this.notificationsProducer.queueNewOrderAdmin({
       orderId: order._id.toString(),
       customerName: order.customer.name,
@@ -287,11 +313,15 @@ export class OrdersService {
     return order;
   }
 
-  async updateTrackingCode(orderId: string, trackingCode: string, carrier: string) {
+  async updateTrackingCode(
+    orderId: string,
+    trackingCode: string,
+    carrier: string
+  ) {
     const order = await this.ordersModel.findByIdAndUpdate(
       orderId,
-      { trackingCode, carrier, status: 'shipped' },
-      { new: true },
+      { trackingCode, carrier, status: "shipped" },
+      { new: true }
     );
 
     // Enqueue shipment notification
@@ -303,11 +333,11 @@ export class OrdersService {
       carrier,
       estimatedDelivery: order.estimatedDelivery,
       trackingUrl: `https://tracking.example.com/${trackingCode}`,
-      items: order.items.map(item => ({
+      items: order.items.map((item) => ({
         name: item.productName,
         quantity: item.quantity,
       })),
-      language: order.customer.language || 'fr',
+      language: order.customer.language || "fr",
     });
 
     return order;
@@ -323,7 +353,7 @@ export class OrdersService {
 
 ```typescript
 // Dans un controller ou script de test
-import { EmailService } from './services/email.service';
+import { EmailService } from "./services/email.service";
 
 @Injectable()
 export class NotificationsTestService {
@@ -331,7 +361,7 @@ export class NotificationsTestService {
 
   async testConnection() {
     const isConnected = await this.emailService.verifyConnection();
-    console.log('SMTP Connection:', isConnected ? '✅ OK' : '❌ Failed');
+    console.log("SMTP Connection:", isConnected ? "✅ OK" : "❌ Failed");
   }
 }
 ```
@@ -378,7 +408,7 @@ async testConfirmation() {
 async getQueueStats() {
   const stats = await this.notificationsProducer.getQueueStats();
   return stats;
-  
+
   // Retourne:
   // {
   //   orderConfirmation: { waiting: 0, active: 0, completed: 15, failed: 0, delayed: 0 },
@@ -395,16 +425,19 @@ async getQueueStats() {
 ### Options par Queue
 
 **Order Confirmation** (client):
+
 - Attempts: 3
 - Backoff: exponential, 2000ms
 - Priority: 1 (haute)
 
 **New Order Admin**:
+
 - Attempts: 5 (plus de retries pour admins)
 - Backoff: exponential, 3000ms
 - Priority: 2 (normale)
 
 **Order Shipment**:
+
 - Attempts: 3
 - Backoff: exponential, 2000ms
 - Priority: 1 (haute)
@@ -421,6 +454,7 @@ async getQueueStats() {
 ### Logs Processor
 
 Chaque processor log:
+
 - Début processing: `Processing order confirmation (Job X, Order: Y)...`
 - Succès: `✅ Order confirmation sent to email@example.com (Order: Y, MessageID: Z)`
 - Échec: `❌ Failed to process order confirmation job X: Error message`
@@ -458,6 +492,7 @@ npm install @bull-board/api @bull-board/nestjs
 ### Module 3: SSE pour Tracking Temps Réel
 
 Avec le système de notifications en place, Module 3 utilisera:
+
 - BullMQ pour déclencher événements SSE vers admin dashboard
 - Notifications en temps réel quand nouvelle commande créée
 - Push updates vers clients quand statut commande change

@@ -1,10 +1,11 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import {
-  OrderConfirmationProcessor,
   NewOrderAdminProcessor,
+  OrderConfirmationProcessor,
   OrderShipmentProcessor,
 } from './notifications.processor';
+
 import { NotificationsProducerService } from './notifications.producer.service';
 import { EmailService } from './services/email.service';
 import { TemplateService } from './services/template.service';

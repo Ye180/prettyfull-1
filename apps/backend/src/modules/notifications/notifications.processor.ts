@@ -1,15 +1,15 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
-import {
-  NotificationQueue,
-  OrderConfirmationData,
-  NewOrderAdminData,
-  OrderShipmentData,
-  NotificationJobResult,
-} from './types/notification.types';
 import { EmailService } from './services/email.service';
 import { TemplateService } from './services/template.service';
+import {
+  NewOrderAdminData,
+  NotificationJobResult,
+  NotificationQueue,
+  OrderConfirmationData,
+  OrderShipmentData,
+} from './types/notification.types';
 
 /**
  * ============================================================================
@@ -39,7 +39,7 @@ export class OrderConfirmationProcessor extends WorkerHost {
       const { customerEmail, language } = job.data;
 
       // Render template with customer's language
-      const htmlContent = await this.templateService.render(
+      const htmlContent = this.templateService.render(
         'order-confirmation',
         job.data,
         language,
@@ -107,7 +107,7 @@ export class NewOrderAdminProcessor extends WorkerHost {
       const { adminEmails, orderId } = job.data;
 
       // Render admin template (always in French for now)
-      const htmlContent = await this.templateService.render(
+      const htmlContent = this.templateService.render(
         'new-order-admin',
         job.data,
         'fr',
@@ -185,7 +185,7 @@ export class OrderShipmentProcessor extends WorkerHost {
       const { customerEmail, language, trackingCode, orderId } = job.data;
 
       // Render template with customer's language
-      const htmlContent = await this.templateService.render(
+      const htmlContent = this.templateService.render(
         'order-shipment',
         job.data,
         language,

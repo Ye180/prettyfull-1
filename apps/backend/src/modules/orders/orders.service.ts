@@ -21,6 +21,7 @@ import {
   // OrderDocument,
   OrderStatus,
 } from './schemas/orders.schema';
+import { OrderEventsService } from './services/order-events.service';
 
 export interface CreateOrderDto1 {
   userId: string;
@@ -48,12 +49,15 @@ export interface CreateOrderDto1 {
 
 @Injectable()
 export class OrdersService {
+  private readonly logger = new Logger(OrdersService.name);
+
   constructor(
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     private readonly notificationsProducer: NotificationsProducerService,
     private readonly addressService: AddressService,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private readonly orderEventsService: OrderEventsService,
   ) {}
 
   /**
@@ -258,6 +262,24 @@ export class OrdersService {
 
       await this.sendOrderCreatedNotification(savedOrder);
 
+      // Émettre événement SSE pour notification admin en temps réel
+      const savedOrderData = savedOrder as any;
+      const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
+
+      if (adminEmails.length > 0) {
+        this.orderEventsService.emitNewOrderNotification({
+          orderId: (savedOrder._id as Types.ObjectId).toString(),
+          orderNumber: savedOrderData.orderNumber,
+          customerName: `User ${savedOrderData.userId}`, // À améliorer avec populate
+          totalAmount: savedOrderData.total,
+          timestamp: new Date(),
+        });
+
+        this.logger.log(
+          `📡 SSE admin notification emitted for new order: ${savedOrderData.orderNumber}`,
+        );
+      }
+
       return savedOrder;
     } catch (error) {
       console.error('❌ Erreur lors de la création de la commande:', error);
@@ -398,6 +420,35 @@ export class OrdersService {
     const updatedOrder = await this.orderModel
       .findByIdAndUpdate(orderId, updateData, { new: true })
       .exec();
+
+    // Émettre événement SSE pour tracking temps réel
+    if (updatedOrder) {
+      const statusMessages: Record<OrderStatus, string> = {
+        [OrderStatus.PENDING]: 'Commande en attente de paiement',
+        [OrderStatus.PAID]: 'Paiement confirmé',
+        [OrderStatus.CONFIRMED]: "Commande confirmée par l'équipe",
+        [OrderStatus.PROCESSING]: 'Commande en préparation',
+        [OrderStatus.SHIPPED]: 'Commande en cours de livraison',
+        [OrderStatus.DELIVERED]: 'Commande livrée avec succès',
+        [OrderStatus.CANCELLED]: 'Commande annulée',
+        [OrderStatus.REFUNDED]: 'Commande remboursée',
+      };
+
+      this.orderEventsService.emitOrderStatusUpdate({
+        orderId: (updatedOrder._id as Types.ObjectId).toString(),
+        status,
+        timestamp: new Date(),
+        message: message || statusMessages[status] || `Statut: ${status}`,
+        metadata: {
+          orderNumber: updatedOrder.orderNumber,
+          previousStatus: order.status,
+        },
+      });
+
+      this.logger.log(
+        `📡 SSE event emitted for order ${updatedOrder.orderNumber}: ${status}`,
+      );
+    }
 
     return updatedOrder!;
   }

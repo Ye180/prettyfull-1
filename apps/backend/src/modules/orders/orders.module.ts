@@ -14,6 +14,7 @@ import { User, UserSchema } from '../users/schemas/user.schema';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
 import { Order, OrderSchema } from './schemas/orders.schema';
+import { OrderEventsService } from './services/order-events.service';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { Order, OrderSchema } from './schemas/orders.schema';
     NotificationsModule,
   ],
   controllers: [OrdersController],
-  providers: [OrdersService],
-  exports: [OrdersService],
+  providers: [OrdersService, OrderEventsService],
+  exports: [OrdersService, OrderEventsService],
 })
 export class OrdersModule {}

@@ -47,14 +47,13 @@ export class CartsService {
     try {
       await this.redisClient.hincrby(cartKey, itemKey, quantity);
       await this.redisClient.expire(cartKey, 30 * 24 * 60 * 60);
-      
+
       // ⬇️⬇️⬇️ MODIFICATION PRINCIPALE ⬇️⬇️⬇️
       // La ligne suivante causait l'erreur 500 car getCart() plante.
       // return await this.getCart(userId, language);
-      
+
       // On la remplace par une simple réponse de succès.
       return { success: true };
-      
     } catch (error: unknown) {
       Logger.error(
         "Erreur Redis lors de l'ajout au panier:",
@@ -199,7 +198,7 @@ export class CartsService {
               productId,
               sku: product.sku,
               // ATTENTION: 'product.name[language]' peut planter si 'language' n'existe pas
-              name: product.name[language], 
+              name: product.name[language],
               image:
                 matchedVariant?.image?.[0] || product.variants?.[0]?.image?.[0],
               quantity,
@@ -287,7 +286,7 @@ export class CartsService {
   }
 
   // ... (Le reste de vos fonctions removeCartItem, updateCartItem, clearCart restent identiques)
-  
+
   // ✅ SUPPRIMER UN ARTICLE DU PANIER
   async removeCartItem(
     userId: string,

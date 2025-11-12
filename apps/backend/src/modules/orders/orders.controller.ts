@@ -7,7 +7,11 @@ import {
   Patch,
   Post,
   Query,
+  Sse,
+  MessageEvent,
 } from '@nestjs/common';
+import { Observable, interval } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 
 import type { UserSession } from '@thallesp/nestjs-better-auth';
 import { AllowAnonymous, Roles, Session } from '@thallesp/nestjs-better-auth';
@@ -15,10 +19,14 @@ import { PaymentStatus } from 'src/shared/schemas/payment.schema';
 // import type { CreateOrderDto } from './orders.service';
 import { OrdersService } from './orders.service';
 import { OrderStatus } from './schemas/orders.schema';
+import { OrderEventsService } from './services/order-events.service';
 
 @Controller('orders')
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(
+    private readonly ordersService: OrdersService,
+    private readonly orderEventsService: OrderEventsService,
+  ) {}
 
   /**
    * POST /orders - Authenticated
@@ -27,6 +35,61 @@ export class OrdersController {
   @Post()
   async create(@Body() createOrderDto, @Session() session: UserSession) {
     return this.ordersService.createOrder(createOrderDto);
+  }
+
+  /**
+   * GET /orders/:id/track - SSE Endpoint
+   * Streaming temps réel des updates de statut de commande
+   * Accept: text/event-stream
+   */
+  @Get(':id/track')
+  @AllowAnonymous() // Permettre le tracking sans auth (client peut avoir le lien)
+  @Sse()
+  trackOrder(@Param('id') orderId: string): Observable<MessageEvent> {
+    return this.orderEventsService.subscribeToOrder(orderId).pipe(
+      map((event) => ({
+        data: {
+          status: event.status,
+          message: event.message,
+          timestamp: event.timestamp,
+          metadata: event.metadata,
+        },
+        type: 'status-update',
+      })),
+    );
+  }
+
+  /**
+   * GET /orders/admin/live - SSE Endpoint Admin
+   * Streaming temps réel des nouvelles commandes pour les admins
+   * Accept: text/event-stream
+   */
+  @Get('admin/live')
+  @Roles(['admin'])
+  @Sse()
+  liveAdminOrders(@Session() session: UserSession): Observable<MessageEvent> {
+    return this.orderEventsService.subscribeToNewOrders().pipe(
+      map((event) => ({
+        data: {
+          orderId: event.orderId,
+          orderNumber: event.orderNumber,
+          customerName: event.customerName,
+          totalAmount: event.totalAmount,
+          timestamp: event.timestamp,
+        },
+        type: 'new-order',
+      })),
+    );
+  }
+
+  /**
+   * GET /orders/admin/subscribers - Admin only
+   * Monitoring du nombre de connexions SSE actives
+   */
+  @Get('admin/subscribers')
+  @Roles(['admin'])
+  getActiveSubscribers() {
+    return this.orderEventsService.getActiveSubscribersCount();
   }
 
   @Get()
