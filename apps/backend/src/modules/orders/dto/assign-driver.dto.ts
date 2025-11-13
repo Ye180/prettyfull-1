@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString, IsDateString, IsMongoId } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsDateString, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
 export class AssignDriverDto {
   @ApiProperty({
@@ -16,6 +16,9 @@ export class AssignDriverDto {
     example: '2024-12-25T14:30:00.000Z',
   })
   @IsNotEmpty({ message: 'La date de livraison estimée est requise' })
-  @IsDateString({}, { message: 'La date de livraison doit être une date valide' })
+  @IsDateString(
+    {},
+    { message: 'La date de livraison doit être une date valide' },
+  )
   estimatedDelivery: string;
 }

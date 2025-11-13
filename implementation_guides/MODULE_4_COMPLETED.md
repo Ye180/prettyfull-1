@@ -15,9 +15,11 @@ Implémentation complète du système de livraison avec gestion des livreurs, co
 ## 🎯 Objectifs Atteints
 
 ### 1. Schema Updates ✅
+
 **Fichier:** `apps/backend/src/modules/orders/schemas/orders.schema.ts`
 
 Ajout des champs de livraison au modèle Order:
+
 ```typescript
 // Delivery fields (Module 4)
 @Prop({ type: Types.ObjectId, ref: 'User' })
@@ -42,25 +44,31 @@ signatureUrl?: string;
 ### 2. DTOs Created ✅
 
 **Fichier:** `apps/backend/src/modules/orders/dto/assign-driver.dto.ts`
+
 - Validation avec `class-validator`
 - `driverId`: ObjectId valide requis
 - `estimatedDelivery`: Date string ISO 8601 requise
 
 **Fichier:** `apps/backend/src/modules/orders/dto/validate-delivery.dto.ts`
+
 - `validationCode`: 6 caractères alphanumériques majuscules (regex: `^[A-Z0-9]{6}$`)
 - `deliveryNote`: Optionnel
 - `signatureUrl`: URL optionnelle (validation avec `@IsUrl()`)
 
 ### 3. Service Methods Implemented ✅
+
 **Fichier:** `apps/backend/src/modules/orders/orders.service.ts`
 
 #### a) `generateValidationCode()` - Private Utility
+
 - Génère un code aléatoire de 6 caractères
 - Charset: `A-Z0-9` (36 possibilités par caractère)
 - 2,176,782,336 combinaisons possibles
 
 #### b) `assignDriver()` - Admin Function
+
 **Workflow:**
+
 1. Valide les ObjectId (orderId, driverId)
 2. Vérifie l'existence de la commande et du livreur
 3. Génère le code de validation unique
@@ -75,25 +83,31 @@ signatureUrl?: string;
 7. Log de l'opération
 
 **Gestion d'erreurs:**
+
 - `BadRequestException`: ObjectId invalide
 - `NotFoundException`: Commande ou livreur introuvable
 - `InternalServerErrorException`: Échec de mise à jour
 - Emails non-bloquants (continue si échec)
 
 #### c) `getDriverOrders()` - Driver Function
+
 **Filtres supportés:**
+
 - `status`: OrderStatus enum
 - `startDate`: Date de début (filtre sur `assignedAt`)
 - `endDate`: Date de fin (filtre sur `assignedAt`)
 
 **Populate:**
+
 - `userId`: name, email
 - `shippingAddress`: Adresse complète
 
 **Sort:** Par `assignedAt` descendant (plus récentes d'abord)
 
 #### d) `validateDelivery()` - Driver Function
+
 **Workflow:**
+
 1. Valide l'ObjectId de la commande
 2. Vérifie que le livreur est assigné à cette commande
 3. Compare le code de validation (case-insensitive via `toUpperCase()`)
@@ -107,16 +121,20 @@ signatureUrl?: string;
 7. Log de l'opération
 
 **Gestion d'erreurs:**
+
 - `BadRequestException`: ObjectId invalide, livreur non assigné, code incorrect, statut incorrect
 - `NotFoundException`: Commande introuvable
 - `InternalServerErrorException`: Échec de mise à jour
 
 ### 4. Controller Endpoints Created ✅
+
 **Fichier:** `apps/backend/src/modules/orders/orders.controller.ts`
 
 #### a) `POST /admin/orders/:orderId/assign-driver`
+
 **Authorization:** `@Roles(['admin'])`  
 **Body:**
+
 ```json
 {
   "driverId": "507f1f77bcf86cd799439011",
@@ -125,6 +143,7 @@ signatureUrl?: string;
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -141,13 +160,16 @@ signatureUrl?: string;
 ```
 
 #### b) `GET /driver/me/orders`
+
 **Authorization:** `@Roles(['driver'])`  
 **Query Params:**
+
 - `status`: OrderStatus (optional)
 - `startDate`: ISO date string (optional)
 - `endDate`: ISO date string (optional)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -172,8 +194,10 @@ signatureUrl?: string;
 ```
 
 #### c) `POST /driver/orders/:orderId/validate-delivery`
+
 **Authorization:** `@Roles(['driver'])`  
 **Body:**
+
 ```json
 {
   "validationCode": "ABC123",
@@ -183,6 +207,7 @@ signatureUrl?: string;
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -202,6 +227,7 @@ signatureUrl?: string;
 ## 🔗 Intégrations
 
 ### Module 2 (Notifications Email)
+
 - **Service:** `NotificationsProducerService.queueOrderShipment()`
 - **Template:** `order-shipment.fr.hbs` / `order-shipment.en.hbs`
 - **Données envoyées:**
@@ -210,15 +236,16 @@ signatureUrl?: string;
     orderId: string;
     customerEmail: string;
     customerName: string;
-    trackingCode: string;  // Code de validation
-    carrier: 'Livreur interne';
+    trackingCode: string; // Code de validation
+    carrier: "Livreur interne";
     estimatedDelivery: Date;
     items: Array<{ name: string; quantity: number }>;
-    language: 'fr' | 'en';
+    language: "fr" | "en";
   }
   ```
 
 ### Module 3 (SSE Real-time)
+
 - **Service:** `OrderEventsService.emitOrderStatusUpdate()`
 - **Événements émis:**
   1. **Assignation livreur:** Status `SHIPPED` avec code de validation en metadata
@@ -229,11 +256,13 @@ signatureUrl?: string;
 ## 🔐 Sécurité
 
 ### Roles Required
+
 - **Admin:** Peut assigner des livreurs
 - **Driver:** Peut lister ses commandes et valider les livraisons
 - **Client:** Recevra notification email avec code (automatique)
 
 ### Validation
+
 - ObjectId validation pour orderId et driverId
 - Code de validation: strictement 6 caractères `[A-Z0-9]`
 - Vérification que le livreur est bien assigné avant validation
@@ -272,6 +301,7 @@ signatureUrl?: string;
 ## 🧪 Tests Recommandés
 
 ### Test 1: Assignation Livreur
+
 ```bash
 curl -X POST http://localhost:7777/orders/admin/ORDER_ID/assign-driver \
   -H "Authorization: Bearer ADMIN_TOKEN" \
@@ -283,23 +313,27 @@ curl -X POST http://localhost:7777/orders/admin/ORDER_ID/assign-driver \
 ```
 
 **Vérifications:**
+
 - ✅ Code de validation généré (6 caractères)
 - ✅ Email envoyé au client
 - ✅ SSE event émis
 - ✅ Status commande = SHIPPED
 
 ### Test 2: Liste Commandes Livreur
+
 ```bash
 curl -X GET http://localhost:7777/orders/driver/me/orders \
   -H "Authorization: Bearer DRIVER_TOKEN"
 ```
 
 **Vérifications:**
+
 - ✅ Seules les commandes du livreur connecté
 - ✅ Code de validation visible
 - ✅ Adresse de livraison présente
 
 ### Test 3: Validation Livraison
+
 ```bash
 curl -X POST http://localhost:7777/orders/driver/ORDER_ID/validate-delivery \
   -H "Authorization: Bearer DRIVER_TOKEN" \
@@ -311,6 +345,7 @@ curl -X POST http://localhost:7777/orders/driver/ORDER_ID/validate-delivery \
 ```
 
 **Vérifications:**
+
 - ✅ Code correct accepté
 - ✅ Code incorrect rejeté (400)
 - ✅ Status commande = DELIVERED
@@ -318,6 +353,7 @@ curl -X POST http://localhost:7777/orders/driver/ORDER_ID/validate-delivery \
 - ✅ deliveredAt timestamp créé
 
 ### Test 4: Sécurité
+
 ```bash
 # Livreur A ne peut pas valider commande de Livreur B
 curl -X POST http://localhost:7777/orders/driver/ORDER_B/validate-delivery \
@@ -332,16 +368,19 @@ curl -X POST http://localhost:7777/orders/driver/ORDER_B/validate-delivery \
 ## 📈 Améliorations Futures
 
 ### Priorité Haute
+
 - [ ] Email confirmation de livraison au client (après validation)
 - [ ] Historique des tentatives de validation (logs)
 - [ ] Géolocalisation du livreur en temps réel
 
 ### Priorité Moyenne
+
 - [ ] Signature électronique du client (upload d'image)
 - [ ] Photos de preuve de livraison
 - [ ] Système de rating post-livraison
 
 ### Priorité Basse
+
 - [ ] Itinéraire optimisé pour multiples livraisons
 - [ ] Statistiques livreur (nombre de livraisons, temps moyen, etc.)
 - [ ] Support de multiple codes de validation (réexpédition)
@@ -351,12 +390,14 @@ curl -X POST http://localhost:7777/orders/driver/ORDER_B/validate-delivery \
 ## 📝 Notes Techniques
 
 ### Code de Validation
+
 - **Format:** 6 caractères alphanumériques majuscules
 - **Entropie:** log2(36^6) ≈ 31 bits
 - **Collision:** Probabilité négligeable avec volume de commandes typique
 - **Case-insensitive:** Conversion `toUpperCase()` lors de la validation
 
 ### Performances
+
 - Queries optimisées avec `.lean()` (pas de documents Mongoose)
 - Population sélective (`userId`, `shippingAddress`)
 - Index recommandés:
@@ -366,6 +407,7 @@ curl -X POST http://localhost:7777/orders/driver/ORDER_B/validate-delivery \
   ```
 
 ### Logs
+
 - 📧 Email envoyé (avec code)
 - ✅ Assignation livreur
 - ✅ Validation livraison

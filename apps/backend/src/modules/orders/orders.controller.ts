@@ -225,7 +225,7 @@ export class OrdersController {
     return {
       success: true,
       data: orders.map((order: any) => ({
-        orderId: (order._id as any)?.toString(),
+        orderId: order._id?.toString(),
         orderNumber: order.orderNumber,
         status: order.status,
         validationCode: order.validationCode,

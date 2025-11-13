@@ -1,12 +1,12 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsNotEmpty,
+  IsOptional,
   IsString,
+  IsUrl,
   Length,
   Matches,
-  IsOptional,
-  IsUrl,
 } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ValidateDeliveryDto {
   @ApiProperty({
@@ -17,9 +17,12 @@ export class ValidateDeliveryDto {
   })
   @IsNotEmpty({ message: 'Le code de validation est requis' })
   @IsString()
-  @Length(6, 6, { message: 'Le code de validation doit contenir exactement 6 caractères' })
+  @Length(6, 6, {
+    message: 'Le code de validation doit contenir exactement 6 caractères',
+  })
   @Matches(/^[A-Z0-9]{6}$/, {
-    message: 'Le code de validation doit contenir uniquement des lettres majuscules et des chiffres',
+    message:
+      'Le code de validation doit contenir uniquement des lettres majuscules et des chiffres',
   })
   validationCode: string;
 
