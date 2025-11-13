@@ -295,7 +295,7 @@ export default function ProductForm() {
 			}
 
 			// 1) Construire le tableau variants conforme au DTO backend
-			const variantsArray = (step2Data.variants || []).map((v) => {
+			const variantsArray = (step2Data.variants || []).map((v, idx) => {
 				const sizes = (v?.size || "")
 					.split(",")
 					.map((s) => s.trim())
@@ -308,20 +308,43 @@ export default function ProductForm() {
 							: undefined,
 					size: sizes,
 					quantity: Number(v?.quantity ?? 0),
+					// Ajout d'un champ pour lier les fichiers envoyés à cette variante
+					imageField: `images_${idx}`,
 				};
 			});
 
-			// 2) Rassembler tous les fichiers images des variantes en un seul champ 'images'
-			const allFiles = (step2Data.variants || [])
-				.flatMap((v) => (Array.isArray(v?.image) ? v.image : []))
-				.filter(Boolean);
-
-			// 3) Créer le FormData en envoyant
-			//    - variants: string JSON de l'array
-			//    - images: tous les fichiers (répétés)
+			// 2) Rassembler et ajouter les fichiers par variant dans le FormData
 			const formData = new FormData();
 			formData.append("variants", JSON.stringify(variantsArray));
-			allFiles.forEach((file) => formData.append("images", file));
+
+			(step2Data.variants || []).forEach((v, idx) => {
+				const fieldName = `images_${idx}`;
+
+				// Gérer FileList ou Array de Files
+				let files = [];
+				if (v?.image) {
+					if (v.image instanceof FileList) {
+						files = Array.from(v.image);
+					} else if (Array.isArray(v.image)) {
+						files = v.image;
+					} else {
+						files = [v.image];
+					}
+				}
+
+				// Ajouter chaque fichier sous le bon fieldname
+				files.forEach((file) => {
+					if (file instanceof File) {
+						formData.append(fieldName, file);
+					}
+				});
+			});
+
+			// Debug: Log FormData entries
+			console.log("FormData entries:");
+			for (let pair of formData.entries()) {
+				console.log(pair[0], pair[1]);
+			}
 
 			const variantsPayload = {
 				productId,
@@ -372,14 +395,14 @@ export default function ProductForm() {
 	};
 
 	return (
-		<div className="w-full max-w-5xl p-6 mx-auto">
+		<div className="w-full p-6 mx-auto">
 			<ProductStepper
 				currentStep={currentStep}
 				isStep1Completed={isStep1Completed}
 			/>
 
 			<Form {...form}>
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6 ">
 					{stepComponents()}
 
 					<div className="flex items-center justify-between w-full pt-6 mt-8 border-t gap-y-8">

@@ -49,12 +49,19 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   // Ajoute ou met à jour un article
   addItem: (item) => {
+    // Validation d'entrée (évite les états invalides)
+    if (!item || !item.product || !item.product._id) return;
+    const addQty = Math.max(0, Math.floor(Number(item.quantity) || 0));
+    if (addQty <= 0) return;
+    const unitPrice = Number(item.price);
+    if (!Number.isFinite(unitPrice) || unitPrice < 0) return;
+
     set((state) => {
       const existingItemIndex = state.items.findIndex(
         (i) => i.product.id === item.product.id
       );
-      if (existingItemIndex > -1) {
-        // Mettre à jour la quantité
+      if (idx > -1) {
+        // Ne pas écraser le prix unitaire historique
         const updatedItems = [...state.items];
         const existingItem = updatedItems[existingItemIndex];
         if (existingItem) {

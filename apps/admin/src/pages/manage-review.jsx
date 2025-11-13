@@ -139,15 +139,15 @@ const ManageReview = () => {
 					<Container>
 						<Row className="gap-y-4">
 							<Col md="6" className="flex-fill">
-								<div className="h-full w-full p-3 border border-Mborderborderprimary rounded-xl ">
-									<div className="grid xs:grid-cols-2 gap-3 relative">
+								<div className="w-full h-full p-3 border border-Mborderborderprimary rounded-xl ">
+									<div className="relative grid gap-3 xs:grid-cols-2">
 										<div className="">
 											<div className="flex items-center gap-2">
 												<img src={originalUrl + "/images/Star.svg"} alt="" />
 												<h4 className="font-semibold text__48">4.4</h4>
 											</div>
 
-											<h5 className="text__16 text-Mtexttextinvert my-3">
+											<h5 className="my-3 text__16 text-Mtexttextinvert">
 												Total{" "}
 												<span className="font-semibold text-Mgray900">287</span>{" "}
 												reviews
@@ -158,7 +158,7 @@ const ManageReview = () => {
 											</p>
 										</div>
 
-										<div className="w-px h-full bg-Mborderborderprimary absolute left-1/2 -translate-x-1/2 top-0 xs:block hidden"></div>
+										<div className="absolute top-0 hidden w-px h-full -translate-x-1/2 bg-Mborderborderprimary left-1/2 xs:block"></div>
 
 										<div className="grid grid-cols-1 gap-2">
 											{[
@@ -185,7 +185,7 @@ const ManageReview = () => {
 											].map((obj, idx) => {
 												return (
 													<div className="flex items-center justify-between gap-2">
-														<div className="shrink-0 flex items-center gap-1">
+														<div className="flex items-center gap-1 shrink-0">
 															<img
 																src={originalUrl + "/images/Star.svg"}
 																className="w-3.5"
@@ -195,13 +195,13 @@ const ManageReview = () => {
 																{5 - idx}
 															</p>
 														</div>
-														<div className="relative w-full h-3 bg-Mborderborderprimary rounded-xs overflow-hidden">
+														<div className="relative w-full h-3 overflow-hidden bg-Mborderborderprimary rounded-xs">
 															<div
-																className="absolute h-full left-0 top-0 bg-Msurfacesurfacebrand rounded-xs overflow-hidden"
+																className="absolute top-0 left-0 h-full overflow-hidden bg-Msurfacesurfacebrand rounded-xs"
 																style={{ width: obj.percent }}
 															></div>
 														</div>
-														<p className="shrink-0 text__14 font-medium">
+														<p className="font-medium shrink-0 text__14">
 															{obj.value}
 														</p>
 													</div>
@@ -212,8 +212,8 @@ const ManageReview = () => {
 								</div>
 							</Col>
 							<Col md="6" className="flex-fill">
-								<div className="h-full w-full p-3 border border-Mborderborderprimary rounded-xl ">
-									<div className="grid xs:grid-cols-2 gap-3 h-full items-center">
+								<div className="w-full h-full p-3 border border-Mborderborderprimary rounded-xl ">
+									<div className="grid items-center h-full gap-3 xs:grid-cols-2">
 										<div className="flex flex-wrap items-center h-full">
 											<div className="">
 												<h4 className="w-full font-medium text__18">
@@ -251,13 +251,13 @@ const ManageReview = () => {
 						</Row>
 
 						<div className="flex items-center xl:flex-nowrap! flex-wrap gap-3 relative z-2 mt-8">
-							<div className="flex items-center gap-2 px-2 w-full">
+							<div className="flex items-center w-full gap-2 px-2">
 								<img src={originalUrl + "/images/search.svg"} alt="" />
 								<input
 									value={searchTerm}
 									onChange={(e) => setSearchTerm(e.target.value)}
 									type="text"
-									className="font-medium w-full text__14 placeholder:text-Mtexttextinvert bg-transparent border-none outline-hidden hover:focus:active:outline-hidden hover:focus:active:border-none"
+									className="w-full font-medium bg-transparent border-none text__14 placeholder:text-Mtexttextinvert outline-hidden hover:focus:active:outline-hidden hover:focus:active:border-none"
 									placeholder="Search Rating..."
 								/>
 							</div>

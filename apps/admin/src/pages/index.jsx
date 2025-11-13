@@ -1,8 +1,10 @@
+import CartRevenue from "@/Components/Chart/CartRevenue";
 import Layout from "@/Components/Layout/Layout";
 import useHostname from "@/Components/Provider/HostnameProvider";
 import SecTop from "@/Components/Section/SecTop";
 import "flag-icons/css/flag-icons.min.css";
 import { Fragment } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 
 const Index = () => {
 	const originalUrl = useHostname();
@@ -133,7 +135,7 @@ const Index = () => {
 			<Layout title="Shotify" description="Shotify Desc" dashboard={true}>
 				<SecTop />
 
-				{/* <section className="pt-0 pb-4">
+				<section className="pt-0 pb-4">
 					<Container>
 						<div className="grid grid-cols-2 gap-3 xl:grid-cols-4 ss:gap-4 ">
 							<div>
@@ -297,7 +299,7 @@ const Index = () => {
 													<p className="font-medium text__14">{obj.name}</p>
 												</div>
 												<div className="flex items-center gap-3">
-													<div className="relative w-full h-2 overflow-hidden rounded-full bg-Msurfacesurfacetertiary">
+													<div className="relative w-full h-2 overflow-hidden rounded-full bg-dark-300">
 														<div
 															className="absolute top-0 left-0 h-full rounded-full bg-Msurfacesurfacebrand"
 															style={{ width: obj.percent }}
@@ -312,19 +314,7 @@ const Index = () => {
 							</Col>
 						</Row>
 					</Container>
-				</section> */}
-
-				{/* <section className="pt-0 pb-4">
-					<Container>
-						<div className="mb-4">
-							<h3 className="mb-2 font-semibold text__20">Order List</h3>
-							<p className="text__14 text-Mtexttextsecondary">
-								Track orders list across your store.
-							</p>
-						</div>
-						<DataCustomTable data={dataTable} />
-					</Container>
-				</section> */}
+				</section>
 			</Layout>
 		</Fragment>
 	);

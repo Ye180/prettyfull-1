@@ -474,48 +474,72 @@ export class ProductsService {
     productId,
     variants,
     images,
+    files,
   }: {
     productId: string;
     variants: VariantsProductDto[];
-    images: Express.Multer.File[];
+    images?: Express.Multer.File[];
+    files?: Express.Multer.File[];
   }): Promise<ProductDocument> {
+    const uploadedFiles = files ?? images ?? [];
+
     if (!Types.ObjectId.isValid(productId)) {
       throw new BadRequestException('Invalid product id');
     }
     const product = await this.productModel.findById(productId).exec();
     if (!product) throw new NotFoundException('Product not found');
 
-    // Upload provided images once (optional). Apply to variants that don't already specify images.
-    let uploadedUrls: string[] = [];
-    if (images && images.length > 0) {
-      const uploadedImages = await this.storageService.uploadMultipleFiles(
-        images,
-        'products',
-      );
-      uploadedUrls = uploadedImages.map((img) => img.url);
-    }
-
-    // Normalize incoming variants and push
-    const normalized = variants.map((v) => {
-      const next = { ...v } as any;
-      if ((!next.images || next.images.length === 0) && uploadedUrls.length) {
-        next.images = uploadedUrls;
-      }
-      return next;
+    // Group files by their fieldname
+    const filesByField: Record<string, Express.Multer.File[]> = {};
+    uploadedFiles.forEach((f) => {
+      if (!f || !f.fieldname) return;
+      if (!filesByField[f.fieldname]) filesByField[f.fieldname] = [];
+      filesByField[f.fieldname]?.push(f);
     });
 
+    // Log pour debug
+    Logger.log(
+      `Files grouped by field: ${JSON.stringify(Object.keys(filesByField))}`,
+    );
+    Logger.log(
+      `Variants received: ${JSON.stringify(variants.map((v) => v.imageField))}`,
+    );
+
+    // Normalize incoming variants and attach proper images per variant
+    const normalized = await Promise.all(
+      variants.map(async (v, idx) => {
+        const next: any = { ...v };
+
+        // If variant already specifies images (URLs) keep them
+        if (next.images && next.images.length > 0) {
+          delete next.imageField;
+          return next;
+        }
+
+        // Determine field name for this variant's files
+        const fieldName = next.imageField || `images_${idx}`;
+        const filesForThisVariant = filesByField[fieldName] || [];
+
+        if (filesForThisVariant.length > 0) {
+          // Upload only files for this specific variant
+          const uploaded = await this.storageService.uploadMultipleFiles(
+            filesForThisVariant,
+            'products',
+          );
+          next.images = uploaded.map((u) => u.url);
+        } else {
+          // No files for this variant
+          next.images = [];
+        }
+
+        // Remove helper field before saving
+        delete next.imageField;
+        return next;
+      }),
+    );
+
     product.variants = [...(product.variants || []), ...normalized];
-
-    // Recalculate stock
     product.stock = this.calculateTotalStock(product as any);
-
-    // await this.productModel
-    //   .findByIdAndUpdate(productId, { $set: product }, { new: true })
-    //   .exec();
-
-    await this.productModel
-      .findByIdAndUpdate(productId, product, { new: true })
-      .exec();
 
     return product.save();
   }
