@@ -249,7 +249,7 @@ const ModalAddCategory = ({
 			setLoading(false);
 		}
 	};
-
+	// --- Fin de la logique de soumission ---
 	return (
 		<Fragment>
 			<Modal show={show} onHide={onHideClick} centered size="lg" {...props}>
