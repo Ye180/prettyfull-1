@@ -1,0 +1,131 @@
+{
+	"headerResponsive": {
+		"setting": "Setting"
+	},
+
+	"HomePage": {
+		"header": {
+			"placeholder": "Search for products..."
+		},
+
+		"hero": {
+			"title": "Clothing designed to enhance every moment.",
+			"subtitle": "Discover the elegance of timeless clothing, designed to elevate your style, boost your confidence, and reveal your uniqueness. Comfortable, versatile, and crafted to make every moment unforgettable.",
+			"ctaButton": "Shop Now"
+		},
+		"news": {
+			"title": "News Arrivals",
+			"viewAll": "View all"
+		},
+		"containers": {
+			"paragraph1": "We are committed to providing you with a seamless and enjoyable shopping experience."
+		},
+		"collection": {
+			"title": "Women's Collection: elegance reinvented",
+			"subtitle": "Stay on trend with our new selection of modern styles, designed just for you.",
+			"deal": "Deal of week",
+			"ctaButton": "Go for it"
+		},
+		"trendReport": {
+			"title": "The Trend Report",
+			"viewAll": "View all"
+		},
+		"recommendation": {
+			"title": "RECOMMENDED FOR YOU",
+			"forYou": "For you",
+			"woman": "Woman",
+			"men": "Men",
+			"accessory": "Accessory"
+		}
+	},
+	"CollectionPage": {
+		"filters": {
+			"sort_by": "Sort by",
+			"type_clothes": "Best Sellers",
+			"colors": "Colors",
+			"adjust": "Adjust",
+			"taille": "Size"
+		}
+	},
+	"Cart": {
+		"product": {
+			"title": "Cart"
+		},
+		"summary": {
+			"title": " Summary",
+			"subtotal": "Subtotal",
+			"shipping": "Shipping",
+			"taxes": "Estimate Duties And Taxes",
+			"total": "Total",
+			"checkout": "Checkout",
+			"apply": "Apply"
+		}
+	},
+	"Wishlist": {
+		"title": "Wishlist"
+	},
+
+	"CheckoutPage": {
+		"checkoutForm": {
+			"labelMethod": "How would you like to receive your order?",
+			"placeholderMethod": "Enter your delivery method...",
+
+			"labelAddress": "Enter your phone number, name, and address...",
+
+			"placeholderNumber": "Enter your phone number...",
+
+			"description": "* For delivery, you can enter your address precisely.",
+
+			"placeholderLastName": "Enter your first and last name...",
+
+			  "labelName": "Name",
+      "labelEmail": "Email",
+			"placeholderAddress": "Enter your address...",
+
+			"labelPostCode": "Enter your postal code",
+
+			"placeholderPostCode": "Enter your postal code...",
+
+			"labelCity": "Enter your city",
+
+			"placeholderCity": "Enter your city...",
+
+			"labelCountry": "Enter your country",
+
+			"placeholderCountry": "Enter your country...",
+
+			"labelState": "Enter your region",
+
+			"placeholderState": "Enter your region..."
+		},
+
+		"infosCheckout": {
+			"save": "Save this address to my profile",
+			"favorite": "Make this my default address",
+			"termes": "Terms and Conditions",
+			"accept": "I have read and accept the terms and conditions",
+			"ctaButton": "Proceed to payment"
+		},
+
+		"summary": {
+			"title": "Summary",
+			"subtotal": "Subtotal",
+			"shipping": "Shipping Costs",
+			"taxes": "Estimated Duties and Taxes",
+			"total": "Total"
+		},
+
+		"features": {
+			"delivery": "Delivery",
+			"shipping": "Shipping",
+			"billing": "Billing",
+			"payment": "Payment",
+			"data": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+		},
+
+		"items": {
+			"color": "Color",
+			"size": "Size"
+		}
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"eslint.workingDirectories": [
+		{
+			"mode": "auto"
+		}
+	],
+	"tailwindCSS.experimental.configFile": "apps/web/src/styles/globals.css",
+	"tailwindCSS.includeLanguages": {
+		"typescript": "javascript",
+		"typescriptreact": "javascript"
+	},
+	"tailwindCSS.files.exclude": [
+		"**/node_modules/**",
+		"**/.git/**",
+		"**/dist/**"
+	],
+	"tailwindCSS.rootFontSize": 16,
+	"tailwindCSS.validate": true,
+	"css.validate": false,
+	"scss.validate": false,
+	"editor.minimap.autohide": "scroll"
+}

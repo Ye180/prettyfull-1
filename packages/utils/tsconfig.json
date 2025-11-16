@@ -1,0 +1,11 @@
+{
+  "extends": "@prettyfull/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "paths": {
+      "@prettyfull/utils": ["../../packages/utils/lib"]
+    }
+  },
+
+  "include": ["."],
+  "exclude": ["node_modules", "dist"]
+}

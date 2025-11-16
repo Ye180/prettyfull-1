@@ -1,0 +1,20 @@
+{
+  "name": "@prettyfull/store",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./*": "./src/*.tsx"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@prettyfull/eslint-config": "workspace:*",
+    "@prettyfull/typescript-config": "workspace:*",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "zustand": "^4.5.2"
+  }
+}
