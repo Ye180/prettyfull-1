@@ -5,14 +5,17 @@ import {
 	DrawerFooter,
 	DrawerTrigger,
 } from "@prettyfull/ui";
-
 import { FilterIcon } from "../../../../../../../packages/ui/src/icons/filter.icon";
 import Filter from "./apps/filter";
+
+// Temporary type workarounds until @prettyfull/ui exports proper Drawer props
+const DrawerContentAny = DrawerContent as unknown as React.ComponentType<any>;
+const DrawerTriggerAny = DrawerTrigger as unknown as React.ComponentType<any>;
 
 const DrawerLayout = () => {
 	return (
 		<Drawer>
-			<DrawerTrigger asChild>
+			<DrawerTriggerAny asChild>
 				<Button
 					variant="outline"
 					className="flex items-center justify-center px-6 py-2 border rounded-lg cursor-pointer border-black/20 w-fit md:hidden hover:bg-black hover:text-white"
@@ -20,8 +23,8 @@ const DrawerLayout = () => {
 					<FilterIcon />
 					<span>Filter </span>
 				</Button>
-			</DrawerTrigger>
-			<DrawerContent
+			</DrawerTriggerAny>
+			<DrawerContentAny
 				title="Filter & Trier "
 				className="w-full p-5 border-none outline-none  md:hidden lg:hidden xl:hidden 2xl:hidden max-h-[90%] "
 			>
@@ -35,7 +38,7 @@ const DrawerLayout = () => {
 						<Button>Appliquer</Button>
 					</div>
 				</DrawerFooter>
-			</DrawerContent>
+			</DrawerContentAny>
 		</Drawer>
 	);
 };

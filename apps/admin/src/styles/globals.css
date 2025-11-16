@@ -534,7 +534,7 @@ a {
 	nav
 	button:hover {
 	background: #57a481 !important;
-	@apply border-none! !bg-Msurfacesurfacebrand text-white!;
+	@apply border-none! bg-Msurfacesurfacebrand! text-white!;
 }
 
 .tableWrapCustom

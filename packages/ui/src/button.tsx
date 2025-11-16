@@ -65,7 +65,7 @@ export const Button = ({
 			disabled={disabled}
 		>
 			<Flex settings={{ align: "center", spacing: "gap-3" }}>
-				{icon && <span className="flex-shrink-0 -mt-1.5">{icon}</span>}
+				{icon && <span className="shrink-0 -mt-1.5">{icon}</span>}
 				<div className="flex gap-3">
 					{children}
 					{props.isLoading && <Spinner />}

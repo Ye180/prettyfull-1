@@ -1,20 +1,28 @@
 import { useCartStore } from "../../../../packages/store/src/use-cart-store";
 
 export const useCart = () => {
-  const { items, setCart, addItem, removeItem, clearCart } = useCartStore();
+	const { items, setCart, addItem, removeItem, clearCart } = useCartStore();
 
-  const total = items.reduce(
-    (acc, item) =>
-      acc + (item.unitPrice?.amount ?? item.product.price ?? 0) * item.quantity,
-    0
-  );
+	const total = items.reduce((acc, item) => {
+		const candidate = item.unitPrice?.amount ?? (item.product as any)?.price;
+		const price =
+			typeof candidate === "number"
+				? candidate
+				: typeof candidate?.amount === "number"
+					? candidate.amount
+					: 0;
 
-  return {
-    items,
-    total,
-    setCart,
-    addItem,
-    removeItem,
-    clearCart,
-  };
+		return (
+			acc + price * (typeof item.quantity === "number" ? item.quantity : 0)
+		);
+	}, 0);
+
+	return {
+		items,
+		total,
+		setCart,
+		addItem,
+		removeItem,
+		clearCart,
+	};
 };

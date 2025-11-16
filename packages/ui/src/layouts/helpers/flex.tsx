@@ -1,8 +1,9 @@
 import { cn } from "@prettyfull/utils";
-import type { HTMLAttributes, PropsWithChildren } from "react";
+import type { HTMLAttributes } from "react";
 
 export interface FlexRowProps extends HTMLAttributes<HTMLDivElement> {
 	as?: "div" | "section" | "article" | "nav" | "aside" | "header" | "footer";
+	children: React.ReactNode;
 	settings?: {
 		shouldWrap?: boolean;
 		shouldReverse?: boolean;
@@ -50,7 +51,7 @@ const Flex = ({
 	settings,
 	className,
 	...props
-}: PropsWithChildren<FlexRowProps>) => {
+}: FlexRowProps) => {
 	const Component = as;
 	return (
 		<Component
@@ -67,7 +68,7 @@ const Flex = ({
 					"flex-wrap": settings?.shouldWrap,
 					"items-center justify-center": settings?.fullCenter,
 					"flex-col": settings?.isColumn,
-					"[&>*]:basis-0 [&>*]:flex-1": settings?.shouldTakeSameSpace,
+					"*:basis-0 *:flex-1": settings?.shouldTakeSameSpace,
 					[`${
 						(settings?.isColumn ?? false)
 							? "flex-col-reverse"

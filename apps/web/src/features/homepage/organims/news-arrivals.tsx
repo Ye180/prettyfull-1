@@ -6,7 +6,18 @@ import Image from "next/image";
 import Box from "../../../../../../packages/ui/src/layouts/helpers/box";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
-const NewsArrivals = ({ second }: { second?: any }) => {
+const NewsArrivals = ({
+	second,
+}: {
+	second?: {
+		title?: string;
+		category?: {
+			name: string;
+			image: string;
+			label: string;
+		}[];
+	};
+}) => {
 	const t = useTranslations("HomePage.news");
 	return (
 		<Container maxWidth="100vw" className="w-full px-4 lg:px-40">
