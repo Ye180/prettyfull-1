@@ -2,24 +2,21 @@ import { Skeleton } from "@prettyfull/ui";
 
 export default function ProductCardSkeleton() {
 	return (
-		<div className="flex flex-col w-full ">
+		<div className="flex flex-col w-full space-y-2 ">
 			{/* Image du produit */}
-			<Skeleton className="w-[25rem] md:w-[100%]  h-[30rem]" />
+			<Skeleton className="w-100 md:w-full h-140 md:h-170 " />
 
-			{/* Label "Best-Seller" */}
-			<div className="mt-2">
-				<Skeleton className="w-20 h-3 " />
+			{/* Nom du produit - Prix  */}
+			<div className="flex justify-between mt-2">
+				<Skeleton className="w-1/2 h-8 " />
+				<Skeleton className="w-20 h-8 " />
 			</div>
 
-			{/* Nom du produit */}
-			<div className="mt-2">
-				<Skeleton className="w-48 h-4 " />
-			</div>
-
-			{/* Prix */}
-			<div className="flex items-center justify-between mt-2">
-				<Skeleton className="w-16 h-4 " />
-				<Skeleton className="w-12 h-4" />
+			{/* Variable */}
+			<div className="flex items-center justify-start mt-2 gap-x-2">
+				{Array.from({ length: 3 }).map((_, index) => (
+					<Skeleton key={index} className="w-8 h-8 rounded-full" />
+				))}
 			</div>
 		</div>
 	);

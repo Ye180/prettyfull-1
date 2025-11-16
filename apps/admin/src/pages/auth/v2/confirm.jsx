@@ -74,8 +74,8 @@ const Confirm = () => {
 			<Layout
 				navbar={false}
 				footer={false}
-				title="Shotify - Confirm"
-				description="Shotify - Confirm Desc"
+				title="Prettyfull - Confirm"
+				description="Prettyfull - Confirm Desc"
 			>
 				<div className="w-full min-h-dvh md:bg-white bg-Mmaincolorlightgreen">
 					<Row className="min-h-dvh">

@@ -14,8 +14,8 @@ const Register = () => {
 			<Layout
 				navbar={false}
 				footer={false}
-				title="Shotify - Register"
-				description="Shotify - Register Desc"
+				title="Prettyfull - Register"
+				description="Prettyfull - Register Desc"
 			>
 				<div className="w-full min-h-dvh md:bg-white bg-Mmaincolorlightgreen">
 					<Row className="min-h-dvh">

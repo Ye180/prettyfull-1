@@ -6,7 +6,8 @@ export const HostnameProvider = ({ children }) => {
 	const [hostname, setHostname] = useState("");
 
 	useEffect(() => {
-		if (process.browser) {
+		// use a safe runtime check for browser environment
+		if (typeof window !== "undefined") {
 			setHostname(window.location.origin);
 		}
 	}, []);

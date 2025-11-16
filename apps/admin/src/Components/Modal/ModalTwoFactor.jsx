@@ -40,7 +40,7 @@ const ModalTwoFactor = ({ onHideClick, title, ...props }) => {
 			{/* Modal */}
 			<Modal {...props}>
 				<Modal.Body>
-					<div className="border-b border-Mborderborderprimary p-3">
+					<div className="p-3 border-b border-Mborderborderprimary">
 						<Container>
 							<div className="flex items-center justify-between">
 								<h4 className="font-semibold text__20">{title}</h4>
@@ -54,8 +54,8 @@ const ModalTwoFactor = ({ onHideClick, title, ...props }) => {
 						</Container>
 					</div>
 					<div className="p-4">
-						<div className="text-center mb-4">
-							<h2 className="font-semibold text__24 mb-1">
+						<div className="mb-4 text-center">
+							<h2 className="mb-1 font-semibold text__24">
 								Enable One Time Password
 							</h2>
 							<p className="text__16 text-Mtexttextsecondary">
@@ -68,7 +68,7 @@ const ModalTwoFactor = ({ onHideClick, title, ...props }) => {
 								Phone Number
 							</Form.Label>
 
-							<div className="px-3 border border-Mborderborderprimary rounded-lg flex items-center gap-2">
+							<div className="flex items-center gap-2 px-3 border rounded-lg border-Mborderborderprimary">
 								<div className="relative">
 									<div
 										className="flex items-center px-2 py-1 rounded-full bg-[#F9FAFB] cursor-pointer"
@@ -76,7 +76,7 @@ const ModalTwoFactor = ({ onHideClick, title, ...props }) => {
 									>
 										<img
 											src={selectedCountry?.flag}
-											className="w-5 h-5 rounded-full object-cover"
+											className="object-cover w-5 h-5 rounded-full"
 											alt=""
 										/>
 										<img src={originalUrl + "/images/dfgdfg.svg"} alt="" />
@@ -94,7 +94,7 @@ const ModalTwoFactor = ({ onHideClick, title, ...props }) => {
 											return (
 												<Fragment>
 													<div
-														className="w-full flex items-center gap-2 cursor-pointer"
+														className="flex items-center w-full gap-2 cursor-pointer"
 														onClick={() => {
 															setSelectedCountry({
 																value: obj.value,
@@ -106,7 +106,7 @@ const ModalTwoFactor = ({ onHideClick, title, ...props }) => {
 													>
 														<img
 															src={obj?.flag}
-															className="w-5 h-5 rounded-full object-cover"
+															className="object-cover w-5 h-5 rounded-full"
 															alt=""
 														/>
 
@@ -135,16 +135,16 @@ const ModalTwoFactor = ({ onHideClick, title, ...props }) => {
 							</div>
 						</Form.Group>
 
-						<div className="mt-4 flex items-center gap-2 justify-end">
+						<div className="flex items-center justify-end gap-2 mt-4">
 							<div
 								onClick={onHideClick}
-								className="cursor-pointer inline-block px-3 py-2 rounded-lg bg-Msurfacesurfacesecondary text-Mmaincolorgreen"
+								className="inline-block px-3 py-2 rounded-lg cursor-pointer bg-Msurfacesurfacesecondary text-Mmaincolorgreen"
 							>
 								<p className="font-medium text__14">Cancel</p>
 							</div>
 							<div
 								onClick={onHideClick}
-								className="cursor-pointer inline-block px-3 py-2 rounded-lg bg-Mmaincolorgreen text-white"
+								className="inline-block px-3 py-2 text-white rounded-lg cursor-pointer bg-Mmaincolorgreen"
 							>
 								<p className="font-medium text__14">Submit</p>
 							</div>

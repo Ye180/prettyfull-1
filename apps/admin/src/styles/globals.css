@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
+@import "@fontsource/manrope";
+
 @theme {
 	--font-*: initial;
 	--font-Inter: Inter, sans-serif;
+
+	--font-manrope: "manrope", sans-serif;
 
 	--color-*: initial;
 	--color-inherit: inherit;
@@ -502,11 +506,11 @@ a {
 }
 
 .TableCustom tbody tr td:first-child {
-	@apply border-l border-Mborderborderprimary bg-white;
+	@apply bg-white border-l border-Mborderborderprimary;
 }
 
 .TableCustom tbody tr td:last-child {
-	@apply border-r border-Mborderborderprimary bg-white;
+	@apply bg-white border-r border-Mborderborderprimary;
 }
 
 .tableWrapCustom div div .dt-layout-row .dt-layout-cell .dt-info {
@@ -659,7 +663,7 @@ a {
 }
 
 .textareaStyle {
-	@apply border border-Mborderborderprimary rounded-lg;
+	@apply border rounded-lg border-Mborderborderprimary;
 }
 .textareaStyle .ql-container {
 	@apply min-h-[164px] border-b border-Mborderborderprimary;

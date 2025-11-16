@@ -74,8 +74,8 @@ const Confirm = () => {
 			<Layout
 				navbar={false}
 				footer={false}
-				title="Shotify - Confirm"
-				description="Shotify - Confirm Desc"
+				title="Prettyfull - Confirm"
+				description="Prettyfull - Confirm Desc"
 			>
 				<section className="relative bg-Msurfacesurfacesecondary w-full md:min-h-screen min-h-dvh flex items-center justify-center py-16">
 					<Container>

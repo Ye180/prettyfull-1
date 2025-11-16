@@ -16,6 +16,7 @@ import { SelectScrollable } from "@/shared/component/select-within-search";
 import { CATEGORIES_QUERY_KEY } from "@/utils/query-keys";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -52,6 +53,8 @@ function FormCategory() {
 	const { data: category } = useGetCategory();
 
 	const [imageFile, setImageFile] = useState(null);
+
+	const router = useRouter();
 
 	const {
 		mutate: createCategory,
@@ -176,6 +179,7 @@ function FormCategory() {
 				await queryClient.invalidateQueries({
 					queryKey: [CATEGORIES_QUERY_KEY],
 				});
+				router.push("/categories");
 			},
 			onError: (error) => {
 				console.error("Erreur lors de la création:", error);

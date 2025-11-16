@@ -30,7 +30,9 @@ const DrawerReview = () => {
 			>
 				<DrawerClose
 					className="absolute z-30 p-2 text-2xl bg-white rounded-full cursor-pointer right-4 top-4"
-					onClick={(e) => e.stopPropagation()}
+					onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+						e.stopPropagation()
+					}
 				>
 					<CloseIcon className="w-10 h-10" />
 				</DrawerClose>

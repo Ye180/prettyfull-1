@@ -1,11 +1,11 @@
 "use client";
 
 import { useGetChildrenCategory } from "@/features/homepage/api/get-children-category";
-import { getItem } from "@/lib/utils/local-storage";
+// import { getItem } from "@/lib/utils/local-storage";
 import { useParams } from "next/navigation";
 import { useQueryState } from "nuqs";
 // Importe useState et useEffect
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import BottomHeader from "../molecules/header/bottom";
 import NavBarHeaders from "../molecules/header/navbar";
 
@@ -14,10 +14,14 @@ const Header = ({ main_category }: { main_category: any }) => {
 	const [division] = useQueryState("division");
 
 	// 1. Initialise la catégorie à 'undefined' (comme sur le serveur)
-	const [category, setCategory] = useState<any>(getItem("category")); // Le tableau vide signifie "exécute-moi une seule fois au chargement"
+	// const [category, setCategory] = useState<any>(getItem("category")); // Le tableau vide signifie "exécute-moi une seule fois au chargement"
+
+	const normalizedSlug = Array.isArray(params.id)
+		? params.id[0]
+		: (params.id ?? division ?? "");
 
 	const { data: children_category, isLoading: secondaryLoading } =
-		useGetChildrenCategory(params.id as string);
+		useGetChildrenCategory(normalizedSlug as string);
 
 	// Récupérer le parent slug depuis l'URL ou depuis les params
 	const parentSlug = useMemo(() => {
@@ -43,7 +47,7 @@ const Header = ({ main_category }: { main_category: any }) => {
 				<BottomHeader
 					// 3. Le premier rendu sera `children_category || undefined`
 					//    Le second rendu (après le useEffect) sera `children_category || [données du local storage]`
-					secondary_category={children_category || category}
+					secondary_category={children_category}
 					loading={secondaryLoading}
 					parentSlug={parentSlug}
 				/>

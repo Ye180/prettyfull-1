@@ -43,8 +43,8 @@ const Verification = () => {
 			<Layout
 				navbar={false}
 				footer={false}
-				title="Shotify - Verification"
-				description="Shotify - Verification Desc"
+				title="Prettyfull - Verification"
+				description="Prettyfull - Verification Desc"
 			>
 				<div className="w-full min-h-dvh md:bg-white bg-Mmaincolorlightgreen">
 					<Row className="min-h-dvh">

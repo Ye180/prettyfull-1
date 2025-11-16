@@ -11,8 +11,6 @@ const DataTableProducts = () => {
 		// },
 	});
 
-	console.log("Products data:", products?.products);
-
 	return (
 		<DataTable
 			columns={columns}

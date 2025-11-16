@@ -1,8 +1,7 @@
 import Image from "next/image";
-import { PropsWithChildren } from "react";
 import AuthLayout from "../../../../../packages/ui/src/layouts/auth-layout";
 
-const AuthRootLayout = ({ children }: PropsWithChildren<{}>) => {
+const AuthRootLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<AuthLayout
 			children={children}

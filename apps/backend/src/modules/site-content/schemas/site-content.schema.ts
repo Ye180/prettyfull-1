@@ -1,63 +1,67 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 
-export type SiteContentDocument = SiteContent & Document;
+@Schema({ _id: false, versionKey: false })
+class I18nString {
+  @Prop({ type: String, trim: true })
+  fr: string;
 
-export enum ContentType {
-  SECTION = 'SECTION',
-  BANNER = 'BANNER',
-  CATEGORY = 'CATEGORY',
+  @Prop({ type: String, trim: true })
+  en: string;
 }
+const I18nStringSchema = SchemaFactory.createForClass(I18nString);
 
-export class I18nString {
-  fr?: string;
-  en?: string;
-}
+@Schema({ _id: false, versionKey: false })
+class FirstSection {
+  @Prop({ type: I18nStringSchema })
+  title: I18nString;
 
-/* -----------------------------------------------------------
- * 📌 Base réutilisable pour éviter les répétitions
- * ----------------------------------------------------------- */
-@Schema()
-export class BaseSection {
-  @Prop({ type: Object }) title?: I18nString;
-  @Prop({ type: Object }) description?: I18nString;
-  @Prop() imageUrlDesktop?: string;
-  @Prop() imageUrlMobile?: string;
-  @Prop() video?: string;
-  @Prop() category?: string;
-}
-// const BaseSectionSchema = SchemaFactory.createForClass(BaseSection);
+  @Prop({ type: I18nStringSchema })
+  description: I18nString;
 
-/* -----------------------------------------------------------
- * 1️⃣ firstSection
- * ----------------------------------------------------------- */
-@Schema()
-export class FirstSection extends BaseSection {
-  @Prop() paragraphe?: string;
-  @Prop({ type: Object }) textbutton?: I18nString;
+  @Prop({ type: String })
+  imageUrlDesktop: string;
+
+  @Prop({ type: String })
+  imageUrlMobile: string;
+
+  @Prop({ type: String })
+  video: string;
+
+  @Prop({ type: I18nStringSchema })
+  ctaText: I18nString;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Category' })
+  category: MongooseSchema.Types.ObjectId;
 }
 const FirstSectionSchema = SchemaFactory.createForClass(FirstSection);
 
-/* -----------------------------------------------------------
- * 2️⃣ secondSection
- * ----------------------------------------------------------- */
-@Schema()
-export class SecondSection {
-  @Prop({ type: Object }) title?: I18nString;
-  @Prop({ type: String }) category?: string;
-  @Prop({ type: Object }) ctaText?: I18nString;
-  @Prop({ type: String }) parentCategory?: string;
+@Schema({ _id: false, versionKey: false })
+class SecondSection {
+  @Prop({ type: I18nStringSchema })
+  title: I18nString;
+
+  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: 'Category' }])
+  category: MongooseSchema.Types.ObjectId[];
+
+  @Prop({ type: I18nStringSchema })
+  ctaText: I18nString;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Category' })
+  parentCategory: MongooseSchema.Types.ObjectId;
 }
 const SecondSectionSchema = SchemaFactory.createForClass(SecondSection);
 
-/* -----------------------------------------------------------
- * 3️⃣ thirdSection
- * ----------------------------------------------------------- */
-@Schema()
-export class ThirdSection {
-  @Prop() imageUrlDesktop?: string;
-  @Prop() imageUrlMobile?: string;
-  @Prop() category?: string;
+@Schema({ _id: false, versionKey: false })
+class ThirdSection {
+  @Prop({ type: String })
+  imageUrlDesktop: string;
+
+  @Prop({ type: String })
+  imageUrlMobile: string;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Category' })
+  category: MongooseSchema.Types.ObjectId;
 }
 const ThirdSectionSchema = SchemaFactory.createForClass(ThirdSection);
 
@@ -70,22 +74,7 @@ export class FourthSection {
   @Prop({ type: Object }) description?: I18nString;
   @Prop() imageUrl?: string;
   @Prop() category?: string;
-  @Prop({
-    type: [
-      {
-        id: Number,
-        name: String,
-        price: Number,
-        imageUrl: String,
-      },
-    ],
-  })
-  products?: Array<{
-    id?: number;
-    name?: string;
-    price?: number;
-    imageUrl?: string;
-  }>;
+  @Prop() products?: string[];
 }
 const FourthSectionSchema = SchemaFactory.createForClass(FourthSection);
 
@@ -120,22 +109,7 @@ export class SevenSection {
   @Prop({ type: Object }) title?: I18nString;
   @Prop({ type: Object }) ctaText?: I18nString;
   @Prop({ type: String }) subCategory?: string;
-  @Prop({
-    type: [
-      {
-        id: Number,
-        name: String,
-        price: Number,
-        imageUrl: String,
-      },
-    ],
-  })
-  products?: Array<{
-    id?: number;
-    name?: string;
-    price?: number;
-    imageUrl?: string;
-  }>;
+  @Prop() products?: string[];
 }
 const SevenSectionSchema = SchemaFactory.createForClass(SevenSection);
 
@@ -177,12 +151,12 @@ const TenSectionSchema = SchemaFactory.createForClass(TenSection);
  * 🏗️ SiteContent global
  * ----------------------------------------------------------- */
 @Schema({ timestamps: true })
-export class SiteContent {
-  @Prop({ required: true, unique: true })
+export class SiteContent extends Document {
+  @Prop({ type: String, required: true, unique: true, index: true })
   key: string;
 
-  @Prop({ type: String, enum: ContentType, required: true })
-  type: ContentType;
+  @Prop({ type: String, enum: ['PAGE', 'SECTION'], required: true })
+  type: string;
 
   @Prop({ type: Boolean, default: true })
   isActive: boolean;
@@ -190,17 +164,17 @@ export class SiteContent {
   @Prop({ type: Number, default: 0 })
   sortOrder: number;
 
-  @Prop({ type: Object })
-  quote?: I18nString;
+  @Prop({ type: I18nStringSchema })
+  quote: I18nString;
 
   @Prop({ type: FirstSectionSchema })
-  firstSection?: FirstSection;
+  first: FirstSection;
 
   @Prop({ type: SecondSectionSchema })
-  secondSection?: SecondSection;
+  secondSection: SecondSection;
 
   @Prop({ type: ThirdSectionSchema })
-  thirdSection?: ThirdSection;
+  thirdSection: ThirdSection;
 
   @Prop({ type: FourthSectionSchema })
   fourthSection?: FourthSection;
@@ -231,3 +205,5 @@ export class SiteContent {
 }
 
 export const SiteContentSchema = SchemaFactory.createForClass(SiteContent);
+
+export type SiteContentDocument = SiteContent & Document;

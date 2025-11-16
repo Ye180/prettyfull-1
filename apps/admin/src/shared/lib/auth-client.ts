@@ -9,6 +9,9 @@ export const authClient = createAuthClient({
   baseURL:
     process.env.NEXT_PUBLIC_BETTER_AUTH_URL ||
     "http://localhost:3000/api/auth", // fallback for local dev
+  fetchOptions: {
+    credentials: "include", // Required for cookies
+  },
   plugins: [
     inferAdditionalFields({
       user: {

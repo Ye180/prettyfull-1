@@ -104,8 +104,8 @@ const MenuProfile = ({
 
 const Layout = ({
 	children,
-	title = "Shotify",
-	description = "Shotify Desc",
+	title = "Prettyfull",
+	description = "Prettyfull Desc",
 	navbar = true,
 	footer = true,
 	dashboard = false,
@@ -113,7 +113,14 @@ const Layout = ({
 	const originalUrl = useHostname();
 
 	const router = useRouter();
-	const isActive = (path) => router.pathname.startsWith(path);
+	const isActive = (path) => {
+		// Pour la route racine "/", vérifier une correspondance exacte
+		if (path === "/") {
+			return router.pathname === "/";
+		}
+		// Pour les autres routes, vérifier si le pathname commence par le path
+		return router.pathname.startsWith(path);
+	};
 	const [toogleMenuProfile, settoogleMenuProfile] = useState(false);
 	const [toogleSideMenu, settoogleSideMenu] = useState(false);
 	const [toogleSearch, settoogleSearch] = useState(false);
@@ -131,18 +138,7 @@ const Layout = ({
 				<meta name="description" content={description} />
 
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
-				<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-				<link
-					href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-					rel="stylesheet"
-				/>
-
-				<link
-					rel="stylesheet"
-					href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"
-					integrity="sha384-nqKJ5nHQQgPTNwI0kPcbbP5MVPFozG6gZWybZ+Wgt0+QlMJnM1D8l12wXRXx8yFJ"
-					crossOrigin="anonymous"
-				/>
+				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
 			</Head>
 
 			<ModalLogout
@@ -168,20 +164,21 @@ const Layout = ({
 									<div className="w-full space-y-4">
 										<Logo />
 
-										<div className="grid grid-cols-1 gap-2 pt-10">
+										<div className="grid grid-cols-1 gap-2 pt-10 ">
 											{LINK_ROUTES.map((link, index) => (
 												<Link
 													key={index}
 													href={link.path}
 													className={
-														"  flex flex-row space-x-2 items-center py-3 text-black text-decoration-none " +
-														(isActive(link.path) &&
-														router.pathname === link.path
-															? "bg-white border-l border-black text-black font-bold"
+														"  flex flex-row space-x-2 font-manrope items-center py-3 text-black transition-all duration-100 text-decoration-none transform" +
+														(isActive(link.path)
+															? " pl-3 border-black text-black text-Msurfacesurfacebrand! bg-[#F2F8F5] font-medium rounded-lg! shadow-xs"
 															: "text-Mtexttextsecondary")
 													}
 												>
-													{link.icon && <link.icon className="" />}
+													{link.icon && (
+														<link.icon className="" strokeWidth={1.25} />
+													)}
 													<p className=" h-fit m-0!">{link.name}</p>
 												</Link>
 											))}
@@ -314,7 +311,7 @@ const Layout = ({
 									</div>
 								</div>
 
-								<div className=" mt-[70px]">{children}</div>
+								<div className=" mt-[70px] font-manrope!">{children}</div>
 							</div>
 						</div>
 
@@ -327,17 +324,17 @@ const Layout = ({
 
 			<script
 				src="https://cdn.jsdelivr.net/npm/react/umd/react.production.min.js"
-				crossorigin
+				crossOrigin
 			></script>
 
 			<script
 				src="https://cdn.jsdelivr.net/npm/react-dom/umd/react-dom.production.min.js"
-				crossorigin
+				crossOrigin
 			></script>
 
 			<script
 				src="https://cdn.jsdelivr.net/npm/react-bootstrap@next/dist/react-bootstrap.min.js"
-				crossorigin
+				crossOrigin
 			></script>
 		</Fragment>
 	);

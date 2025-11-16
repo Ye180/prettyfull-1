@@ -40,8 +40,10 @@ const CartView = () => {
 		};
 	}, [items]);
 
-	if (isLoading)
-		return <p className="py-24 text-center">Chargement du panier...</p>;
+	console.log("Cart items:", items);
+
+	// if (isLoading)
+	// 	return <p className="py-24 text-center">Chargement du panier...</p>;
 
 	if (items.length === 0)
 		return (
@@ -57,19 +59,48 @@ const CartView = () => {
 		);
 
 	return (
-		<Container className="flex flex-col gap-16 px-6 py-12 md:flex-row md:justify-between md:px-24">
-			<div className="flex-1">
-				<h2 className="mb-8 text-2xl font-bold">Bag</h2>
-				<CartItems items={items} />
-			</div>
+		<Container
+			maxWidth="100vw"
+			className="min-h-screen py-4 pb-40 max-lg:px-4 lg:px-40"
+		>
+			<div className="grid grid-cols-1 gap-x-20 md:grid-cols-12">
+				{/* Left: items */}
+				<section className="bg-white md:col-span-8">
+					<div className="flex items-center justify-between mb-6">
+						<h2 className="py-8 text-[3rem]! lg:text-[3.5rem]!">
+							Votre panier
+						</h2>
+						<span className="text-sm text-gray-500">
+							{items.length} article{items.length > 1 ? "s" : ""}
+						</span>
+					</div>
 
-			<CartSummary
-				subtotal={subtotal}
-				shipping={shipping}
-				taxes={taxes}
-				total={total}
-				currency="USD"
-			/>
+					<div className="divide-y divide-gray-100">
+						<CartItems items={items} />
+					</div>
+
+					<div className="mt-6 text-sm text-gray-600">
+						<p>
+							Les frais d'expédition sont estimés au moment du paiement. Vous
+							pouvez modifier la quantité ou supprimer des articles avant de
+							valider votre commande.
+						</p>
+					</div>
+				</section>
+
+				{/* Right: summary (sticky on desktop) */}
+				<aside className="md:col-span-4">
+					<div className="sticky top-24">
+						<CartSummary
+							subtotal={subtotal}
+							shipping={shipping}
+							taxes={taxes}
+							total={total}
+							currency="USD"
+						/>
+					</div>
+				</aside>
+			</div>
 		</Container>
 	);
 };

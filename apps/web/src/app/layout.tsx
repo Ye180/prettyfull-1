@@ -3,17 +3,17 @@ import { NextIntlClientProvider } from "next-intl";
 import "../styles/globals.css"; // Assurez-vous que vos styles sont bien importés
 
 export default function RootLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body>
-        <Provider>
-          <NextIntlClientProvider>{children}</NextIntlClientProvider>
-        </Provider>
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body>
+				<Provider>
+					<NextIntlClientProvider>{children}</NextIntlClientProvider>
+				</Provider>
+			</body>
+		</html>
+	);
 }

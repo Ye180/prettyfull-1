@@ -3,6 +3,7 @@ import {
 	FormField,
 	FormItem,
 	FormLabel,
+	FormMessage,
 } from "@/components/ui/form";
 import {
 	Select,
@@ -48,7 +49,10 @@ export function SelectScrollable({
 								</SelectGroup> */}
 							</SelectContent>
 						</Select>
+
+						{/* <FormMessage /> */}
 					</FormControl>
+					<FormMessage />
 				</FormItem>
 			)}
 		/>

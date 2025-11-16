@@ -32,7 +32,10 @@ async function bootstrap() {
   //     'Authorization',
   //     'Accept-Language',
   //     'Accept-Currency',
+  //     'Cookie',
   //   ],
+  //   credentials: true, // Required for Better Auth cookies
+  //   exposedHeaders: ['Set-Cookie'],
   // });
 
   // Global validation pipe
@@ -68,6 +71,7 @@ async function bootstrap() {
     },
   });
 
+  app.enableCors();
   const port = configService.get<number>('PORT', 7777);
   await app.listen(port, () => {
     console.log(`🚀 E-commerce API server started at http://localhost:${port}`);

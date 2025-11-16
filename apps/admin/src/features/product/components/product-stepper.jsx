@@ -25,7 +25,7 @@ export default function ProductStepper({ currentStep, isStep1Completed }) {
 						stepNumber < currentStep || (stepNumber === 0 && isStep1Completed);
 
 					return (
-						<li key={step.name} className="flex items-center">
+						<li key={step.name} className="flex items-center ">
 							<div className="relative flex flex-col items-center">
 								{/* Step Circle */}
 								<div
@@ -34,12 +34,12 @@ export default function ProductStepper({ currentStep, isStep1Completed }) {
 										isCompleted
 											? "bg-green-600 border-green-600"
 											: isActive
-												? "bg-blue-600 border-black-600"
+												? "bg-black border-black-600"
 												: "bg-gray-200 border-gray-300"
 									)}
 								>
 									{isCompleted ? (
-										<Check className="w-6 h-6 text-white" />
+										<Check className="w-6 h-10 text-white" />
 									) : (
 										<span
 											className={cn(
@@ -58,7 +58,7 @@ export default function ProductStepper({ currentStep, isStep1Completed }) {
 										className={cn(
 											"text-sm font-medium",
 											isActive
-												? "text-blue-600"
+												? "text-black"
 												: isCompleted
 													? "text-green-600"
 													: "text-gray-500"

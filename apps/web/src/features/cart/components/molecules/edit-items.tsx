@@ -39,18 +39,18 @@ export const EditItems = ({ productId }: Props) => {
 	};
 
 	return (
-		<div className="flex items-center gap-4">
+		<div className="flex items-center gap-3">
 			<button
 				onClick={handleWishlist}
 				disabled={wishlistMutation.isPending}
-				className="flex items-center gap-1 text-sm text-gray-600 hover:text-black"
+				className="flex items-center gap-2 px-2 py-1 text-sm text-gray-600 transition rounded-md hover:text-black"
 			>
 				<Heart className="w-5 h-5" />
 			</button>
 			<button
 				onClick={handleRemove}
 				disabled={removeMutation.isPending}
-				className="flex items-center gap-1 text-sm text-gray-600 hover:text-red-600"
+				className="flex items-center gap-2 px-2 py-1 text-sm text-gray-600 transition rounded-md hover:text-red-600"
 			>
 				<TrashIcon className="w-5 h-5" />
 				{removeMutation.isPending ? "..." : ""}

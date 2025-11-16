@@ -31,7 +31,7 @@ const NavbarResponsive = ({
 	// } = useGetCategory({ second: true });
 	const t = useTranslations("headerResponsive");
 	return (
-		<div className="fixed z-40 w-[100vw] pb-4 space-y-4 bg-white  md:hidden top-0 right-0 -left-0 h-[100vh] overflow-hidden ">
+		<div className="fixed top-0 left-0 right-0 z-40 w-full h-full pb-4 space-y-4 overflow-hidden bg-white md:hidden ">
 			<div className="relative flex flex-col items-start justify-between p-2 h-fit ">
 				<button
 					onClick={close}

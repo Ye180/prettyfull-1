@@ -42,7 +42,7 @@ const Profile = ({ data }) => {
 					<Container>
 						<Row className="gap-y-4">
 							<Col md={5} xl={4}>
-								<div className="w-full grid grid-cols-1 gap-1">
+								<div className="grid w-full grid-cols-1 gap-1">
 									{[
 										{
 											icon: originalUrl + "/images/icca (3).svg",

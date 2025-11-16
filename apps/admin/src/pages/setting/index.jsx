@@ -27,7 +27,7 @@ const Index = () => {
 					<Container>
 						<Row className="gap-y-4">
 							<Col md={5} xl={4}>
-								<div className="w-full md:grid grid-cols-1 gap-1 hidden">
+								<div className="hidden w-full grid-cols-1 gap-1 md:grid">
 									{[
 										{
 											icon: originalUrl + "/images/Storefront.svg",

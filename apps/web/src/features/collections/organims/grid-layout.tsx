@@ -16,7 +16,7 @@ const GridCollectionLayout = ({
 	console.log("Fetched products:", products);
 	if (!products || loading) {
 		return (
-			<div className="grid w-full grid-cols-4 gap-4 px-2 rounded-md max-sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 scrolbar ">
+			<div className="grid w-full grid-cols-4 px-2 rounded-md gap-x-4 gap-y-8 max-sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 scrolbar ">
 				{Array.from({ length: 16 }).map((_, index) => (
 					<ProductCardSkeleton key={index} />
 				))}

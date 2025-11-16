@@ -14,8 +14,8 @@ const login = () => {
 			<Layout
 				navbar={false}
 				footer={false}
-				title="Shotify - Login"
-				description="Shotify - Login Desc"
+				title="Prettyfull - Login"
+				description="Prettyfull - Login Desc"
 			>
 				<div className="w-full min-h-dvh md:bg-white bg-Mmaincolorlightgreen">
 					<Row className="min-h-dvh">
@@ -36,7 +36,7 @@ const login = () => {
 										<div className="bg-white p-4 rounded-xl">
 											<div className="mb-10 text-center">
 												<h4 className="font-semibold text__24">
-													Welcome to Shotify
+													Welcome to Prettyfull
 												</h4>
 												<p className="text__16 text-Mtexttextsecondary">
 													Please sign-in to your account and start the

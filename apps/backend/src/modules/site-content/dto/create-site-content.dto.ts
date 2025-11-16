@@ -3,13 +3,12 @@ import {
   IsArray,
   IsBoolean,
   IsDate,
-  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { ContentType } from '../schemas/site-content.schema';
+// import { ContentType } from '../schemas/site-content.schema';
 
 /* -----------------------------------------------------------
  * 🌍 I18nString
@@ -64,7 +63,7 @@ export class FirstSectionDto extends BaseSectionDto {
   @IsOptional()
   @ValidateNested()
   @Type(() => I18nStringDto)
-  textbutton?: I18nStringDto;
+  ctaText?: I18nStringDto;
 }
 
 /* 2️⃣ Second Section */
@@ -75,8 +74,8 @@ export class SecondSectionDto {
   title?: I18nStringDto;
 
   @IsOptional()
-  @IsString()
-  category?: string;
+  @IsArray()
+  category?: string[];
 
   @IsOptional()
   @ValidateNested()
@@ -143,9 +142,8 @@ export class FourthSectionDto {
 
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ProductDto)
-  products?: ProductDto[];
+  @IsString({ each: true })
+  products?: string[];
 }
 
 /* 5️⃣ Five Section */
@@ -203,9 +201,7 @@ export class SevenSectionDto {
 
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ProductDto)
-  products?: ProductDto[];
+  products?: string[];
 }
 
 /* 8️⃣ Eight Section */
@@ -267,8 +263,9 @@ export class CreateSiteContentDto {
   @IsString()
   key: string;
 
-  @IsEnum(ContentType)
-  type: ContentType;
+  // @IsOptional()
+  // @IsEnum(ContentType)
+  // type: ContentType;
 
   @IsOptional()
   @IsBoolean()

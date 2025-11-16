@@ -25,7 +25,7 @@ const DrawerCart = ({
 		<Drawer onClose={close}>
 			<DrawerTrigger asChild>
 				<button
-					className="p-2 text-2xl bg-white rounded-full cursor-pointer  w-fit md:hidden"
+					className="p-2 text-2xl bg-white rounded-full cursor-pointer w-fit md:hidden"
 					onClick={(e) => handleClick(e)}
 				>
 					<F7CartFillBadgePlus />

@@ -358,7 +358,7 @@ export default function ProductForm() {
 					});
 					toast.success("Produit créé avec succès avec toutes ses variantes !");
 					// Redirection automatique vers la liste des produits
-					router.push("/product-list");
+					router.back();
 				},
 				onError: (error) => {
 					console.error("Erreur lors de l'ajout des variantes :", error);

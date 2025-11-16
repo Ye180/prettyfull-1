@@ -1,11 +1,9 @@
 "use client ";
 import { Category } from "@/features/homepage/api/get-category";
 import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
-import { setItem } from "@/shared/lib/locale-storage";
 import { Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import Link from "next/link";
-import { useEffect } from "react";
 
 const BottomHeader = ({
 	className,
@@ -20,10 +18,6 @@ const BottomHeader = ({
 	loading?: boolean;
 	parentSlug?: string;
 }) => {
-	useEffect(() => {
-		setItem("category", secondary_category);
-	}, [secondary_category]);
-
 	const buildLinkHref = (slug: string) => {
 		const pathname = COLLECTION_PATHS.collectionDetail(slug);
 		return parentSlug ? `${pathname}?division=${parentSlug}` : pathname;
@@ -49,13 +43,13 @@ const BottomHeader = ({
 							<Link
 								href={buildLinkHref(items.slug)}
 								key={index}
-								className="!text-sm  snap-center tracking-wide whitespace-nowrap hover:text-primary font-semibold uppercase transition-all duration-300 ease-in-out "
+								className="text-sm!  snap-center tracking-wide whitespace-nowrap hover:text-primary font-semibold uppercase transition-all duration-300 ease-in-out "
 							>
 								{" "}
 								{items.name}
 							</Link>
 						))}{" "}
-					{loading && <Skeleton className="h-9 w-[100%]" />}
+					{loading && <Skeleton className="w-full h-9" />}
 					{/*  */}
 				</div>
 			</div>

@@ -19,14 +19,14 @@ const Navbar = () => {
 	};
 	return (
 		<Fragment>
-			<div className="fixed w-full z-99 top-4 left-1/2 -translate-x-1/2 flex flex-wrap justify-center">
+			<div className="fixed flex flex-wrap justify-center w-full -translate-x-1/2 z-99 top-4 left-1/2">
 				<div className="inline-block">
 					<div className="flex items-center justify-between sm:justify-start w-[200px] md:w-auto p-1 rounded-full bg-MNeutral-900 gap-3 shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_8px_10px_-6px_rgba(0,0,0,0.1)]">
 						<Link href="/" className="inline-block">
 							<img src={originalUrl + "/images/Logo.svg"} alt="" />
 						</Link>
 						<div
-							className="hidden sm:flex items-center gap-2 relative cursor-pointer"
+							className="relative items-center hidden gap-2 cursor-pointer sm:flex"
 							onClick={() => HandleChaneMenu("Resources")}
 						>
 							<p
@@ -48,20 +48,20 @@ const Navbar = () => {
 						</div>
 						<Link
 							href={"/what-we-do"}
-							className="hidden sm:inline-block relative"
+							className="relative hidden sm:inline-block"
 						>
-							<p className="text__14 text-white">What we do</p>
+							<p className="text-white text__14">What we do</p>
 						</Link>
-						<Link href={"/about"} className="hidden sm:inline-block relative">
-							<p className="text__14 text-white">About us</p>
+						<Link href={"/about"} className="relative hidden sm:inline-block">
+							<p className="text-white text__14">About us</p>
 						</Link>
-						<Link href={"/contact"} className="hidden sm:inline-block relative">
-							<p className="text__14 text-white">Contact</p>
+						<Link href={"/contact"} className="relative hidden sm:inline-block">
+							<p className="text-white text__14">Contact</p>
 						</Link>
 						<div className="flex items-center gap-3">
 							<Link
 								href="/auth/sign-in"
-								className="hidden sm:inline-block font-medium text__14 px-4 py-2 bg-white text-Mbaseblack rounded-full "
+								className="hidden px-4 py-2 font-medium bg-white rounded-full sm:inline-block text__14 text-Mbaseblack "
 							>
 								Sign In
 							</Link>
@@ -96,10 +96,10 @@ const Navbar = () => {
 							<div className="grid grid-rows-1 gap-y-3">
 								<div className={""}>
 									<div
-										className="flex justify-between items-center gap-2 relative cursor-pointer"
+										className="relative flex items-center justify-between gap-2 cursor-pointer"
 										onClick={() => HandleChaneMenu("Resources")}
 									>
-										<p className="text__24 font-medium ">Resources</p>
+										<p className="font-medium text__24 ">Resources</p>
 										<img
 											src={originalUrl + "/images/Arrow Down.svg"}
 											className={
@@ -128,7 +128,7 @@ const Navbar = () => {
 												/>
 											</div>
 											<div className="">
-												<h5 className="font-medium text__16 mb-1">Blog</h5>
+												<h5 className="mb-1 font-medium text__16">Blog</h5>
 												<p className="text__12 text-MNeutral-700">
 													Insights & stories from the field
 												</p>
@@ -145,7 +145,7 @@ const Navbar = () => {
 												/>
 											</div>
 											<div className="">
-												<h5 className="font-medium text__16 mb-1">Podcast</h5>
+												<h5 className="mb-1 font-medium text__16">Podcast</h5>
 												<p className="text__12 text-MNeutral-700">
 													Inspiring conversations, real stories, and expert
 													insights
@@ -157,26 +157,26 @@ const Navbar = () => {
 
 								<Link
 									href="/what-we-do"
-									className="text__24 font-medium inline-block w-full"
+									className="inline-block w-full font-medium text__24"
 								>
 									What we do
 								</Link>
 								<Link
 									href="/about"
-									className="text__24 font-medium inline-block w-full"
+									className="inline-block w-full font-medium text__24"
 								>
 									About us
 								</Link>
 								<Link
 									href="/auth/sign-in"
-									className="text__24 font-medium inline-block w-full"
+									className="inline-block w-full font-medium text__24"
 								>
 									Contact
 								</Link>
 								<div className="">
 									<Link
 										href="/contact"
-										className="inline-block font-medium text__14 px-4 py-2 bg-MBase-black text-white rounded-full "
+										className="inline-block px-4 py-2 font-medium text-white rounded-full text__14 bg-MBase-black "
 									>
 										Sign In
 									</Link>
@@ -194,14 +194,14 @@ const Navbar = () => {
 					}
 				>
 					<Container>
-						<div className="w-full md:w-[520px] mx-auto p-3 rounded-3xl bg-white border !border-MNeutral-200">
+						<div className="w-full md:w-[520px] mx-auto p-3 rounded-3xl bg-white border border-MNeutral-200!">
 							<div className="grid grid-cols-2 gap-2">
 								<Link href="/blog" className="flex items-center w-full gap-3">
 									<div className="w-[52px] h-[52px] shrink-0 rounded-[10px] border border-black! flex items-center justify-center">
 										<img src={originalUrl + "/images/Newspaper.svg"} alt="" />
 									</div>
 									<div className="">
-										<h5 className="font-medium text__16 mb-1">Blog</h5>
+										<h5 className="mb-1 font-medium text__16">Blog</h5>
 										<p className="text__12 text-MNeutral-700">
 											Insights & stories from the field
 										</p>
@@ -215,7 +215,7 @@ const Navbar = () => {
 										<img src={originalUrl + "/images/Microphone.svg"} alt="" />
 									</div>
 									<div className="">
-										<h5 className="font-medium text__16 mb-1">Podcast</h5>
+										<h5 className="mb-1 font-medium text__16">Podcast</h5>
 										<p className="text__12 text-MNeutral-700">
 											Inspiring conversations, real stories, and expert insights
 										</p>

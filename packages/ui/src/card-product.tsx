@@ -11,7 +11,7 @@ import { Heart } from "./icons/heart.icon";
 import Size from "./size";
 
 // (Cet import doit pointer vers le bon chemin dans votre app 'web')
-import { SetStateAction, useCallback, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { useAddItemToCart } from "../../../apps/web/src/features/cart/api/add-item-to-cart";
 import DrawerVariable from "./drawer-variable";
 
@@ -201,26 +201,26 @@ export function CardProduct({
 	};
 
 	// Préchargement des images
-	// useEffect(() => {
-	// 	if (variants) {
-	// 		const loadImages = async () => {
-	// 			const loadPromises = variants.map((variant, index) => {
-	// 				return new Promise<boolean>((resolve) => {
-	// 					const img = new window.Image();
-	// 					img.onload = () => resolve(true);
-	// 					img.onerror = () => resolve(false);
-	// 					img.src =
-	// 						typeof variant.images[0] === "string" ? variant.images[0] : "src";
-	// 				});
-	// 			});
+	useEffect(() => {
+		if (variants) {
+			const loadImages = async () => {
+				const loadPromises = variants.map((variant, index) => {
+					return new Promise<boolean>((resolve) => {
+						const img = new window.Image();
+						img.onload = () => resolve(true);
+						img.onerror = () => resolve(false);
+						img.src =
+							typeof variant.images[0] === "string" ? variant.images[0] : "src";
+					});
+				});
 
-	// 			const results = await Promise.all(loadPromises);
-	// 			setImagesLoaded(results);
-	// 		};
+				const results = await Promise.all(loadPromises);
+				setImagesLoaded(results);
+			};
 
-	// 		loadImages();
-	// 	}
-	// }, [variants]);
+			loadImages();
+		}
+	}, [variants]);
 
 	return (
 		<article className={cn(cardVariants(), className)} {...props}>
@@ -228,13 +228,18 @@ export function CardProduct({
 				className="relative h-fit  md:hover:[&>div]:opacity-100 "
 				onClick={() => handleRoutes(link)}
 			>
+				{!variants || !imagesLoaded[activeIndex] ? null : (
+					<div className="absolute inset-0 z-10 flex items-center justify-center bg-black/5">
+						<div className="w-12 h-12 border-4 border-gray-200 rounded-full border-t-transparent animate-spin"></div>
+					</div>
+				)}
 				{variants?.map((variant, i) => (
 					<Image
 						key={i}
 						src={`${
 							typeof variant.images[0] === "string"
 								? variant.images[0] + "?view=1"
-								: "src"
+								: "/assets/product_2.jpg"
 						}`}
 						alt={`Product Image ${i + 1}`}
 						width={600}
@@ -284,7 +289,7 @@ export function CardProduct({
 				)}
 				<div className="absolute right-0 flex items-center justify-between w-full p-2 text-2xl rounded-full cursor-pointer bottom-5">
 					<button
-						className="p-2 text-2xl rounded-full cursor-pointer w-fit bg-secondary"
+						className="p-2 text-2xl rounded-full cursor-pointer w-fit bg-secondary max-md:flex md:hidden"
 						onClick={(e) => e.stopPropagation()}
 					>
 						<Heart className="w-8 h-8" />

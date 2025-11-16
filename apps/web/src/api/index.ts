@@ -81,6 +81,14 @@ export const
   // --- Contenu du site (Site Content) ---
   siteContent: {
     getAll: '/site-content/',
+
+    visibleContent: '/site-content/visible/',
+
+    getByCategorySlug: (categorySlug: string, language?: string) => `/site-content/keys/category-slug/${categorySlug}/`,
+
+
     getById: (contentId: string) => `/site-content/${contentId}/`,
+
+    getKeyContent: `/site-content/keys/categories/`,
   },
 };

@@ -1,9 +1,9 @@
 "use client";
 
 import client from "@/shared/lib/client";
-import Image from "next/image";
 import { useState } from "react";
 import type { CartItem } from "../../../../../../../packages/store/src/use-cart-store";
+import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
 import { useRemoveCartItem } from "../../api/remove-item-from-cart";
@@ -53,35 +53,61 @@ const CartItems = ({ items }: { items: CartItem[] }) => {
 				return (
 					<div
 						key={makeUniqueKey(item)}
-						className="flex flex-col gap-6 pb-10 border-b border-gray-200 sm:flex-row sm:justify-between sm:items-start"
+						className="flex flex-row items-start justify-between gap-6 pb-10 border-b border-gray-200"
 					>
 						{/* 🖼️ Image du produit */}
-						<div className="flex-shrink-0">
+						{/* <div className="shrink-0">
 							<Image
 								src={imageSrc}
 								alt={name}
 								width={150}
-								height={150}
-								className="object-cover border border-gray-100 rounded-md"
+								height={200}
+								className="object-cover border border-gray-100 rounded-md "
 							/>
+						</div> */}
+
+						<div
+							className="relative w-64 rounded-md h-84 aspect-square "
+							style={{
+								backgroundImage: `url(${imageSrc || "/assets/product_1.jpg"})`,
+								backgroundSize: "cover",
+								backgroundPosition: "top",
+							}}
+						>
+							<button className="absolute flex p-2 transition border rounded-full top-4 right-4 hover:bg-gray-100 md:hidden">
+								<Heart width={12} height={12} />
+							</button>
 						</div>
 
 						{/* 🧾 Détails produit */}
-						<div className="flex flex-col justify-between flex-1">
-							{/* Ligne titre + prix */}
-							<div className="flex items-start justify-between">
-								<h4 className="text-lg font-semibold text-gray-900">{name}</h4>
-								<p className="text-lg font-semibold text-gray-800 whitespace-nowrap">
-									{item.unitPrice?.amount?.toLocaleString()}{" "}
-									{item.unitPrice?.currency || "FCFA"}
-								</p>
+						<div className="flex flex-col justify-between flex-1 h-84">
+							<div className="flex justify-between w-full">
+								{/* Ligne titre + prix */}
+								<div className="flex items-start justify-between w-full max-md:flex-col-reverse ">
+									<h4 className="text-[2rem]! font-medium text-gray-900 font-manrope">
+										{name}
+									</h4>
+									<p className="text-lg font-semibold text-gray-800 whitespace-nowrap">
+										{item.unitPrice?.amount?.toLocaleString()}{" "}
+										{item.unitPrice?.currency || "FCFA"}
+									</p>
+								</div>
+
+								<button
+									onClick={() => handleRemove(item)}
+									className="p-2 transition rounded-full h-fit hover:bg-gray-100 md:hidden"
+								>
+									<CloseIcon size={18} />
+								</button>
 							</div>
 
 							{/* Description + variantes */}
-							<p className="mt-1 text-sm text-gray-500">
-								{product?.description || ""}
+							<p className="mt-1 text-sm text-gray-500 whitespace-nowrap ">
+								{product?.description ||
+									"Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
 							</p>
-							<div className="mt-1 text-sm text-gray-500 space-y-0.5">
+
+							<div className="mt-1 space-y-2 text-sm text-gray-500">
 								<p>
 									Color : <span className="capitalize">{color}</span>
 								</p>
@@ -91,14 +117,14 @@ const CartItems = ({ items }: { items: CartItem[] }) => {
 							</div>
 
 							{/* Bloc quantité + actions */}
-							<div className="flex flex-col items-start gap-3 mt-4">
+							<div className="flex flex-col items-start justify-between gap-3 mt-2 h-fit md:h-full ">
 								<QuantitySelector
 									productId={item.productId}
 									initialQuantity={item.quantity}
 									selectedVariants={item.selectedVariants}
 								/>
 
-								<div className="flex items-center gap-4">
+								<div className="items-center hidden gap-4 md:flex">
 									<button className="p-2 transition border rounded-full hover:bg-gray-100">
 										<Heart width={18} height={18} />
 									</button>

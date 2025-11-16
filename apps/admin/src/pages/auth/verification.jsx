@@ -43,8 +43,8 @@ const Verification = () => {
 			<Layout
 				navbar={false}
 				footer={false}
-				title="Shotify - Verification"
-				description="Shotify - Verification Desc"
+				title="Prettyfull - Verification"
+				description="Prettyfull - Verification Desc"
 			>
 				<section className="relative bg-Msurfacesurfacesecondary w-full md:min-h-screen min-h-dvh flex items-center justify-center py-16">
 					<Container>

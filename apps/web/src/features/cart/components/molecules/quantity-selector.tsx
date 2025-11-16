@@ -35,11 +35,11 @@ export const QuantitySelector = ({
 	};
 
 	return (
-		<div className="flex items-center px-4 py-3 space-x-4 bg-gray-100 rounded-full w-fit">
+		<div className="flex items-center px-4 py-2 space-x-4 bg-gray-100 rounded-full w-fit">
 			<button
 				onClick={() => handleUpdate(quantity - 1)}
 				disabled={updateMutation.isPending}
-				className={`w-12 h-12 flex items-center justify-center rounded-full border border-gray-300 cursor-pointer transition 
+				className={`w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 cursor-pointer transition 
         ${updateMutation.isPending ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-200"}`}
 			>
 				<MinusIcon className="w-8 h-8" />
@@ -52,7 +52,7 @@ export const QuantitySelector = ({
 			<button
 				onClick={() => handleUpdate(quantity + 1)}
 				disabled={updateMutation.isPending}
-				className={`w-12 h-12 flex items-center justify-center rounded-full bg-black hover:bg-black/80 transition cursor-pointer
+				className={`w-10 h-10 flex items-center justify-center rounded-full bg-black hover:bg-black/80 transition cursor-pointer
         ${updateMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
 			>
 				<PlusIcon className="w-8 h-9" color="white" />

@@ -10,7 +10,7 @@ const DataTableCustomers = () => {
 		<DataTable
 			columns={columns}
 			data={customers || []}
-			filter="customerName"
+			filter="name"
 			labelFiltre="nom du client"
 		/>
 	);

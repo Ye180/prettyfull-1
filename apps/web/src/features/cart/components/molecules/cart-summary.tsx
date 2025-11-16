@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { Button } from '@prettyfull/ui';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth'; // 1. Importer votre hook d'authentification
+import { useAuth } from "@/hooks/useAuth"; // 1. Importer votre hook d'authentification
+import { Button, DropdownMenuSeparator } from "@prettyfull/ui";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 interface CartSummaryProps {
 	subtotal?: number;
@@ -17,8 +18,10 @@ const CartSummary = ({
 	taxes = 0,
 	shipping = 0,
 	total = 0,
-	currency = 'USD',
+	currency = "USD",
 }: CartSummaryProps) => {
+	const t = useTranslations("CheckoutPage.summary");
+
 	const router = useRouter(); // 2. Initialiser le router
 	const { isAuthenticated, isLoading } = useAuth(); // 3. Obtenir l'état de l'utilisateur depuis votre hook
 
@@ -30,57 +33,61 @@ const CartSummary = ({
 
 		if (isAuthenticated) {
 			// 5. Si connecté, aller au checkout
-			router.push('/checkout');
+			router.push("/checkout");
 		} else {
 			// 6. Si invité, aller au login en mémorisant la page de destination
-			router.push('/login?callbackUrl=/checkout');
+			router.push("/login?callbackUrl=/checkout");
 		}
 	};
 
 	return (
-		<div className="w-full md:w-[320px]  p-6 bg-white h-fit">
-			<h3 className="text-lg font-semibold mb-4">Summary</h3>
+		<>
+			<div>
+				<h3 className="py-8 text-[3rem]! lg:text-[3.5rem]!">{t("title")}</h3>
+				<div className="mb-6 space-y-8">
+					<div className="space-y-8">
+						<div className="flex justify-between text-md">
+							<span>{t("subtotal")}</span>
+							<span>
+								{currency} {subtotal.toLocaleString()}
+							</span>
+						</div>
 
-			<div className="space-y-3 text-sm text-gray-700">
-				<div className="flex justify-between">
-					<span>Subtotal</span>
-					<span>
-						{currency} {subtotal.toLocaleString()}
-					</span>
+						<div className="flex justify-between text-md">
+							<span>{t("shipping")}</span>
+							<span>
+								{currency} {shipping.toLocaleString()}
+							</span>
+						</div>
+
+						<div className="flex justify-between text-md">
+							<span>{t("taxes")}</span>
+							<span>
+								{currency} {taxes.toLocaleString()}
+							</span>
+						</div>
+					</div>
+
+					<DropdownMenuSeparator />
+
+					<div className="flex justify-between py-6 text-lg font-semibold">
+						<span>{t("total")}</span>
+						<span>
+							{currency} {total.toLocaleString()}
+						</span>
+					</div>
 				</div>
 
-				<div className="flex justify-between">
-					<span>Estimate Shipping Costs</span>
-					<span>
-						{currency} {shipping.toLocaleString()}
-					</span>
-				</div>
+				<DropdownMenuSeparator />
 
-				<div className="flex justify-between">
-					<span>Estimate Duties And Taxes</span>
-					<span>-</span>
-				</div>
+				<Button
+					className="w-full mt-8 bg-black hover:bg-black/80"
+					onClick={handleCheckout}
+				>
+					<span className="text-[1.6rem] font-semibold">Checkout</span>
+				</Button>
 			</div>
-
-			<hr className="my-4" />
-
-			<div className="flex justify-between text-base font-semibold">
-				<span>Total</span>
-				<span>
-					{currency} {total.toLocaleString()}
-				</span>
-			</div>
-
-			{/* 7. Bouton mis à jour avec onClick et état de chargement */}
-			<Button
-				className="w-full mt-6 py-3 rounded-full text-base font-medium bg-black hover:bg-gray-700 transition"
-				onClick={handleCheckout}
-				isLoading={isLoading}
-				disabled={isLoading}
-			>
-				Checkout
-			</Button>
-		</div>
+		</>
 	);
 };
 

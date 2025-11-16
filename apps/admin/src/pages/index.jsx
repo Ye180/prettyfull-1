@@ -9,130 +9,9 @@ import { Col, Container, Row } from "react-bootstrap";
 const Index = () => {
 	const originalUrl = useHostname();
 
-	const dataTable = [
-		{
-			id: 1,
-			order: "#345918",
-			date: "Apr 15, 2024, 10:21",
-			customer: {
-				img: originalUrl + "/images/sdasd.png", // Replace with actual image path
-				name: "Ahmad Lipshutz",
-				email: "ahmadlipshutz@gmail.com",
-			},
-			payment: "Successful",
-			status: "Scheduled",
-			method: {
-				img: originalUrl + "/images/logos_mastercard.png",
-				type: "Credit Card",
-				info: "12323453234",
-			},
-		},
-		{
-			id: 2,
-			order: "#345817",
-			date: "Apr 15, 2024, 10:21",
-			customer: {
-				img: originalUrl + "/images/sdasd.png", // Replace with actual image path
-				name: "Kadin Kenter",
-				email: "kadinkenter@gmail.com",
-			},
-			payment: "Successful",
-			status: "Scheduled",
-			method: {
-				img: originalUrl + "/images/logos_paypal.png",
-				type: "PayPal",
-				info: "kadinkenter@gmail.com",
-			},
-		},
-		{
-			id: 3,
-			order: "#345716",
-			date: "Apr 15, 2024, 10:21",
-			customer: {
-				img: originalUrl + "/images/sdasd.png", // Replace with actual image path
-				name: "Ryan Mango",
-				email: "ryanmango@gmail.com",
-			},
-			payment: "Successful",
-			status: "Cancel",
-			method: {
-				img: originalUrl + "/images/logos_mastercard.png",
-				type: "Credit Card",
-				info: "12323453234",
-			},
-		},
-		{
-			id: 4,
-			order: "#345615",
-			date: "Apr 15, 2024, 10:21",
-			customer: {
-				img: originalUrl + "/images/sdasd.png", // Replace with actual image path
-				name: "Charlie Botosh",
-				email: "charliebotosh@gmail.com",
-			},
-			payment: "Successful",
-			status: "Delivered",
-			method: {
-				img: originalUrl + "/images/logos_paypal.png",
-				type: "PayPal",
-				info: "charliebotosh@gmail.com",
-			},
-		},
-		{
-			id: 5,
-			order: "#345614",
-			date: "Apr 15, 2024, 10:21",
-			customer: {
-				img: originalUrl + "/images/sdasd.png", // Replace with actual image path
-				name: "Phillip Culhane",
-				email: "phillipculhane@gmail.com",
-			},
-			payment: "Successful",
-			status: "Delivered",
-			method: {
-				img: originalUrl + "/images/logos_paypal.png",
-				type: "PayPal",
-				info: "phillipculhane@gmail.com",
-			},
-		},
-		{
-			id: 6,
-			order: "#345613",
-			date: "Apr 15, 2024, 10:21",
-			customer: {
-				img: originalUrl + "/images/sdasd.png", // Replace with actual image path
-				name: "Adison Schleifer",
-				email: "adisonschleifer@gmail.com",
-			},
-			payment: "Successful",
-			status: "Delivered",
-			method: {
-				img: originalUrl + "/images/logos_mastercard.png",
-				type: "Credit Card",
-				info: "12323453234",
-			},
-		},
-		{
-			id: 7,
-			order: "#345612",
-			date: "Apr 15, 2024, 10:21",
-			customer: {
-				img: originalUrl + "/images/sdasd.png", // Replace with actual image path
-				name: "Giana Aminoff",
-				email: "gianaaminoff@gmail.com",
-			},
-			payment: "Successful",
-			status: "Delivered",
-			method: {
-				img: originalUrl + "/images/logos_paypal.png",
-				type: "PayPal",
-				info: "gianaaminoff@gmail.com",
-			},
-		},
-	];
 	return (
 		<Fragment>
-			<Layout title="Shotify" description="Shotify Desc" dashboard={true}>
+			<Layout title="Prettyfull" description="Prettyfull Desc" dashboard={true}>
 				<SecTop />
 
 				<section className="pt-0 pb-4">
@@ -149,7 +28,7 @@ const Index = () => {
 											/>
 										</div>
 										<p className="text__16 text-Mtexttextsecondary">
-											Total Sales
+											Total de ventes
 										</p>
 									</div>
 									<h4 className="mb-2 font-semibold text__24">120,452</h4>
@@ -161,7 +40,7 @@ const Index = () => {
 											</p>
 										</div>
 										<p className="w-full text__14 text-Mtexttextinvert xs:w-auto">
-											vs last 7 days
+											vs les 7 derniers jours
 										</p>
 									</div>
 								</div>
@@ -177,7 +56,7 @@ const Index = () => {
 											/>
 										</div>
 										<p className="text__16 text-Mtexttextsecondary">
-											Customers
+											Consomateurs
 										</p>
 									</div>
 									<h4 className="mb-2 font-semibold text__24">21,675.01</h4>
@@ -189,7 +68,7 @@ const Index = () => {
 											</p>
 										</div>
 										<p className="w-full text__14 text-Mtexttextinvert xs:w-auto">
-											vs last 7 days
+											vs les 7 derniers jours
 										</p>
 									</div>
 								</div>
@@ -204,7 +83,7 @@ const Index = () => {
 												alt=""
 											/>
 										</div>
-										<p className="text__16 text-Mtexttextsecondary">Product</p>
+										<p className="text__16 text-Mtexttextsecondary">Produits</p>
 									</div>
 									<h4 className="mb-2 font-semibold text__24">1.423</h4>
 									<div className="flex flex-wrap items-center gap-2 xs:flex-nowrap">
@@ -215,7 +94,7 @@ const Index = () => {
 											</p>
 										</div>
 										<p className="w-full text__14 text-Mtexttextinvert xs:w-auto">
-											vs last 7 days
+											vs les 7 derniers jours
 										</p>
 									</div>
 								</div>
@@ -230,7 +109,7 @@ const Index = () => {
 												alt=""
 											/>
 										</div>
-										<p className="text__16 text-Mtexttextsecondary">Revenue</p>
+										<p className="text__16 text-Mtexttextsecondary">Revenues</p>
 									</div>
 									<h4 className="mb-2 font-semibold text__24">$220,745,00</h4>
 									<div className="flex flex-wrap items-center gap-2 xs:flex-nowrap">
@@ -241,7 +120,7 @@ const Index = () => {
 											</p>
 										</div>
 										<p className="w-full text__14 text-Mtexttextinvert xs:w-auto">
-											vs last 7 days
+											vs les 7 derniers jours
 										</p>
 									</div>
 								</div>
@@ -259,7 +138,7 @@ const Index = () => {
 							<Col md={4} className="flex-fill">
 								<div className="flex flex-col justify-between w-full h-full p-4 border rounded-lg border-Mborderborderprimary">
 									<h4 className="w-full font-semibold text__20">
-										Customer Growth
+										Croissance de la clientèle
 									</h4>
 
 									{[

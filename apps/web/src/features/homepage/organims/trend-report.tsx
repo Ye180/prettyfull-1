@@ -7,17 +7,20 @@ import Image from "next/image";
 import Box from "../../../../../../packages/ui/src/layouts/helpers/box";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
-const TrendReport = () => {
+const TrendReport = ({ five }: { five: any }) => {
 	const t = useTranslations("HomePage.trendReport");
 	return (
 		<Container maxWidth="100vw" className="w-full px-4 lg:px-40">
-			<Title title={t("title")} buttonLabel={t("viewAll")} />
+			<Title
+				title={five?.title || t("title")}
+				buttonLabel={five?.button || t("viewAll")}
+			/>
 
 			<div className="grid grid-cols-2 overflow-x-auto md:grid-cols-4 gap-x-4 md:gap-x-20 ">
 				{BOX_DATA_SECOND.map((item, index) => (
 					<Box
 						key={index}
-						className={` relative  px-4 flex justify-center items-center  shadow-md   max-md:h-[35rem] h-[60rem]  mt-4 hover:[&>button]:bg-black hover:[&>button>*]:text-white  transition-all duration-300 ease-in-out cursor-pointer `}
+						className={` relative  px-4 flex justify-center items-center  shadow-md   max-md:h-140 h-240  mt-4 hover:[&>button]:bg-black hover:[&>button>*]:text-white  transition-all duration-300 ease-in-out cursor-pointer `}
 					>
 						<Image
 							src={item.picture}
@@ -38,7 +41,7 @@ const TrendReport = () => {
 						</div>
 						<Button
 							variant="default"
-							className=" text-black bg-white py-4 px-4 w-fit rounded-full absolute right-8 top-8 hover:[&>*]:text-white [&>*]:text-black max-sm:py-2 max-sm:px-2"
+							className=" text-black bg-white py-4 px-4 w-fit rounded-full absolute right-8 top-8 hover:*:text-white *:text-black max-sm:py-2 max-sm:px-2"
 						>
 							<ArrowLinearIcon className="rotate-45 " />
 						</Button>

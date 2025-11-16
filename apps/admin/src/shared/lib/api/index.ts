@@ -77,8 +77,16 @@ export const
 
   // --- Contenu du site (Site Content) ---
   siteContent: {
-    getAll: '/site-content',
+    getAll: '/site-content/all',
+    getVisible: '/site-content/visible',
     getById: (contentId: string) => `/site-content/${contentId}`,
+    create_step1: '/site-content/step-1',
+    update_step2: (contentId: string) => `/site-content/${contentId}/step-2/`,
+    update_step3: (contentId: string) => `/site-content/${contentId}/step-3`,
+    toggleVisible: (contentId: string) => `/site-content/${contentId}/toggle-active`,
+    getByKey: (key: string) => `/site-content/key/${key}`,
+    update: (contentId: string) => `/site-content/${contentId}`,
+    remove: (contentId: string) => `/site-content/${contentId}`,
     },
   
   customer: {

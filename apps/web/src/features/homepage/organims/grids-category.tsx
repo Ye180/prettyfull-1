@@ -9,7 +9,6 @@ const GridCategory = () => {
 
 	const { data: category, isLoading } = useGetCategory();
 
-	console.log("category grid category", category);
 	return (
 		<Container maxWidth="100vw" className="w-full px-4 space-y-8 lg:px-40">
 			<Title title="Shop By Category" buttonLabel={t("viewAll")} />
