@@ -13,8 +13,8 @@ services:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/medusa-docker
       REDIS_URL: redis://redis
       NODE_ENV: development
-      JWT_SECRET: something
-      COOKIE_SECRET: something
+      JWT_SECRET: change_me
+      COOKIE_SECRET: change_me
       PORT: 9000
     ports:
       - "9000:9000"
@@ -23,18 +23,29 @@ services:
       - node_modules:/app/medusa/node_modules
 
   postgres:
-    image: postgres:10.4
-    ports:
-      - "5432:5432"
+    image: postgres:15
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: medusa-docker
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d medusa-docker"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   redis:
-    image: redis
+    image: redis:7
     expose:
-      - 6379
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
 volumes:
   node_modules:
+  pgdata:
