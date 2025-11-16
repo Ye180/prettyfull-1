@@ -1,13 +1,15 @@
-import type { SVGProps } from "react";
-
-export function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
+export function ArrowRightIcon({
+	style,
+	...rest
+}: React.SVGProps<SVGSVGElement>) {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width={10}
 			height={20}
 			viewBox="0 0 10 24"
-			{...props}
+			{...(rest as Omit<React.SVGProps<SVGSVGElement>, "style">)}
+			style={style as unknown as React.CSSProperties}
 		>
 			<path
 				fill="currentColor"

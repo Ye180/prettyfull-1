@@ -3,120 +3,120 @@
 @source "../../node_modules/@prettyfull/ui";
 
 html {
-  scroll-behavior: smooth;
+	scroll-behavior: smooth;
 }
 
 h1 {
-  font-size: clamp(4rem, 5vw + 1rem, 10.5rem);
+	font-size: clamp(4rem, 5vw + 1rem, 10.5rem);
 }
 h2 {
-  font-size: clamp(2rem, 5vw + 1rem, 8rem);
+	font-size: clamp(2rem, 5vw + 1rem, 8rem);
 }
 h3 {
-  font-size: clamp(2.5rem, 4vw + 1rem, 4.2rem);
+	font-size: clamp(2.5rem, 4vw + 1rem, 4.2rem);
 }
 h4 {
-  font-size: clamp(2rem, 2vw + 1rem, 4rem);
+	font-size: clamp(2rem, 2vw + 1rem, 4rem);
 }
 h5 {
-  font-size: clamp(1.5rem, 1vw + 1rem, 2rem);
+	font-size: clamp(1.5rem, 1vw + 1rem, 2rem);
 }
 h6 {
-  font-size: clamp(1rem, 0.5vw + 1rem, 1.5rem);
+	font-size: clamp(1rem, 0.5vw + 1rem, 1.5rem);
 }
 
 /* Padding */
 
 .pd-8 {
-  padding: clamp(2rem, 9vw + 1rem, 15rem);
+	padding: clamp(2rem, 9vw + 1rem, 15rem);
 }
 
 ::-webkit-scrollbar {
-  width: 5px; /* Largeur du scrollbar */
+	width: 5px; /* Largeur du scrollbar */
 }
 
 ::-webkit-scrollbar-track {
-  background: #f5f5f5; /* Couleur du fond */
+	background: #f5f5f5; /* Couleur du fond */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #dcdcdc; /* Couleur de la poignée */
-  border-radius: 99px;
+	background: #dcdcdc; /* Couleur de la poignée */
+	border-radius: 99px;
 }
 
 @theme {
-  --font-manrope: "manrope", sans-serif;
-  --font-bebas-neue: "bebas neue", sans-serif;
+	--font-manrope: "manrope", sans-serif;
+	--font-bebas-neue: "bebas neue", sans-serif;
 }
 
 @media screen and (40rem <=width<= 76.8rem) {
-  .box {
-    .boxdiv:nth-child(1) {
-      grid-column: span 2;
-    }
-    .boxdiv:nth-child(-n + 1) {
-      grid-column: span 2;
-    }
-  }
+	.box {
+		.boxdiv:nth-child(1) {
+			grid-column: span 2;
+		}
+		.boxdiv:nth-child(-n + 1) {
+			grid-column: span 2;
+		}
+	}
 }
 
 @media (width >= 102.4rem /* 1638.4px */) {
-  .box:nth-child(1) {
-    grid-column: span 1;
-    grid-row: span 2;
-  }
+	.box:nth-child(1) {
+		grid-column: span 1;
+		grid-row: span 2;
+	}
 }
 
-@mesdia screen and (max-width: 40rem) {
-  .produit {
-    height: 10rem !important;
+@media screen and (max-width: 40rem) {
+	.produit {
+		height: 10rem !important;
 
-    background: #000;
-  }
+		background: #000;
+	}
 }
 
 .scrolbar::-webkit-scrollbar {
-  height: 5px !important; /* Largeur du scrollbar */
+	height: 5px !important; /* Largeur du scrollbar */
 }
 
 .scrolbar::-webkit-scrollbar-thumb {
-  /* display: none !important; cache les flèches */
-  background-color: black !important; /* Largeur du scrollbar */
-  border-radius: 10%;
+	/* display: none !important; cache les flèches */
+	background-color: black !important; /* Largeur du scrollbar */
+	border-radius: 10%;
 }
 
 .scrolbarRecomandation::-webkit-scrollbar-thumb {
-  display: none !important;
-  background-color: white !important;
+	display: none !important;
+	background-color: white !important;
 }
 
 .scrolbarRecomandation::-webkit-scrollbar-track {
-  background-color: white !important; /* Largeur du scrollbar */
+	background-color: white !important; /* Largeur du scrollbar */
 }
 
 .viva {
-  position: sticky !important;
-  top: 0 !important;
+	position: sticky !important;
+	top: 0 !important;
 }
 
 .scrolbar {
-  scrollbar-width: none !important; /* Firefox */
+	scrollbar-width: none !important; /* Firefox */
 
-  -ms-overflow-style: none !important; /* Internet Explorer 10+ */
+	-ms-overflow-style: none !important; /* Internet Explorer 10+ */
 }
 
 .scrolbar::-webkit-scrollbar-thumb {
-  /* display: none !important; cache les flèches */
-  background-color: inherit !important; /* Largeur du scrollbar */
-  border-radius: 10%;
+	/* display: none !important; cache les flèches */
+	background-color: inherit !important; /* Largeur du scrollbar */
+	border-radius: 10%;
 }
 
 /* Masque la barre de scroll sur tous les navigateurs */
 .scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+	display: none; /* Chrome, Safari, Edge */
 }
 
 .scrollbar-hide {
-  -ms-overflow-style: none; /* IE et Edge */
-  scrollbar-width: none; /* Firefox */
+	-ms-overflow-style: none; /* IE et Edge */
+	scrollbar-width: none; /* Firefox */
 }

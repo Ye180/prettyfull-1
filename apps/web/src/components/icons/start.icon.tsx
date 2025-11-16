@@ -7,7 +7,7 @@ export function StarIcon(props: SVGProps<SVGSVGElement>) {
 			width={13}
 			height={13}
 			viewBox="0 -0.5 41 41"
-			{...props}
+			// {...props}
 		>
 			<g fill="none" strokeMiterlimit={10}>
 				<path

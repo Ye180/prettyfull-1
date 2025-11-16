@@ -7,25 +7,25 @@ import { DialogTitle } from "./dialog";
 
 function Drawer({
 	...props
-}: React.ComponentProps<typeof DrawerPrimitive.Root>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Root>): React.JSX.Element {
 	return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
 }
 
 function DrawerTrigger({
 	...props
-}: React.ComponentProps<typeof DrawerPrimitive.Trigger>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Trigger>): React.JSX.Element {
 	return <DrawerPrimitive.Trigger data-slot="drawer-trigger" {...props} />;
 }
 
 function DrawerPortal({
 	...props
-}: React.ComponentProps<typeof DrawerPrimitive.Portal>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Portal>): React.JSX.Element {
 	return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />;
 }
 
 function DrawerClose({
 	...props
-}: React.ComponentProps<typeof DrawerPrimitive.Close>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Close>): React.JSX.Element {
 	return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />;
 }
 
