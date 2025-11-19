@@ -13,6 +13,8 @@
 		"@fontsource-variable/manrope": "^5.2.6",
 		"@fontsource/bebas-neue": "^5.2.6",
 		"@hookform/resolvers": "^5.2.2",
+		"@medusajs/js-sdk": "^2.11.3",
+		"@medusajs/types": "^2.11.3",
 		"@prettyfull/ui": "workspace:*",
 		"@prettyfull/utils": "workspace:*",
 		"@sanity/image-url": "^1.2.0",

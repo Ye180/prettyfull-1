@@ -25,3 +25,7 @@ export const SITE_CONTENT_QUERY_KEY = 'site-content';
 export const KEY_CONTENT_QUERY_KEY = 'key-content';
 
 export const SLUGNAMES_CONTENT_QUERY_KEY = 'slugnames-content';
+
+export const PRODUCTS_MEDUSA_QUERY_KEY = 'list-products-medusa';
+
+export const PARENTS_CATEGORIES_MEDUSA_QUERY_KEY = 'list-parents-categories-medusa';
