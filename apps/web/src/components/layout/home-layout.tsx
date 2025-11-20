@@ -30,9 +30,6 @@ const HomeLayout = ({
 	const { data: keyContent, isLoading: isLoadingKeyContent } =
 		useGetSiteKeyContent();
 
-	const { data: productMedusa, isLoading: loadingProductsMedusa } =
-		useGetProductsMedusa();
-
 	const {
 		data: parentsCategoryMedusa,
 		isLoading: loadingParentsCategoryMedusa,

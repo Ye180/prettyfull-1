@@ -8,7 +8,13 @@ export const getProductsMedusa = async () => {
 	const response = sdk.store.product
 		.list()
 		.then(({ products, count, offset, limit }) => {
-			console.log(products);
+			// Filtrer les produits pour ne garder que ceux qui ont au moins une variante
+			const productsWithVariants = products.filter(
+				(product) =>
+					Array.isArray(product.variants) && product.variants.length > 0
+			);
+			// productsWithVariants contient maintenant uniquement les produits avec au moins une variante
+			return products;
 		});
 	return response;
 };

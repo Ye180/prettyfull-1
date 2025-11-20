@@ -56,6 +56,7 @@
 	},
 	"devDependencies": {
 		"@chromatic-com/storybook": "^4.1.0",
+		"@medusajs/medusa": "2.11.3",
 		"@prettyfull/eslint-config": "workspace:*",
 		"@prettyfull/tailwind-config": "workspace:*",
 		"@prettyfull/typescript-config": "workspace:*",

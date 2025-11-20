@@ -1,19 +1,45 @@
 "use client";
 import { cn, data_url, formatCurrency_FR } from "@prettyfull/utils";
 import { VariantProps, cva } from "class-variance-authority";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import {
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
+import { useAddItemToCart } from "../../../apps/web/src/features/cart/api/add-item-to-cart";
 import { Button } from "./button";
 import DrawerCart from "./drawer-cart";
+import DrawerVariable from "./drawer-variable";
 import { CloseIcon } from "./icons/close.icon";
 import { Heart } from "./icons/heart.icon";
 import Size from "./size";
+import type { PricedProduct } from "./types/medusa";
 
-// (Cet import doit pointer vers le bon chemin dans votre app 'web')
-import { SetStateAction, useCallback, useEffect, useState } from "react";
-import { useAddItemToCart } from "../../../apps/web/src/features/cart/api/add-item-to-cart";
-import DrawerVariable from "./drawer-variable";
+// Helper pour générer un code couleur basé sur le nom (fallback)
+const generateColorCode = (colorName: string): string => {
+	const colorMap: Record<string, string> = {
+		black: "#000000",
+		white: "#FFFFFF",
+		red: "#FF0000",
+		blue: "#0000FF",
+		green: "#00FF00",
+		yellow: "#FFFF00",
+		orange: "#FFA500",
+		purple: "#800080",
+		pink: "#FFC0CB",
+		gray: "#808080",
+		grey: "#808080",
+		brown: "#A52A2A",
+		// Ajoutez d'autres couleurs selon vos besoins
+	};
+
+	const normalized = colorName.toLowerCase().trim();
+	return colorMap[normalized] || "#CCCCCC"; // Gris par défaut
+};
 
 const cardVariants = cva(["space-y-3 w-[100%] h-fit max-lg:pb-6 "], {
 	variants: {
@@ -40,59 +66,169 @@ type DrawerStatesProps = typeof INITIAL_DRAWER_STATES;
 export interface CardProps
 	extends React.HTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof cardVariants> {
-	productId: string;
-	name: string;
-	category?:
-		| {
-				name: string;
-		  }
-		| string;
-	link?: string;
-	variants?: {
-		color: { label: string; code: string };
-		size: string[];
-		images: string[] | StaticImport[];
-		quantity: number;
-	}[];
-	notVariable?: {
-		color?: { label: string; code: string };
-		size: string[];
-		image: string[] | StaticImport[];
-		quantity?: number;
-	};
-	smallDescription?: string;
-	description?: string;
-	price: { amount: number; currency: string };
-	solde?: boolean;
-	promotion?: {
-		reduced_price: { amount: number; currency: string };
-		pourcentage: number;
-	};
-	isLoading?: boolean;
-	label?: string;
-	slug?: string;
+	product: PricedProduct;
+	// Toutes les autres props sont dépréciées et seront extraites de `product`
 }
-export function CardProduct({
-	productId,
-	name,
-	className,
-	smallDescription,
-	price,
-	children,
-	promotion,
-	solde,
-	variants,
-	notVariable,
-	isLoading,
-	link,
-	...props
-}: CardProps) {
-	const [activeIndex, setActiveIndex] = useState(0);
 
+export function CardProduct({ product, className, ...props }: CardProps) {
+	// Vérification de sécurité - si product est undefined
+	if (!product) {
+		return (
+			<article className={cn(cardVariants(), className)} {...props}>
+				<div className="relative h-[400px] bg-gray-100 animate-pulse rounded-lg"></div>
+				<div className="space-y-3">
+					<div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+					<div className="h-6 bg-gray-200 rounded animate-pulse"></div>
+				</div>
+			</article>
+		);
+	}
+
+	// Extraire les données de l'objet `product` de Medusa
+	const {
+		id: productId,
+		title: name,
+		thumbnail,
+		variants: medusaVariants,
+		options: medusaOptions,
+		handle: slug,
+		description: smallDescription,
+		images: productImages,
+	} = product;
+
+	// ===== EXTRACTION DES OPTIONS (Color, Size) =====er
+	const colorOption = medusaOptions?.find(
+		(opt: any) =>
+			opt.title.toLowerCase() === "color" ||
+			opt.title.toLowerCase() === "couleur"
+	);
+	const sizeOption = medusaOptions?.find(
+		(opt: any) =>
+			opt.title.toLowerCase() === "size" || opt.title.toLowerCase() === "taille"
+	);
+
+	// ===== MAPPER LES COULEURS DISPONIBLES =====
+	// Créer un tableau de couleurs uniques avec leurs variants associés
+	const colorVariants = useMemo(() => {
+		if (!medusaVariants || medusaVariants.length === 0) return [];
+
+		// Si pas d'option couleur, créer un variant "par défaut" avec tous les variants
+		if (!colorOption) {
+			return [
+				{
+					label: "Default",
+					variants: medusaVariants,
+					thumbnail:
+						thumbnail || productImages?.[0]?.url || "/assets/product_2.jpg",
+				},
+			];
+		}
+
+		const colorMap = new Map<
+			string,
+			{
+				label: string;
+				variants: typeof medusaVariants;
+				thumbnail: string;
+			}
+		>();
+
+		medusaVariants.forEach((variant: any) => {
+			const colorValue = variant.options?.find(
+				(opt: any) => opt.option_id === colorOption.id
+			)?.value;
+
+			if (colorValue && !colorMap.has(colorValue)) {
+				// Récupérer tous les variants de cette couleur
+				const colorVariantsList = medusaVariants.filter((v: any) =>
+					v.options?.some(
+						(o: any) => o.option_id === colorOption.id && o.value === colorValue
+					)
+				);
+
+				// Prendre la photo du premier variant de cette couleur
+				const firstVariantThumbnail = colorVariantsList[0]?.thumbnail;
+
+				colorMap.set(colorValue, {
+					label: colorValue, // Nom de la couleur en texte (ex: "Black", "White")
+					variants: colorVariantsList,
+					thumbnail:
+						firstVariantThumbnail || productImages?.[0]?.url || thumbnail || "",
+				});
+			}
+		});
+
+		return Array.from(colorMap.values());
+	}, [colorOption, medusaVariants, productImages, thumbnail]);
+
+	// ===== TROUVER LE PRIX LE MOINS CHER + DÉTECTER PROMOTION =====
+	const priceInfo = useMemo(() => {
+		if (!medusaVariants || medusaVariants.length === 0) {
+			return {
+				price: { amount: 0, currency: "EUR" },
+				hasPromotion: false,
+				promotion: null,
+			};
+		}
+
+		let minCalculatedPrice = Infinity;
+		let minOriginalPrice = Infinity;
+		let currency = "EUR";
+
+		medusaVariants.forEach((variant: any) => {
+			if (variant.calculated_price) {
+				const calcPrice =
+					typeof variant.calculated_price === "object"
+						? variant.calculated_price.calculated_amount
+						: variant.calculated_price;
+				if (calcPrice !== undefined && calcPrice < minCalculatedPrice) {
+					minCalculatedPrice = calcPrice;
+					currency =
+						typeof variant.calculated_price === "object"
+							? variant.calculated_price.currency_code || "EUR"
+							: "EUR";
+				}
+			}
+
+			if (variant.original_price) {
+				const origPrice =
+					typeof variant.original_price === "object"
+						? variant.original_price.calculated_amount
+						: variant.original_price;
+				if (origPrice !== undefined && origPrice < minOriginalPrice) {
+					minOriginalPrice = origPrice;
+				}
+			}
+		});
+
+		const hasPromotion =
+			minOriginalPrice !== Infinity &&
+			minCalculatedPrice !== Infinity &&
+			minCalculatedPrice < minOriginalPrice;
+
+		const promotion = hasPromotion
+			? {
+					reduced_price: { amount: minCalculatedPrice, currency },
+					pourcentage: Math.round(
+						((minOriginalPrice - minCalculatedPrice) / minOriginalPrice) * 100
+					),
+				}
+			: null;
+
+		return {
+			price: {
+				amount: hasPromotion ? minOriginalPrice : minCalculatedPrice,
+				currency,
+			},
+			hasPromotion,
+			promotion,
+		};
+	}, [medusaVariants]);
+
+	// ===== STATE MANAGEMENT =====
+	const [activeColorIndex, setActiveColorIndex] = useState(0);
 	const router = useRouter();
-
 	const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
-
 	const [drawerStates, setDrawerStates] = useState<DrawerStatesProps>(
 		INITIAL_DRAWER_STATES
 	);
@@ -109,7 +245,31 @@ export function CardProduct({
 		[]
 	);
 
-	const [size, setSize] = useState<string[]>([]);
+	// ===== TAILLES DISPONIBLES POUR LA COULEUR ACTIVE =====
+	const availableSizes = useMemo(() => {
+		if (colorVariants.length === 0) return [];
+
+		const currentColorVariants =
+			colorVariants[activeColorIndex]?.variants || [];
+
+		// Si pas d'option taille, retourner les titres des variants
+		if (!sizeOption) {
+			return currentColorVariants
+				.map((v: any) => v.title)
+				.filter((title: any) => title && title !== null);
+		}
+
+		const sizesSet = new Set<string>();
+
+		currentColorVariants.forEach((variant: any) => {
+			const sizeValue = variant.options?.find(
+				(opt: any) => opt.option_id === sizeOption.id
+			)?.value;
+			if (sizeValue) sizesSet.add(sizeValue);
+		});
+
+		return Array.from(sizesSet);
+	}, [sizeOption, colorVariants, activeColorIndex]);
 
 	const handleRoutes = (link?: string) => {
 		if (link) {
@@ -122,52 +282,56 @@ export function CardProduct({
 		(e: React.MouseEvent<HTMLButtonElement>) => {
 			e.stopPropagation();
 			updateDrawerState("showSizes", !drawerStates.showSizes);
-
-			if (variants && variants[activeIndex]) {
-				setSize(variants[activeIndex].size as string[]);
-			}
-
-			if (notVariable) {
-				setSize(notVariable.size as string[]);
-			}
 		},
-		[
-			activeIndex,
-			notVariable,
-			drawerStates.showSizes,
-			variants,
-			updateDrawerState,
-		]
+		[drawerStates.showSizes, updateDrawerState]
 	);
 
-	// --- FONCTION handleSizeSelect (POUR L'AJOUT AU PANIER) ---
-	const handleSizeSelect = (size: string) => {
-		setSelectedSize(size);
+	// --- FONCTION handleSizeSelect (AJOUT AU PANIER AVEC MEDUSA) ---
+	const handleSizeSelect = (selectedSizeValue: string) => {
+		setSelectedSize(selectedSizeValue);
 
-		// **LA CORRECTION EST ICI**
-		// 1. On type le payload pour qu'il corresponde à ce que la mutation attend.
-		const variantsPayload: Record<string, string> = {
-			size: size,
-		};
-
-		// 2. On ajoute 'color' seulement s'il existe.
-		if (variants && variants[activeIndex]) {
-			variantsPayload.color = variants[activeIndex].color.code;
-		} else if (notVariable && notVariable.color) {
-			variantsPayload.color = notVariable.color.code;
+		// Trouver le variant_id correspondant à la couleur + taille sélectionnée
+		const currentColor = colorVariants[activeColorIndex];
+		if (!currentColor) {
+			alert("Impossible de trouver la couleur sélectionnée");
+			return;
 		}
 
-		console.log("Ajout au panier (invité ou loggé):", {
+		let matchingVariant;
+
+		if (sizeOption) {
+			// Cas normal : chercher par option de taille
+			matchingVariant = currentColor.variants.find((variant: any) => {
+				const variantSize = variant.options?.find(
+					(opt: any) => opt.option_id === sizeOption.id
+				)?.value;
+				return variantSize === selectedSizeValue;
+			});
+		} else {
+			// Cas sans option taille : chercher par title
+			matchingVariant = currentColor.variants.find(
+				(variant: any) => variant.title === selectedSizeValue
+			);
+		}
+
+		if (!matchingVariant) {
+			alert("Variant non trouvé pour cette taille et couleur");
+			return;
+		}
+
+		console.log("Ajout au panier Medusa:", {
 			productId,
+			variantId: matchingVariant.id,
 			quantity: 1,
-			selectedVariants: variantsPayload,
 		});
 
+		// IMPORTANT: Avec Medusa, on envoie le variant_id directement
+		// Adapter votre API backend pour accepter variant_id au lieu de selectedVariants
 		addItemToCartMutation.mutate(
 			{
 				productId: productId,
-				quantity: 1, // Quantité par défaut de 1 depuis la carte
-				selectedVariants: variantsPayload, // <-- Cet objet est maintenant du bon type
+				quantity: 1,
+				selectedVariants: { variant_id: matchingVariant.id }, // ou adapter votre API
 			},
 			{
 				onSuccess: () => {
@@ -175,7 +339,6 @@ export function CardProduct({
 					alert("Produit ajouté au panier !");
 				},
 				onError: (error: any) => {
-					// Type 'any' pour l'erreur générique
 					console.error("Erreur lors de l'ajout:", error);
 					alert(
 						`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`
@@ -187,61 +350,72 @@ export function CardProduct({
 		updateDrawerState("showSizes", false);
 	};
 
-	// --- FIN DE LA FONCTION ---
-
-	const handleVariantClick = ({
+	// Changer de couleur (variant de couleur)
+	const handleColorClick = ({
 		e,
 		index,
 	}: {
 		e: React.MouseEvent<HTMLButtonElement>;
 		index: number;
 	}) => {
-		setActiveIndex(index);
+		console.log(
+			`Changement de couleur vers "${colorVariants[index]?.label}" (index ${index})`
+		);
+		console.log("Thumbnail de cette couleur:", colorVariants[index]?.thumbnail);
+		setActiveColorIndex(index);
+		setSelectedSize(""); // Reset size selection
 		e.stopPropagation();
 	};
 
 	// Préchargement des images
 	useEffect(() => {
-		if (variants) {
+		if (colorVariants.length > 0) {
+			console.log("ColorVariants pour", name, ":", colorVariants);
+
 			const loadImages = async () => {
-				const loadPromises = variants.map((variant, index) => {
+				const loadPromises = colorVariants.map((colorVar, idx) => {
 					return new Promise<boolean>((resolve) => {
 						const img = new window.Image();
-						img.onload = () => resolve(true);
-						img.onerror = () => resolve(false);
-						img.src =
-							typeof variant.images[0] === "string" ? variant.images[0] : "src";
+						img.onload = () => {
+							console.log(`Image ${idx} chargée:`, colorVar.thumbnail);
+							resolve(true);
+						};
+						img.onerror = (e) => {
+							console.error(`Image ${idx} échouée:`, colorVar.thumbnail, e);
+							resolve(false);
+						};
+						img.src = colorVar.thumbnail;
 					});
 				});
 
 				const results = await Promise.all(loadPromises);
+				console.log("Résultats chargement images:", results);
 				setImagesLoaded(results);
 			};
 
 			loadImages();
 		}
-	}, [variants]);
+	}, [colorVariants, name]);
+
+	// URL du produit
+	const productLink = slug ? `/products/${slug}` : undefined;
 
 	return (
 		<article className={cn(cardVariants(), className)} {...props}>
 			<div
 				className="relative h-fit  md:hover:[&>div]:opacity-100 "
-				onClick={() => handleRoutes(link)}
+				onClick={() => handleRoutes(productLink)}
 			>
-				{!variants || !imagesLoaded[activeIndex] ? null : (
+				{colorVariants.length === 0 || !imagesLoaded[activeColorIndex] ? (
 					<div className="absolute inset-0 z-10 flex items-center justify-center bg-black/5">
 						<div className="w-12 h-12 border-4 border-gray-200 rounded-full border-t-transparent animate-spin"></div>
 					</div>
-				)}
-				{variants?.map((variant, i) => (
+				) : null}
+				{colorVariants?.map((colorVar, i) => (
 					<Image
 						key={i}
-						src={`${
-							typeof variant.images[0] === "string"
-								? variant.images[0] + "?view=1"
-								: "/assets/product_2.jpg"
-						}`}
-						alt={`Product Image ${i + 1}`}
+						src={colorVar.thumbnail || thumbnail || "/assets/product_2.jpg"}
+						alt={`${name} - ${colorVar.label}`}
 						width={600}
 						height={800}
 						sizes="
@@ -258,7 +432,7 @@ export function CardProduct({
 						"
 						className={cn(
 							"object-contain w-full h-full  transition-opacity duration-300 ",
-							i === activeIndex ? "opacity-100 " : "hidden opacity-0"
+							i === activeColorIndex ? "opacity-100 " : "hidden opacity-0"
 						)}
 						priority={i === 0}
 						placeholder="blur"
@@ -266,11 +440,11 @@ export function CardProduct({
 						style={
 							{
 								"--aspect-ratio-hack": "149.70059880239518%",
-							} as React.CSSProperties
+							} as any
 						}
 					/>
 				))}
-				{/* Fallback si pas de produit */}
+				{/* Boutons d'action */}
 				{!drawerStates.showSizes && (
 					<div className="absolute flex items-center justify-between w-full gap-8 px-4 transition-all duration-300 ease-in-out opacity-0 bottom-5 max-md:hidden md:flex">
 						<Button
@@ -295,18 +469,18 @@ export function CardProduct({
 						<Heart className="w-8 h-8" />
 					</button>
 					<DrawerCart
-						size={size}
+						size={availableSizes}
 						handleClick={(e) => handleShowSizes(e)}
 						close={() => updateDrawerState("showSizes", false)}
 					/>
 				</div>
 
-				{promotion && (
-					<span className="fond-semibold bg-red-700 text-white !text-[0.8rem] lg:!text-[1.2rem] lg:!text-xs  absolute top-4 left-4 px-3 py-2 rounded-full">
-						{promotion.pourcentage}% OFF
+				{priceInfo.hasPromotion && priceInfo.promotion && (
+					<span className="fond-semibold bg-red-700 text-white text-[0.8rem]! lg:!text-[1.2rem]! lg:text-xs!  absolute top-4 left-4 px-3 py-2 rounded-full">
+						{priceInfo.promotion.pourcentage}% OFF
 					</span>
 				)}
-				{(notVariable?.size || variants) &&
+				{availableSizes.length > 0 &&
 					(drawerStates.showSizes ? (
 						<div className="absolute w-full p-8 px-4 text-sm font-light text-center text-black bg-white border-2 border-gray-200 rounded-md shadow-lg bottom-5 max-md:hidden md:block">
 							<div className="flex items-center justify-between mb-6">
@@ -323,7 +497,7 @@ export function CardProduct({
 							</div>
 
 							<Size
-								size={size}
+								size={availableSizes}
 								selectSize={selectedSize}
 								onSizeChange={handleSizeSelect}
 							/>
@@ -337,65 +511,54 @@ export function CardProduct({
 				</p>
 			</div>
 			<div className="flex justify-between items-start text-[#000] ">
-				<h4 className="tracking-[0.03em] !text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] truncate line-clamp-1">
+				<h4 className="tracking-[0.03em] text-2xl! max-md:text-[2rem]!  md:text-[2.2rem]! truncate line-clamp-1">
 					{" "}
 					{name}
 				</h4>
 
-				{!promotion && (
-					<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem]">
+				{!priceInfo.hasPromotion && (
+					<h4 className="text-2xl!  max-md:text-[2rem]!  md:text-[2.2rem]!">
 						{" "}
-						{formatCurrency_FR(price.amount)}
+						{formatCurrency_FR(priceInfo.price.amount)}
 					</h4>
 				)}
-				{promotion && (
+				{priceInfo.hasPromotion && priceInfo.promotion && (
 					<>
 						<div className="block text-end ">
-							<h4 className="!text-2xl  max-md:!text-[2rem]  md:!text-[2.2rem] whitespace-nowrap">
+							<h4 className="text-2xl!  max-md:text-[2rem]! md:text-[2.2rem]!whitespace-nowrap">
 								{" "}
-								{promotion.reduced_price.amount || 0}{" "}
-								{promotion.reduced_price.currency}
+								{formatCurrency_FR(priceInfo.promotion.reduced_price.amount)}
 							</h4>
-							<h4 className="text-grey/50 !text-2xl line-through max-md:!text-[2rem]  md:!text-[2.2rem]  whitespace-nowrap">
-								{price.amount} {promotion.reduced_price.currency}
+							<h4 className="text-grey/50 text-2xl! line-through max-md:text-[2rem]!  md:text-[2.2rem]!  whitespace-nowrap">
+								{formatCurrency_FR(priceInfo.price.amount)}
 							</h4>
 						</div>
 					</>
 				)}
 			</div>
 
-			<div className="flex items-center justify-start gap-2">
-				{variants?.slice(0, 3)?.map((variant, i) => (
+			<div className="flex flex-wrap items-center justify-start gap-2">
+				{colorVariants?.slice(0, 3)?.map((colorVar, i) => (
 					<button
 						key={i}
 						className={cn(
-							"h-fit w-fit p-[2px] border bg-white flex justify-center items-center rounded-full transition-all duration-200",
-							i === activeIndex ? "border-black shadow-md" : "border-gray-300"
+							"px-4 py-2 text-[1.3rem] border bg-white rounded-full transition-all duration-200 hover:shadow-sm capitalize font-medium",
+							i === activeColorIndex
+								? "border-black shadow-md bg-black text-white"
+								: "border-gray-300 text-gray-700 hover:border-gray-400"
 						)}
-						onClick={(e) => handleVariantClick({ e, index: i })}
+						onClick={(e) => handleColorClick({ e, index: i })}
 						disabled={drawerStates.showSizes}
+						title={colorVar.label}
 					>
-						<span
-							className={cn("h-5 w-5 rounded-full cursor-pointer")}
-							style={{ backgroundColor: variant.color.code }}
-						></span>
+						{colorVar.label}
 					</button>
 				))}
 
-				{variants && variants.length > 3 && (
+				{colorVariants && colorVariants.length > 3 && (
 					<DrawerVariable
-						label={`+ ${variants.length + 1 - 4}`}
-						name={name}
-						photos={variants?.map((v) => v.images[0]) as string[]}
-						productData={{
-							name,
-							price: price,
-							variants,
-							notVariable,
-							promotion,
-							productId,
-							description: smallDescription || "",
-						}}
+						label={`+ ${colorVariants.length - 3}`}
+						product={product}
 					/>
 				)}
 			</div>

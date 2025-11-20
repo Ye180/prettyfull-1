@@ -1,9 +1,7 @@
 import { cn } from "@prettyfull/utils";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { useCallback, useMemo, useState } from "react";
-import { CardProduct, CardProps } from "./card-product";
 import { ProductGallery } from "./components/products/products-galery";
-import ProductInfos, { SizeOption } from "./components/products/products-infos";
+import ProductInfos from "./components/products/products-infos";
 
 import {
 	Drawer,
@@ -14,99 +12,209 @@ import {
 
 import { Separator } from "./components/ui/separator";
 import { CloseIcon } from "./icons/close.icon";
+import type { PricedProduct } from "./types/medusa";
+
+// Helper pour générer un code couleur basé sur le nom (même que dans CardProduct)
+const generateColorCode = (colorName: string): string => {
+	const colorMap: Record<string, string> = {
+		black: "#000000",
+		white: "#FFFFFF",
+		red: "#FF0000",
+		blue: "#0000FF",
+		green: "#00FF00",
+		yellow: "#FFFF00",
+		orange: "#FFA500",
+		purple: "#800080",
+		pink: "#FFC0CB",
+		gray: "#808080",
+		grey: "#808080",
+		brown: "#A52A2A",
+	};
+
+	const normalized = colorName.toLowerCase().trim();
+	return colorMap[normalized] || "#CCCCCC";
+};
 
 const DrawerVariable = ({
 	label,
-	productData,
+	product,
 }: {
 	label: string;
-	name: string;
-	photos: string[] | StaticImport[] | undefined;
-
-	productData: CardProps;
+	product: PricedProduct;
 }) => {
 	const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.stopPropagation();
 	};
 
-	const [variable, setVariable] = useState<{
-		images: string[] | StaticImport[];
-		sizes: SizeOption[] | string[];
-		activeImageOne?: number;
-	}>({
-		images: [],
-		sizes: [],
-		activeImageOne: 0,
-	});
+	// Extraire les options Color et Size depuis Medusa
+	const {
+		title: name,
+		thumbnail,
+		variants: medusaVariants,
+		options: medusaOptions,
+		images: productImages,
+	} = product;
 
-	const colorByDefault = productData?.variants
-		? productData?.variants[0]?.color.code
-		: productData.notVariable?.color
-			? productData.notVariable.color.code
-			: "#3b82f6";
-
-	const sizeByDefault = productData?.variants?.[0]?.size?.[0] as string;
-
-	const [selectedColor, setSelectedColor] = useState<string>(
-		colorByDefault as string
-	);
-	const [selectedSize, setSelectedSize] = useState<string>(
-		sizeByDefault as string
+	const colorOption = medusaOptions?.find(
+		(opt: any) =>
+			opt.title.toLowerCase() === "color" ||
+			opt.title.toLowerCase() === "couleur"
 	);
 
+	const sizeOption = medusaOptions?.find(
+		(opt: any) =>
+			opt.title.toLowerCase() === "size" || opt.title.toLowerCase() === "taille"
+	);
+
+	// Mapper les couleurs disponibles (même logique que CardProduct)
+	const colorVariants = useMemo(() => {
+		if (!medusaVariants || medusaVariants.length === 0) return [];
+
+		if (!colorOption) {
+			return [
+				{
+					label: "Default",
+					variants: medusaVariants,
+					thumbnail:
+						thumbnail || productImages?.[0]?.url || "/assets/product_2.jpg",
+					images: productImages?.map((img: any) => img.url) || [],
+				},
+			];
+		}
+
+		const colorMap = new Map<
+			string,
+			{
+				label: string;
+				variants: typeof medusaVariants;
+				thumbnail: string;
+				images: string[];
+			}
+		>();
+
+		medusaVariants.forEach((variant: any) => {
+			const colorValue = variant.options?.find(
+				(opt: any) => opt.option_id === colorOption.id
+			)?.value;
+
+			if (colorValue && !colorMap.has(colorValue)) {
+				// Récupérer tous les variants de cette couleur
+				const colorVariantsList = medusaVariants.filter((v: any) =>
+					v.options?.some(
+						(o: any) => o.option_id === colorOption.id && o.value === colorValue
+					)
+				);
+
+				// Récupérer les images de tous les variants de cette couleur
+				const colorVariantImages = colorVariantsList
+					.map((v: any) => v.thumbnail)
+					.filter((img: string) => img);
+
+				// Prendre la photo du premier variant de cette couleur
+				const firstVariantThumbnail = colorVariantsList[0]?.thumbnail;
+
+				colorMap.set(colorValue, {
+					label: colorValue, // Nom de la couleur en texte
+					variants: colorVariantsList,
+					thumbnail:
+						firstVariantThumbnail || productImages?.[0]?.url || thumbnail || "",
+					images:
+						colorVariantImages.length > 0
+							? colorVariantImages
+							: productImages?.map((img: any) => img.url) || [],
+				});
+			}
+		});
+
+		return Array.from(colorMap.values());
+	}, [colorOption, medusaVariants, productImages, thumbnail]);
+
+	// État pour la couleur et taille sélectionnées
+	const [activeColorIndex, setActiveColorIndex] = useState(0);
+	const [selectedSize, setSelectedSize] = useState<string>("");
 	const [activeImage, setActiveImage] = useState<number>(0);
-
 	const [disabled, setDisabled] = useState(true);
 
-	const availableColors = useMemo(() => {
-		const colors = productData.variants?.find(
-			(v) => v.color.code === selectedColor
-		);
+	// Tailles disponibles pour la couleur active
+	const availableSizes = useMemo(() => {
+		if (colorVariants.length === 0) return [];
 
-		setVariable({
-			images:
-				((colors?.images as string[]) || productData.notVariable?.image) ?? [],
-			sizes: (colors?.size as string[]) || productData.notVariable?.size || [],
+		const currentColorVariants =
+			colorVariants[activeColorIndex]?.variants || [];
+
+		if (!sizeOption) {
+			return currentColorVariants
+				.map((v: any) => v.title)
+				.filter((title: any) => title && title !== null);
+		}
+
+		const sizesSet = new Set<string>();
+		currentColorVariants.forEach((variant: any) => {
+			const sizeValue = variant.options?.find(
+				(opt: any) => opt.option_id === sizeOption.id
+			)?.value;
+			if (sizeValue) sizesSet.add(sizeValue);
 		});
-	}, [selectedColor]);
+
+		return Array.from(sizesSet);
+	}, [sizeOption, colorVariants, activeColorIndex]);
+
+	// Images pour la couleur active
+	const currentImages = useMemo(() => {
+		if (colorVariants.length === 0) return [];
+		return colorVariants[activeColorIndex]?.images || [];
+	}, [colorVariants, activeColorIndex]);
 
 	const handleColorChange = useCallback(
-		async (selectedColor: string) => {
-			variable;
-			setSelectedColor(selectedColor);
-			setDisabled(true);
-			setSelectedSize(null as unknown as string);
-
-			setActiveImage(0);
+		async (colorLabel: string) => {
+			const newIndex = colorVariants.findIndex((cv) => cv.label === colorLabel);
+			if (newIndex !== -1) {
+				setActiveColorIndex(newIndex);
+				setSelectedSize("");
+				setDisabled(true);
+				setActiveImage(0);
+			}
 		},
-
-		[selectedColor]
+		[colorVariants]
 	);
 
-	const handleSizeChange = useCallback(
-		async (size: string) => {
-			setSelectedSize(size);
-			setDisabled(false);
-		},
-
-		[selectedSize]
-	);
+	const handleSizeChange = useCallback(async (size: string) => {
+		setSelectedSize(size);
+		setDisabled(false);
+	}, []);
 
 	const handleClick = () => {
-		console.log("Acheter", { size: selectedSize, color: selectedColor });
+		const currentColor = colorVariants[activeColorIndex];
+		if (!currentColor) return;
 
-		const selectedVariant = productData.variants?.find(
-			(v) =>
-				v.color.code === selectedColor &&
-				(v.size as string[])?.includes(selectedSize)
-		);
+		let matchingVariant;
 
-		selectedVariant === undefined ? setDisabled(true) : setDisabled(false);
+		if (sizeOption) {
+			matchingVariant = currentColor.variants.find((variant: any) => {
+				const variantSize = variant.options?.find(
+					(opt: any) => opt.option_id === sizeOption.id
+				)?.value;
+				return variantSize === selectedSize;
+			});
+		} else {
+			matchingVariant = currentColor.variants.find(
+				(variant: any) => variant.title === selectedSize
+			);
+		}
+
+		if (matchingVariant) {
+			console.log("Acheter", {
+				variant_id: matchingVariant.id,
+				size: selectedSize,
+				color: currentColor.label,
+			});
+			// Ajouter ici la logique d'ajout au panier si nécessaire
+		}
 	};
 
 	return (
 		<Drawer direction="bottom">
-			<DrawerTrigger asChild>
+			<DrawerTrigger>
 				<button
 					className={cn(
 						" px-2 py-2 text-[1.2rem] size-10  text-black flex justify-center items-center rounded-full  duration-200 font-semibold bg-gray-100 cursor-pointer transition-all hover:bg-gray-200 whitespace-nowrap"
@@ -132,24 +240,20 @@ const DrawerVariable = ({
 					<div className="flex justify-around w-full gap-10 px-4 overflow-y-scroll sm:px-10 scrollbar-hide lg:justify-center">
 						<div className="flex flex-col w-full gap-6 sm:w-3/5 lg:justify-center sm:flex-row">
 							<ProductGallery
-								images={variable.images}
-								name={productData.name}
+								images={currentImages}
+								name={name}
 								activeImage={activeImage}
 								setActiveImage={setActiveImage}
-								promotion={productData.promotion}
+								promotion={undefined}
 							/>
 							<ProductInfos
-								sizes={
-									(variable.sizes as string[]) ||
-									productData.notVariable?.size ||
-									[]
-								}
-								productData={productData}
-								selectedColor={selectedColor}
+								sizes={availableSizes}
+								productData={{ product }}
+								selectedColor={colorVariants[activeColorIndex]?.label || ""}
 								setSelectedColor={handleColorChange}
 								selectedSize={selectedSize}
 								setSelectedSize={handleSizeChange}
-								promotion={productData.promotion}
+								promotion={undefined}
 								onClick={() => {
 									handleClick();
 								}}
@@ -163,124 +267,12 @@ const DrawerVariable = ({
 						/>
 
 						<div className="w-2/5 max-md:hidden ">
-							<h2 className="!text-[3rem] font-semibold pb-8">
+							<h2 className="text-[3rem]! font-semibold pb-8">
 								Suggestion de produit
 							</h2>
 							<div className="grid w-full grid-cols-2 gap-4 h-4/6">
-								<>
-									{Array.from({ length: 2 }).map((_, index) => (
-										<CardProduct
-											key={index}
-											productId={`suggestion-${index}`}
-											variants={[
-												{
-													color: {
-														label: "Rouge",
-														code: "#FF0000",
-													},
-													size: ["S", "M", "L", "XL", "2XL", "3XL"],
-													images: [
-														"/assets/product5.webp",
-														"/assets/product_2.webp",
-													],
-													quantity: 1,
-												},
-												{
-													color: {
-														label: "Vert",
-														code: "#00FF00",
-													},
-													size: ["S", "M", "L"],
-													images: ["/assets/product_2.webp", "image4.jpg"],
-													quantity: 1,
-												},
-												{
-													color: {
-														label: "Rouge",
-														code: "#FF0000",
-													},
-													size: ["S", "M", "L", "XL", "2XL", "3XL"],
-													images: [
-														"/assets/product5.webp",
-														"/assets/product_2.webp",
-													],
-													quantity: 1,
-												},
-												{
-													color: {
-														label: "Vert",
-														code: "#00FF00",
-													},
-													size: ["S", "M", "L"],
-													images: ["/assets/product_2.webp", "image4.jpg"],
-													quantity: 1,
-												},
-												{
-													color: {
-														label: "Rouge",
-														code: "#FF0000",
-													},
-													size: ["S", "M", "L", "XL", "2XL", "3XL"],
-													images: [
-														"/assets/product5.webp",
-														"/assets/product_2.webp",
-													],
-													quantity: 1,
-												},
-												{
-													color: {
-														label: "Vert",
-														code: "#00FF00",
-													},
-													size: ["S", "M", "L"],
-													images: ["/assets/product_2.webp", "image4.jpg"],
-													quantity: 1,
-												},
-												{
-													color: {
-														label: "Vert",
-														code: "#00FF00",
-													},
-													size: ["S", "M", "L"],
-													images: ["/assets/product_2.webp", "image4.jpg"],
-													quantity: 1,
-												},
-												{
-													color: {
-														label: "Rouge",
-														code: "#FF0000",
-													},
-													size: ["S", "M", "L", "XL", "2XL", "3XL"],
-													images: [
-														"/assets/product5.webp",
-														"/assets/product_2.webp",
-													],
-													quantity: 1,
-												},
-												{
-													color: {
-														label: "Vert",
-														code: "#00FF00",
-													},
-													size: ["S", "M", "L"],
-													images: ["/assets/product_2.webp", "image4.jpg"],
-													quantity: 1,
-												},
-											]}
-											price={{ amount: 12000, currency: "USD" }}
-											promotion={{
-												pourcentage: 50,
-												reduced_price: {
-													amount: 6000,
-													currency: "USD",
-												},
-											}}
-											smallDescription="Top polyvalente á Manche"
-											name="Sweet-Top"
-											// link={PRODUCT_PATHS.productDetail("SWEET-TOP")}
-										/>
-									))}
-								</>
+								{/* TODO: Remplacer par de vrais produits suggestions depuis l'API */}
+								<p className="text-gray-400">Chargement des suggestions...</p>
 							</div>
 						</div>
 					</div>
