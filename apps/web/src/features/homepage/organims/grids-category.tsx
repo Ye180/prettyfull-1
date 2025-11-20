@@ -2,7 +2,7 @@ import Title from "@/shared/components/molecules/core/title";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-import { Category, useGetCategory } from "../api/get-category";
+import { Category, useGetCategory } from "../api/backend/get-category";
 
 const GridCategory = () => {
 	const t = useTranslations("HomePage.news");

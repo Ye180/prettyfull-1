@@ -1,5 +1,5 @@
 "use client";
-import { useGetPrimaryCategory } from "@/features/homepage/api/get-primary-category";
+import { useGetPrimaryCategory } from "@/features/homepage/api/backend/get-primary-category";
 import { useGetSiteKeyContent } from "@/shared/api/key-site-content";
 // import { useGetPrimaryCategory } from "@/features/homepage/api/get-children-category";
 import Footer from "@/shared/components/organims/footer";
@@ -8,8 +8,8 @@ import { cn } from "@prettyfull/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { PropsWithChildren, useEffect } from "react";
 
-import { useGetParentsCategoryMedusa } from "@/features/homepage/api/get-parent-category-medusa";
-import { useGetProductsMedusa } from "@/features/homepage/api/get-products-medusa";
+import { useGetParentsCategoryMedusa } from "@/features/homepage/api/medusa/get-parent-category-medusa";
+import { useGetProductsMedusa } from "@/features/homepage/api/medusa/get-products-medusa";
 
 interface HomeLayoutProps extends PropsWithChildren<{ className?: string }> {}
 
@@ -38,7 +38,6 @@ const HomeLayout = ({
 		isLoading: loadingParentsCategoryMedusa,
 	} = useGetParentsCategoryMedusa();
 
-	console.log("Products from Medusa:", productMedusa);
 	console.log("Parent Categories from Medusa:", parentsCategoryMedusa);
 	// Redirection automatique depuis "/" vers la première page
 	useEffect(() => {

@@ -1,9 +1,9 @@
-import { Metadata } from "next"
-import { notFound } from "next/navigation"
 import { listProducts } from "@lib/data/products"
 import { getRegion, listRegions } from "@lib/data/regions"
-import ProductTemplate from "@modules/products/templates"
 import { HttpTypes } from "@medusajs/types"
+import ProductTemplate from "@modules/products/templates"
+import { Metadata } from "next"
+import { notFound } from "next/navigation"
 
 type Props = {
   params: Promise<{ countryCode: string; handle: string }>
@@ -33,6 +33,12 @@ export async function generateStaticParams() {
     })
 
     const countryProducts = await Promise.all(promises)
+
+    console.log(
+      `Generated static paths for product pages for countries: ${countryCodes.join(
+        ", "
+      )}`
+    )
 
     return countryProducts
       .flatMap((countryData) =>
@@ -125,7 +131,7 @@ export default async function ProductPage(props: Props) {
       product={pricedProduct}
       region={region}
       countryCode={params.countryCode}
-      images={images}
+      images={images as HttpTypes.StoreProductImage[]}
     />
   )
 }

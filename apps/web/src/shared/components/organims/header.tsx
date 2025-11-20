@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetChildrenCategory } from "@/features/homepage/api/get-children-category";
+import { useGetChildrenCategory } from "@/features/homepage/api/backend/get-children-category";
 // import { getItem } from "@/lib/utils/local-storage";
 import { useParams } from "next/navigation";
 import { useQueryState } from "nuqs";

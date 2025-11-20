@@ -1,6 +1,6 @@
 "use client";
 
-import { Category } from "@/features/homepage/api/get-category";
+import { Category } from "@/features/homepage/api/backend/get-category";
 import { PAGES_PATHS } from "@/lib/routes/paths-en";
 import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
 import { setItem } from "@/lib/utils/local-storage";

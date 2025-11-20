@@ -1,4 +1,4 @@
-import { Category } from "@/features/homepage/api/get-category";
+import { Category } from "@/features/homepage/api/backend/get-category";
 import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
 import {
 	Accordion,
