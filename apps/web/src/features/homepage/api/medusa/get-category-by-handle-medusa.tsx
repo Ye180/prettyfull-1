@@ -1,15 +1,15 @@
 "use client";
 
 import { sdk } from "@/lib/api/sdk";
-import { PARENTS_CATEGORIES_MEDUSA_QUERY_KEY } from "@/shared/utils/query-keys";
 import { useQuery } from "@tanstack/react-query";
 
-export const getParentsCategoryMedusa = async () => {
+export const getCategoryByHandleMedusa = async (handle: string) => {
 	const response = sdk.store.category
 		.list({
 			fields:
 				"name, handle, category_children.id,category_children.name, category_children.handle,",
-			include_descendants_tree: true,
+			// include_descendants_tree: true,
+			handle: handle,
 		})
 		.then(({ product_categories }) => {
 			// Filtrer uniquement les catégories qui ont au moins un enfant
@@ -24,9 +24,9 @@ export const getParentsCategoryMedusa = async () => {
 	return response;
 };
 
-export const useGetParentsCategoryMedusa = () => {
+export const useGetCategoryByHandleMedusa = (handle: string) => {
 	return useQuery({
-		queryKey: [PARENTS_CATEGORIES_MEDUSA_QUERY_KEY],
-		queryFn: () => getParentsCategoryMedusa(),
+		queryKey: [handle],
+		queryFn: () => getCategoryByHandleMedusa(handle),
 	});
 };

@@ -9,7 +9,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { PropsWithChildren, useEffect } from "react";
 
 import { useGetParentsCategoryMedusa } from "@/features/homepage/api/medusa/get-parent-category-medusa";
-import { useGetProductsMedusa } from "@/features/homepage/api/medusa/get-products-medusa";
 
 interface HomeLayoutProps extends PropsWithChildren<{ className?: string }> {}
 
@@ -35,25 +34,29 @@ const HomeLayout = ({
 		isLoading: loadingParentsCategoryMedusa,
 	} = useGetParentsCategoryMedusa();
 
-	console.log("Parent Categories from Medusa:", parentsCategoryMedusa);
+	console.log("Parents Category Medusa:", parentsCategoryMedusa);
+
 	// Redirection automatique depuis "/" vers la première page
 	useEffect(() => {
 		if (
-			!isLoadingKeyContent &&
-			keyContent &&
-			keyContent.length > 0 &&
+			!loadingParentsCategoryMedusa &&
+			parentsCategoryMedusa &&
+			parentsCategoryMedusa.length > 0 &&
 			pathname === "/"
 		) {
-			const firstPageSlug = keyContent[0]?.slug;
-			if (firstPageSlug) {
-				router.replace(`/pages/${firstPageSlug}`);
+			const firstPageHandle = parentsCategoryMedusa[0]?.handle;
+			if (firstPageHandle) {
+				router.replace(`/pages/${firstPageHandle}`);
 			}
 		}
-	}, [keyContent, isLoadingKeyContent, pathname, router]);
+	}, [parentsCategoryMedusa, loadingParentsCategoryMedusa, pathname, router]);
 
 	return (
 		<div className="flex flex-col min-h-screen overflow-x-hidden">
-			<Header main_category={keyContent} />
+			<Header
+				main_category={parentsCategoryMedusa}
+				loading={loadingParentsCategoryMedusa}
+			/>
 			<div className={cn("h-fit", className)}>{children}</div>
 			<Footer />
 		</div>

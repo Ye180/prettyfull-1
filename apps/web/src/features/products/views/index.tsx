@@ -1,236 +1,213 @@
 "use client";
 
-import { SizeOption } from "@/features/products/components/molecules/product-options";
 import { ProductGallery } from "@/features/products/components/organims/product-gallery";
 import ProductSuggestion from "@/features/products/components/organims/product-suggestion";
 import Reviews from "@/features/products/components/organims/reviews";
-import { ProductTypes } from "@/features/products/types";
 import ProductSkeleton from "@/shared/components/organims/product-fiche-loading";
-import { CardProps } from "@prettyfull/ui";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ProductInfos from "../../../../../../packages/ui/src/components/products/products-infos";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-import { useGetProductBySlug } from "../api/get-products-by-slug";
-
-const productData: ProductTypes = {
-	category: "FEMME FASHION",
-	name: "SWEET TOP",
-	price: {
-		amount: 89000,
-		currency: "XOF",
-	},
-	promotion: {
-		reduced_price: 59000,
-		pourcentage: 30,
-	},
-
-	description:
-		"Un haut élégant et confortable parfait pour toutes les occasions.",
-
-	variants: [
-		{
-			color: {
-				label: "Bleue",
-				code: "#3b82f6",
-			},
-			size: ["S", "M", "L", "3XL"],
-			images: [
-				"/assets/product5.webp",
-				"/assets/product_2.webp",
-				"/assets/product5.webp",
-				"/assets/product_2.webp",
-				"/assets/product5.webp",
-				"/assets/product_2.webp",
-			],
-			quantity: 1,
-		},
-		{
-			color: {
-				label: "Black",
-				code: "#000",
-			},
-			size: ["2XL", "3XL"],
-			images: ["/assets/product5.webp"],
-			quantity: 1,
-		},
-
-		{
-			color: {
-				label: "Rouge",
-				code: "#ff0000",
-			},
-			size: ["S", "M", "L", "XL", "2XL", "3XL"],
-			images: ["/assets/product_2.webp"],
-			quantity: 1,
-		},
-	],
-};
+import { useGetProductsByHandleMedusa } from "../api/medusa/get-product-by-handle-medusa";
 
 export default function ProductViews() {
 	const params = useParams();
 
-	const { data: product, isLoading } = useGetProductBySlug(
-		params.productId as string
-	);
-
-	const [variants, setVariants] = useState<{
-		images: string[] | StaticImport[];
-		size: SizeOption[] | string[];
-		activeImageOne?: number;
-	}>({
-		images: [],
-		size: [],
-		activeImageOne: 0,
-	});
-
-	const colorByDefault = product?.variants
-		? product?.variants[0]?.color.code
-		: product?.notVariable?.color
-			? product?.notVariable.color.code
-			: "#3b82f6";
-
-	const sizeByDefault = variants?.size[0] as string;
-
-	const [selectedColor, setSelectedColor] = useState<string>(
-		colorByDefault as string
-	);
-	const [selectedSize, setSelectedSize] = useState<string>(
-		sizeByDefault as string
+	const { data: product, isLoading } = useGetProductsByHandleMedusa(
+		params.handle as string
 	);
 
 	const [activeImage, setActiveImage] = useState<number>(0);
-
+	const [selectedColor, setSelectedColor] = useState<string>("");
+	const [selectedSize, setSelectedSize] = useState<string>("");
 	const [disabled, setDisabled] = useState(true);
 
-	const [isNotifyModalOpen, setIsNotifyModalOpen] = useState(false);
-	const [outOfStockVariant, setOutOfStockVariant] = useState<{
-		size: string;
-		color: { name: string; code: string };
-		image: string;
-	} | null>(null);
-
-	// Modifiez la logique du useMemo pour retourner les couleurs au lieu de faire un setVariants
-	const availableColors = useMemo(() => {
-		const colors = product?.variants?.find(
-			(v) => v.color.code === selectedColor
+	// ===== EXTRACTION DES OPTIONS (Color, Size) =====
+	const colorOption = useMemo(() => {
+		return product?.options?.find(
+			(opt: any) =>
+				opt.title.toLowerCase() === "color" ||
+				opt.title.toLowerCase() === "couleur"
 		);
-
-		// Mettre à jour l'état variants ici
-		if (colors) {
-			setVariants({
-				images: colors.images || [],
-				size: colors.size || [],
-				activeImageOne: 0,
-			});
-		} else if (product?.notVariable) {
-			setVariants({
-				images: product.notVariable.image || [],
-				size: product.notVariable.size || [],
-				activeImageOne: 0,
-			});
-		}
-
-		return colors;
-	}, [selectedColor, product]);
-
-	// Initialiser les données du produit au chargement
-	useEffect(() => {
-		if (product) {
-			// Définir la couleur par défaut
-			const defaultColor = product?.variants
-				? product.variants[0]?.color.code
-				: product?.notVariable?.color?.code || "#3b82f6";
-
-			// Définir les images et tailles par défaut
-			const initialImages =
-				product.variants?.[0]?.images || product.notVariable?.image || [];
-			const initialSizes =
-				product.variants?.[0]?.size || product.notVariable?.size || [];
-
-			setSelectedColor(defaultColor as string);
-			setVariants({
-				images: initialImages,
-				size: initialSizes,
-				activeImageOne: 0,
-			});
-
-			// Définir la première taille comme taille par défaut
-			if (initialSizes.length > 0) {
-				setSelectedSize(initialSizes[0] as string);
-				setDisabled(false);
-			}
-		}
 	}, [product]);
 
-	// Mettre à jour les images et tailles quand la couleur change
-	useEffect(() => {
-		if (!product || !selectedColor) return;
-
-		const selectedVariant = product.variants?.find(
-			(v) => v.color.code === selectedColor
+	const sizeOption = useMemo(() => {
+		return product?.options?.find(
+			(opt: any) =>
+				opt.title.toLowerCase() === "size" ||
+				opt.title.toLowerCase() === "taille"
 		);
+	}, [product]);
 
-		if (selectedVariant) {
-			setVariants({
-				images: selectedVariant.images || [],
-				size: selectedVariant.size || [],
-				activeImageOne: 0,
-			});
+	// ===== MAPPER LES COULEURS DISPONIBLES =====
+	const colorVariants = useMemo(() => {
+		if (!product?.variants || product.variants.length === 0) return [];
 
-			// Réinitialiser la taille sélectionnée si elle n'est pas disponible
-			if (!selectedVariant.size.includes(selectedSize)) {
-				setSelectedSize("");
-				setDisabled(true);
+		if (!colorOption) return [];
+
+		const colorMap = new Map<
+			string,
+			{
+				label: string;
+				variants: any[];
+				images: string[];
 			}
-		} else if (product.notVariable) {
-			setVariants({
-				images: product.notVariable.image || [],
-				size: product.notVariable.size || [],
-				activeImageOne: 0,
-			});
+		>();
+
+		product.variants.forEach((variant: any) => {
+			const colorValue = variant.options?.find(
+				(opt: any) => opt.option_id === colorOption.id
+			)?.value;
+
+			if (colorValue && !colorMap.has(colorValue)) {
+				// Récupérer tous les variants de cette couleur
+				const colorVariantsList = (product.variants || []).filter((v: any) =>
+					v.options?.some(
+						(o: any) => o.option_id === colorOption.id && o.value === colorValue
+					)
+				);
+
+				// Récupérer toutes les images des variants de cette couleur
+				const colorImages = colorVariantsList
+					.map((v: any) => v.thumbnail)
+					.filter((img: string) => img);
+
+				// Si pas d'images spécifiques, utiliser les images du produit
+				const finalImages =
+					colorImages.length > 0
+						? colorImages
+						: product.images?.map((img: any) => img.url) || [];
+
+				colorMap.set(colorValue, {
+					label: colorValue,
+					variants: colorVariantsList,
+					images: finalImages,
+				});
+			}
+		});
+
+		return Array.from(colorMap.values());
+	}, [product, colorOption]);
+
+	// ===== TAILLES DISPONIBLES POUR LA COULEUR ACTIVE =====
+	const availableSizes = useMemo(() => {
+		if (!selectedColor || colorVariants.length === 0) return [];
+
+		const currentColorVariants =
+			colorVariants.find((cv) => cv.label === selectedColor)?.variants || [];
+
+		if (!sizeOption) {
+			return currentColorVariants
+				.map((v: any) => v.title)
+				.filter((title: any) => title && title !== null);
 		}
 
+		const sizesSet = new Set<string>();
+		currentColorVariants.forEach((variant: any) => {
+			const sizeValue = variant.options?.find(
+				(opt: any) => opt.option_id === sizeOption.id
+			)?.value;
+			if (sizeValue) sizesSet.add(sizeValue);
+		});
+
+		return Array.from(sizesSet);
+	}, [selectedColor, colorVariants, sizeOption]);
+
+	// ===== IMAGES POUR LA COULEUR ACTIVE =====
+	const currentImages = useMemo(() => {
+		if (!selectedColor || colorVariants.length === 0) {
+			return product?.images?.map((img: any) => img.url) || [];
+		}
+
+		const currentColorVariant = colorVariants.find(
+			(cv) => cv.label === selectedColor
+		);
+		return currentColorVariant?.images || [];
+	}, [selectedColor, colorVariants, product]);
+
+	// ===== INITIALISATION AU CHARGEMENT =====
+	useEffect(() => {
+		if (product && colorVariants.length > 0 && colorVariants[0]) {
+			// Définir la première couleur par défaut
+			const defaultColor = colorVariants[0].label;
+			setSelectedColor(defaultColor);
+
+			// Définir la première taille par défaut si disponible
+			const firstColorVariants = colorVariants[0].variants;
+			if (sizeOption && firstColorVariants && firstColorVariants.length > 0) {
+				const firstSize = firstColorVariants[0]?.options?.find(
+					(opt: any) => opt.option_id === sizeOption.id
+				)?.value;
+				if (firstSize) {
+					setSelectedSize(firstSize);
+					setDisabled(false);
+				}
+			}
+		}
+	}, [product, colorVariants, sizeOption]);
+
+	// ===== GESTION DES CHANGEMENTS =====
+	const handleColorChange = useCallback((newColor: string) => {
+		console.log("Changement de couleur vers:", newColor);
+		setSelectedColor(newColor);
+		setSelectedSize("");
+		setDisabled(true);
 		setActiveImage(0);
-	}, [selectedColor, product]);
+	}, []);
 
-	const handleColorChange = useCallback(
-		async (selectedColor: string) => {
-			variants;
-			setSelectedColor(selectedColor);
-			setDisabled(true);
-			setSelectedSize(null as unknown as string);
-
-			setActiveImage(0);
-		},
-
-		[selectedColor]
-	);
-
-	const handleSizeChange = useCallback(
-		async (size: string) => {
-			setSelectedSize(size);
-			setDisabled(false);
-		},
-
-		[selectedSize]
-	);
+	const handleSizeChange = useCallback((size: string) => {
+		console.log("Changement de taille vers:", size);
+		setSelectedSize(size);
+		setDisabled(false);
+	}, []);
 
 	const handleClick = () => {
-		console.log("Acheter", { size: selectedSize, color: selectedColor });
+		if (!selectedColor || !selectedSize) {
+			console.error("Veuillez sélectionner une couleur et une taille");
+			return;
+		}
 
-		const selectedVariant = product?.variants?.find(
-			(v) =>
-				v.color.code === selectedColor &&
-				(v.size as string[])?.includes(selectedSize)
-		);
+		// Trouver le variant correspondant
+		const currentColorVariants =
+			colorVariants.find((cv) => cv.label === selectedColor)?.variants || [];
 
-		selectedVariant === undefined ? setDisabled(true) : setDisabled(false);
+		let matchingVariant;
+		if (sizeOption) {
+			matchingVariant = currentColorVariants.find((variant: any) => {
+				const variantSize = variant.options?.find(
+					(opt: any) => opt.option_id === sizeOption.id
+				)?.value;
+				return variantSize === selectedSize;
+			});
+		} else {
+			matchingVariant = currentColorVariants.find(
+				(variant: any) => variant.title === selectedSize
+			);
+		}
+
+		if (matchingVariant) {
+			console.log("Ajout au panier:", {
+				productId: product?.id,
+				variantId: matchingVariant.id,
+				color: selectedColor,
+				size: selectedSize,
+			});
+			// TODO: Appeler votre mutation d'ajout au panier ici
+		} else {
+			console.error("Variant non trouvé");
+		}
 	};
 
 	if (isLoading) {
 		return <ProductSkeleton />;
+	}
+
+	if (!product) {
+		return (
+			<Container maxWidth="100vw" className="px-4 py-12 text-center">
+				<h2 className="text-2xl font-semibold">Produit non trouvé</h2>
+			</Container>
+		);
 	}
 
 	return (
@@ -242,18 +219,18 @@ export default function ProductViews() {
 				<div className="flex flex-col justify-center sm:flex-row gap-x-14 ">
 					<div className="flex flex-col space-y-4 sm:space-y-8 w-fit ">
 						<ProductGallery
-							images={variants?.images as string[]}
-							title={productData?.name}
+							images={currentImages}
+							title={product?.title || "Produit"}
 							activeImage={activeImage}
 							setActiveImage={setActiveImage}
-							promotion={productData.promotion}
+							promotion={undefined}
 						/>
 						<Reviews className="max-sm:hidden sm:block w-[600px] " />
 					</div>
 
 					<ProductInfos
-						sizes={(variants.size as string[]) || productData.notVariable?.size}
-						productData={product as CardProps}
+						sizes={availableSizes}
+						productData={{ product } as any}
 						selectedColor={selectedColor}
 						setSelectedColor={handleColorChange}
 						selectedSize={selectedSize}
@@ -271,13 +248,6 @@ export default function ProductViews() {
 
 				<ProductSuggestion />
 			</Container>
-
-			{/* <NotifyMeModal
-				isOpen={isNotifyModalOpen}
-				onClose={() => setIsNotifyModalOpen(false)}
-				product={product}
-				variant={outOfStockVariant}
-			/> */}
 		</>
 	);
 }

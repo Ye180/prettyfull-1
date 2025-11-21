@@ -42,12 +42,12 @@ const NavBarHeaders = ({
 						{main_category ? (
 							main_category?.map((items: Category, index: number) => {
 								const isActive =
-									pathname === PAGES_PATHS.pageDetail(items.slug) ||
-									division === items.slug;
+									pathname === PAGES_PATHS.pageDetail(items.handle as string) ||
+									division === items.handle;
 								return (
 									<Link
 										key={index}
-										href={PAGES_PATHS.pageDetail(items.slug)}
+										href={PAGES_PATHS.pageDetail(items.handle as string)}
 										onClick={() => setItem("links", items.name)}
 										className={cn(
 											"font-black tracking-wide uppercase text-[#262626] hover:text-black text-sm transition-all",

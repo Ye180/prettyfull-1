@@ -370,18 +370,18 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 	// Préchargement des images
 	useEffect(() => {
 		if (colorVariants.length > 0) {
-			console.log("ColorVariants pour", name, ":", colorVariants);
+			// console.log("ColorVariants pour", name, ":", colorVariants);
 
 			const loadImages = async () => {
 				const loadPromises = colorVariants.map((colorVar, idx) => {
 					return new Promise<boolean>((resolve) => {
 						const img = new window.Image();
 						img.onload = () => {
-							console.log(`Image ${idx} chargée:`, colorVar.thumbnail);
+							// console.log(`Image ${idx} chargée:`, colorVar.thumbnail);
 							resolve(true);
 						};
 						img.onerror = (e) => {
-							console.error(`Image ${idx} échouée:`, colorVar.thumbnail, e);
+							// console.error(`Image ${idx} échouée:`, colorVar.thumbnail, e);
 							resolve(false);
 						};
 						img.src = colorVar.thumbnail;
@@ -389,7 +389,6 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 				});
 
 				const results = await Promise.all(loadPromises);
-				console.log("Résultats chargement images:", results);
 				setImagesLoaded(results);
 			};
 

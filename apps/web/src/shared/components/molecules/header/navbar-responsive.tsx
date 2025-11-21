@@ -54,7 +54,7 @@ const NavbarResponsive = ({
 								<NavLink
 									key={index}
 									href={COLLECTION_PATHS.collectionDetail(items.slug)}
-									className="font-extrabold !text-[1.7rem]"
+									className="font-extrabold text-[1.7rem]!"
 								>
 									{items.name}
 								</NavLink>
@@ -73,14 +73,14 @@ const NavbarResponsive = ({
 							<NavLink
 								href={COLLECTION_PATHS.collectionDetail(items.slug)}
 								key={index}
-								className="!text-[1.6rem] capitalize snap-center  w-full py-2 hover:bg-gray-100 rounded-md px-2 font-medium"
+								className="!text-[1.6rem]! capitalize snap-center  w-full py-2 hover:bg-gray-100 rounded-md px-2 font-medium"
 							>
 								{" "}
 								{items.name}
 							</NavLink>
 						))
 					) : (
-						<Skeleton className="h-9 w-[20rem] " />
+						<Skeleton className="h-9 w-80" />
 					)}
 				</div>
 

@@ -8,6 +8,7 @@ export interface Category {
 	name: string;
 	description: string;
 	slug: string;
+	handle?: string;
 	icon: string;
 	image: string;
 	isActive: boolean;
