@@ -34,8 +34,6 @@ const HomeLayout = ({
 		isLoading: loadingParentsCategoryMedusa,
 	} = useGetParentsCategoryMedusa();
 
-	console.log("Parents Category Medusa:", parentsCategoryMedusa);
-
 	// Redirection automatique depuis "/" vers la première page
 	useEffect(() => {
 		if (

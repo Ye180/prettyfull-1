@@ -1,11 +1,6 @@
-import { useGetProducts } from "@/features/collections/api/get-product";
-import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
-import {
-	Button,
-	CardProduct,
-	CardProps,
-	GridCardProduct,
-} from "@prettyfull/ui";
+import { useGetProducts } from "@/features/collections/api/backend/get-product";
+import ProductCardSkeleton from "@/shared/components/organims/product-loading";
+import { Button, CardProps, GridCardProduct } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
@@ -64,7 +59,8 @@ const ModeCollection = ({ fourth }: { fourth?: any }) => {
 					<>
 						{products?.slice(0, 2).map((items: CardProps, index: number) => (
 							<div key={index} className="w-full aspect-10/9">
-								<CardProduct
+								<ProductCardSkeleton key={index} />
+								{/* <CardProduct
 									productId={items.id || items.productId}
 									variants={items.variants}
 									price={items.price}
@@ -73,7 +69,7 @@ const ModeCollection = ({ fourth }: { fourth?: any }) => {
 									smallDescription={items.label}
 									name={items.name}
 									link={PRODUCT_PATHS.productDetail(items.slug as string)}
-								/>
+								/> */}
 							</div>
 						))}
 					</>

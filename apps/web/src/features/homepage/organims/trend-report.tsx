@@ -7,7 +7,7 @@ import Image from "next/image";
 import Box from "../../../../../../packages/ui/src/layouts/helpers/box";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
-const TrendReport = ({ five }: { five: any }) => {
+const TrendReport = ({ five }: { five?: any }) => {
 	const t = useTranslations("HomePage.trendReport");
 	return (
 		<Container maxWidth="100vw" className="w-full px-4 lg:px-40">

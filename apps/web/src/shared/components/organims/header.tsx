@@ -7,7 +7,8 @@ import { useQueryState } from "nuqs";
 // Importe useState et useEffect
 import { useGetProductsByHandleMedusa } from "@/features/products/api/medusa/get-product-by-handle-medusa";
 import { sdk } from "@/lib/api/sdk";
-import { useMemo } from "react";
+import { setItem } from "@/lib/utils/local-storage";
+import { useEffect, useMemo } from "react";
 import BottomHeader from "../molecules/header/bottom";
 import NavBarHeaders from "../molecules/header/navbar";
 
@@ -29,13 +30,9 @@ const Header = ({
 		(cat: any) => cat.handle === params.id
 	);
 
-	const categoryByHandle = sdk.store.category
-		.list({
-			handle: params.id,
-		})
-		.then(({ product_categories }) => {
-			return product_categories[0];
-		});
+	useEffect(() => {
+		setItem("sous-category", children_category_active?.category_children);
+	}, [params.id, params.handle,  children_category_active]);
 
 	// 1. Initialise la catégorie à 'undefined' (comme sur le serveur)
 	// const [category, setCategory] = useState<any>(getItem("category")); // Le tableau vide signifie "exécute-moi une seule fois au chargement"
@@ -54,8 +51,8 @@ const Header = ({
 
 		// Sinon, essayer de trouver le parent dans main_category à partir de params.id
 		if (params.id && main_category) {
-			const found = main_category.find((cat: any) => cat.slug === params.id);
-			return found?.slug;
+			const found = main_category.find((cat: any) => cat.handle === params.id);
+			return found?.handle;
 		}
 
 		return undefined;

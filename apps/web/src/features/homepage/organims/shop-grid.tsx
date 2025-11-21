@@ -1,9 +1,9 @@
 "use client";
 
-import { useGetProducts } from "@/features/collections/api/get-product";
-import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
+import { useGetProducts } from "@/features/collections/api/backend/get-product";
 import Title from "@/shared/components/molecules/core/title";
-import { CardProduct, CardProps, GridCardProduct } from "@prettyfull/ui";
+import ProductCardSkeleton from "@/shared/components/organims/product-loading";
+import { CardProps, GridCardProduct } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
@@ -18,7 +18,8 @@ const ShopGrid = () => {
 				<>
 					{products?.map((items: CardProps, i: number) => (
 						<div key={i} className="w-full aspect-10/9">
-							<CardProduct
+							<ProductCardSkeleton />
+							{/* <CardProduct
 								productId={items.id || items.productId}
 								variants={items.variants}
 								price={items.price}
@@ -27,7 +28,7 @@ const ShopGrid = () => {
 								smallDescription={items.label}
 								name={items.name}
 								link={PRODUCT_PATHS.productDetail(items.slug as string)}
-							/>
+							/> */}
 						</div>
 					))}
 				</>

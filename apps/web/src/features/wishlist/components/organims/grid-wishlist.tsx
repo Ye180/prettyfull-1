@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetProducts } from "@/features/collections/api/get-product";
+import { useGetProducts } from "@/features/collections/api/backend/get-product";
 import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
 import { CardProduct, CardProps, GridCardProduct } from "@prettyfull/ui";
 

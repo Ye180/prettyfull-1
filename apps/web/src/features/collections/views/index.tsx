@@ -13,17 +13,17 @@ import NavbarCollection from "@/features/collections/organims/mini-navbar";
 import { ScrollArea } from "@prettyfull/ui";
 import { useParams } from "next/navigation";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-import { useGetProductsByCategorySlug } from "../api/get-product-of-cat-by-slug";
+import { useGetProductByCategoryHandle } from "../api/medusa/get-product-by-handle";
 
 const CollectionViews = () => {
 	const params = useParams();
 
-	console.log("Collection Params:", params);
+	// const { data: productsBySlug, isLoading: isLoadingBySlug } =
+	// 	useGetProductsByCategorySlug(params.slug as string);
 
-	const { data: productsBySlug, isLoading: isLoadingBySlug } =
-		useGetProductsByCategorySlug(params.slug as string);
+	const { data: productsByCategory, isLoading: isLoadingByCategory } =
+		useGetProductByCategoryHandle(params.slug as string);
 
-	console.log("Fetched products by slug:", productsBySlug);
 	// console.log("Fetched products by slug:", isLoadingBySlug);
 	return (
 		<div className="pb-32 space-y-16 ">
@@ -41,14 +41,14 @@ const CollectionViews = () => {
 					<FilterLayout className="h-[200vh] mt-4 border bg-white backdrop-blur-md border-gray-200" />
 					<ScrollArea className="py-4 max-md:hidden md:flex-1 h-[200vh]  scrolbarRecomandation">
 						<GridCollectionLayout
-							products={productsBySlug}
-							loading={isLoadingBySlug}
+							products={productsByCategory?.products}
+							loading={isLoadingByCategory}
 						/>
 					</ScrollArea>
 					<div className="hidden max-md:flex md:hidden">
 						<GridCollectionLayout
-							products={productsBySlug}
-							loading={isLoadingBySlug}
+							products={productsByCategory?.products}
+							loading={isLoadingByCategory}
 						/>
 					</div>
 				</div>

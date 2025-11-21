@@ -1,9 +1,11 @@
 "use client ";
 import { Category } from "@/features/homepage/api/backend/get-category";
 import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
+import { getItem, setItem } from "@/lib/utils/local-storage";
 import { Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import Link from "next/link";
+import { useState } from "react";
 
 const BottomHeader = ({
 	className,
@@ -18,8 +20,11 @@ const BottomHeader = ({
 	loading?: boolean;
 	parentSlug?: string;
 }) => {
-	const buildLinkHref = (slug: string) => {
-		const pathname = COLLECTION_PATHS.collectionDetail(slug);
+	const [subCategory, setSubCategory] = useState(getItem("sous-category"));
+	const buildLinkHref = (handle: string) => {
+		const pathname = COLLECTION_PATHS.collectionDetail(handle);
+
+		setItem("sous-category", secondary_category);
 		return parentSlug ? `${pathname}?division=${parentSlug}` : pathname;
 	};
 
@@ -39,16 +44,18 @@ const BottomHeader = ({
 				>
 					{secondary_category &&
 						!loading &&
-						secondary_category?.map((items: Category, index: number) => (
-							<Link
-								href={buildLinkHref(items.slug)}
-								key={index}
-								className="text-sm!  snap-center tracking-wide whitespace-nowrap hover:text-primary font-semibold uppercase transition-all duration-300 ease-in-out "
-							>
-								{" "}
-								{items.name}
-							</Link>
-						))}{" "}
+						(secondary_category || subCategory)?.map(
+							(items: Category, index: number) => (
+								<Link
+									href={buildLinkHref(items.handle as string)}
+									key={index}
+									className="text-sm!  snap-center tracking-wide whitespace-nowrap hover:text-primary font-semibold uppercase transition-all duration-300 ease-in-out "
+								>
+									{" "}
+									{items.name}
+								</Link>
+							)
+						)}{" "}
 					{loading && <Skeleton className="w-full h-9" />}
 					{/*  */}
 				</div>
