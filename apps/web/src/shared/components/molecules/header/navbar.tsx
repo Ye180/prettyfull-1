@@ -13,6 +13,7 @@ import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
 import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
+import CartDropdown from "./carte-dropdown";
 import { Currency } from "./currency";
 import NavbarResponsive from "./navbar-responsive";
 
@@ -97,6 +98,7 @@ const NavBarHeaders = ({
 								</Link>
 							))}
 						</div>
+						<CartDropdown />
 					</div>
 
 					<div className="md:hidden">

@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@fontsource-variable/manrope": "^5.2.6",
 		"@fontsource/bebas-neue": "^5.2.6",
+		"@headlessui/react": "^2.2.9",
 		"@hookform/resolvers": "^5.2.2",
 		"@medusajs/js-sdk": "^2.11.3",
 		"@medusajs/types": "^2.11.3",
