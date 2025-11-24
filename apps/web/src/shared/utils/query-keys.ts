@@ -28,6 +28,8 @@ export const SLUGNAMES_CONTENT_QUERY_KEY = 'slugnames-content';
 
 export const PRODUCTS_MEDUSA_QUERY_KEY = 'list-products-medusa';
 
+export const CART_ITEMS_CART = "list-items-cart-medusa";
+
 export const PRODUCT_MEDUSA_BY_HANDLE_QUERY_KEY = 'product-medusa-by-handle';
 
 export const PARENTS_CATEGORIES_MEDUSA_QUERY_KEY = 'list-parents-categories-medusa';

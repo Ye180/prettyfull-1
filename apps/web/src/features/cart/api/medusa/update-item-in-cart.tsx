@@ -7,7 +7,6 @@ const UpdateQuantity = (itemId: string, quantity: number) => {
 	sdk.store.cart
 		.updateLineItem(cartId, itemId, { quantity })
 		.then(({ cart }) => {
-			// Utiliser le panier mis à jour
 			console.log(cart);
 		});
 };

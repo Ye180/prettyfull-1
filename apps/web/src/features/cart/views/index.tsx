@@ -2,11 +2,11 @@
 
 import CartSummary from "@/features/cart/components/molecules/cart-summary";
 import CartItems from "@/features/cart/components/organims/cart-items";
+import { StoreCart } from "@medusajs/types";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
 import { useCartStore } from "../../../../../../packages/store/src/use-cart-store";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-import { useGetCart } from "../api/backend/get-cart-by-userid";
+import { useGetItemsCart } from "../api/medusa/get-items-cart";
 
 const TAX_RATE = 0.18;
 const SHIPPING_FEE = 10; // valeur comme dans ta capture (ShopHere)
@@ -15,48 +15,11 @@ const FREE_SHIPPING_THRESHOLD = 50000;
 const CartView = () => {
 	const router = useRouter();
 	const { items, setCart } = useCartStore();
-	const { data: cartData, isLoading } = useGetCart();
 
-	useEffect(() => {
-		if (cartData?.items?.length) {
-			setCart(cartData.items);
-		}
-	}, [cartData, setCart]);
+	const cartId = localStorage.getItem("cart_id");
+	const { data: cart, isLoading } = useGetItemsCart(cartId as string);
 
-	const { subtotal, shipping, taxes, total } = useMemo(() => {
-		const subtotalCalc = items.reduce(
-			(acc, item) => acc + (item.unitPrice?.amount || 0) * item.quantity,
-			0
-		);
-		const taxesCalc = subtotalCalc * TAX_RATE;
-		const shippingCalc =
-			subtotalCalc > FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
-		const totalCalc = subtotalCalc + shippingCalc + taxesCalc;
-		return {
-			subtotal: subtotalCalc,
-			shipping: shippingCalc,
-			taxes: taxesCalc,
-			total: totalCalc,
-		};
-	}, [items]);
-
-	console.log("Cart items:", items);
-
-	// if (isLoading)
-	// 	return <p className="py-24 text-center">Chargement du panier...</p>;
-
-	if (items.length === 0)
-		return (
-			<div className="flex flex-col items-center gap-8 py-24">
-				<h1 className="text-2xl font-semibold">Votre panier est vide</h1>
-				<button
-					onClick={() => router.push("/")}
-					className="px-6 py-3 text-white transition bg-black rounded-full hover:bg-black/80"
-				>
-					Continuer mes achats
-				</button>
-			</div>
-		);
+	console.log("Cart data:", cart);
 
 	return (
 		<Container
@@ -71,12 +34,13 @@ const CartView = () => {
 							Votre panier
 						</h2>
 						<span className="text-sm text-gray-500">
-							{items.length} article{items.length > 1 ? "s" : ""}
+							{cart?.items?.length ?? 0} article
+							{(cart?.items?.length ?? 0) > 1 ? "s" : ""}
 						</span>
 					</div>
 
 					<div className="divide-y divide-gray-100">
-						<CartItems items={items} />
+						<CartItems cart={cart as StoreCart} isLoading={isLoading} />
 					</div>
 
 					<div className="mt-6 text-sm text-gray-600">
@@ -92,11 +56,11 @@ const CartView = () => {
 				<aside className="md:col-span-4">
 					<div className="sticky top-24">
 						<CartSummary
-							subtotal={subtotal}
-							shipping={shipping}
-							taxes={taxes}
-							total={total}
-							currency="USD"
+							subtotal={cart?.item_subtotal}
+							shipping={cart?.shipping_total}
+							taxes={cart?.item_tax_total}
+							total={cart?.item_total}
+							currency="FCFA"
 						/>
 					</div>
 				</aside>

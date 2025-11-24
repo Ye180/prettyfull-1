@@ -1,16 +1,19 @@
 "use client";
 
+import { useGetItemsCart } from "@/features/cart/api/medusa/get-items-cart";
 import { Category } from "@/features/homepage/api/backend/get-category";
+import { sdk } from "@/lib/api/sdk";
 import { PAGES_PATHS } from "@/lib/routes/paths-en";
 import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
 import { setItem } from "@/lib/utils/local-storage";
+import { StoreCartLineItem } from "@medusajs/types";
 import { Input, Logo, Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
 import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
 import CartDropdown from "./carte-dropdown";
@@ -28,6 +31,32 @@ const NavBarHeaders = ({
 	const pathname = usePathname();
 	const [division] = useQueryState("division");
 	const t = useTranslations("HomePage.header");
+
+	const id = localStorage.getItem("cart_id");
+
+	const [cartItem, setCartItem] = useState<StoreCartLineItem[] | []>([]);
+
+	const { data: itemsCart, isLoading } = useGetItemsCart(id as string);
+
+	useEffect(() => {
+		const cartId = localStorage.getItem("cart_id");
+		if (cartId) {
+			// Le panier existe déjà, ne rien faire
+			return;
+		}
+		// Créer un nouveau panier et stocker son id
+		sdk.store.cart
+			.create({ region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684" })
+			.then(({ cart }) => {
+				localStorage.setItem("cart_id", cart.id);
+
+				setCartItem(cart.items || []);
+			});
+	}, []);
+
+	console.log("Rendering NavBarHeaders with main_category:", main_category);
+
+	console.log("CartItems:", cartItem);
 
 	return (
 		<>
@@ -85,8 +114,7 @@ const NavBarHeaders = ({
 									href={item.href}
 									aria-label="Liste de souhaits"
 									className={cn(
-										"relative p-3 text-black transition-colors rounded-full hover:bg-gray-100  hover:[&>span]:flex" +
-											(item.visible ? " relative " : " ")
+										"relative p-3 text-black transition-colors rounded-full hover:bg-gray-100  hover:[&>span]:flex"
 									)}
 								>
 									{item.infos?.count && (
@@ -98,7 +126,7 @@ const NavBarHeaders = ({
 								</Link>
 							))}
 						</div>
-						<CartDropdown />
+						<CartDropdown cart={itemsCart?.items || []} />
 					</div>
 
 					<div className="md:hidden">

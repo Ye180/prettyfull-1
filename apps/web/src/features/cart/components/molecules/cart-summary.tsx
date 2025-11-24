@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/hooks/useAuth"; // 1. Importer votre hook d'authentification
 import { Button, DropdownMenuSeparator } from "@prettyfull/ui";
+import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
@@ -48,23 +49,17 @@ const CartSummary = ({
 					<div className="space-y-8">
 						<div className="flex justify-between text-md">
 							<span>{t("subtotal")}</span>
-							<span>
-								{currency} {subtotal.toLocaleString()}
-							</span>
+							<span>{formatCurrency_FR(subtotal)}</span>
 						</div>
 
 						<div className="flex justify-between text-md">
 							<span>{t("shipping")}</span>
-							<span>
-								{currency} {shipping.toLocaleString()}
-							</span>
+							<span>{formatCurrency_FR(shipping)}</span>
 						</div>
 
 						<div className="flex justify-between text-md">
 							<span>{t("taxes")}</span>
-							<span>
-								{currency} {taxes.toLocaleString()}
-							</span>
+							<span>{formatCurrency_FR(taxes)}</span>
 						</div>
 					</div>
 
@@ -72,9 +67,7 @@ const CartSummary = ({
 
 					<div className="flex justify-between py-6 text-lg font-semibold">
 						<span>{t("total")}</span>
-						<span>
-							{currency} {total.toLocaleString()}
-						</span>
+						<span>{formatCurrency_FR(total)}</span>
 					</div>
 				</div>
 

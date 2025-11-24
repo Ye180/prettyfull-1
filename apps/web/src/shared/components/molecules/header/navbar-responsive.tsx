@@ -92,7 +92,7 @@ const NavbarResponsive = ({
 						className="w-full text-black"
 					>
 						<AccordionItem value="item-12" className="pb-4 space-y-2 md:hidden">
-							<AccordionTrigger className=" !font-manrope text-lg font-medium">
+							<AccordionTrigger className=" font-manrope! text-lg font-medium">
 								{t("setting")}
 							</AccordionTrigger>
 							<AccordionContent className="pb-8 mt-4 space-y-8 ">
@@ -115,7 +115,7 @@ const NavbarResponsive = ({
 										))}
 									</div>
 								</div>
-								<div className="px-[6rem] border-b border-gray-100" />
+								<div className="px-24 border-b border-gray-100" />
 
 								<div className="mt-2 space-y-3">
 									{/* <h4 className="!text-[1.8rem]">Langue</h4> */}

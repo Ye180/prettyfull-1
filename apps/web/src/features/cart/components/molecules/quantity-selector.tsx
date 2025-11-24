@@ -39,23 +39,23 @@ export const QuantitySelector = ({
 			<button
 				onClick={() => handleUpdate(quantity - 1)}
 				disabled={updateMutation.isPending}
-				className={`w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 cursor-pointer transition 
-        ${updateMutation.isPending ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-200"}`}
+				className={`w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 cursor-pointer transition 
+        		${updateMutation.isPending ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-200"}`}
 			>
-				<MinusIcon className="w-8 h-8" />
+				<MinusIcon className="w-6 h-6" />
 			</button>
 
-			<span className="w-10 text-lg font-medium text-center select-none">
+			<span className="w-8 text-lg font-medium text-center text-[1.5rem] select-none">
 				{quantity}
 			</span>
 
 			<button
 				onClick={() => handleUpdate(quantity + 1)}
 				disabled={updateMutation.isPending}
-				className={`w-10 h-10 flex items-center justify-center rounded-full bg-black hover:bg-black/80 transition cursor-pointer
-        ${updateMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+				className={`w-8 h-8 flex items-center justify-center rounded-full bg-black hover:bg-black/80 transition cursor-pointer
+        		${updateMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
 			>
-				<PlusIcon className="w-8 h-9" color="white" />
+				<PlusIcon className="w-6 h-6" color="white" />
 			</button>
 		</div>
 	);

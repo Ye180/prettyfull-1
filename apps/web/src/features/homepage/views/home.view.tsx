@@ -5,6 +5,7 @@ import Space from "@/shared/components/molecules/core/space";
 import { CardProduct, GridCardProduct } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 import { useGetProductsMedusa } from "../api/medusa/get-products-medusa";
 import Hero from "../organims/hero-video";
@@ -21,27 +22,18 @@ const HomeView = () => {
 
 	const id = params?.id;
 
-	// const { data: slugNameContent, isLoading: slugNameLoading } =
-	// 	useGetSiteSlugNameContent(id as string);
-
 	const { data: productMedusa, isLoading: loadingProductsMedusa } =
 		useGetProductsMedusa();
 
-	sdk.store.region.list().then(({ regions, count, limit, offset }) => {
-		console.log(regions);
-	});
-
-	sdk.store.cart
-		.create({ region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684" })
-		.then(({ cart }) => {
-			localStorage.setItem("cart_id", cart.id);
-		});
+	// sdk.store.region.list().then(({ regions, count, limit, offset }) => {
+	// 	console.log(regions);
+	// });
 
 	return (
 		<div className="  w-full *:w-full lg:*:px-40  space-y-4 lg:space-y-4 mb-20">
 			<SearchBar />
 			<Hero video={true} />
-			{/* <Hero video={false} firstSection={slugNameContent?.first} /> */}
+
 			<Space />
 			<NewsArrivals />
 			<Space />
@@ -51,11 +43,11 @@ const HomeView = () => {
 			/>
 			<Space />
 			<ModeCollection />
-			{/* <Space /> */}
+			<Space />
 			<Container maxWidth="100vw" className="w-full py-8 lg:px-40">
 				<h2 className="text-center">{t("paragraph1")}</h2>
 			</Container>
-			{/* <Space /> */}
+			<Space />
 			<TrendReport />
 			<Space />
 

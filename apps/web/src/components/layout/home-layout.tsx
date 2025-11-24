@@ -1,7 +1,6 @@
 "use client";
 import { useGetPrimaryCategory } from "@/features/homepage/api/backend/get-primary-category";
 import { useGetSiteKeyContent } from "@/shared/api/key-site-content";
-// import { useGetPrimaryCategory } from "@/features/homepage/api/get-children-category";
 import Footer from "@/shared/components/organims/footer";
 import Header from "@/shared/components/organims/header";
 import { cn } from "@prettyfull/utils";
@@ -34,7 +33,20 @@ const HomeLayout = ({
 		isLoading: loadingParentsCategoryMedusa,
 	} = useGetParentsCategoryMedusa();
 
-	// Redirection automatique depuis "/" vers la première page
+	// useEffect(() => {
+	// 	const cartId = localStorage.getItem("cart_id");
+	// 	if (cartId) {
+	// 		// Le panier existe déjà, ne rien faire
+	// 		return;
+	// 	}
+	// 	// Créer un nouveau panier et stocker son id
+	// 	const items = sdk.store.cart
+	// 		.create({ region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684" })
+	// 		.then(({ cart }) => {
+	// 			localStorage.setItem("cart_id", cart.id);
+	// 		});
+	// }, []);
+
 	useEffect(() => {
 		if (
 			!loadingParentsCategoryMedusa &&

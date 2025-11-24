@@ -10,7 +10,7 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { useAddItemToCart } from "../../../apps/web/src/features/cart/api/backend/add-item-to-cart";
+import { useAddItemToCartMedusa } from "../../../apps/web/src/features/cart/api/medusa/add-item-to-cart-medusa";
 import { Button } from "./button";
 import DrawerCart from "./drawer-cart";
 import DrawerVariable from "./drawer-variable";
@@ -234,7 +234,8 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 	);
 
 	// --- LOGIQUE D'AJOUT AU PANIER ---
-	const addItemToCartMutation = useAddItemToCart();
+	const addItemToCartMutation = useAddItemToCartMedusa();
+
 	const [selectedSize, setSelectedSize] = useState<string>("");
 	// --- FIN DE LA LOGIQUE ---
 
@@ -325,13 +326,15 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 			quantity: 1,
 		});
 
+		const cartId = localStorage.getItem("cart_id");
+
 		// IMPORTANT: Avec Medusa, on envoie le variant_id directement
 		// Adapter votre API backend pour accepter variant_id au lieu de selectedVariants
 		addItemToCartMutation.mutate(
 			{
-				productId: productId,
+				cartId: cartId || "",
 				quantity: 1,
-				selectedVariants: { variant_id: matchingVariant.id }, // ou adapter votre API
+				variant_id: matchingVariant.id, // ou adapter votre API
 			},
 			{
 				onSuccess: () => {

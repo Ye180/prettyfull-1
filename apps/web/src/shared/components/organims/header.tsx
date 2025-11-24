@@ -32,7 +32,7 @@ const Header = ({
 
 	useEffect(() => {
 		setItem("sous-category", children_category_active?.category_children);
-	}, [params.id, params.handle,  children_category_active]);
+	}, [params.id, params.handle, children_category_active]);
 
 	// 1. Initialise la catégorie à 'undefined' (comme sur le serveur)
 	// const [category, setCategory] = useState<any>(getItem("category")); // Le tableau vide signifie "exécute-moi une seule fois au chargement"
@@ -67,10 +67,6 @@ const Header = ({
 		});
 
 	// 2. Récupérer les enfants directs du parentSlug depuis l'API Medusa
-
-	// const { product_categories: directChildren } = sdk.store.category.list({
-	// 	parent_category_id: parentCategory.id,
-	// });
 
 	return (
 		<header className="py-8 bg-white max-sm:h-fit ">
