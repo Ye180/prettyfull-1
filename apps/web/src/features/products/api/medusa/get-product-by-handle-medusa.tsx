@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 
 export const getProductsByHandleMedusa = async (handle: string) => {
 	const response = await sdk.store.product.list({
+		fields: "*variants.calculated_price",
+		region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684",
 		handle,
 	});
 

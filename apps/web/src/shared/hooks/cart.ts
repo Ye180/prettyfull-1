@@ -6,12 +6,12 @@ import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import medusaError from "../lib/medusa-error"
 import {
-      getAuthHeaders,
-      getCacheOptions,
-      getCacheTag,
-      getCartId,
-      removeCartId,
-      setCartId,
+  getAuthHeaders,
+  getCacheOptions,
+  getCacheTag,
+  getCartId,
+  removeCartId,
+  setCartId,
 } from "./cookies"
 import { getRegion } from "./regions"
 
@@ -120,33 +120,35 @@ export async function addToCart({
   quantity: number
   countryCode: string
 }) {
-  if (!variantId) {
-    throw new Error("Missing variant ID when adding to cart")
-  }
+  // if (!variantId) {
+  //   throw new Error("Missing variant ID when adding to cart")
+  // }
 
-  const cart = await getOrSetCart(countryCode)
+  // const cart = await getOrSetCart(countryCode)
 
-  if (!cart) {
-    throw new Error("Error retrieving or creating cart")
-  }
+  // if (!cart) {
+  //   throw new Error("Error retrieving or creating cart")
+  // }
 
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  // const headers = {
+  //   ...(await getAuthHeaders()),
+  // }
 
   await sdk.store.cart
     .createLineItem(
-      cart.id,
+      "cart_123",
       {
         variant_id: variantId,
         quantity,
       },
       {},
-      headers
+      // headers
     )
     .then(async () => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
+
+      console.log("Cart updated successfully.")
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment")
       revalidateTag(fulfillmentCacheTag)

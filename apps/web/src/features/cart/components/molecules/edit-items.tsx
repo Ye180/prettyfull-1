@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
-import { useRemoveCartItem } from "../../api/remove-item-from-cart";
+import { useRemoveCartItem } from "../../api/backend/remove-item-from-cart";
 interface Props {
 	productId: string;
 }

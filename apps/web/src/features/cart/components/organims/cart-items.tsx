@@ -6,7 +6,7 @@ import type { CartItem } from "../../../../../../../packages/store/src/use-cart-
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
-import { useRemoveCartItem } from "../../api/remove-item-from-cart";
+import { useRemoveCartItem } from "../../api/backend/remove-item-from-cart";
 import { QuantitySelector } from "../molecules/quantity-selector";
 
 const getImageUrl = (path?: string) => {

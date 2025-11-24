@@ -13,6 +13,9 @@ const GetProductByCategoryHandle = async ({ handle }: { handle: string }) => {
 	if (category) {
 		const { products, count } = await sdk.store.product.list({
 			category_id: category.id,
+
+			fields: "*variants.calculated_price",
+			region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684",
 			limit: 20, // optionnel
 			offset: 0, // optionnel
 		});

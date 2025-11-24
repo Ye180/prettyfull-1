@@ -1,4 +1,5 @@
 "use client";
+import { sdk } from "@/lib/api/sdk";
 import SearchBar from "@/shared/components/molecules/core/search";
 import Space from "@/shared/components/molecules/core/space";
 import { CardProduct, GridCardProduct } from "@prettyfull/ui";
@@ -25,6 +26,16 @@ const HomeView = () => {
 
 	const { data: productMedusa, isLoading: loadingProductsMedusa } =
 		useGetProductsMedusa();
+
+	sdk.store.region.list().then(({ regions, count, limit, offset }) => {
+		console.log(regions);
+	});
+
+	sdk.store.cart
+		.create({ region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684" })
+		.then(({ cart }) => {
+			localStorage.setItem("cart_id", cart.id);
+		});
 
 	return (
 		<div className="  w-full *:w-full lg:*:px-40  space-y-4 lg:space-y-4 mb-20">

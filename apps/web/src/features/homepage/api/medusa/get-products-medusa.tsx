@@ -6,7 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 
 export const getProductsMedusa = async () => {
 	const response = sdk.store.product
-		.list()
+		.list({
+			fields: "*variants.calculated_price",
+			region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684",
+		})
 		.then(({ products, count, offset, limit }) => {
 			// Filtrer les produits pour ne garder que ceux qui ont au moins une variante
 			const productsWithVariants = products.filter(

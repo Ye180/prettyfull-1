@@ -10,7 +10,7 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { useAddItemToCart } from "../../../apps/web/src/features/cart/api/add-item-to-cart";
+import { useAddItemToCart } from "../../../apps/web/src/features/cart/api/backend/add-item-to-cart";
 import { Button } from "./button";
 import DrawerCart from "./drawer-cart";
 import DrawerVariable from "./drawer-variable";

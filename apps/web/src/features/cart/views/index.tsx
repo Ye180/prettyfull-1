@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useCartStore } from "../../../../../../packages/store/src/use-cart-store";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-import { useGetCart } from "../api/get-cart-by-userid";
+import { useGetCart } from "../api/backend/get-cart-by-userid";
 
 const TAX_RATE = 0.18;
 const SHIPPING_FEE = 10; // valeur comme dans ta capture (ShopHere)

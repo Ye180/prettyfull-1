@@ -1,12 +1,11 @@
+import { useUserId } from "@/hooks/useUserId";
+import client from "@/shared/lib/client";
+import { CART_QUERY_KEY } from "@/shared/utils/query-keys";
 import {
 	useMutation,
 	UseMutationResult,
 	useQueryClient,
 } from "@tanstack/react-query";
-import client from "@/shared/lib/client";
-import { CART_QUERY_KEY } from "@/shared/utils/query-keys";
-import { useUserId } from "@/hooks/useUserId";
-import { useCartStore } from "../../../../../../packages/store/src/use-cart-store";
 
 interface AddItemDto {
 	productId: string;
@@ -20,8 +19,8 @@ export const useAddItemToCart = (): UseMutationResult<
 	AddItemDto
 > => {
 	const queryClient = useQueryClient();
-  // On n'a plus besoin de setCart ici car l'invalidation s'en occupe
-	// const { setCart } = useCartStore(); 
+	// On n'a plus besoin de setCart ici car l'invalidation s'en occupe
+	// const { setCart } = useCartStore();
 	const userId = useUserId();
 
 	return useMutation({
@@ -33,18 +32,18 @@ export const useAddItemToCart = (): UseMutationResult<
 		},
 
 		onSuccess: (data: any) => {
-      // ⬇️⬇️⬇️ MODIFICATION ⬇️⬇️⬇️
-      // Le backend ne renvoie plus le panier, donc on supprime cette logique
-      // qui essayait de mettre à jour le store manuellement.
+			// ⬇️⬇️⬇️ MODIFICATION ⬇️⬇️⬇️
+			// Le backend ne renvoie plus le panier, donc on supprime cette logique
+			// qui essayait de mettre à jour le store manuellement.
 			/*
       if (data && data.items) {
 				setCart(data.items);
 			}
       */
-      
+
 			// On se contente d'invalider la query.
-      // React Query va appeler 'get-cart-by-userid.tsx' automatiquement
-      // pour rafraîchir le panier.
+			// React Query va appeler 'get-cart-by-userid.tsx' automatiquement
+			// pour rafraîchir le panier.
 			queryClient.invalidateQueries({ queryKey: [CART_QUERY_KEY, userId] });
 		},
 	});

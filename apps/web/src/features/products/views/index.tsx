@@ -3,6 +3,7 @@
 import { ProductGallery } from "@/features/products/components/organims/product-gallery";
 import ProductSuggestion from "@/features/products/components/organims/product-suggestion";
 import Reviews from "@/features/products/components/organims/reviews";
+import { sdk } from "@/lib/api/sdk";
 import ProductSkeleton from "@/shared/components/organims/product-fiche-loading";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -161,7 +162,7 @@ export default function ProductViews() {
 		setDisabled(false);
 	}, []);
 
-	const handleClick = () => {
+	const handleClick = async () => {
 		if (!selectedColor || !selectedSize) {
 			console.error("Veuillez sélectionner une couleur et une taille");
 			return;
@@ -192,6 +193,22 @@ export default function ProductViews() {
 				color: selectedColor,
 				size: selectedSize,
 			});
+
+			sdk.store.cart
+				.createLineItem("cart_123", {
+					variant_id: matchingVariant.id,
+					quantity: 1,
+				})
+				.then(({ cart }) => {
+					console.log(cart);
+				});
+
+			// await addToCart({
+			// 	variantId: matchingVariant.id,
+			// 	quantity: 1,
+			// 	countryCode: "CI",
+			// });
+
 			// TODO: Appeler votre mutation d'ajout au panier ici
 		} else {
 			console.error("Variant non trouvé");
@@ -235,8 +252,8 @@ export default function ProductViews() {
 						setSelectedColor={handleColorChange}
 						selectedSize={selectedSize}
 						setSelectedSize={handleSizeChange}
-						onClick={() => {
-							handleClick();
+						onClick={async () => {
+							await handleClick();
 						}}
 						disabled={disabled}
 					/>

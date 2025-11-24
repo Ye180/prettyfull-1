@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MinusIcon } from "../../../../../../../packages/ui/src/icons/minus.icon";
 import { PlusIcon } from "../../../../../../../packages/ui/src/icons/plus.icon";
-import { useUpdateCartItem } from "../../api/update-items-in-cart";
+import { useUpdateCartItem } from "../../api/backend/update-items-in-cart";
 
 interface Props {
 	productId: string;
