@@ -8,6 +8,7 @@ import {
 	PopoverPanel,
 	Transition,
 } from "@headlessui/react";
+import { StoreCartLineItem } from "@medusajs/types";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -15,7 +16,7 @@ import Link from "next/link";
 import { Fragment, useState } from "react";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
 
-const CartDropdown = (cart) => {
+const CartDropdown = (cart: any) => {
 	const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
 
 	const open = () => setCartDropdownOpen(true);
@@ -110,14 +111,14 @@ const CartDropdown = (cart) => {
 							{/* Exemple d'article dans le panier */}
 
 							<div className="space-y-12">
-								{cart?.cart?.map((item, index: number) => {
+								{cart?.cart?.map((item: StoreCartLineItem, index: number) => {
 									return (
 										<div className="flex mb-12 gap-x-8" key={index}>
 											<div className="border border-gray-300 rounded-lg size-24">
 												{" "}
 												<Image
-													src={item.thumbnail}
-													alt={item.product_title}
+													src={item.thumbnail as string}
+													alt={item.product_title as string}
 													width={96}
 													height={96}
 													className="object-cover w-24 h-24 rounded-lg"

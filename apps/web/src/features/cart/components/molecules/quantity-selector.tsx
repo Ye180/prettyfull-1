@@ -1,5 +1,8 @@
 "use client";
 
+import { sdk } from "@/lib/api/sdk";
+import { CART_ITEMS_CART } from "@/shared/utils/query-keys";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MinusIcon } from "../../../../../../../packages/ui/src/icons/minus.icon";
 import { PlusIcon } from "../../../../../../../packages/ui/src/icons/plus.icon";
@@ -9,12 +12,14 @@ interface Props {
 	productId: string;
 	initialQuantity: number;
 	selectedVariants?: Record<string, string>; // ✅ Ajouté
+	cartId?: string;
 }
 
 export const QuantitySelector = ({
 	productId,
 	initialQuantity,
 	selectedVariants,
+	cartId,
 }: Props) => {
 	const updateMutation = useUpdateCartItem();
 	const [quantity, setQuantity] = useState(initialQuantity);
@@ -28,8 +33,22 @@ export const QuantitySelector = ({
 		});
 	}, 500);
 
+	const queryClient = useQueryClient();
+
 	const handleUpdate = (newQuantity: number) => {
 		if (newQuantity < 1) return;
+
+		sdk.store.cart
+			.updateLineItem(cartId as string, productId, { quantity: newQuantity })
+			.then(({ cart }) => {
+				// Utiliser le panier mis à jour
+				console.log(cart);
+
+				// Invalider et refetch les données du panier
+				queryClient.invalidateQueries({
+					queryKey: [CART_ITEMS_CART, cartId as string],
+				});
+			});
 		setQuantity(newQuantity);
 		debouncedUpdate(newQuantity);
 	};

@@ -99,9 +99,10 @@ const CartItems = ({
 							{/* Bloc quantité + actions */}
 							<div className="flex flex-col items-start justify-between gap-3 mt-2 h-fit md:h-full ">
 								<QuantitySelector
-									productId={item.variant_id || ""}
+									productId={item.id || ""}
 									initialQuantity={item.quantity}
 									selectedVariants={{}}
+									cartId={cart.id}
 								/>{" "}
 								<div className="items-center hidden gap-4 md:flex">
 									<button className="p-2 transition border rounded-full hover:bg-gray-100">

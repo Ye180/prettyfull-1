@@ -1,11 +1,9 @@
 "use client";
 
-import { useGetChildrenCategory } from "@/features/homepage/api/backend/get-children-category";
 // import { getItem } from "@/lib/utils/local-storage";
 import { useParams } from "next/navigation";
 import { useQueryState } from "nuqs";
 // Importe useState et useEffect
-import { useGetProductsByHandleMedusa } from "@/features/products/api/medusa/get-product-by-handle-medusa";
 import { sdk } from "@/lib/api/sdk";
 import { setItem } from "@/lib/utils/local-storage";
 import { useEffect, useMemo } from "react";
@@ -22,27 +20,35 @@ const Header = ({
 	const params = useParams();
 	const [division] = useQueryState("division");
 
-	const { data: product, isLoading } = useGetProductsByHandleMedusa(
-		params.id as string
-	);
+	const category_local = localStorage.getItem("sous-category");
+
+	console.log("Category:", category_local);
+
+	// Chercher d'abord avec division (query param), sinon avec params.id (URL)
+	const activeHandle = division || params.id;
 
 	const children_category_active = main_category?.find(
-		(cat: any) => cat.handle === params.id
+		(cat: any) => cat.handle === activeHandle
 	);
 
 	useEffect(() => {
-		setItem("sous-category", children_category_active?.category_children);
-	}, [params.id, params.handle, children_category_active]);
-
-	// 1. Initialise la catégorie à 'undefined' (comme sur le serveur)
-	// const [category, setCategory] = useState<any>(getItem("category")); // Le tableau vide signifie "exécute-moi une seule fois au chargement"
+		// Mettre à jour UNIQUEMENT si on a de nouvelles sous-catégories
+		// Ne jamais effacer les sous-catégories existantes
+		if (
+			children_category_active?.category_children &&
+			children_category_active.category_children.length > 0
+		) {
+			setItem("sous-category", children_category_active.category_children);
+		}
+		// Si pas de sous-catégories disponibles, on garde celles en localStorage
+	}, [children_category_active]);
 
 	const normalizedSlug = Array.isArray(params.id)
 		? params.id[0]
 		: (params.id ?? division ?? "");
 
-	const { data: children_category, isLoading: secondaryLoading } =
-		useGetChildrenCategory(normalizedSlug as string);
+	// const { data: children_category, isLoading: secondaryLoading } =
+	// 	useGetChildrenCategory(normalizedSlug as string);
 
 	// Récupérer le parent slug depuis l'URL ou depuis les params
 	const parentSlug = useMemo(() => {
@@ -73,11 +79,11 @@ const Header = ({
 			<nav className="flex flex-col justify-start px-4 mx-auto gap-y-4 sm:px-6 lg:px-8 max-auto ">
 				<NavBarHeaders
 					main_category={main_category}
-					secondary_category={children_category_active?.category_children}
+					secondary_category={
+						children_category_active?.category_children || category_local
+					}
 				/>
 				<BottomHeader
-					// 3. Le premier rendu sera `children_category || undefined`
-					//    Le second rendu (après le useEffect) sera `children_category || [données du local storage]`
 					secondary_category={children_category_active?.category_children}
 					loading={loading}
 					parentSlug={parentSlug}

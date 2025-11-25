@@ -5,7 +5,6 @@ import { Category } from "@/features/homepage/api/backend/get-category";
 import { sdk } from "@/lib/api/sdk";
 import { PAGES_PATHS } from "@/lib/routes/paths-en";
 import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
-import { setItem } from "@/lib/utils/local-storage";
 import { StoreCartLineItem } from "@medusajs/types";
 import { Input, Logo, Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
@@ -28,6 +27,7 @@ const NavBarHeaders = ({
 	secondary_category: Category[];
 }) => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [activeCategory, setActiveCategory] = useState<string | null>(null);
 	const pathname = usePathname();
 	const [division] = useQueryState("division");
 	const t = useTranslations("HomePage.header");
@@ -35,6 +35,14 @@ const NavBarHeaders = ({
 	const id = localStorage.getItem("cart_id");
 
 	const [cartItem, setCartItem] = useState<StoreCartLineItem[] | []>([]);
+
+	// Charger la catégorie active depuis localStorage au montage
+	useEffect(() => {
+		const stored = localStorage.getItem("active_category");
+		if (stored) {
+			setActiveCategory(stored);
+		}
+	}, []);
 
 	const { data: itemsCart, isLoading } = useGetItemsCart(id as string);
 
@@ -54,10 +62,6 @@ const NavBarHeaders = ({
 			});
 	}, []);
 
-	console.log("Rendering NavBarHeaders with main_category:", main_category);
-
-	console.log("CartItems:", cartItem);
-
 	return (
 		<>
 			<div className="relative flex items-center justify-between h-20">
@@ -71,14 +75,20 @@ const NavBarHeaders = ({
 					<div className=" max-md:hidden flex text-[1.2rem] text-black items-center space-x-6">
 						{main_category ? (
 							main_category?.map((items: Category, index: number) => {
+								const itemHandle = items.handle as string;
 								const isActive =
-									pathname === PAGES_PATHS.pageDetail(items.handle as string) ||
-									division === items.handle;
+									pathname === PAGES_PATHS.pageDetail(itemHandle) ||
+									division === itemHandle ||
+									activeCategory === itemHandle;
+
 								return (
 									<Link
 										key={index}
-										href={PAGES_PATHS.pageDetail(items.handle as string)}
-										onClick={() => setItem("links", items.name)}
+										href={PAGES_PATHS.pageDetail(itemHandle)}
+										onClick={() => {
+											setActiveCategory(itemHandle);
+											localStorage.setItem("active_category", itemHandle);
+										}}
 										className={cn(
 											"font-black tracking-wide uppercase text-[#262626] hover:text-black text-sm transition-all",
 											isActive &&

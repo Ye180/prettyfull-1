@@ -1,11 +1,11 @@
 "use client ";
 import { Category } from "@/features/homepage/api/backend/get-category";
 import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
-import { getItem, setItem } from "@/lib/utils/local-storage";
+import { getItem } from "@/lib/utils/local-storage";
 import { Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const BottomHeader = ({
 	className,
@@ -20,11 +20,19 @@ const BottomHeader = ({
 	loading?: boolean;
 	parentSlug?: string;
 }) => {
-	const [subCategory, setSubCategory] = useState(getItem("sous-category"));
+	const [subCategory, setSubCategory] = useState(
+		getItem("sous-category") || []
+	);
+
+	useEffect(() => {
+		const storedSubCategories = getItem("sous-category");
+		if (storedSubCategories) {
+			setSubCategory(storedSubCategories);
+		}
+	}, []);
+
 	const buildLinkHref = (handle: string) => {
 		const pathname = COLLECTION_PATHS.collectionDetail(handle);
-
-		setItem("sous-category", secondary_category);
 		return parentSlug ? `${pathname}?division=${parentSlug}` : pathname;
 	};
 
