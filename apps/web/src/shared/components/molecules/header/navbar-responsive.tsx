@@ -53,14 +53,16 @@ const NavbarResponsive = ({
 							main_category.map((items: Category, index) => (
 								<NavLink
 									key={index}
-									href={COLLECTION_PATHS.collectionDetail(items.slug)}
+									href={COLLECTION_PATHS.collectionDetail(
+										items.handle as string
+									)}
 									className="font-extrabold text-[1.7rem]!"
 								>
 									{items.name}
 								</NavLink>
 							))
 						) : (
-							<Skeleton className="w-full h-9 " />
+							<Skeleton className="w-full h-9" />
 						)}
 					</div>
 				</div>
@@ -68,14 +70,13 @@ const NavbarResponsive = ({
 
 			<ScrollArea className="py-4 border-b-8 h-[90vh] px-4">
 				<div className="flex flex-col w-full p-0 px-2 py-4 overflow-x-auto border-t border-gray-200 gap-y-2">
-					{secondary_category ? (
+					{secondary_category && secondary_category.length > 0 ? (
 						secondary_category.map((items: Category, index: number) => (
 							<NavLink
-								href={COLLECTION_PATHS.collectionDetail(items.slug)}
+								href={COLLECTION_PATHS.collectionDetail(items.handle as string)}
 								key={index}
-								className="!text-[1.6rem]! capitalize snap-center  w-full py-2 hover:bg-gray-100 rounded-md px-2 font-medium"
+								className="!text-[1.6rem]! capitalize snap-center w-full py-2 hover:bg-gray-100 rounded-md px-2 font-medium"
 							>
-								{" "}
 								{items.name}
 							</NavLink>
 						))

@@ -1,13 +1,18 @@
 "use client";
 
+import { useGetItemsCart } from "@/features/cart/api/medusa/get-items-cart";
 import { useCheckoutSummary } from "@/hooks/use-Checkout-summary";
 import { DropdownMenuSeparator } from "@prettyfull/ui";
+import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import VisualSummary from "../molecules/visual-sumary";
 
 const CheckoutSummary = () => {
 	const t = useTranslations("CheckoutPage.summary");
 	const { items, summary } = useCheckoutSummary();
+
+	const cartId = localStorage.getItem("cart_id");
+	const { data: cart, isLoading } = useGetItemsCart(cartId as string);
 
 	return (
 		<div className="w-full py-6 bg-white">
@@ -36,25 +41,17 @@ const CheckoutSummary = () => {
 				<div className="space-y-8">
 					<div className="flex justify-between text-md">
 						<span>{t("subtotal")}</span>
-						<span>
-							{summary.currency} {summary.subtotal.toLocaleString()}
-						</span>
+						<span>{formatCurrency_FR(cart?.item_subtotal as number)}</span>
 					</div>
 
 					<div className="flex justify-between text-md">
 						<span>{t("shipping")}</span>
-						<span>
-							{summary.currency} {summary.shipping.toLocaleString()}
-						</span>
+						<span>{formatCurrency_FR(cart?.shipping_total as number)}</span>
 					</div>
 
 					<div className="flex justify-between text-md">
 						<span>{t("taxes")}</span>
-						<span>
-							{summary.taxes
-								? `${summary.currency} ${summary.taxes.toLocaleString()}`
-								: "-"}
-						</span>
+						<span>{formatCurrency_FR(cart?.item_tax_total as number)}</span>
 					</div>
 				</div>
 
@@ -62,17 +59,15 @@ const CheckoutSummary = () => {
 
 				<div className="flex justify-between py-6 text-lg font-semibold">
 					<span>{t("total")}</span>
-					<span>
-						{summary.currency} {summary.total.toLocaleString()}
-					</span>
+					<span>{formatCurrency_FR(cart?.item_total as number)}</span>
 				</div>
 			</div>
 
 			<DropdownMenuSeparator />
 
-			<p className="py-8 text-[1.5rem] font-semibold">
+			{/* <p className="py-8 text-[1.5rem] font-semibold">
 				Arrive Dim, 28 Sept - Vend 02 Aout
-			</p>
+			</p> */}
 		</div>
 	);
 };

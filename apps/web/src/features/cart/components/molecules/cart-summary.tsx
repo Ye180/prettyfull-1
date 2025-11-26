@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth"; // 1. Importer votre hook d'authentification
+import { sdk } from "@/lib/api/sdk";
 import { Button, DropdownMenuSeparator } from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
@@ -24,21 +24,20 @@ const CartSummary = ({
 	const t = useTranslations("CheckoutPage.summary");
 
 	const router = useRouter(); // 2. Initialiser le router
-	const { isAuthenticated, isLoading } = useAuth(); // 3. Obtenir l'état de l'utilisateur depuis votre hook
 
 	// 4. Logique de redirection
 	const handleCheckout = () => {
-		if (isLoading) {
-			return; // Attendre que la vérification d'auth soit terminée
-		}
-
-		if (isAuthenticated) {
-			// 5. Si connecté, aller au checkout
-			router.push("/checkout");
-		} else {
-			// 6. Si invité, aller au login en mémorisant la page de destination
-			router.push("/login?callbackUrl=/checkout");
-		}
+		sdk.store.customer
+			.retrieve()
+			.then(({ customer }) => {
+				// ICI => l'utilisateur est connecté
+				router.push("/checkout");
+				console.log("Customer connecté:", customer);
+			})
+			.catch(() => {
+				router.push("/login?callbackUrl=/checkout");
+				// ICI => l'utilisateur n'est PAS connecté
+			});
 	};
 
 	return (

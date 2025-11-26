@@ -1,3 +1,5 @@
+"use client";
+
 import { Cart } from "@/components/icons/cart.icon";
 import { sdk } from "@/lib/api/sdk";
 import { paths } from "@/lib/routes/paths-en";
@@ -13,11 +15,14 @@ import { formatCurrency_FR } from "@prettyfull/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
 
 const CartDropdown = (cart: any) => {
 	const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
+
+	const router = useRouter();
 
 	const open = () => setCartDropdownOpen(true);
 	const close = () => setCartDropdownOpen(false);
@@ -150,7 +155,10 @@ const CartDropdown = (cart: any) => {
 								})}
 							</div>
 							{/* Bouton voir le panier */}
-							<button className="w-full px-4 py-5 mt-4 text-lg font-bold text-white transition-colors bg-black rounded-md cursor-pointer hover:bg-gray-800">
+							<button
+								className="w-full px-4 py-5 mt-4 text-lg font-bold text-white transition-colors bg-black rounded-md cursor-pointer hover:bg-gray-800"
+								onClick={() => router.push(paths.cart)}
+							>
 								Voir le panier
 							</button>
 						</div>

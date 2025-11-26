@@ -7,7 +7,9 @@ if (process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL) {
 }
 
 export const sdk = new Medusa({
-  baseUrl: MEDUSA_BACKEND_URL,
+  baseUrl: MEDUSA_BACKEND_URL,auth: {
+    type: "jwt", // ou "session" suivant ce que tu choisis
+  },
   debug: process.env.NODE_ENV === "development",
   publishableKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
 })

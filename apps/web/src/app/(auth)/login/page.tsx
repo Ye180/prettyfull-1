@@ -10,7 +10,7 @@ export default function LoginPage() {
 	//   const { data, error } = use(getSession());
 	//   console.log("Session data:", data, "Error:", error);
 	return (
-		<Flex className="h-full w-full [&>*]:w-full ">
+		<Flex className="h-full w-full *:w-full ">
 			<Container maxWidth="70rem" className="space-y-28">
 				<Logo className="mt-20 " />
 				<LoginForm />

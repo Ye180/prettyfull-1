@@ -2,10 +2,8 @@
 
 import { useGetItemsCart } from "@/features/cart/api/medusa/get-items-cart";
 import { Category } from "@/features/homepage/api/backend/get-category";
-import { sdk } from "@/lib/api/sdk";
 import { PAGES_PATHS } from "@/lib/routes/paths-en";
 import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
-import { StoreCartLineItem } from "@medusajs/types";
 import { Input, Logo, Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
@@ -27,40 +25,20 @@ const NavBarHeaders = ({
 	secondary_category: Category[];
 }) => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-	const [activeCategory, setActiveCategory] = useState<string | null>(null);
+	const [cartId, setCartId] = useState<string | null>(null);
 	const pathname = usePathname();
 	const [division] = useQueryState("division");
 	const t = useTranslations("HomePage.header");
 
-	const id = localStorage.getItem("cart_id");
-
-	const [cartItem, setCartItem] = useState<StoreCartLineItem[] | []>([]);
-
-	// Charger la catégorie active depuis localStorage au montage
+	// Initialize cart ID from localStorage on client side only
 	useEffect(() => {
-		const stored = localStorage.getItem("active_category");
-		if (stored) {
-			setActiveCategory(stored);
+		const storedCartId = localStorage.getItem("cart_id");
+		if (storedCartId) {
+			setCartId(storedCartId);
 		}
 	}, []);
 
-	const { data: itemsCart, isLoading } = useGetItemsCart(id as string);
-
-	useEffect(() => {
-		const cartId = localStorage.getItem("cart_id");
-		if (cartId) {
-			// Le panier existe déjà, ne rien faire
-			return;
-		}
-		// Créer un nouveau panier et stocker son id
-		sdk.store.cart
-			.create({ region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684" })
-			.then(({ cart }) => {
-				localStorage.setItem("cart_id", cart.id);
-
-				setCartItem(cart.items || []);
-			});
-	}, []);
+	const { data: itemsCart } = useGetItemsCart(cartId || "");
 
 	return (
 		<>
@@ -74,21 +52,18 @@ const NavBarHeaders = ({
 					</Link>
 					<div className=" max-md:hidden flex text-[1.2rem] text-black items-center space-x-6">
 						{main_category ? (
-							main_category?.map((items: Category, index: number) => {
+							main_category.map((items: Category, index: number) => {
 								const itemHandle = items.handle as string;
+								// Check if current pathname matches this category's page
 								const isActive =
-									pathname === PAGES_PATHS.pageDetail(itemHandle) ||
-									division === itemHandle ||
-									activeCategory === itemHandle;
+									pathname.includes(`/pages/${itemHandle}`) ||
+									pathname.includes(`/collection/${itemHandle}`) ||
+									division === itemHandle;
 
 								return (
 									<Link
 										key={index}
 										href={PAGES_PATHS.pageDetail(itemHandle)}
-										onClick={() => {
-											setActiveCategory(itemHandle);
-											localStorage.setItem("active_category", itemHandle);
-										}}
 										className={cn(
 											"font-black tracking-wide uppercase text-[#262626] hover:text-black text-sm transition-all",
 											isActive &&
@@ -100,7 +75,7 @@ const NavBarHeaders = ({
 								);
 							})
 						) : (
-							<Skeleton className="h-9 w-80 " />
+							<Skeleton className="h-9 w-80" />
 						)}
 					</div>
 				</div>

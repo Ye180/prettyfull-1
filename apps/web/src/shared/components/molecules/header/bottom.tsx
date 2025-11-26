@@ -1,16 +1,14 @@
-"use client ";
+"use client";
 import { Category } from "@/features/homepage/api/backend/get-category";
 import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
-import { getItem } from "@/lib/utils/local-storage";
 import { Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 const BottomHeader = ({
 	className,
 	className_2,
-	secondary_category,
+	secondary_category = [],
 	loading,
 	parentSlug,
 }: {
@@ -20,17 +18,6 @@ const BottomHeader = ({
 	loading?: boolean;
 	parentSlug?: string;
 }) => {
-	const [subCategory, setSubCategory] = useState(
-		getItem("sous-category") || []
-	);
-
-	useEffect(() => {
-		const storedSubCategories = getItem("sous-category");
-		if (storedSubCategories) {
-			setSubCategory(storedSubCategories);
-		}
-	}, []);
-
 	const buildLinkHref = (handle: string) => {
 		const pathname = COLLECTION_PATHS.collectionDetail(handle);
 		return parentSlug ? `${pathname}?division=${parentSlug}` : pathname;
@@ -46,26 +33,22 @@ const BottomHeader = ({
 			<div className="w-full overflow-x-auto h-fit ">
 				<div
 					className={cn(
-						"flex   max-sm:snap-x md:w-full  md:overflow-hidden overflow-y-hidden  lg:overflow-visible   space-y-0  space-x-0  scrollbar-hide  scroll-smooth snap-x  lg:snap-mandatory gap-x-6  scrolbar text-[1.5rem]",
+						"flex max-sm:snap-x md:w-full md:overflow-hidden overflow-y-hidden lg:overflow-visible space-y-0 space-x-0 scrollbar-hide scroll-smooth snap-x lg:snap-mandatory gap-x-6 text-[1.5rem]",
 						className_2
 					)}
 				>
-					{secondary_category &&
-						!loading &&
-						(secondary_category || subCategory)?.map(
-							(items: Category, index: number) => (
-								<Link
-									href={buildLinkHref(items.handle as string)}
-									key={index}
-									className="text-sm!  snap-center tracking-wide whitespace-nowrap hover:text-primary font-semibold uppercase transition-all duration-300 ease-in-out "
-								>
-									{" "}
-									{items.name}
-								</Link>
-							)
-						)}{" "}
 					{loading && <Skeleton className="w-full h-9" />}
-					{/*  */}
+					{!loading &&
+						secondary_category.length > 0 &&
+						secondary_category.map((items: Category, index: number) => (
+							<Link
+								href={buildLinkHref(items.handle as string)}
+								key={index}
+								className="text-sm snap-center tracking-wide whitespace-nowrap hover:text-primary font-semibold uppercase transition-all duration-300 ease-in-out"
+							>
+								{items.name}
+							</Link>
+						))}
 				</div>
 			</div>
 		</div>
