@@ -1,5 +1,8 @@
 "use client";
 
+import { sdk } from "@/lib/api/sdk";
+import { Button } from "@prettyfull/ui";
+import { useRouter } from "next/navigation";
 // import {
 // 	Bell,
 // 	ChevronRight,
@@ -45,6 +48,22 @@ const menuItems = [
 
 const Account = () => {
 	const [activeMenu, setActiveMenu] = useState("store");
+
+	const router = useRouter();
+
+	const handleLogoutMedusa = async () => {
+		// await logout();
+
+		sdk.auth
+			.logout()
+			.then(() => {
+				localStorage.removeItem("medusa_auth_token");
+				router.push("/login");
+			})
+			.catch((error) => {
+				console.error("Logout failed:", error);
+			});
+	};
 
 	return (
 		<div className="min-h-screen bg-gray-50">
@@ -237,6 +256,9 @@ const Account = () => {
 						</div>
 					</div>
 				</div>
+			</div>
+			<div className="py-8">
+				<Button onClick={handleLogoutMedusa}> Deconnexion</Button>
 			</div>
 		</div>
 	);

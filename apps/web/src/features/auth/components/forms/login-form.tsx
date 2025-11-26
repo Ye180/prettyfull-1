@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@prettyfull/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useQueryState } from "nuqs";
 import { useForm } from "react-hook-form";
 import { useCartStore } from "../../../../../../../packages/store/src/use-cart-store";
 import Flex from "../../../../../../../packages/ui/src/layouts/helpers/flex";
@@ -19,6 +20,10 @@ export function LoginForm() {
 	// 	"callbackUrl",
 	// 	parseAsString.withDefault("")
 	// );
+
+	const [callbackUrl] = useQueryState("callbackUrl");
+
+	console.log("Callback URL:", callbackUrl);
 
 	// // Redirige si déjà authentifié (ce hook existe déjà)
 	// useAuthRedirect("/account");
@@ -47,11 +52,7 @@ export function LoginForm() {
 				email: data.email,
 				password: data.password,
 			})
-			// .then(async (response) => {
-			// 	// Après une connexion réussie, vérifier s'il y a un panier invité
 
-			// 	router.push("/checkout"); // Rediriger vers la page de checkout
-			// })
 			.catch((e) => {
 				alert(`An error occurred while creating account: ${e}`);
 			});
@@ -59,7 +60,8 @@ export function LoginForm() {
 		if (!loginResponse) {
 			return;
 		}
-		router.push("/checkout");
+		// Si un panier invité existe, le fusionner avec le compte utilisateur
+		callbackUrl ? router.push(callbackUrl) : router.push("/");
 
 		if (typeof loginResponse !== "string") {
 			alert(

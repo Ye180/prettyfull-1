@@ -1,9 +1,9 @@
 "use client";
 
+import { useAddItemToCartMedusa } from "@/features/cart/api/medusa/add-item-to-cart-medusa";
 import { ProductGallery } from "@/features/products/components/organims/product-gallery";
 import ProductSuggestion from "@/features/products/components/organims/product-suggestion";
 import Reviews from "@/features/products/components/organims/reviews";
-import { sdk } from "@/lib/api/sdk";
 import ProductSkeleton from "@/shared/components/organims/product-fiche-loading";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -22,6 +22,8 @@ export default function ProductViews() {
 	const [selectedColor, setSelectedColor] = useState<string>("");
 	const [selectedSize, setSelectedSize] = useState<string>("");
 	const [disabled, setDisabled] = useState(true);
+
+	const addItemToCartMutation = useAddItemToCartMedusa();
 
 	// ===== EXTRACTION DES OPTIONS (Color, Size) =====
 	const colorOption = useMemo(() => {
@@ -186,28 +188,28 @@ export default function ProductViews() {
 			);
 		}
 
+		const cartId = localStorage.getItem("cart_id");
+
 		if (matchingVariant) {
-			console.log("Ajout au panier:", {
-				productId: product?.id,
-				variantId: matchingVariant.id,
-				color: selectedColor,
-				size: selectedSize,
-			});
-
-			sdk.store.cart
-				.createLineItem("cart_123", {
-					variant_id: matchingVariant.id,
+			addItemToCartMutation.mutate(
+				{
+					cartId: cartId || "",
 					quantity: 1,
-				})
-				.then(({ cart }) => {
-					console.log(cart);
-				});
-
-			// await addToCart({
-			// 	variantId: matchingVariant.id,
-			// 	quantity: 1,
-			// 	countryCode: "CI",
-			// });
+					variant_id: matchingVariant.id, // ou adapter votre API
+				},
+				{
+					onSuccess: () => {
+						console.log("Produit ajouté !");
+						alert("Produit ajouté au panier !");
+					},
+					onError: (error: any) => {
+						console.error("Erreur lors de l'ajout:", error);
+						alert(
+							`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`
+						);
+					},
+				}
+			);
 
 			// TODO: Appeler votre mutation d'ajout au panier ici
 		} else {
