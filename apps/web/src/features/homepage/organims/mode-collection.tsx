@@ -1,14 +1,15 @@
-import { useGetProducts } from "@/features/collections/api/backend/get-product";
-import ProductCardSkeleton from "@/shared/components/organims/product-loading";
-import { Button, CardProps, GridCardProduct } from "@prettyfull/ui";
+import { Button, CardProduct, GridCardProduct } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+import { useGetProductsMedusa } from "../api/medusa/get-products-medusa";
 
 const ModeCollection = ({ fourth }: { fourth?: any }) => {
 	const t = useTranslations("HomePage.collection");
 
-	const { data: products, isLoading } = useGetProducts({ page: 1, limit: 24 });
+	const { data: productMedusa, isLoading: loadingProductsMedusa } =
+		useGetProductsMedusa();
+
 	return (
 		<Container
 			maxWidth="100vw"
@@ -27,15 +28,14 @@ const ModeCollection = ({ fourth }: { fourth?: any }) => {
 				</Button>
 			</div>
 			<div className="relative flex items-end w-full md:w-1/2 h-160 md:h-[90vh]  overflow-hidden  bg-cover  bg-no-repeat">
-				{fourth?.imageUrl && (
-					<Image
-						src={fourth?.imageUrl + "?view=1" || "src"}
-						alt="phone image"
-						fill
-						objectFit="cover"
-						className="h-full overflow-hidden bg-center bg-no-repeat bg-cover bg-black/60"
-					/>
-				)}
+				<Image
+					src="/home/promo-phone.jpg"
+					alt="phone image"
+					fill
+					objectFit="cover"
+					className="h-full overflow-hidden bg-center bg-no-repeat bg-cover bg-black/60"
+				/>
+
 				<div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-t from-black/40 to-black/0" />
 
 				<div className="static z-20 flex items-center justify-between w-full p-8 pb-16">
@@ -57,20 +57,8 @@ const ModeCollection = ({ fourth }: { fourth?: any }) => {
 				</div>
 				<GridCardProduct classGrid="grid grid-cols-2  ">
 					<>
-						{products?.slice(0, 2).map((items: CardProps, index: number) => (
-							<div key={index} className="w-full aspect-10/9">
-								<ProductCardSkeleton key={index} />
-								{/* <CardProduct
-									productId={items.id || items.productId}
-									variants={items.variants}
-									price={items.price}
-									notVariable={items.notVariable}
-									promotion={items?.promotion}
-									smallDescription={items.label}
-									name={items.name}
-									link={PRODUCT_PATHS.productDetail(items.slug as string)}
-								/> */}
-							</div>
+						{productMedusa?.slice(0, 2).map((product) => (
+							<CardProduct key={product.id} product={product as any} />
 						))}
 					</>
 				</GridCardProduct>

@@ -25,7 +25,8 @@
     "@medusajs/admin-sdk": "2.11.3",
     "@medusajs/cli": "2.11.3",
     "@medusajs/framework": "2.11.3",
-    "@medusajs/medusa": "2.11.3"
+    "@medusajs/medusa": "2.11.3",
+    "@tanstack/react-query": "^5.90.11"
   },
   "devDependencies": {
     "@medusajs/test-utils": "2.11.3",

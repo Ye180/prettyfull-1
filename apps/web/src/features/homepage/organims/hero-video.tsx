@@ -22,7 +22,7 @@ const Hero = ({
 	const t = useTranslations("HomePage.hero");
 
 	return (
-		<div className=" relative h-[80vh] z-0 w-full overflow-hidden bg-gray-400  ">
+		<div className="relative z-0 w-full h-screen overflow-hidden bg-gray-400 ">
 			<Link
 				href={COLLECTION_PATHS.collectionDetail("new-arrivals")}
 				className=" flex justify-between items-center h-[10%]  lg:h-[7%]  bg-black w-full absolute z-30 inset-0 text-white gap-4 py-4"
@@ -40,7 +40,7 @@ const Hero = ({
 					</span>
 				</span>
 			</Link>
-			<div className="h-[98%] absolute top-[7%] left-0 w-full  z-20">
+			<div className="h-full absolute top-[7%] left-0 w-full  z-20">
 				{video ? (
 					<video
 						width="500"
@@ -83,14 +83,14 @@ const Hero = ({
 							</>
 						)}
 
-						{/* <Image
-							src={"/home/cover-desktop-1.jpg"}
+						<Image
+							src={"/banner/banner2.jpg"}
 							alt="Hero background image"
 							fill
 							sizes="100%"
 							className="absolute top-0 left-0 z-10 object-cover w-full h-full max-md:hidden md:flex"
 							priority
-						/> */}
+						/>
 					</>
 				)}
 

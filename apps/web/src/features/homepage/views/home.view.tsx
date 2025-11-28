@@ -1,11 +1,9 @@
 "use client";
-import { sdk } from "@/lib/api/sdk";
 import SearchBar from "@/shared/components/molecules/core/search";
 import Space from "@/shared/components/molecules/core/space";
 import { CardProduct, GridCardProduct } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 import { useGetProductsMedusa } from "../api/medusa/get-products-medusa";
 import Hero from "../organims/hero-video";
@@ -32,7 +30,7 @@ const HomeView = () => {
 	return (
 		<div className="  w-full *:w-full lg:*:px-40  space-y-4 lg:space-y-4 mb-20">
 			<SearchBar />
-			<Hero video={true} />
+			<Hero video={false} />
 
 			<Space />
 			<NewsArrivals />
@@ -52,7 +50,7 @@ const HomeView = () => {
 			<Space />
 
 			<PictureBar
-				imageDesktop="/home/promo-desktop-1.jpg"
+				imageDesktop="/banner/banner8.jpg"
 				imageMobile="/home/promo-phone.jpg"
 			/>
 			<Space />
@@ -62,7 +60,7 @@ const HomeView = () => {
 			<Space />
 
 			<PictureBar
-				imageDesktop="/home/promo-desktop-1.jpg"
+				imageDesktop="/banner/banner4.jpg"
 				imageMobile="/home/promo-phone.jpg"
 			/>
 			<Space />
@@ -72,7 +70,7 @@ const HomeView = () => {
 				maxWidth="100vw"
 				className="flex items-start justify-between px-4 lg:px-40 max-md:flex-col h-fit max-md:space-y-12 gap-x-12"
 			>
-				<GridCardProduct action_grid className=" max-sm:gap-y-8">
+				<GridCardProduct className=" max-sm:gap-y-8">
 					<>
 						{loadingProductsMedusa ? (
 							<>

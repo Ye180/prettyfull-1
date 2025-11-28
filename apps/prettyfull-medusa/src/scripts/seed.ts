@@ -5,6 +5,11 @@ import {
   ProductStatus,
 } from "@medusajs/framework/utils";
 import {
+  createWorkflow,
+  transform,
+  WorkflowResponse,
+} from "@medusajs/framework/workflows-sdk";
+import {
   createApiKeysWorkflow,
   createInventoryLevelsWorkflow,
   createProductCategoriesWorkflow,
@@ -20,11 +25,6 @@ import {
   updateStoresStep,
   updateStoresWorkflow,
 } from "@medusajs/medusa/core-flows";
-import {
-  createWorkflow,
-  transform,
-  WorkflowResponse,
-} from "@medusajs/framework/workflows-sdk";
 
 const updateStoreCurrencies = createWorkflow(
   "update-store-currencies",
@@ -378,6 +378,14 @@ export default async function seedDemoData({ container }: ExecArgs) {
           name: "Merch",
           is_active: true,
         },
+        {
+          name: "Robe",
+          is_active: true,
+        },
+          { name: "Dresses", handle: "dresses",  is_active: true, },
+        { name: "Tops", handle: "tops", is_active: true, },
+        { name: "Bottoms", handle: "bottoms", is_active: true, },
+        { name: "Shoes", handle: "shoes", is_active: true, },
       ],
     },
   });
@@ -905,3 +913,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
 
   logger.info("Finished seeding inventory levels data.");
 }
+
+
+
+

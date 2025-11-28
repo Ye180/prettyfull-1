@@ -4,6 +4,7 @@ import { sdk } from "@/lib/api/sdk";
 import { CART_ITEMS_CART } from "@/shared/utils/query-keys";
 import { StoreCart } from "@medusajs/types";
 import { useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { useState } from "react";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
@@ -52,19 +53,21 @@ const CartItems = ({
 			{cart.items.map((item) => {
 				const imageSrc = item.thumbnail || "/assets/product_1.jpg";
 
+				console.log("Image source:", imageSrc);
+
 				return (
 					<div
 						key={item.id}
-						className="flex flex-row items-start justify-between gap-6 pb-10 border-b border-gray-200"
+						className="flex flex-row items-start justify-between gap-6  border-b border-gray-200 h-76!"
 					>
-						<div
-							className="relative w-48 rounded-md h-58 aspect-square "
-							style={{
-								backgroundImage: `url(${imageSrc})`,
-								backgroundSize: "cover",
-								backgroundPosition: "top",
-							}}
-						>
+						<div className="relative w-48 rounded-md h-44 md:h-58 aspect-square ">
+							<Image
+								src={imageSrc}
+								alt={item.product_title || "Product Image"}
+								width={230}
+								height={230}
+								className="object-contain rounded-md"
+							/>
 							<button className="absolute flex p-2 transition border rounded-full top-4 right-4 hover:bg-gray-100 md:hidden">
 								<Heart width={8} height={8} />
 							</button>
