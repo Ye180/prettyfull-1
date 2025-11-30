@@ -1,7 +1,7 @@
 import { cn } from "@prettyfull/utils";
 import { useCallback, useMemo, useState } from "react";
-import { ProductGallery } from "./components/products/products-galery";
-import ProductInfos from "./components/products/products-infos";
+import { ProductGallery } from "./components/products-/products-galery";
+import ProductInfos from "./components/products-/products-infos";
 
 import {
 	Drawer,

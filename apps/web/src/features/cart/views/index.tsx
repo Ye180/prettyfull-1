@@ -24,12 +24,12 @@ const CartView = () => {
 	return (
 		<Container
 			maxWidth="100vw"
-			className="min-h-screen py-4 pb-40 max-lg:px-4 lg:px-40"
+			className="py-4 pb-40 min-h-screen max-lg:px-4 lg:px-40"
 		>
 			<div className="grid grid-cols-1 gap-x-20 md:grid-cols-12">
 				{/* Left: items */}
 				<section className="bg-white md:col-span-8">
-					<div className="flex items-center justify-between mb-6">
+					<div className="flex justify-between items-center mb-6">
 						<h2 className="py-8 text-[3rem]! lg:text-[3.5rem]!">
 							Votre panier
 						</h2>

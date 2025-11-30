@@ -13,25 +13,22 @@ import NavbarCollection from "@/features/collections/organims/mini-navbar";
 import { ScrollArea } from "@prettyfull/ui";
 import { useParams } from "next/navigation";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-import { useGetProductByCategoryHandle } from "../api/medusa/get-product-by-handle";
+import { useGetProductsSameCollection } from "@/shared/api/medusa/get-products-same-collection";
 
 const CollectionViews = () => {
 	const params = useParams();
 
-	// const { data: productsBySlug, isLoading: isLoadingBySlug } =
-	// 	useGetProductsByCategorySlug(params.slug as string);
-
-	const { data: productsByCategory, isLoading: isLoadingByCategory } =
-		useGetProductByCategoryHandle(params.slug as string);
-
+	const { data: productSameCollection, isLoading: loadingProductsSameCollection } =
+				useGetProductsSameCollection();
+				
 	// console.log("Fetched products by slug:", isLoadingBySlug);
 	return (
-		<div className="pb-32 space-y-16 ">
+		<div className="pb-32 space-y-16">
 			<div className="relative h-[20vh] md:h-[35vh] px-4 bg-white">
 				<Banner />
 			</div>
 			<Container maxWidth="100vw" className="px-4 space-y-12 lg:px-32">
-				<div className="flex items-center justify-center">
+				<div className="flex justify-center items-center">
 					<CategoryCollection />
 				</div>
 				<div className="pb-4 border-b border-neutral-200">
@@ -41,14 +38,14 @@ const CollectionViews = () => {
 					<FilterLayout className="h-[200vh] mt-4 border bg-white backdrop-blur-md border-gray-200" />
 					<ScrollArea className="py-4 max-md:hidden md:flex-1 h-[200vh]  scrolbarRecomandation">
 						<GridCollectionLayout
-							products={productsByCategory?.products}
-							loading={isLoadingByCategory}
+							products={productSameCollection}
+							loading={loadingProductsSameCollection}
 						/>
 					</ScrollArea>
 					<div className="hidden max-md:flex md:hidden">
 						<GridCollectionLayout
-							products={productsByCategory?.products}
-							loading={isLoadingByCategory}
+							products={productSameCollection}
+							loading={loadingProductsSameCollection}
 						/>
 					</div>
 				</div>

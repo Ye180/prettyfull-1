@@ -1,19 +1,20 @@
-import { Button, CardProduct, GridCardProduct } from "@prettyfull/ui";
+import { Button, CardProduct, GridCardProduct, normalizeCollectionProducts, RawCollectionProduct } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-import { useGetProductsMedusa } from "../api/medusa/get-products-medusa";
+import { useGetProductsSameCollection } from "@/shared/api/medusa/get-products-same-collection";
 
 const ModeCollection = ({ fourth }: { fourth?: any }) => {
 	const t = useTranslations("HomePage.collection");
 
-	const { data: productMedusa, isLoading: loadingProductsMedusa } =
-		useGetProductsMedusa();
+	
+		const { data: productSameCollection, isLoading: loadingProductsSameCollection } =
+				useGetProductsSameCollection();
 
 	return (
 		<Container
 			maxWidth="100vw"
-			className="flex items-start justify-between px-4 lg:px-40 max-md:flex-col h-fit max-md:space-y-12 gap-x-12"
+			className="flex gap-x-12 justify-between items-start px-4 lg:px-40 max-md:flex-col h-fit max-md:space-y-12"
 		>
 			<div className="space-y-4 md:hidden max-md:text-center! max-md:w-full">
 				<h2 className="text-[3.5rem]! md:text-[4rem]! font-semibold text-black">
@@ -33,16 +34,16 @@ const ModeCollection = ({ fourth }: { fourth?: any }) => {
 					alt="phone image"
 					fill
 					objectFit="cover"
-					className="h-full overflow-hidden bg-center bg-no-repeat bg-cover bg-black/60"
+					className="overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"
 				/>
 
 				<div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-t from-black/40 to-black/0" />
 
-				<div className="static z-20 flex items-center justify-between w-full p-8 pb-16">
+				<div className="flex static z-20 justify-between items-center p-8 pb-16 w-full">
 					<h4 className="text-[16px] text-white">{t("deal")}</h4>
 				</div>
 			</div>
-			<div className="w-full space-y-12 overflow-hidden md:w-1/2 h-fit ">
+			<div className="overflow-hidden space-y-12 w-full md:w-1/2 h-fit">
 				<div className="space-y-0 max-md:hidden">
 					<h2 className="text-[4rem]! font-semibold text-black tracking-wide">
 						{fourth?.title || t("title")}
@@ -57,9 +58,12 @@ const ModeCollection = ({ fourth }: { fourth?: any }) => {
 				</div>
 				<GridCardProduct classGrid="grid grid-cols-2  ">
 					<>
-						{productMedusa?.slice(0, 2).map((product) => (
-							<CardProduct key={product.id} product={product as any} />
-						))}
+						{productSameCollection?.map((group) => {
+													const normalized = normalizeCollectionProducts(group as RawCollectionProduct);
+													return (
+														<CardProduct key={normalized.collectionId} product={normalized} />
+													);
+													})}
 					</>
 				</GridCardProduct>
 			</div>

@@ -1,0 +1,123 @@
+// =============================================================================
+// Helper : Normalise les données brutes d'une collection en structure exploitable
+// =============================================================================
+
+import type {
+  RawCollectionProduct,
+  RawProduct,
+  NormalizedCollectionProduct,
+  NormalizedColorVariant,
+  NormalizedVariant,
+} from "./types";
+
+/**
+ * Extrait le label de couleur depuis le titre du produit.
+ * Ex: "Ed Hardy - Green" → "Green"
+ */
+function extractColorLabelFromTitle(title: string): string {
+  const parts = title.split("-");
+  if (parts.length > 1) {
+    const lastPart = parts[parts.length - 1];
+    return lastPart ? lastPart.trim() : title.trim();
+  }
+  return title.trim();
+}
+
+/**
+ * Trouve l'option "Size" dans les options du produit.
+ */
+function getSizeOption(product: RawProduct) {
+  return product.options.find(
+    (opt) =>
+      opt.title.toLowerCase() === "size" || opt.title.toLowerCase() === "taille"
+  );
+}
+
+/**
+ * Construit un objet NormalizedColorVariant à partir d'un produit brut.
+ * Chaque produit enfant représente une couleur différente.
+ */
+function buildNormalizedColor(product: RawProduct): NormalizedColorVariant {
+  // Code couleur depuis hs_code (fallback gris si absent)
+  const colorCode = product.hs_code || "#CCCCCC";
+
+  // Label de la couleur extrait du titre
+  const label = extractColorLabelFromTitle(product.title);
+
+  // Récupérer les tailles depuis les options ou les variants
+  const sizeOption = getSizeOption(product);
+  const sizes = sizeOption
+    ? sizeOption.values.map((v) => v.value)
+    : product.variants.map((v) => v.title);
+
+  // Mapper les variants avec leur taille
+  const variants: NormalizedVariant[] = product.variants.map((variant) => {
+    const sizeOpt = variant.options.find(
+      (opt) =>
+        opt.option.title.toLowerCase() === "size" ||
+        opt.option.title.toLowerCase() === "taille"
+    );
+    return {
+      id: variant.id,
+      title: variant.title,
+      sku: variant.sku,
+      size: sizeOpt?.value || variant.title,
+      calculated_price: {
+        calculated_amount: variant.calculated_price?.calculated_amount ?? 0,
+      },
+    };
+  });
+
+  // Trier les images par rank
+  const sortedImages = [...product.images].sort((a, b) => a.rank - b.rank);
+
+  // Thumbnail principal
+  const thumbnail =
+    product.thumbnail || sortedImages[0]?.url || "/placeholder-product.png";
+
+  return {
+    colorCode,
+    label,
+    productId: product.id,
+    handle: product.handle,
+    thumbnail,
+    images: sortedImages.map((img) => img.url),
+    sizes: Array.from(new Set(sizes)), // Dédupliquer les tailles
+    variants,
+    title: product.title,
+    price: product.variants[0]?.calculated_price?.calculated_amount ?? 0,
+  };
+}
+
+/**
+ * Normalise les données d'une collection complète.
+ * Fusionne les produits enfants comme différentes couleurs d'un même produit.
+ *
+ * @param raw - Données brutes de la collection (JSON Medusa)
+ * @returns Structure normalisée pour CardProduct
+ */
+export function normalizeCollectionProducts(
+  raw: RawCollectionProduct
+): NormalizedCollectionProduct {
+  const { collection, products } = raw;
+
+  // Chaque produit enfant devient une couleur
+  const colors = products.map(buildNormalizedColor);
+
+  return {
+    collectionId: collection.id,
+    collectionTitle: collection.title,
+    collectionHandle: collection.handle,
+    colors,
+  };
+}
+
+/**
+ * Normalise un tableau de collections.
+ * Utile si tu récupères plusieurs collections d'un coup.
+ */
+export function normalizeMultipleCollections(
+  rawCollections: RawCollectionProduct[]
+): NormalizedCollectionProduct[] {
+  return rawCollections.map(normalizeCollectionProducts);
+}

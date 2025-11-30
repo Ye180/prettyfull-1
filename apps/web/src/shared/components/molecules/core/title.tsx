@@ -10,8 +10,8 @@ const Title = ({
 	buttonLabel: string;
 }) => {
 	return (
-		<div className="flex justify-between space-y-8 ">
-			<h4 className="w-fit max-md:!text-[2.5rem]"> {title}</h4>
+		<div className="flex justify-between space-y-8">
+			<h4 className="w-fit max-md:text-[2.5rem]!"> {title}</h4>
 
 			<ViewAll href={href}>{buttonLabel}</ViewAll>
 		</div>

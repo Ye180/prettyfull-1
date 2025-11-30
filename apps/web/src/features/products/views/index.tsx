@@ -7,7 +7,7 @@ import Reviews from "@/features/products/components/organims/reviews";
 import ProductSkeleton from "@/shared/components/organims/product-fiche-loading";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import ProductInfos from "../../../../../../packages/ui/src/components/products/products-infos";
+import ProductInfos from "../../../../../../packages/ui/src/components/products-/products-infos";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 import { useGetProductsByHandleMedusa } from "../api/medusa/get-product-by-handle-medusa";
 
