@@ -3,33 +3,33 @@ import apiClient from "@/shared/lib/client";
 import { useMutation } from "@tanstack/react-query";
 
 interface UpdatePaymentStatusParams {
-	orderId: string;
-	status: string;
+  orderId: string;
+  status: string;
 }
 
 export const updatePaymentStatus = async ({
-	orderId,
-	status,
+  orderId,
+  status,
 }: UpdatePaymentStatusParams) => {
-	const res = await apiClient.patch(
-		API_ROUTES.orders.updatePaymentStatus(orderId),
-		{
-			status,
-		}
-	);
-	return res;
+  const res = await apiClient.patch(
+    API_ROUTES.orders.updatePaymentStatus(orderId),
+    {
+      status,
+    }
+  );
+  return res;
 };
 
 export const usePaymentStatus = ({
-	onSuccess,
-	onError,
+  onSuccess,
+  onError,
 }: {
-	onSuccess?: () => void;
-	onError?: () => void;
+  onSuccess?: () => void;
+  onError?: () => void;
 }) => {
-	return useMutation({
-		mutationFn: updatePaymentStatus,
-		onSuccess,
-		onError,
-	});
+  return useMutation({
+    mutationFn: updatePaymentStatus,
+    onSuccess,
+    onError,
+  });
 };
