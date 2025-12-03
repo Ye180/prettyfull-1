@@ -1,15 +1,16 @@
 "use client";
 
 import { useAddItemToCartMedusa } from "@/features/cart/api/medusa/add-item-to-cart-medusa";
-import { ProductGallery } from "@/features/products/components/organims/product-gallery";
 import ProductSuggestion from "@/features/products/components/organims/product-suggestion";
 import Reviews from "@/features/products/components/organims/reviews";
 import ProductSkeleton from "@/shared/components/organims/product-fiche-loading";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import ProductInfos from "../../../../../../packages/ui/src/components/products-/products-infos";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+import { useGetCollectionProductsMedusa } from "../api/medusa/get-collection-products-medusa";
 import { useGetProductsByHandleMedusa } from "../api/medusa/get-product-by-handle-medusa";
+import { ProductGalleryNew } from "../components/organims/product-gallery-new";
+import { ProductInfosNew } from "../components/organims/product-infos-new";
 
 export default function ProductViews() {
 	const params = useParams();
@@ -17,6 +18,11 @@ export default function ProductViews() {
 	const { data: product, isLoading } = useGetProductsByHandleMedusa(
 		params.handle as string
 	);
+
+	// Récupérer les produits de la même collection
+	const collectionId = product?.collection?.id;
+	const { data: collectionProducts } =
+		useGetCollectionProductsMedusa(collectionId);
 
 	const [activeImage, setActiveImage] = useState<number>(0);
 	const [selectedColor, setSelectedColor] = useState<string>("");
@@ -46,7 +52,7 @@ export default function ProductViews() {
 	const colorVariants = useMemo(() => {
 		if (!product?.variants || product.variants.length === 0) return [];
 
-		if (!colorOption) return [];
+		// console.log("product.variants:", product?.variants);
 
 		const colorMap = new Map<
 			string,
@@ -56,6 +62,26 @@ export default function ProductViews() {
 				images: string[];
 			}
 		>();
+
+		// Si pas d'option couleur, créer une entrée par variant avec son thumbnail
+		if (!colorOption) {
+			product.variants.forEach((variant: any, index: number) => {
+				const variantLabel = variant.title || `Variant ${index + 1}`;
+				const variantImage =
+					variant.thumbnail || product.images?.[0]?.url || "";
+
+				if (!colorMap.has(variantLabel)) {
+					colorMap.set(variantLabel, {
+						label: variantLabel,
+						variants: [variant],
+						images: variantImage
+							? [variantImage]
+							: product.images?.map((img: any) => img.url) || [],
+					});
+				}
+			});
+			return Array.from(colorMap.values());
+		}
 
 		product.variants.forEach((variant: any) => {
 			const colorValue = variant.options?.find(
@@ -94,7 +120,7 @@ export default function ProductViews() {
 
 	// ===== TAILLES DISPONIBLES POUR LA COULEUR ACTIVE =====
 	const availableSizes = useMemo(() => {
-		if (!selectedColor || colorVariants.length === 0) return [];
+		// if (!selectedColor || colorVariants.length === 0) return [];
 
 		const currentColorVariants =
 			colorVariants.find((cv) => cv.label === selectedColor)?.variants || [];
@@ -128,9 +154,92 @@ export default function ProductViews() {
 		return currentColorVariant?.images || [];
 	}, [selectedColor, colorVariants, product]);
 
+	// Extraire les noms de couleurs disponibles
+	const availableColors = useMemo(() => {
+		return colorVariants?.map((cv) => cv.label) || [];
+	}, [colorVariants]);
+
+	// Créer les variantes de collection basées sur les produits de la même collection avec couleurs différentes
+	const collectionColorVariants = useMemo(() => {
+		if (!collectionProducts || collectionProducts.length <= 1 || !product) {
+			return [];
+		}
+
+		// Extraire la couleur de chaque produit de la collection
+		const productsWithColors = collectionProducts.map((p: any) => {
+			// Trouver l'option couleur du produit
+			const colorOpt = p.options?.find(
+				(opt: any) =>
+					opt.title.toLowerCase() === "color" ||
+					opt.title.toLowerCase() === "couleur"
+			);
+
+			// Récupérer la première valeur de couleur disponible
+			let colorValue = "";
+			if (colorOpt && p.variants && p.variants.length > 0) {
+				const firstVariant = p.variants[0];
+				const colorOptValue = firstVariant.options?.find(
+					(o: any) => o.option_id === colorOpt.id
+				)?.value;
+				colorValue = colorOptValue || "";
+			}
+
+			return {
+				id: p.id,
+				handle: p.handle,
+				title: p.title,
+				color: p.hs_code,
+				image: p.thumbnail || p.images?.[0]?.url || "",
+				isActive: p.id === product.id,
+			};
+		});
+
+		// Filtrer pour ne garder que les produits avec des couleurs différentes
+		const uniqueColors = new Map();
+		productsWithColors.forEach((p: any) => {
+			const colorKey = p.color || p.id; // Utiliser l'ID si pas de couleur
+			if (!uniqueColors.has(colorKey)) {
+				uniqueColors.set(colorKey, p);
+			}
+		});
+
+		return Array.from(uniqueColors.values());
+	}, [collectionProducts, product]);
+
+	// Calcul du prix
+	const productPrice = useMemo(() => {
+		if (product?.variants && product.variants.length > 0) {
+			const prices = product.variants
+				.map(
+					(v: any) =>
+						v.calculated_price?.calculated_amount || v.calculated_price || 0
+				)
+				.filter((p: number) => p > 0);
+			return prices.length > 0 ? Math.min(...prices) : 0;
+		}
+		return 0;
+	}, [product]);
+
+	// ===== RÉINITIALISATION QUAND LE PRODUIT CHANGE =====
+	useEffect(() => {
+		// Réinitialiser les sélections quand le produit change
+		setSelectedColor("");
+		setSelectedSize("");
+		setDisabled(true);
+		setActiveImage(0);
+	}, [product?.id]);
+
+	// console.log(colorVariants);
+
 	// ===== INITIALISATION AU CHARGEMENT =====
 	useEffect(() => {
-		if (product && colorVariants.length > 0 && colorVariants[0]) {
+		if (
+			product &&
+			colorVariants &&
+			colorVariants.length > 0 &&
+			colorVariants[0] &&
+			!selectedColor
+		) {
 			// Définir la première couleur par défaut
 			const defaultColor = colorVariants[0].label;
 			setSelectedColor(defaultColor);
@@ -139,7 +248,7 @@ export default function ProductViews() {
 			const firstColorVariants = colorVariants[0].variants;
 			if (sizeOption && firstColorVariants && firstColorVariants.length > 0) {
 				const firstSize = firstColorVariants[0]?.options?.find(
-					(opt: any) => opt.option_id === sizeOption.id
+					(opt: any) => opt.option_id === sizeOption
 				)?.value;
 				if (firstSize) {
 					setSelectedSize(firstSize);
@@ -147,7 +256,11 @@ export default function ProductViews() {
 				}
 			}
 		}
-	}, [product, colorVariants, sizeOption]);
+	}, [product, colorVariants, sizeOption, selectedColor]);
+
+	const sizeOnly = sizeOption?.values?.map((item) => {
+		return item.value;
+	});
 
 	// ===== GESTION DES CHANGEMENTS =====
 	const handleColorChange = useCallback((newColor: string) => {
@@ -174,7 +287,10 @@ export default function ProductViews() {
 		const currentColorVariants =
 			colorVariants.find((cv) => cv.label === selectedColor)?.variants || [];
 
+		console.log("colors variants:", colorVariants);
+
 		let matchingVariant;
+
 		if (sizeOption) {
 			matchingVariant = currentColorVariants.find((variant: any) => {
 				const variantSize = variant.options?.find(
@@ -183,10 +299,12 @@ export default function ProductViews() {
 				return variantSize === selectedSize;
 			});
 		} else {
-			matchingVariant = currentColorVariants.find(
+			matchingVariant = colorVariants.find(
 				(variant: any) => variant.title === selectedSize
 			);
 		}
+
+		console.log("selectedSize:", selectedSize);
 
 		const cartId = localStorage.getItem("cart_id");
 
@@ -229,42 +347,50 @@ export default function ProductViews() {
 		);
 	}
 
+	console.log(sizeOnly);
+
 	return (
 		<>
 			<Container
 				maxWidth="100vw"
-				className="px-4 py-2 mx-auto sm:py-12 lg:px-40 "
+				className="px-4 py-2 mx-auto sm:py-12 lg:px-40"
 			>
-				<div className="flex flex-col justify-center sm:flex-row gap-x-14 ">
-					<div className="flex flex-col space-y-4 sm:space-y-8 w-fit ">
-						<ProductGallery
-							images={currentImages}
+				<div className="flex flex-col gap-8 justify-center lg:gap-14 lg:flex-row">
+					{/* Colonne gauche: Galerie */}
+					<div className="flex flex-col space-y-4 sm:space-y-8">
+						<ProductGalleryNew
+							images={product?.images?.map((img: any) => img.url) || []}
 							title={product?.title || "Produit"}
 							activeImage={activeImage}
 							setActiveImage={setActiveImage}
 							promotion={undefined}
 						/>
-						<Reviews className="max-sm:hidden sm:block w-[600px] " />
+
+						<Reviews className="hidden lg:block w-[600px]" />
 					</div>
 
-					<ProductInfos
-						sizes={availableSizes}
-						productData={{ product } as any}
+					{/* Colonne droite: Infos produit */}
+					<ProductInfosNew
+						productName={product?.title || "Produit"}
+						productCategory={product?.collection?.title || "Collection"}
+						price={productPrice}
+						colors={availableColors}
+						sizes={sizeOnly as string[]}
 						selectedColor={selectedColor}
-						setSelectedColor={handleColorChange}
 						selectedSize={selectedSize}
-						setSelectedSize={handleSizeChange}
-						onClick={async () => {
-							await handleClick();
-						}}
+						onColorChange={handleColorChange}
+						onSizeChange={handleSizeChange}
+						onAddToCart={handleClick}
 						disabled={disabled}
+						isLoading={addItemToCartMutation.isPending}
+						collectionColorVariants={collectionColorVariants}
 					/>
 
-					<div className="sm:hidden max-sm:block">
+					{/* Reviews mobile */}
+					<div className="lg:hidden">
 						<Reviews />
 					</div>
 				</div>
-
 				<ProductSuggestion />
 			</Container>
 		</>

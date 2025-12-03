@@ -28,13 +28,13 @@ export function ProductGallery({
 	return (
 		<div
 			className={cn(
-				"flex flex-row gap-4 relative justify-center items-start",
+				"flex relative flex-row gap-4 justify-center items-start",
 				className
 			)}
 		>
 			{/* <h2>{title}</h2> */}
 			{/* Thumbnails */}
-			<div className="flex-col hidden gap-4 sm:flex ">
+			<div className="hidden flex-col gap-4 sm:flex">
 				{images?.map((image, index) => (
 					<div
 						key={index}
@@ -46,7 +46,7 @@ export function ProductGallery({
 								: "border-gray-200"
 						)}
 					>
-						<div className="relative w-full h-full overflow-hidden">
+						<div className="overflow-hidden relative w-full h-full">
 							<Image
 								src={image}
 								alt={`${name} - vue ${index + 1}`}
@@ -60,7 +60,7 @@ export function ProductGallery({
 			</div>
 
 			{/* Image principale */}
-			<div className="relative hidden sm:flex w-fit">
+			<div className="hidden relative sm:flex w-fit">
 				<Image
 					src={images?.[activeImage] || "/placeholder.png"}
 					alt={name}
@@ -77,7 +77,7 @@ export function ProductGallery({
 			</div>
 
 			{/* Mobile thumbnails (dots) */}
-			<div className="w-full overflow-x-auto sm:hidden h-fit max-sm:flex ">
+			<div className="overflow-x-auto w-full sm:hidden h-fit max-sm:flex">
 				<div
 					className={cn(
 						"flex   max-sm:snap-x md:w-full  md:overflow-hidden overflow-y-hidden  lg:overflow-visible   space-y-0  space-x-0  scrollbar-hide  scroll-smooth snap-x  lg:snap-mandatory gap-x-1  scrolbar text-[1.5rem]"

@@ -1,4 +1,4 @@
-# PrettyFull - Turborepo Monorepo
+b# PrettyFull - Turborepo Monorepo
 
 Application web complète avec architecture micro-frontend utilisant Turborepo pour la gestion des packages partagés.
 
@@ -63,7 +63,7 @@ pnpm build --filter=admin
 import { Button } from "@prettyfull/ui";
 
 <Button variant="destructive" size="lg">
-  Mon bouton
+	Mon bouton
 </Button>;
 ```
 

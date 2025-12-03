@@ -5,11 +5,11 @@ import { ReviewsOneItems, ReviewsResponsive } from "../molecules/reviews-items";
 
 const Reviews = ({ className }: { className?: string }) => {
 	return (
-		<div className={cn(className, "py-9 ")}>
-			<div className="flex items-center justify-between gap-8 max-md:ml-0 md:ml-24">
+		<div className={cn(className, "py-9")}>
+			<div className="flex gap-8 justify-between items-center max-md:ml-0 md:ml-24">
 				<div>
-					<div className="flex flex-row items-center justify-start gap-4 mt-16 mb-16">
-						<h4 className="!text-[3.5rem] bg-amber-500 leading-0 ">Reviews</h4>
+					<div className="flex flex-row gap-4 justify-start items-center mt-16 mb-16">
+						<h4 className="text-[3.5rem] leading-0 ">Reviews</h4>
 						<button className="cursor-pointer text-[1.5rem] font-normal">
 							Showing 1849 reviews
 						</button>
@@ -23,8 +23,8 @@ const Reviews = ({ className }: { className?: string }) => {
 				</Button>
 			</div>
 
-			<div className="w-full py-4 space-y-8 ">
-				<div className="flex w-full gap-8 overflow-x-auto sm:hidden scrolbar">
+			<div className="py-4 space-y-8 w-full">
+				<div className="flex overflow-x-auto gap-8 w-full sm:hidden scrolbar">
 					<ReviewsResponsive />
 					<ReviewsResponsive />
 					<ReviewsResponsive />
