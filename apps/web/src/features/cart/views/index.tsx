@@ -19,8 +19,6 @@ const CartView = () => {
 	const cartId = localStorage.getItem("cart_id");
 	const { data: cart, isLoading } = useGetItemsCart(cartId as string);
 
-	console.log("Cart data:", cart);
-
 	return (
 		<Container
 			maxWidth="100vw"
@@ -38,7 +36,6 @@ const CartView = () => {
 							{(cart?.items?.length ?? 0) > 1 ? "s" : ""}
 						</span>
 					</div>
-
 					<div className="divide-y divide-gray-100">
 						<CartItems cart={cart as StoreCart} isLoading={isLoading} />
 					</div>

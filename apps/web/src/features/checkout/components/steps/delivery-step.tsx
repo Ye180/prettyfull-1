@@ -1,0 +1,185 @@
+"use client";
+
+import { Button } from "@prettyfull/ui";
+import { cn, formatCurrency_FR } from "@prettyfull/utils";
+import { useState } from "react";
+import { useCheckoutStep } from "../../hooks/use-checkout-step";
+
+interface ShippingOption {
+	id: string;
+	name: string;
+	description: string;
+	price: number;
+	estimatedDays: string;
+}
+
+interface DeliveryStepProps {
+	shippingOptions?: ShippingOption[];
+	onComplete?: (selectedOption: ShippingOption) => void;
+}
+
+const defaultShippingOptions: ShippingOption[] = [
+	{
+		id: "standard",
+		name: "Standard Shipping",
+		description: "Delivered in 5-7 business days",
+		price: 2500,
+		estimatedDays: "5-7 days",
+	},
+	{
+		id: "express",
+		name: "Express Shipping",
+		description: "Delivered in 2-3 business days",
+		price: 5000,
+		estimatedDays: "2-3 days",
+	},
+	{
+		id: "overnight",
+		name: "Overnight Shipping",
+		description: "Delivered next business day",
+		price: 10000,
+		estimatedDays: "1 day",
+	},
+];
+
+export function DeliveryStep({
+	shippingOptions = defaultShippingOptions,
+	onComplete,
+}: DeliveryStepProps) {
+	const { goToStep, isStepCompleted, isStepActive } = useCheckoutStep();
+	const [selectedOption, setSelectedOption] = useState<string | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
+
+	const isOpen = isStepActive("delivery");
+	const isCompleted = isStepCompleted("delivery");
+	const canAccess = isStepCompleted("address");
+
+	const handleEdit = () => {
+		goToStep("delivery");
+	};
+
+	const handleSubmit = async () => {
+		if (!selectedOption) return;
+
+		const option = shippingOptions.find((o) => o.id === selectedOption);
+		if (option) {
+			setIsLoading(true);
+			// Simulate API call
+			await new Promise((resolve) => setTimeout(resolve, 500));
+			onComplete?.(option);
+			setIsLoading(false);
+		}
+	};
+
+	const selectedShipping = shippingOptions.find((o) => o.id === selectedOption);
+
+	return (
+		<div className="bg-white">
+			{/* Header */}
+			<div className="flex flex-row justify-between items-center mb-6">
+				<h2
+					className={cn(
+						"flex flex-row font-medium gap-x-2 items-center text-3xl! tracking-wider",
+						{
+							"opacity-50 pointer-events-none select-none":
+								!isOpen && !canAccess,
+						}
+					)}
+				>
+					Delivery
+					{isCompleted && (
+						<svg
+							className="w-8 h-8 text-green-600"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+						>
+							<path
+								fillRule="evenodd"
+								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+								clipRule="evenodd"
+							/>
+						</svg>
+					)}
+				</h2>
+
+				{!isOpen && isCompleted && (
+					<Button
+						variant="outline"
+						onClick={handleEdit}
+						className="px-6 py-2 text-sm text-dark w-fit"
+					>
+						Edit
+					</Button>
+				)}
+			</div>
+
+			{/* Content */}
+			{isOpen && canAccess ? (
+				<div className="space-y-4">
+					<p className="mb-4 text-sm text-gray-600">
+						Select your preferred shipping method
+					</p>
+
+					<div className="space-y-4">
+						{shippingOptions.map((option) => (
+							<label
+								key={option.id}
+								className={cn(
+									"flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-all",
+									selectedOption === option.id
+										? "border-black bg-gray-50"
+										: "border-gray-200 hover:border-gray-400"
+								)}
+							>
+								<div className="flex gap-4 items-center">
+									<input
+										type="radio"
+										name="shipping"
+										value={option.id}
+										checked={selectedOption === option.id}
+										onChange={() => setSelectedOption(option.id)}
+										className="w-6 h-6 text-black border-gray-300 focus:ring-black focus:ring-0"
+									/>
+									<div>
+										<p className="font-medium">{option.name}</p>
+										<p className="text-sm text-gray-500">
+											{option.description}
+										</p>
+									</div>
+								</div>
+								<span className="font-medium">
+									{formatCurrency_FR(option.price)}
+								</span>
+							</label>
+						))}
+					</div>
+
+					<Button
+						onClick={handleSubmit}
+						className="py-6 mt-6 w-full"
+						disabled={!selectedOption || isLoading}
+					>
+						{isLoading ? "Processing..." : "Continue to payment"}
+					</Button>
+				</div>
+			) : isCompleted && selectedShipping ? (
+				/* Summary when completed */
+				<div className="text-sm text-gray-600">
+					<p className="font-medium">{selectedShipping.name}</p>
+					<p>{selectedShipping.description}</p>
+					<p className="mt-1 font-medium">
+						{formatCurrency_FR(selectedShipping.price)}
+					</p>
+				</div>
+			) : !canAccess ? (
+				<p className="text-sm text-gray-400">
+					Complete the previous step to continue
+				</p>
+			) : null}
+
+			<div className="mt-8 border-t border-gray-200" />
+		</div>
+	);
+}
+
+export default DeliveryStep;

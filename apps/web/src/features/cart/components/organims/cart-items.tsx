@@ -60,7 +60,7 @@ const CartItems = ({
 						key={item.id}
 						className="flex flex-row items-start justify-between gap-6  border-b border-gray-200 h-76!"
 					>
-						<div className="relative w-48 rounded-md h-44 md:h-58 aspect-square ">
+						<div className="relative w-48 h-44 rounded-md md:h-58 aspect-square">
 							<Image
 								src={imageSrc}
 								alt={item.product_title || "Product Image"}
@@ -68,16 +68,17 @@ const CartItems = ({
 								height={230}
 								className="object-contain rounded-md"
 							/>
-							<button className="absolute flex p-2 transition border rounded-full top-4 right-4 hover:bg-gray-100 md:hidden">
+
+							<button className="flex absolute top-4 right-4 p-2 rounded-full border transition hover:bg-gray-100 md:hidden">
 								<Heart width={8} height={8} />
 							</button>
 						</div>
 
 						{/* 🧾 Détails produit */}
-						<div className="flex flex-col justify-between flex-1 h-58">
+						<div className="flex flex-col flex-1 justify-between h-58">
 							<div className="flex justify-between w-full">
 								{/* Ligne titre + prix */}
-								<div className="flex items-start justify-between w-full max-md:flex-col-reverse ">
+								<div className="flex justify-between items-start w-full max-md:flex-col-reverse">
 									<h4 className="text-[1.7rem]! font-medium text-gray-900 font-manrope">
 										{item.product_title}
 									</h4>
@@ -88,27 +89,27 @@ const CartItems = ({
 
 								<button
 									onClick={() => handleRemove(item.id)}
-									className="p-2 transition rounded-full h-fit hover:bg-gray-100 md:hidden"
+									className="p-2 rounded-full transition h-fit hover:bg-gray-100 md:hidden"
 								>
 									<CloseIcon size={18} />
 								</button>
 							</div>
 
 							{/* Description + variantes */}
-							<p className="mt-1 text-sm text-gray-500 whitespace-nowrap ">
+							<p className="mt-1 text-sm text-gray-500 whitespace-nowrap">
 								{item.variant_title || "Variante"}
 							</p>
 
 							{/* Bloc quantité + actions */}
-							<div className="flex flex-col items-start justify-between gap-3 mt-2 h-fit md:h-full ">
+							<div className="flex flex-col gap-3 justify-between items-start mt-2 h-fit md:h-full">
 								<QuantitySelector
 									productId={item.id || ""}
 									initialQuantity={item.quantity}
 									selectedVariants={{}}
 									cartId={cart.id}
 								/>{" "}
-								<div className="items-center hidden gap-4 md:flex">
-									<button className="p-2 transition border rounded-full hover:bg-gray-100">
+								<div className="hidden gap-4 items-center md:flex">
+									<button className="p-2 rounded-full border transition hover:bg-gray-100">
 										<Heart width={18} height={18} />
 									</button>
 

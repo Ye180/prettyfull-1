@@ -1,0 +1,247 @@
+"use client";
+
+import { Button, Input } from "@prettyfull/ui";
+import { cn } from "@prettyfull/utils";
+import { useState } from "react";
+import { useCheckoutStep } from "../../hooks/use-checkout-step";
+
+interface PaymentMethod {
+	id: string;
+	name: string;
+	icon?: string;
+}
+
+interface PaymentStepProps {
+	paymentMethods?: PaymentMethod[];
+	onComplete?: (paymentMethod: string) => void;
+}
+
+const defaultPaymentMethods: PaymentMethod[] = [
+	{ id: "card", name: "Credit / Debit Card" },
+	{ id: "mobile_money", name: "Mobile Money (MTN, Orange)" },
+	{ id: "paypal", name: "PayPal" },
+];
+
+export function PaymentStep({
+	paymentMethods = defaultPaymentMethods,
+	onComplete,
+}: PaymentStepProps) {
+	const { goToStep, isStepCompleted, isStepActive } = useCheckoutStep();
+	const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
+
+	// Card form state
+	const [cardNumber, setCardNumber] = useState("");
+	const [expiryDate, setExpiryDate] = useState("");
+	const [cvv, setCvv] = useState("");
+	const [cardName, setCardName] = useState("");
+
+	const isOpen = isStepActive("payment");
+	const isCompleted = isStepCompleted("payment");
+	const canAccess = isStepCompleted("delivery");
+
+	const handleEdit = () => {
+		goToStep("payment");
+	};
+
+	const handleSubmit = async () => {
+		if (!selectedMethod) return;
+
+		setIsLoading(true);
+		// Simulate payment processing
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		onComplete?.(selectedMethod);
+		setIsLoading(false);
+	};
+
+	const formatCardNumber = (value: string) => {
+		const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+		const matches = v.match(/\d{4,16}/g);
+		const match = (matches && matches[0]) || "";
+		const parts = [];
+		for (let i = 0, len = match.length; i < len; i += 4) {
+			parts.push(match.substring(i, i + 4));
+		}
+		return parts.length ? parts.join(" ") : value;
+	};
+
+	const formatExpiryDate = (value: string) => {
+		const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+		if (v.length >= 2) {
+			return v.substring(0, 2) + "/" + v.substring(2, 4);
+		}
+		return v;
+	};
+
+	const isCardFormValid =
+		selectedMethod === "card" &&
+		cardNumber.replace(/\s/g, "").length === 16 &&
+		expiryDate.length === 5 &&
+		cvv.length >= 3 &&
+		cardName.length > 0;
+
+	const canSubmit =
+		selectedMethod === "card" ? isCardFormValid : selectedMethod !== null;
+
+	return (
+		<div className="bg-white">
+			{/* Header */}
+			<div className="flex flex-row justify-between items-center mb-6">
+				<h2
+					className={cn(
+						"flex flex-row font-medium gap-x-2 items-center text-3xl! tracking-wider",
+						{
+							"opacity-50 pointer-events-none select-none":
+								!isOpen && !canAccess,
+						}
+					)}
+				>
+					Payment
+					{isCompleted && (
+						<svg
+							className="w-8 h-8 text-green-600"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+						>
+							<path
+								fillRule="evenodd"
+								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+								clipRule="evenodd"
+							/>
+						</svg>
+					)}
+				</h2>
+				{!isOpen && isCompleted && (
+					<Button
+						variant="outline"
+						onClick={handleEdit}
+						className="px-6 py-2 text-sm text-dark w-fit"
+					>
+						Edit
+					</Button>
+				)}
+			</div>
+
+			{/* Content */}
+			{isOpen && canAccess ? (
+				<div className="space-y-6">
+					<p className="text-sm text-gray-600">Select your payment method</p>
+
+					{/* Payment Methods */}
+					<div className="space-y-8">
+						{paymentMethods.map((method) => (
+							<label
+								key={method.id}
+								className={cn(
+									"flex items-center gap-4 px-4 py-8 border rounded-lg cursor-pointer transition-all",
+									selectedMethod === method.id
+										? "border-black bg-gray-50"
+										: "border-gray-200 hover:border-gray-400"
+								)}
+							>
+								<input
+									type="radio"
+									name="payment"
+									value={method.id}
+									checked={selectedMethod === method.id}
+									onChange={() => setSelectedMethod(method.id)}
+									className="w-4 h-4 text-black border-gray-300 focus:ring-black"
+								/>
+								<span className="font-medium">{method.name}</span>
+							</label>
+						))}
+					</div>
+
+					{/* Card Form */}
+					{selectedMethod === "card" && (
+						<div className="p-4 space-y-4 bg-gray-50 rounded-lg">
+							<div>
+								<label className="block mb-2 text-sm font-medium">
+									Card number
+								</label>
+								<Input
+									value={cardNumber}
+									onChange={(e) =>
+										setCardNumber(formatCardNumber(e.target.value))
+									}
+									placeholder="1234 5678 9012 3456"
+									maxLength={19}
+									className="py-5"
+								/>
+							</div>
+
+							<div>
+								<label className="block mb-2 text-sm font-medium">
+									Name on card
+								</label>
+								<Input
+									value={cardName}
+									onChange={(e) => setCardName(e.target.value)}
+									placeholder="John Doe"
+									className="py-5"
+								/>
+							</div>
+
+							<div className="grid grid-cols-2 gap-4">
+								<div>
+									<label className="block mb-2 text-sm font-medium">
+										Expiry date
+									</label>
+									<Input
+										value={expiryDate}
+										onChange={(e) =>
+											setExpiryDate(formatExpiryDate(e.target.value))
+										}
+										placeholder="MM/YY"
+										maxLength={5}
+										className="py-5"
+									/>
+								</div>
+								<div>
+									<label className="block mb-2 text-sm font-medium">CVV</label>
+									<Input
+										value={cvv}
+										onChange={(e) =>
+											setCvv(e.target.value.replace(/\D/g, "").slice(0, 4))
+										}
+										placeholder="123"
+										maxLength={4}
+										type="password"
+										className="py-5"
+									/>
+								</div>
+							</div>
+						</div>
+					)}
+
+					<Button
+						onClick={handleSubmit}
+						className="py-6 w-full"
+						disabled={!canSubmit || isLoading}
+					>
+						{isLoading ? "Processing..." : "Review order"}
+					</Button>
+				</div>
+			) : isCompleted ? (
+				/* Summary when completed */
+				<div className="text-sm text-gray-600">
+					<p>
+						Payment method:{" "}
+						{paymentMethods.find((m) => m.id === selectedMethod)?.name}
+					</p>
+					{selectedMethod === "card" && cardNumber && (
+						<p>Card ending in {cardNumber.slice(-4)}</p>
+					)}
+				</div>
+			) : !canAccess ? (
+				<p className="text-sm text-gray-400">
+					Complete the previous step to continue
+				</p>
+			) : null}
+
+			<div className="mt-8 border-t border-gray-200" />
+		</div>
+	);
+}
+
+export default PaymentStep;

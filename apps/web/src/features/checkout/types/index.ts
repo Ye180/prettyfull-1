@@ -2,7 +2,6 @@ export interface CartItemType {
   id: string;
   name: string;
   description: string;
-  color: string;
   size: string;
   price: number;
   image: string;

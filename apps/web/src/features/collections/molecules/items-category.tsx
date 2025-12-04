@@ -1,7 +1,7 @@
 const ItemsCategory = () => {
 	return (
 		<div
-			className="bg-gray-100 relative h-full w-[17rem] sm:w-[25rem] aspect-square pointer-cursor overflow-hidden flex-shrink-0 snap-center"
+			className="overflow-hidden relative h-full bg-gray-100 w-68 sm:w-100 aspect-square pointer-cursor shrink-0 snap-center"
 			style={{
 				backgroundImage: `url('/assets/product_1.jpg')`,
 				backgroundSize: "cover",
@@ -9,7 +9,7 @@ const ItemsCategory = () => {
 				backgroundRepeat: "no-repeat",
 			}}
 		>
-			<div className="absolute bottom-0 left-0 flex items-end justify-center w-full pb-8 overflow-hidden text-2xl text-white h-1/2 bg-linear-to-t from-black/80 to-black/0 font-bebas-neue">
+			<div className="flex overflow-hidden absolute bottom-0 left-0 justify-center items-end pb-8 w-full h-1/2 text-2xl text-white bg-linear-to-t from-black/80 to-black/0 font-bebas-neue">
 				<p className="!white-space-nowrap text-ellipsis line-clamp-1 truncate px-4  ">
 					BOMBERS
 				</p>

@@ -14,21 +14,22 @@ const CheckoutSummary = () => {
 	const cartId = localStorage.getItem("cart_id");
 	const { data: cart, isLoading } = useGetItemsCart(cartId as string);
 
+	console.log("cart:", cart?.items);
+
 	return (
-		<div className="w-full py-6 bg-white">
+		<div className="py-6 w-full bg-white">
 			{/* SECTION: Produits visuels */}
 			<div className="flex flex-col pb-8 space-y-10">
-				{items.map((item) => (
+				{cart?.items?.map((item) => (
 					<VisualSummary
-						key={item.productId}
+						key={item.id}
 						item={{
-							id: item.productId,
-							name: item.product?.name ?? "Unknown product",
+							id: item.id,
+							name: item.product_title ?? "Unknown product",
 							description: item.product?.description || "",
-							color: item.selectedVariants?.color || "",
-							size: item.selectedVariants?.size || "",
-							image: item.product?.image || "",
-							price: item.unitPrice?.amount || 0,
+							price: item.unit_price,
+							size: item.variant_title || "",
+							image: item.thumbnail || "",
 							quantity: item?.quantity,
 						}}
 					/>

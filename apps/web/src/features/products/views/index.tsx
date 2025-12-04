@@ -278,33 +278,28 @@ export default function ProductViews() {
 	}, []);
 
 	const handleClick = async () => {
-		if (!selectedColor || !selectedSize) {
-			console.error("Veuillez sélectionner une couleur et une taille");
+		if (!selectedSize) {
+			console.error("Veuillez sélectionner une taille");
 			return;
 		}
 
 		// Trouver le variant correspondant
-		const currentColorVariants =
-			colorVariants.find((cv) => cv.label === selectedColor)?.variants || [];
-
-		console.log("colors variants:", colorVariants);
-
 		let matchingVariant;
 
 		if (sizeOption) {
-			matchingVariant = currentColorVariants.find((variant: any) => {
+			// Chercher dans tous les variants du produit par taille
+			matchingVariant = product?.variants?.find((variant: any) => {
 				const variantSize = variant.options?.find(
 					(opt: any) => opt.option_id === sizeOption.id
 				)?.value;
 				return variantSize === selectedSize;
 			});
 		} else {
-			matchingVariant = colorVariants.find(
+			// Si pas d'option taille, chercher par titre de variant
+			matchingVariant = product?.variants?.find(
 				(variant: any) => variant.title === selectedSize
 			);
 		}
-
-		console.log("selectedSize:", selectedSize);
 
 		const cartId = localStorage.getItem("cart_id");
 
