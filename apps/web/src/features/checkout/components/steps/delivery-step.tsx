@@ -3,75 +3,42 @@
 import { Button } from "@prettyfull/ui";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
 import { useState } from "react";
+import { useGetShippingMedusa } from "../../api/get-shipping-medusa";
 import { useCheckoutStep } from "../../hooks/use-checkout-step";
 
-interface ShippingOption {
-	id: string;
-	name: string;
-	description: string;
-	price: number;
-	estimatedDays: string;
-}
-
 interface DeliveryStepProps {
-	shippingOptions?: ShippingOption[];
-	onComplete?: (selectedOption: ShippingOption) => void;
+	onComplete?: (selectedOptionId: string) => void;
 }
 
-const defaultShippingOptions: ShippingOption[] = [
-	{
-		id: "standard",
-		name: "Standard Shipping",
-		description: "Delivered in 5-7 business days",
-		price: 2500,
-		estimatedDays: "5-7 days",
-	},
-	{
-		id: "express",
-		name: "Express Shipping",
-		description: "Delivered in 2-3 business days",
-		price: 5000,
-		estimatedDays: "2-3 days",
-	},
-	{
-		id: "overnight",
-		name: "Overnight Shipping",
-		description: "Delivered next business day",
-		price: 10000,
-		estimatedDays: "1 day",
-	},
-];
-
-export function DeliveryStep({
-	shippingOptions = defaultShippingOptions,
-	onComplete,
-}: DeliveryStepProps) {
+export function DeliveryStep({ onComplete }: DeliveryStepProps) {
 	const { goToStep, isStepCompleted, isStepActive } = useCheckoutStep();
-	const [selectedOption, setSelectedOption] = useState<string | null>(null);
+	const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const isOpen = isStepActive("delivery");
 	const isCompleted = isStepCompleted("delivery");
 	const canAccess = isStepCompleted("address");
 
+	const { data: shipping } = useGetShippingMedusa();
+
 	const handleEdit = () => {
 		goToStep("delivery");
 	};
 
 	const handleSubmit = async () => {
-		if (!selectedOption) return;
+		if (!selectedOptionId) return;
 
-		const option = shippingOptions.find((o) => o.id === selectedOption);
+		const option = shipping?.find((o) => o.id === selectedOptionId);
 		if (option) {
 			setIsLoading(true);
-			// Simulate API call
+			// TODO: Call API to set shipping option on cart
 			await new Promise((resolve) => setTimeout(resolve, 500));
-			onComplete?.(option);
+			onComplete?.(option.id);
 			setIsLoading(false);
 		}
 	};
 
-	const selectedShipping = shippingOptions.find((o) => o.id === selectedOption);
+	const selectedShipping = shipping?.find((o) => o.id === selectedOptionId);
 
 	return (
 		<div className="bg-white">
@@ -121,12 +88,12 @@ export function DeliveryStep({
 					</p>
 
 					<div className="space-y-4">
-						{shippingOptions.map((option) => (
+						{shipping?.map((option) => (
 							<label
 								key={option.id}
 								className={cn(
 									"flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-all",
-									selectedOption === option.id
+									selectedOptionId === option.id
 										? "border-black bg-gray-50"
 										: "border-gray-200 hover:border-gray-400"
 								)}
@@ -136,19 +103,21 @@ export function DeliveryStep({
 										type="radio"
 										name="shipping"
 										value={option.id}
-										checked={selectedOption === option.id}
-										onChange={() => setSelectedOption(option.id)}
+										checked={selectedOptionId === option.id}
+										onChange={() => setSelectedOptionId(option.id)}
 										className="w-6 h-6 text-black border-gray-300 focus:ring-black focus:ring-0"
 									/>
 									<div>
 										<p className="font-medium">{option.name}</p>
 										<p className="text-sm text-gray-500">
-											{option.description}
+											{option.type?.label || "Standard delivery"}
 										</p>
 									</div>
 								</div>
 								<span className="font-medium">
-									{formatCurrency_FR(option.price)}
+									{formatCurrency_FR(
+										(option.prices?.[1]?.amount ?? 0) as number
+									)}
 								</span>
 							</label>
 						))}
@@ -157,7 +126,7 @@ export function DeliveryStep({
 					<Button
 						onClick={handleSubmit}
 						className="py-6 mt-6 w-full"
-						disabled={!selectedOption || isLoading}
+						disabled={!selectedOptionId || isLoading}
 					>
 						{isLoading ? "Processing..." : "Continue to payment"}
 					</Button>
@@ -166,9 +135,11 @@ export function DeliveryStep({
 				/* Summary when completed */
 				<div className="text-sm text-gray-600">
 					<p className="font-medium">{selectedShipping.name}</p>
-					<p>{selectedShipping.description}</p>
+					<p>{selectedShipping.type?.label || "Standard delivery"}</p>
 					<p className="mt-1 font-medium">
-						{formatCurrency_FR(selectedShipping.price)}
+						{formatCurrency_FR(
+							(selectedShipping.prices?.[0]?.amount ?? 0) as number
+						)}
 					</p>
 				</div>
 			) : !canAccess ? (

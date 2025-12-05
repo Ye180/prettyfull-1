@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
 import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
 import CartDropdown from "./carte-dropdown";
-import { Currency } from "./currency";
+import { CurrencySelector } from "./currency-selector";
 import NavbarResponsive from "./navbar-responsive";
 
 const NavBarHeaders = ({
@@ -42,8 +42,8 @@ const NavBarHeaders = ({
 
 	return (
 		<>
-			<div className="relative flex items-center justify-between h-20">
-				<div className="flex items-center space-x-12 ">
+			<div className="flex relative justify-between items-center h-20">
+				<div className="flex items-center space-x-12">
 					<Link
 						href="/"
 						className="text-[3.5rem] font-bold tracking-wider text-black font-bebas-neue"
@@ -75,24 +75,24 @@ const NavBarHeaders = ({
 								);
 							})
 						) : (
-							<Skeleton className="h-9 w-80" />
+							<Skeleton className="w-80 h-9" />
 						)}
 					</div>
 				</div>
-				<div className="flex items-center gap-2 md:gap-6">
-					<div className="flex items-center gap-2 md:gap-6">
-						<div className="flex items-center justify-start w-full gap-2 py-1 text-gray-500 border-b border-gray-300 px- outline-gray-700 max-sm:hidden ">
+				<div className="flex gap-2 items-center md:gap-6">
+					<div className="flex gap-2 items-center md:gap-6">
+						<div className="flex gap-2 justify-start items-center px-6 py-3 w-full text-gray-500 rounded-2xl border border-gray-300 px- outline-gray-700 max-sm:hidden lg:w-140">
 							<Search className="" />
 							<Input
 								placeholder={t("placeholder")}
-								className="h-4 border-none outline-1 text-black font-light px-2 py-4 border-gray-300  text-[1.8rem] max-sm:hidden w-full sm:w-full placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.5rem] "
+								className="h-4  border-none outline-1 text-black font-light px-2 py-4 border-gray-300  text-[1.6rem] max-sm:hidden w-full sm:w-full placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.5rem] "
 							/>
 						</div>
 						<div className="max-md:hidden">
-							<Currency />
+							<CurrencySelector />
 						</div>
 
-						<div className="flex items-center justify-center gap-0 md:gap-2">
+						<div className="flex gap-0 justify-center items-center md:gap-2">
 							{NAV_USER_LINKS.map((item, index) => (
 								<Link
 									key={index}

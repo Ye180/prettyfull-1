@@ -3,7 +3,7 @@ import { cn } from "../../utils";
 
 export const Logo = (props: ComponentProps<"div">) => {
 	return (
-		<div {...props} className={cn("w-[20rem] relative", props.className)}>
+		<div {...props} className={cn("w-80 relative", props.className)}>
 			<img
 				className="-ml-4"
 				src="/assets/logo.png"

@@ -13,6 +13,7 @@ import { useCheckoutStep } from "../hooks/use-checkout-step";
 
 const CheckoutView = () => {
 	const router = useRouter();
+
 	const { goToNextStep } = useCheckoutStep();
 
 	const handleAddressComplete = (data: any) => {

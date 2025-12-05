@@ -39,3 +39,9 @@ export const PARENTS_CATEGORIES_MEDUSA_QUERY_KEY =
 
 export const PRODUCT_MEDUSA_BY_CATEGORY_HANDLE_QUERY_KEY =
   "product-medusa-by-category-handle";
+
+
+export const REGIONS_MEDUSA_QUERY_KEY = "list-regions-medusa"; 
+  
+
+export const SHIPING_MEDUSA_QUERY_KEY = "list-shipping-medusa";

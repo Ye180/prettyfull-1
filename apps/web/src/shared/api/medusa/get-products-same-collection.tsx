@@ -4,53 +4,53 @@ import { sdk } from "@/lib/api/sdk";
 import { COLLECTIONS_MEDUSA_QUERY_KEY } from "@/shared/utils/query-keys";
 import { useQuery } from "@tanstack/react-query";
 const getProductsSameCollection = async () => {
-  const { products } = await sdk.store.product.list({
-    fields: "*variants.calculated_price",
-    region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684",
-  });
+	const { products } = await sdk.store.product.list({
+		fields: "*variants.calculated_price",
+		region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684",
+	});
 
-  const grouped: Record<
-    string,
-    {
-      collection_id: string | null;
-      collection: any | null;
-      products: any[];
-    }
-  > = {};
+	const grouped: Record<
+		string,
+		{
+			collection_id: string | null;
+			collection: any | null;
+			products: any[];
+		}
+	> = {};
 
-  // First, group products by collection_id
-  for (const product of products) {
-    const collectionId = product.collection_id;
-    if (!collectionId) continue;
+	// First, group products by collection_id
+	for (const product of products) {
+		const collectionId = product.collection_id;
+		if (!collectionId) continue;
 
-    if (!grouped[collectionId]) {
-      grouped[collectionId] = {
-        collection_id: collectionId,
-        collection: null,
-        products: [],
-      };
-    }
+		if (!grouped[collectionId]) {
+			grouped[collectionId] = {
+				collection_id: collectionId,
+				collection: null,
+				products: [],
+			};
+		}
 
-    grouped[collectionId].products.push(product);
-  }
+		grouped[collectionId].products.push(product);
+	}
 
-  // Then, fetch the collection data for each group
-  await Promise.all(
-    Object.values(grouped).map(async (group) => {
-      if (!group.collection_id) return;
-      const { collection } = await sdk.store.collection.retrieve(
-        group.collection_id as string
-      );
-      group.collection = collection;
-    })
-  );
+	// Then, fetch the collection data for each group
+	await Promise.all(
+		Object.values(grouped).map(async (group) => {
+			if (!group.collection_id) return;
+			const { collection } = await sdk.store.collection.retrieve(
+				group.collection_id as string
+			);
+			group.collection = collection;
+		})
+	);
 
-  return Object.values(grouped);
+	return Object.values(grouped);
 };
 
 export const useGetProductsSameCollection = () => {
-  return useQuery({
-    queryKey: [COLLECTIONS_MEDUSA_QUERY_KEY],
-    queryFn: getProductsSameCollection,
-  });
+	return useQuery({
+		queryKey: [COLLECTIONS_MEDUSA_QUERY_KEY],
+		queryFn: getProductsSameCollection,
+	});
 };

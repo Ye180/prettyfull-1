@@ -3,6 +3,7 @@
 export * from "./button";
 export * from "./card";
 
+export * from "./components/product";
 export * from "./components/products-/product-options";
 export * from "./components/products-/products-galery";
 export * from "./components/products-/products-infos";
@@ -10,7 +11,6 @@ export * from "./grid-card-product";
 export * from "./input";
 export * from "./input-select";
 export * from "./logo";
-export * from "./components/product"
 
 // --- Imports des composants UI ---
 export * from "../src/components/ui/accordion";
@@ -26,7 +26,31 @@ export * from "../src/components/ui/select";
 export * from "../src/components/ui/skeleton"; // <-- AJOUTEZ CETTE LIGNE
 export * from "../src/components/ui/tabs";
 
+export * from "../src/custom-modal";
+
 
 
 // --- Import des icônes ---
 export * from "./icons/spinner.icon"; // <-- AJOUTEZ CETTE LIGNE
+
+// --- Lucide icons re-export ---
+export {
+      Check,
+      ChevronDown,
+      ChevronLeft,
+      ChevronRight,
+      ChevronUp,
+      Globe,
+      Heart,
+      Menu,
+      Minus,
+      Plus,
+      Search,
+      ShoppingBag,
+      ShoppingCart,
+      Trash2,
+      User,
+      Wallet,
+      X
+} from "lucide-react";
+
