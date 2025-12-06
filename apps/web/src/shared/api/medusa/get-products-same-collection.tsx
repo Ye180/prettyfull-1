@@ -2,11 +2,13 @@
 
 import { sdk } from "@/lib/api/sdk";
 import { COLLECTIONS_MEDUSA_QUERY_KEY } from "@/shared/utils/query-keys";
+import { useRegionStore } from "@/stores/useRegion";
 import { useQuery } from "@tanstack/react-query";
-const getProductsSameCollection = async () => {
+
+const getProductsSameCollection = async (regionId: string) => {
 	const { products } = await sdk.store.product.list({
 		fields: "*variants.calculated_price",
-		region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684",
+		region_id: regionId,
 	});
 
 	const grouped: Record<
@@ -49,8 +51,12 @@ const getProductsSameCollection = async () => {
 };
 
 export const useGetProductsSameCollection = () => {
+	const region = useRegionStore((state) => state.region);
+	const regionId = region?.id;
+
 	return useQuery({
-		queryKey: [COLLECTIONS_MEDUSA_QUERY_KEY],
-		queryFn: getProductsSameCollection,
+		queryKey: [COLLECTIONS_MEDUSA_QUERY_KEY, regionId],
+		queryFn: () => getProductsSameCollection(regionId!),
+		enabled: !!regionId,
 	});
 };

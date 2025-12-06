@@ -71,6 +71,7 @@ export function CustomModal({
 						>
 							{close && (
 								<DialogClose className="absolute top-4 right-6 p-2 rounded-full transition-colors cursor-pointer hover:bg-gray-100 focus:outline-none">
+									{/* @ts-expect-error - lucide-react types incompatible with React 19 */}
 									<X className="text-gray-500 size-6 hover:text-gray-800" />
 								</DialogClose>
 							)}

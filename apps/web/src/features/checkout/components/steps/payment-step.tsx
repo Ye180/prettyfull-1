@@ -3,7 +3,10 @@
 import { Button, Input } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import { useState } from "react";
+import { useGetPaymentProviders } from "../../api/get-payment-providers";
+import { useInitPaymentSession } from "../../api/init-payment-session";
 import { useCheckoutStep } from "../../hooks/use-checkout-step";
+import { useCheckoutStore } from "../../stores/use-checkout-store";
 
 interface PaymentMethod {
 	id: string;
@@ -12,7 +15,8 @@ interface PaymentMethod {
 }
 
 interface PaymentStepProps {
-	paymentMethods?: PaymentMethod[];
+	cartId: string | null;
+	regionId: string | null;
 	onComplete?: (paymentMethod: string) => void;
 }
 
@@ -23,12 +27,22 @@ const defaultPaymentMethods: PaymentMethod[] = [
 ];
 
 export function PaymentStep({
-	paymentMethods = defaultPaymentMethods,
+	cartId,
+	regionId,
 	onComplete,
 }: PaymentStepProps) {
 	const { goToStep, isStepCompleted, isStepActive } = useCheckoutStep();
-	const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+	const { selectedPaymentProviderId, setSelectedPaymentProviderId } =
+		useCheckoutStore();
+	const [selectedMethod, setSelectedMethod] = useState<string | null>(
+		selectedPaymentProviderId
+	);
 	const [isLoading, setIsLoading] = useState(false);
+
+	// Get payment providers for this region
+	const { data: paymentProviders, isLoading: providersLoading } =
+		useGetPaymentProviders(regionId);
+	const initPaymentSession = useInitPaymentSession();
 
 	// Card form state
 	const [cardNumber, setCardNumber] = useState("");
@@ -45,13 +59,25 @@ export function PaymentStep({
 	};
 
 	const handleSubmit = async () => {
-		if (!selectedMethod) return;
+		if (!selectedMethod || !cartId) return;
 
 		setIsLoading(true);
-		// Simulate payment processing
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		onComplete?.(selectedMethod);
-		setIsLoading(false);
+		try {
+			// Initialize payment session via Medusa API
+			await initPaymentSession.mutateAsync({
+				cartId,
+				providerId: selectedMethod,
+			});
+
+			// Save to store
+			setSelectedPaymentProviderId(selectedMethod);
+
+			onComplete?.(selectedMethod);
+		} catch (error) {
+			console.error("Failed to initialize payment session:", error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const formatCardNumber = (value: string) => {
@@ -73,15 +99,28 @@ export function PaymentStep({
 		return v;
 	};
 
+	// Helper to get friendly provider name
+	const getProviderName = (providerId: string): string => {
+		const names: Record<string, string> = {
+			pp_stripe_stripe: "Credit / Debit Card (Stripe)",
+			pp_paypal_paypal: "PayPal",
+			pp_system_default: "Pay on Delivery",
+			manual: "Manual Payment",
+		};
+		return names[providerId] || providerId;
+	};
+
+	const isStripeProvider = selectedMethod?.includes("stripe");
+
 	const isCardFormValid =
-		selectedMethod === "card" &&
+		isStripeProvider &&
 		cardNumber.replace(/\s/g, "").length === 16 &&
 		expiryDate.length === 5 &&
 		cvv.length >= 3 &&
 		cardName.length > 0;
-
-	const canSubmit =
-		selectedMethod === "card" ? isCardFormValid : selectedMethod !== null;
+	const canSubmit = isStripeProvider
+		? isCardFormValid
+		: selectedMethod !== null;
 
 	return (
 		<div className="bg-white">
@@ -128,32 +167,38 @@ export function PaymentStep({
 					<p className="text-sm text-gray-600">Select your payment method</p>
 
 					{/* Payment Methods */}
-					<div className="space-y-8">
-						{paymentMethods.map((method) => (
-							<label
-								key={method.id}
-								className={cn(
-									"flex items-center gap-4 px-4 py-8 border rounded-lg cursor-pointer transition-all",
-									selectedMethod === method.id
-										? "border-black bg-gray-50"
-										: "border-gray-200 hover:border-gray-400"
-								)}
-							>
-								<input
-									type="radio"
-									name="payment"
-									value={method.id}
-									checked={selectedMethod === method.id}
-									onChange={() => setSelectedMethod(method.id)}
-									className="w-4 h-4 text-black border-gray-300 focus:ring-black"
-								/>
-								<span className="font-medium">{method.name}</span>
-							</label>
-						))}
-					</div>
+					{providersLoading ? (
+						<p className="text-sm text-gray-500">Loading payment methods...</p>
+					) : (
+						<div className="space-y-8">
+							{paymentProviders?.map((provider: any) => (
+								<label
+									key={provider.id}
+									className={cn(
+										"flex items-center gap-4 px-4 py-8 border rounded-lg cursor-pointer transition-all",
+										selectedMethod === provider.id
+											? "border-black bg-gray-50"
+											: "border-gray-200 hover:border-gray-400"
+									)}
+								>
+									<input
+										type="radio"
+										name="payment"
+										value={provider.id}
+										checked={selectedMethod === provider.id}
+										onChange={() => setSelectedMethod(provider.id)}
+										className="w-4 h-4 text-black border-gray-300 focus:ring-black"
+									/>
+									<span className="font-medium">
+										{getProviderName(provider.id)}
+									</span>
+								</label>
+							))}
+						</div>
+					)}
 
-					{/* Card Form */}
-					{selectedMethod === "card" && (
+					{/* Card Form - Show for Stripe */}
+					{isStripeProvider && (
 						<div className="p-4 space-y-4 bg-gray-50 rounded-lg">
 							<div>
 								<label className="block mb-2 text-sm font-medium">
@@ -217,7 +262,7 @@ export function PaymentStep({
 					<Button
 						onClick={handleSubmit}
 						className="py-6 w-full"
-						disabled={!canSubmit || isLoading}
+						disabled={!canSubmit || isLoading || !cartId}
 					>
 						{isLoading ? "Processing..." : "Review order"}
 					</Button>
@@ -227,9 +272,9 @@ export function PaymentStep({
 				<div className="text-sm text-gray-600">
 					<p>
 						Payment method:{" "}
-						{paymentMethods.find((m) => m.id === selectedMethod)?.name}
+						{selectedMethod ? getProviderName(selectedMethod) : ""}
 					</p>
-					{selectedMethod === "card" && cardNumber && (
+					{isStripeProvider && cardNumber && (
 						<p>Card ending in {cardNumber.slice(-4)}</p>
 					)}
 				</div>

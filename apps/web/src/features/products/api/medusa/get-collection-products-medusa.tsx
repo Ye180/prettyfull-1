@@ -3,12 +3,15 @@
 import { sdk } from "@/lib/api/sdk";
 import { useQuery } from "@tanstack/react-query";
 
-export const getCollectionProductsMedusa = async (collectionId: string) => {
-	if (!collectionId) return [];
+export const getCollectionProductsMedusa = async (
+	collectionId: string,
+	regionId: string
+) => {
+	if (!collectionId || !regionId) return [];
 
 	const response = await sdk.store.product.list({
 		fields: "*variants.calculated_price,*images",
-		region_id: "reg_01KAGE6E6H99WSEH3F2A8BB684",
+		region_id: regionId,
 		collection_id: [collectionId],
 		limit: 20,
 	});
@@ -17,11 +20,12 @@ export const getCollectionProductsMedusa = async (collectionId: string) => {
 };
 
 export const useGetCollectionProductsMedusa = (
-	collectionId: string | undefined
+	collectionId: string | undefined,
+	regionId: string | undefined
 ) => {
 	return useQuery({
-		queryKey: ["collection-products", collectionId],
-		queryFn: () => getCollectionProductsMedusa(collectionId!),
-		enabled: !!collectionId,
+		queryKey: ["collection-products", collectionId, regionId],
+		queryFn: () => getCollectionProductsMedusa(collectionId!, regionId!),
+		enabled: !!collectionId && !!regionId,
 	});
 };

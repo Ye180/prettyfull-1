@@ -4,6 +4,7 @@ import { Cart } from "@/components/icons/cart.icon";
 import { sdk } from "@/lib/api/sdk";
 import { paths } from "@/lib/routes/paths-en";
 import { CART_ITEMS_CART } from "@/shared/utils/query-keys";
+import { useRegionStore } from "@/stores/useRegion";
 import {
 	Popover,
 	PopoverButton,
@@ -23,6 +24,8 @@ const CartDropdown = (cart: any) => {
 	const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
 
 	const router = useRouter();
+
+	const regions = useRegionStore((state) => state.region);
 
 	const open = () => setCartDropdownOpen(true);
 	const close = () => setCartDropdownOpen(false);
@@ -60,7 +63,7 @@ const CartDropdown = (cart: any) => {
 		>
 			<Popover className="relative">
 				<PopoverButton className="focus:outline-none">
-					<Link href={paths.cart} className="flex ">
+					<Link href={paths.cart} className="flex">
 						<Cart />
 						{cart?.cart?.length > 0 && (
 							<p className="absolute flex items-center justify-center text-[0.8rem] border bottom-2 left-3  text-center content-center w-6 h-6 lg:w-[1.8rem] lg:h-[1.8rem] text-xs text-white bg-red-500 rounded-full lg:right-2 lg:bottom-0 lg:text-[1rem] font-semibold lg:border-2 lg:p-2 border-white">
@@ -90,9 +93,9 @@ const CartDropdown = (cart: any) => {
 							</h3>
 
 							{cart?.cart?.length === 0 && (
-								<div className="flex flex-col items-center justify-center py-8">
+								<div className="flex flex-col justify-center items-center py-8">
 									<svg
-										className="w-16 h-16 mb-4 text-gray-300"
+										className="mb-4 w-16 h-16 text-gray-300"
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"
@@ -118,8 +121,8 @@ const CartDropdown = (cart: any) => {
 							<div className="space-y-12">
 								{cart?.cart?.map((item: StoreCartLineItem, index: number) => {
 									return (
-										<div className="flex mb-12 gap-x-8" key={index}>
-											<div className="border border-gray-300 rounded-lg size-24">
+										<div className="flex gap-x-8 mb-12" key={index}>
+											<div className="rounded-lg border border-gray-300 size-24">
 												{" "}
 												<Image
 													src={item.thumbnail as string}
@@ -130,15 +133,18 @@ const CartDropdown = (cart: any) => {
 												/>
 											</div>
 											<div className="flex flex-col justify-between w-full text-[1.5rem]!">
-												<div className="flex items-center justify-between">
+												<div className="flex justify-between items-center">
 													<p className="truncate line-clamp-1 text-[1.5rem]!">
 														{item.product_title} - {item.variant_title}
 													</p>
-													<p className="font-bold whitespace-nowrap ">
-														{formatCurrency_FR(item.unit_price)}
+													<p className="font-bold whitespace-nowrap">
+														{formatCurrency_FR(
+															item.unit_price,
+															regions?.currency_code === "xof" ? "FCFA" : "$"
+														)}
 													</p>
 												</div>
-												<div className="flex items-center justify-between ">
+												<div className="flex justify-between items-center">
 													<p>
 														Quantité: <span>{item.quantity}</span>
 													</p>
@@ -156,7 +162,7 @@ const CartDropdown = (cart: any) => {
 							</div>
 							{/* Bouton voir le panier */}
 							<button
-								className="w-full px-4 py-5 mt-4 text-lg font-bold text-white transition-colors bg-black rounded-md cursor-pointer hover:bg-gray-800"
+								className="px-4 py-5 mt-4 w-full text-lg font-bold text-white bg-black rounded-md transition-colors cursor-pointer hover:bg-gray-800"
 								onClick={() => router.push(paths.cart)}
 							>
 								Voir le panier

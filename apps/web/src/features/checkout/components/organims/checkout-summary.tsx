@@ -1,20 +1,39 @@
 "use client";
 
 import { useGetItemsCart } from "@/features/cart/api/medusa/get-items-cart";
-import { useCheckoutSummary } from "@/hooks/use-Checkout-summary";
 import { DropdownMenuSeparator } from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import VisualSummary from "../molecules/visual-sumary";
 
-const CheckoutSummary = () => {
+const CheckoutSummary = ({ currency }: { currency: string }) => {
 	const t = useTranslations("CheckoutPage.summary");
-	const { items, summary } = useCheckoutSummary();
 
 	const cartId = localStorage.getItem("cart_id");
 	const { data: cart, isLoading } = useGetItemsCart(cartId as string);
 
-	console.log("cart:", cart?.items);
+	//Add elements dans le local storage
+	// const [checkoutSummary, setCheckoutSummary] = useLocalStorage(
+	// 	"checkout_summary",
+	// 	{
+	// 		subtotal: 0,
+	// 		shipping: 0,
+	// 		taxes: 0,
+	// 		total: 0,
+	// 	}
+	// );
+
+	// // Set the checkout summary data when cart is loaded
+	// useEffect(() => {
+	// 	if (cart) {
+	// 		setCheckoutSummary({
+	// 			subtotal: cart.item_subtotal ?? 0,
+	// 			shipping: cart.shipping_total ?? 0,
+	// 			taxes: cart.item_tax_total ?? 0,
+	// 			total: cart.item_total ?? 0,
+	// 		});
+	// 	}
+	// }, [cart, setCheckoutSummary]);
 
 	return (
 		<div className="py-6 w-full bg-white">
@@ -32,6 +51,7 @@ const CheckoutSummary = () => {
 							image: item.thumbnail || "",
 							quantity: item?.quantity,
 						}}
+						currency={currency}
 					/>
 				))}
 			</div>
@@ -42,17 +62,23 @@ const CheckoutSummary = () => {
 				<div className="space-y-8">
 					<div className="flex justify-between text-md">
 						<span>{t("subtotal")}</span>
-						<span>{formatCurrency_FR(cart?.item_subtotal as number)}</span>
+						<span>
+							{formatCurrency_FR(cart?.item_subtotal as number, currency)}
+						</span>
 					</div>
 
 					<div className="flex justify-between text-md">
 						<span>{t("shipping")}</span>
-						<span>{formatCurrency_FR(cart?.shipping_total as number)}</span>
+						<span>
+							{formatCurrency_FR(cart?.shipping_total as number, currency)}
+						</span>
 					</div>
 
 					<div className="flex justify-between text-md">
 						<span>{t("taxes")}</span>
-						<span>{formatCurrency_FR(cart?.item_tax_total as number)}</span>
+						<span>
+							{formatCurrency_FR(cart?.item_tax_total as number, currency)}
+						</span>
 					</div>
 				</div>
 
@@ -60,15 +86,11 @@ const CheckoutSummary = () => {
 
 				<div className="flex justify-between py-6 text-lg font-semibold">
 					<span>{t("total")}</span>
-					<span>{formatCurrency_FR(cart?.item_total as number)}</span>
+					<span>{formatCurrency_FR(cart?.total as number, currency)}</span>
 				</div>
 			</div>
 
 			<DropdownMenuSeparator />
-
-			{/* <p className="py-8 text-[1.5rem] font-semibold">
-				Arrive Dim, 28 Sept - Vend 02 Aout
-			</p> */}
 		</div>
 	);
 };

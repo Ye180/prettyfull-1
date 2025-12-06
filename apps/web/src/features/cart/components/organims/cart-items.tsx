@@ -2,6 +2,7 @@
 
 import { sdk } from "@/lib/api/sdk";
 import { CART_ITEMS_CART } from "@/shared/utils/query-keys";
+import { useRegionStore } from "@/stores/useRegion";
 import { StoreCart } from "@medusajs/types";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -23,6 +24,8 @@ const CartItems = ({
 
 	const queryClient = useQueryClient();
 	const [loadingId, setLoadingId] = useState<string | null>(null);
+
+	const regions = useRegionStore((state) => state.region);
 
 	const handleRemove = async (itemId: string) => {
 		try {
@@ -53,8 +56,6 @@ const CartItems = ({
 			{cart.items.map((item) => {
 				const imageSrc = item.thumbnail || "/assets/product_1.jpg";
 
-				console.log("Image source:", imageSrc);
-
 				return (
 					<div
 						key={item.id}
@@ -83,7 +84,10 @@ const CartItems = ({
 										{item.product_title}
 									</h4>
 									<p className="text-lg font-semibold text-gray-800 whitespace-nowrap">
-										{formatCurrency_FR(item.unit_price)}
+										{formatCurrency_FR(
+											item.unit_price,
+											regions?.currency_code === "xof" ? "FCFA" : "$"
+										)}
 									</p>
 								</div>
 

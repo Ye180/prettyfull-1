@@ -12,9 +12,15 @@ import {
 	Input,
 } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import InputSelect from "../../../../../../../packages/ui/src/input-select";
+import {
+	useUpdateCartAddress,
+	type AddressData,
+} from "../../api/update-cart-address";
 import { useCheckoutStep } from "../../hooks/use-checkout-step";
+import { useCheckoutStore } from "../../stores/use-checkout-store";
 
 interface AddressFormValues {
 	email: string;
@@ -31,11 +37,17 @@ interface AddressFormValues {
 }
 
 interface AddressStepProps {
-	onComplete?: (data: AddressFormValues) => void;
+	cartId: string | null;
+	onComplete?: (data: AddressData) => void;
 }
 
-export function AddressStep({ onComplete }: AddressStepProps) {
+export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 	const { goToStep, isStepCompleted, isStepActive } = useCheckoutStep();
+	const { setShippingAddress, setSameBillingAddress, shippingAddress } =
+		useCheckoutStore();
+	const updateCartAddress = useUpdateCartAddress();
+	const [isLoading, setIsLoading] = useState(false);
+	const [sameBilling, setSameBilling] = useState(true);
 
 	const isOpen = isStepActive("address");
 	const isCompleted = isStepCompleted("address");
@@ -57,9 +69,58 @@ export function AddressStep({ onComplete }: AddressStepProps) {
 		},
 	});
 
-	const handleSubmit = form.handleSubmit((data) => {
-		onComplete?.(data);
+	const handleSubmit = form.handleSubmit(async (data) => {
+		if (!cartId) return;
+
+		setIsLoading(true);
+		try {
+			// Map form values to Medusa address format
+			const addressData: AddressData = {
+				email: data.email,
+				first_name: data.firstName,
+				last_name: data.lastName,
+				company: data.company,
+				address_1: data.address,
+				address_2: data.address2,
+				postal_code: data.postCode,
+				city: data.city,
+				province: data.region,
+				country_code: getCountryCode(data.country || ""),
+				phone: data.phone,
+			};
+
+			// Update cart with address via Medusa API
+			await updateCartAddress.mutateAsync({
+				cartId,
+				shippingAddress: addressData,
+				billingAddress: sameBilling ? undefined : addressData,
+			});
+
+			// Save to store
+			setShippingAddress(addressData);
+			setSameBillingAddress(sameBilling);
+
+			onComplete?.(addressData);
+		} catch (error) {
+			console.error("Failed to update address:", error);
+		} finally {
+			setIsLoading(false);
+		}
 	});
+
+	// Helper to convert country name to ISO code
+	const getCountryCode = (country: string): string => {
+		const countryMap: Record<string, string> = {
+			Cameroun: "cm",
+			France: "fr",
+			Belgique: "be",
+			Suisse: "ch",
+			Canada: "ca",
+			"Côte d'Ivoire": "ci",
+			Sénégal: "sn",
+		};
+		return countryMap[country] || "cm";
+	};
 
 	const handleEdit = () => {
 		goToStep("address");
@@ -357,7 +418,11 @@ export function AddressStep({ onComplete }: AddressStepProps) {
 
 						{/* Same billing address checkbox */}
 						<div className="flex items-center pt-4 space-x-3">
-							<Checkbox id="sameBilling" defaultChecked />
+							<Checkbox
+								id="sameBilling"
+								checked={sameBilling}
+								onCheckedChange={(checked) => setSameBilling(checked === true)}
+							/>
 							<label htmlFor="sameBilling" className="text-sm">
 								Billing address same as shipping address
 							</label>
@@ -367,9 +432,9 @@ export function AddressStep({ onComplete }: AddressStepProps) {
 						<Button
 							type="submit"
 							className="py-6 mt-6 w-full"
-							// disabled={!form.formState.isValid}
+							disabled={isLoading || !cartId}
 						>
-							Continue to delivery
+							{isLoading ? "Saving..." : "Continue to delivery"}
 						</Button>
 					</form>
 				</Form>

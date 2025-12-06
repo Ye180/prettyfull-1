@@ -48,17 +48,17 @@ const CartSummary = ({
 					<div className="space-y-8">
 						<div className="flex justify-between text-md">
 							<span>{t("subtotal")}</span>
-							<span>{formatCurrency_FR(subtotal)}</span>
+							<span>{formatCurrency_FR(subtotal, currency)}</span>
 						</div>
 
 						<div className="flex justify-between text-md">
 							<span>{t("shipping")}</span>
-							<span>{formatCurrency_FR(shipping)}</span>
+							<span>{/* {formatCurrency_FR(shipping)} */} -</span>
 						</div>
 
 						<div className="flex justify-between text-md">
 							<span>{t("taxes")}</span>
-							<span>{formatCurrency_FR(taxes)}</span>
+							<span>{/* {formatCurrency_FR(taxes)} */}-</span>
 						</div>
 					</div>
 
@@ -66,14 +66,14 @@ const CartSummary = ({
 
 					<div className="flex justify-between py-6 text-lg font-semibold">
 						<span>{t("total")}</span>
-						<span>{formatCurrency_FR(total)}</span>
+						<span>{formatCurrency_FR(total, currency)}</span>
 					</div>
 				</div>
 
 				<DropdownMenuSeparator />
 
 				<Button
-					className="w-full mt-8 bg-black hover:bg-black/80"
+					className="mt-8 w-full bg-black hover:bg-black/80"
 					onClick={handleCheckout}
 				>
 					<span className="text-[1.6rem] font-semibold">Checkout</span>

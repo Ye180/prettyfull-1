@@ -5,33 +5,49 @@ import { Button, Checkbox } from "@prettyfull/ui";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
 import Image from "next/image";
 import { useState } from "react";
+import { useCompleteCart } from "../../api/complete-cart";
 import { useCheckoutStep } from "../../hooks/use-checkout-step";
+import { useCheckoutStore } from "../../stores/use-checkout-store";
 
 interface ReviewStepProps {
-	onPlaceOrder?: () => void;
+	cartId: string | null;
+	onPlaceOrder?: (orderId: string) => void;
 }
 
-export function ReviewStep({ onPlaceOrder }: ReviewStepProps) {
+export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 	const { isStepCompleted, isStepActive } = useCheckoutStep();
+	const { reset: resetCheckoutStore } = useCheckoutStore();
 	const [isLoading, setIsLoading] = useState(false);
 	const [termsAccepted, setTermsAccepted] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	const isOpen = isStepActive("review");
 	const canAccess = isStepCompleted("payment");
 
 	// Get cart data
-	const cartId =
-		typeof window !== "undefined" ? localStorage.getItem("cart_id") : null;
 	const { data: cart } = useGetItemsCart(cartId as string);
+	const completeCart = useCompleteCart();
 
 	const handlePlaceOrder = async () => {
-		if (!termsAccepted) return;
+		if (!termsAccepted || !cartId) return;
 
 		setIsLoading(true);
-		// Simulate order placement
-		await new Promise((resolve) => setTimeout(resolve, 1500));
-		onPlaceOrder?.();
-		setIsLoading(false);
+		setError(null);
+
+		try {
+			// Complete cart and create order via Medusa API
+			const order = await completeCart.mutateAsync({ cartId });
+
+			// Reset checkout store
+			resetCheckoutStore();
+
+			onPlaceOrder?.(order.id);
+		} catch (err) {
+			console.error("Failed to place order:", err);
+			setError("Failed to place order. Please try again.");
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
@@ -138,10 +154,12 @@ export function ReviewStep({ onPlaceOrder }: ReviewStepProps) {
 						</label>
 					</div>
 
+					{error && <p className="text-sm text-red-600">{error}</p>}
+
 					<Button
 						onClick={handlePlaceOrder}
 						className="py-6 w-full"
-						disabled={!termsAccepted || isLoading}
+						disabled={!termsAccepted || isLoading || !cartId}
 					>
 						{isLoading ? "Placing order..." : "Place Order"}
 					</Button>

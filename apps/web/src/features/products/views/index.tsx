@@ -4,6 +4,7 @@ import { useAddItemToCartMedusa } from "@/features/cart/api/medusa/add-item-to-c
 import ProductSuggestion from "@/features/products/components/organims/product-suggestion";
 import Reviews from "@/features/products/components/organims/reviews";
 import ProductSkeleton from "@/shared/components/organims/product-fiche-loading";
+import { useRegionStore } from "@/stores/useRegion";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
@@ -15,14 +16,18 @@ import { ProductInfosNew } from "../components/organims/product-infos-new";
 export default function ProductViews() {
 	const params = useParams();
 
+	const regions = useRegionStore((state) => state.region);
 	const { data: product, isLoading } = useGetProductsByHandleMedusa(
-		params.handle as string
+		params.handle as string,
+		regions?.id as string
 	);
 
 	// Récupérer les produits de la même collection
 	const collectionId = product?.collection?.id;
-	const { data: collectionProducts } =
-		useGetCollectionProductsMedusa(collectionId);
+	const { data: collectionProducts } = useGetCollectionProductsMedusa(
+		collectionId,
+		regions?.id
+	);
 
 	const [activeImage, setActiveImage] = useState<number>(0);
 	const [selectedColor, setSelectedColor] = useState<string>("");
@@ -209,6 +214,7 @@ export default function ProductViews() {
 	// Calcul du prix
 	const productPrice = useMemo(() => {
 		if (product?.variants && product.variants.length > 0) {
+			console.log(product.variants);
 			const prices = product.variants
 				.map(
 					(v: any) =>
@@ -342,8 +348,6 @@ export default function ProductViews() {
 		);
 	}
 
-	console.log(sizeOnly);
-
 	return (
 		<>
 			<Container
@@ -379,6 +383,7 @@ export default function ProductViews() {
 						disabled={disabled}
 						isLoading={addItemToCartMutation.isPending}
 						collectionColorVariants={collectionColorVariants}
+						currency={regions?.currency_code === "xof" ? "FCFA" : "$"}
 					/>
 
 					{/* Reviews mobile */}

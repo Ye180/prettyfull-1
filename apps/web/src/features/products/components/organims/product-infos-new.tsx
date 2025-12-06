@@ -34,6 +34,7 @@ interface ProductInfosNewProps {
 	shippingInfo?: string;
 	returnPolicy?: string;
 	collectionColorVariants: any[];
+	currency?: string;
 }
 
 export function ProductInfosNew({
@@ -58,6 +59,7 @@ export function ProductInfosNew({
 	features,
 	shippingInfo = "Free shipping USD $125+",
 	returnPolicy = "30 day Return, Store Credit",
+	currency = "USD",
 }: ProductInfosNewProps) {
 	// Features par défaut si non fournies
 	const defaultFeatures = [
@@ -116,11 +118,11 @@ export function ProductInfosNew({
 				{/* Prix */}
 				<div className="flex gap-3 items-center">
 					<span className="text-2xl font-bold text-gray-900">
-						{formatCurrency_FR(price)}
+						{formatCurrency_FR(price, currency)}
 					</span>
 					{originalPrice && originalPrice > price && (
 						<span className="text-lg text-gray-400 line-through">
-							{formatCurrency_FR(originalPrice)}
+							{formatCurrency_FR(originalPrice, currency)}
 						</span>
 					)}
 				</div>

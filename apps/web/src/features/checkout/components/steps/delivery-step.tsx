@@ -3,42 +3,63 @@
 import { Button } from "@prettyfull/ui";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
 import { useState } from "react";
-import { useGetShippingMedusa } from "../../api/get-shipping-medusa";
+import { useGetShippingOptions } from "../../api/get-shipping-options";
+import { useSetShippingMethod } from "../../api/set-shipping-method";
 import { useCheckoutStep } from "../../hooks/use-checkout-step";
+import { useCheckoutStore } from "../../stores/use-checkout-store";
 
 interface DeliveryStepProps {
+	cartId: string | null;
 	onComplete?: (selectedOptionId: string) => void;
 }
 
-export function DeliveryStep({ onComplete }: DeliveryStepProps) {
+export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 	const { goToStep, isStepCompleted, isStepActive } = useCheckoutStep();
-	const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+	const { selectedShippingOptionId, setSelectedShippingOptionId } =
+		useCheckoutStore();
+	const [selectedOptionId, setSelectedOptionId] = useState<string | null>(
+		selectedShippingOptionId
+	);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const isOpen = isStepActive("delivery");
 	const isCompleted = isStepCompleted("delivery");
 	const canAccess = isStepCompleted("address");
 
-	const { data: shipping } = useGetShippingMedusa();
+	// Get shipping options for this cart
+	const { data: shippingOptions, isLoading: optionsLoading } =
+		useGetShippingOptions(cartId);
+	const setShippingMethod = useSetShippingMethod();
 
 	const handleEdit = () => {
 		goToStep("delivery");
 	};
 
 	const handleSubmit = async () => {
-		if (!selectedOptionId) return;
+		if (!selectedOptionId || !cartId) return;
 
-		const option = shipping?.find((o) => o.id === selectedOptionId);
-		if (option) {
-			setIsLoading(true);
-			// TODO: Call API to set shipping option on cart
-			await new Promise((resolve) => setTimeout(resolve, 500));
-			onComplete?.(option.id);
+		setIsLoading(true);
+		try {
+			// Set shipping method on cart via Medusa API
+			await setShippingMethod.mutateAsync({
+				cartId,
+				shippingOptionId: selectedOptionId,
+			});
+
+			// Save to store
+			setSelectedShippingOptionId(selectedOptionId);
+
+			onComplete?.(selectedOptionId);
+		} catch (error) {
+			console.error("Failed to set shipping method:", error);
+		} finally {
 			setIsLoading(false);
 		}
 	};
 
-	const selectedShipping = shipping?.find((o) => o.id === selectedOptionId);
+	const selectedShipping = shippingOptions?.find(
+		(o: any) => o.id === selectedOptionId
+	);
 
 	return (
 		<div className="bg-white">
@@ -87,46 +108,46 @@ export function DeliveryStep({ onComplete }: DeliveryStepProps) {
 						Select your preferred shipping method
 					</p>
 
-					<div className="space-y-4">
-						{shipping?.map((option) => (
-							<label
-								key={option.id}
-								className={cn(
-									"flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-all",
-									selectedOptionId === option.id
-										? "border-black bg-gray-50"
-										: "border-gray-200 hover:border-gray-400"
-								)}
-							>
-								<div className="flex gap-4 items-center">
-									<input
-										type="radio"
-										name="shipping"
-										value={option.id}
-										checked={selectedOptionId === option.id}
-										onChange={() => setSelectedOptionId(option.id)}
-										className="w-6 h-6 text-black border-gray-300 focus:ring-black focus:ring-0"
-									/>
-									<div>
-										<p className="font-medium">{option.name}</p>
-										<p className="text-sm text-gray-500">
-											{option.type?.label || "Standard delivery"}
-										</p>
-									</div>
-								</div>
-								<span className="font-medium">
-									{formatCurrency_FR(
-										(option.prices?.[1]?.amount ?? 0) as number
+					{optionsLoading ? (
+						<p className="text-sm text-gray-500">Loading shipping options...</p>
+					) : (
+						<div className="space-y-4">
+							{shippingOptions?.map((option: any) => (
+								<label
+									key={option.id}
+									className={cn(
+										"flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-all",
+										selectedOptionId === option.id
+											? "border-black bg-gray-50"
+											: "border-gray-200 hover:border-gray-400"
 									)}
-								</span>
-							</label>
-						))}
-					</div>
+								>
+									<div className="flex gap-4 items-center">
+										<input
+											type="radio"
+											name="shipping"
+											value={option.id}
+											checked={selectedOptionId === option.id}
+											onChange={() => setSelectedOptionId(option.id)}
+											className="w-6 h-6 text-black border-gray-300 focus:ring-black focus:ring-0"
+										/>
+										<div>
+											<p className="font-medium">{option.name}</p>
+											<p className="text-sm text-gray-500">Standard delivery</p>
+										</div>
+									</div>
+									<span className="font-medium">
+										{option.amount ? formatCurrency_FR(option.amount) : "Free"}
+									</span>
+								</label>
+							))}
+						</div>
+					)}
 
 					<Button
 						onClick={handleSubmit}
 						className="py-6 mt-6 w-full"
-						disabled={!selectedOptionId || isLoading}
+						disabled={!selectedOptionId || isLoading || !cartId}
 					>
 						{isLoading ? "Processing..." : "Continue to payment"}
 					</Button>
@@ -135,11 +156,11 @@ export function DeliveryStep({ onComplete }: DeliveryStepProps) {
 				/* Summary when completed */
 				<div className="text-sm text-gray-600">
 					<p className="font-medium">{selectedShipping.name}</p>
-					<p>{selectedShipping.type?.label || "Standard delivery"}</p>
+					<p>Standard delivery</p>
 					<p className="mt-1 font-medium">
-						{formatCurrency_FR(
-							(selectedShipping.prices?.[0]?.amount ?? 0) as number
-						)}
+						{selectedShipping.amount
+							? formatCurrency_FR(selectedShipping.amount)
+							: "Free"}
 					</p>
 				</div>
 			) : !canAccess ? (

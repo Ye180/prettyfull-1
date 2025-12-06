@@ -7,7 +7,13 @@ import { useState } from "react";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import { CartItemType } from "../../types";
 
-const VisualSummary = ({ item }: { item: CartItemType }) => {
+const VisualSummary = ({
+	item,
+	currency,
+}: {
+	item: CartItemType;
+	currency: string;
+}) => {
 	const cartId = localStorage.getItem("cart_id");
 	const queryClient = useQueryClient();
 	const [loadingId, setLoadingId] = useState<string | null>(null);
@@ -57,7 +63,7 @@ const VisualSummary = ({ item }: { item: CartItemType }) => {
 						{item.description || ""}
 					</p>
 					<p className="text-gray-500 text-md">
-						Unit price: {formatCurrency_FR(item.price)}
+						Unit price: {formatCurrency_FR(item.price, currency)}
 					</p>
 
 					<div className="flex gap-10 justify-start items-center">

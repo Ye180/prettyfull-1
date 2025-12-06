@@ -20,6 +20,8 @@ import type { NormalizedCollectionProduct } from "./types";
 
 import { Button } from "../../button";
 import { Heart } from "../../icons/heart.icon";
+
+import { useRegionStore } from "../../../../../apps/web/src/stores/useRegion";
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
@@ -66,6 +68,8 @@ export const CardProduct: React.FC<CardProductProps> = ({
 	className,
 }) => {
 	const router = useRouter();
+
+	const regions = useRegionStore((state) => state.region);
 
 	// --- State ---
 	const [activeColorIndex, setActiveColorIndex] = useState(0);
@@ -291,7 +295,10 @@ export const CardProduct: React.FC<CardProductProps> = ({
 						{activeColor?.title}
 					</h3>
 					<h3 className="text-2xl!  max-md:text-[2rem]! md:text-[2.2rem]!whitespace-nowrap">
-						{formatCurrency_FR(activeColor?.price)}
+						{formatCurrency_FR(
+							activeColor?.price,
+							regions?.currency_code === "xof" ? "FCFA" : "$"
+						)}
 					</h3>
 				</div>
 

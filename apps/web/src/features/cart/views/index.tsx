@@ -2,6 +2,7 @@
 
 import CartSummary from "@/features/cart/components/molecules/cart-summary";
 import CartItems from "@/features/cart/components/organims/cart-items";
+import { useRegionStore } from "@/stores/useRegion";
 import { StoreCart } from "@medusajs/types";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "../../../../../../packages/store/src/use-cart-store";
@@ -18,6 +19,8 @@ const CartView = () => {
 
 	const cartId = localStorage.getItem("cart_id");
 	const { data: cart, isLoading } = useGetItemsCart(cartId as string);
+
+	const regions = useRegionStore((state) => state.region);
 
 	return (
 		<Container
@@ -42,9 +45,8 @@ const CartView = () => {
 
 					<div className="mt-6 text-sm text-gray-600">
 						<p>
-							Les frais d'expédition sont estimés au moment du paiement. Vous
-							pouvez modifier la quantité ou supprimer des articles avant de
-							valider votre commande.
+							Shipping costs are calculated at checkout. You can modify the
+							quantity or remove items before confirming your order.
 						</p>
 					</div>
 				</section>
@@ -57,7 +59,7 @@ const CartView = () => {
 							shipping={cart?.shipping_total}
 							taxes={cart?.item_tax_total}
 							total={cart?.item_total}
-							currency="FCFA"
+							currency={regions?.currency_code === "xof" ? "FCFA" : "$"}
 						/>
 					</div>
 				</aside>
