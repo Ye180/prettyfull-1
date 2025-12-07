@@ -25,6 +25,8 @@ const Header = ({
 		return main_category.find((cat: any) => cat.handle === activeHandle);
 	}, [main_category, activeHandle]);
 
+	console.log(activeCategory);
+
 	// Determine parent slug for bottom header navigation
 	const parentSlug = useMemo(() => {
 		if (division) return division;

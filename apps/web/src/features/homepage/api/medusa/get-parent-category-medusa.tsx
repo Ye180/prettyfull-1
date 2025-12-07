@@ -8,7 +8,7 @@ export const getParentsCategoryMedusa = async () => {
 	const response = sdk.store.category
 		.list({
 			fields:
-				"name, handle, category_children.id,category_children.name, category_children.handle,",
+				"name, handle, category_children.id,category_children.name, category_children.handle,category_children.metadata",
 			include_descendants_tree: true,
 		})
 		.then(({ product_categories }) => {

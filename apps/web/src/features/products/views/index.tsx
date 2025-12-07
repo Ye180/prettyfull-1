@@ -343,7 +343,7 @@ export default function ProductViews() {
 	if (!product) {
 		return (
 			<Container maxWidth="100vw" className="px-4 py-12 text-center">
-				<h2 className="text-2xl font-semibold">Produit non trouvé</h2>
+				<ProductSkeleton />;
 			</Container>
 		);
 	}
@@ -387,7 +387,7 @@ export default function ProductViews() {
 					/>
 
 					{/* Reviews mobile */}
-					<div className="lg:hidden">
+					<div className="md:hidden">
 						<Reviews />
 					</div>
 				</div>

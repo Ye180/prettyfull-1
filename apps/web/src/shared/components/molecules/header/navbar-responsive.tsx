@@ -1,5 +1,5 @@
 import { Category } from "@/features/homepage/api/backend/get-category";
-import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
+import { COLLECTION_PATHS, PAGES_PATHS } from "@/lib/routes/paths-en";
 import {
 	Accordion,
 	AccordionContent,
@@ -31,31 +31,29 @@ const NavbarResponsive = ({
 	// } = useGetCategory({ second: true });
 	const t = useTranslations("headerResponsive");
 	return (
-		<div className="fixed top-0 left-0 right-0 z-40 w-full h-full pb-4 space-y-4 overflow-hidden bg-white md:hidden ">
-			<div className="relative flex flex-col items-start justify-between p-2 h-fit ">
+		<div className="overflow-hidden fixed top-0 right-0 left-0 z-40 pb-4 space-y-4 w-full h-full bg-white md:hidden">
+			<div className="flex relative flex-col justify-between items-start p-2 h-fit">
 				<button
 					onClick={close}
-					className="absolute text-gray-600 cursor-pointer right-5 top-10 hover:text-black focus:outline-none "
+					className="absolute right-5 top-10 text-gray-600 cursor-pointer hover:text-black focus:outline-none"
 					aria-label="Fermer le menu"
 				>
 					<CloseIcon className="w-10 h-10 cursor-pointer" />
 				</button>
 
-				<div className="mt-5 overflow-hidden h-fit">
+				<div className="overflow-hidden mt-5 h-fit">
 					<Link
 						href="/"
 						className="text-[3.5rem] font-bold tracking-wider text-black font-bebas-neue pt-5 px-2"
 					>
 						PRETTYFULL
 					</Link>
-					<div className="flex items-center px-2 space-x-6 ">
+					<div className="flex items-center px-2 space-x-6">
 						{main_category ? (
 							main_category.map((items: Category, index) => (
 								<NavLink
 									key={index}
-									href={COLLECTION_PATHS.collectionDetail(
-										items.handle as string
-									)}
+									href={PAGES_PATHS.pageDetail(items.handle as string)}
 									className="font-extrabold text-[1.7rem]!"
 								>
 									{items.name}
@@ -69,7 +67,7 @@ const NavbarResponsive = ({
 			</div>
 
 			<ScrollArea className="py-4 border-b-8 h-[90vh] px-4">
-				<div className="flex flex-col w-full p-0 px-2 py-4 overflow-x-auto border-t border-gray-200 gap-y-2">
+				<div className="flex overflow-x-auto flex-col gap-y-2 p-0 px-2 py-4 w-full border-t border-gray-200">
 					{secondary_category && secondary_category.length > 0 ? (
 						secondary_category.map((items: Category, index: number) => (
 							<NavLink
@@ -81,7 +79,7 @@ const NavbarResponsive = ({
 							</NavLink>
 						))
 					) : (
-						<Skeleton className="h-9 w-80" />
+						<Skeleton className="w-80 h-9" />
 					)}
 				</div>
 
@@ -96,10 +94,10 @@ const NavbarResponsive = ({
 							<AccordionTrigger className=" font-manrope! text-lg font-medium">
 								{t("setting")}
 							</AccordionTrigger>
-							<AccordionContent className="pb-8 mt-4 space-y-8 ">
-								<div className="space-y-3 ">
+							<AccordionContent className="pb-8 mt-4 space-y-8">
+								<div className="space-y-3">
 									{/* <h4 className="!text-[1.8rem] ">Currency</h4> */}
-									<div className="flex flex-wrap mt-0 gap-x-4">
+									<div className="flex flex-wrap gap-x-4 mt-0">
 										{[
 											{ label: "Euro (€)", symbol: "€" },
 											{ label: "Dollar ($)", symbol: "$" },
@@ -107,7 +105,7 @@ const NavbarResponsive = ({
 										].map((items, index) => (
 											<div
 												key={index}
-												className="flex items-center justify-between gap-3 px-8 py-3 transition-all duration-300 border border-gray-300 rounded-md cursor-pointer py w-fit hover:bg-black hover:text-white hover:border-black"
+												className="flex gap-3 justify-between items-center px-8 py-3 rounded-md border border-gray-300 transition-all duration-300 cursor-pointer py w-fit hover:bg-black hover:text-white hover:border-black"
 											>
 												<p className="text-[1.2rem] font-semibold">
 													{items.label}
@@ -127,7 +125,7 @@ const NavbarResponsive = ({
 										].map((items, index) => (
 											<div
 												key={index}
-												className="flex items-center justify-between gap-3 px-8 py-3 transition-all duration-300 border border-gray-300 rounded-md cursor-pointer w-fit hover:bg-black hover:text-white hover:border-black"
+												className="flex gap-3 justify-between items-center px-8 py-3 rounded-md border border-gray-300 transition-all duration-300 cursor-pointer w-fit hover:bg-black hover:text-white hover:border-black"
 											>
 												<p className="text-[1.2rem] font-semibold">
 													{items.label} ({items.symbol})

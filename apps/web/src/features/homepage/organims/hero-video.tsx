@@ -3,8 +3,10 @@ import { Button } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { ArrowIcon } from "../../../../../../packages/ui/src/icons/arrow-top.icon";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+import { useGetCategoryByHandler } from "../api/medusa/get-chidren-metadata";
 
 const Hero = ({
 	video,
@@ -21,8 +23,17 @@ const Hero = ({
 }) => {
 	const t = useTranslations("HomePage.hero");
 
+	const params = useParams();
+
+	const { data: category } = useGetCategoryByHandler(
+		params.id as string,
+		"first-section"
+	);
+
+	const router = useRouter();
+
 	return (
-		<div className="relative z-0 w-full h-screen overflow-hidden bg-gray-400 ">
+		<div className="overflow-hidden relative z-0 w-full h-screen bg-gray-400">
 			<Link
 				href={COLLECTION_PATHS.collectionDetail("new-arrivals")}
 				className=" flex justify-between items-center h-[10%]  lg:h-[7%]  bg-black w-full absolute z-30 inset-0 text-white gap-4 py-4"
@@ -33,14 +44,21 @@ const Hero = ({
 					</span>
 					<span className="font-light!">USE CODE: FREE20</span>
 				</p>
-				<span className="flex items-center gap-2 pr-8 uppercase font-manrope whitespace-nowrap hover:underline underline-offset-4">
+				<span className="flex gap-2 items-center pr-8 uppercase whitespace-nowrap font-manrope hover:underline underline-offset-4">
 					<span>{t("ctaButton")}</span>
-					<span className="pr-1 rotate-90 ">
+					<span className="pr-1 rotate-90">
 						<ArrowIcon />
 					</span>
 				</span>
 			</Link>
-			<div className="h-full absolute top-[7%] left-0 w-full  z-20">
+			<div
+				className="h-full absolute top-[7%] left-0 w-full  z-20 cursor-pointer"
+				onClick={() =>
+					router.push(
+						COLLECTION_PATHS.collectionDetail(category?.[0]?.handle as string)
+					)
+				}
+			>
 				{video ? (
 					<video
 						width="500"
@@ -49,7 +67,7 @@ const Hero = ({
 						muted
 						loop
 						playsInline
-						className="absolute top-0 left-0 z-10 flex object-cover w-full h-full"
+						className="flex object-cover absolute top-0 left-0 z-10 w-full h-full"
 					>
 						<source src="/video/video.mp4" type="video/mp4" />;
 						{/* codecs="avc1.42E01E, git Your browser does not support the video tag. */}
@@ -66,7 +84,7 @@ const Hero = ({
 									alt="Hero background image"
 									fill
 									sizes="100%"
-									className="absolute top-0 left-0 z-10 object-cover w-full h-full max-md:flex md:hidden"
+									className="object-cover absolute top-0 left-0 z-10 w-full h-full max-md:flex md:hidden"
 									priority
 								/>
 								<Image
@@ -77,18 +95,27 @@ const Hero = ({
 									alt="Hero background image"
 									fill
 									sizes="100%"
-									className="absolute top-0 left-0 z-10 object-cover w-full h-full max-md:hidden md:flex"
+									className="object-cover absolute top-0 left-0 z-10 w-full h-full max-md:hidden md:flex"
 									priority
 								/>
 							</>
 						)}
 
 						<Image
-							src={"/banner/banner2.jpg"}
+							src={category?.[0]?.product_category_image?.[1]?.url as string}
 							alt="Hero background image"
 							fill
 							sizes="100%"
-							className="absolute top-0 left-0 z-10 object-cover w-full h-full max-md:hidden md:flex"
+							className="object-cover absolute top-0 left-0 z-10 w-full h-full max-sm:hidden sm:flex"
+							priority
+						/>
+
+						<Image
+							src={category?.[0]?.product_category_image?.[0]?.url as string}
+							alt="Hero background image"
+							fill
+							sizes="100%"
+							className="object-cover absolute top-0 left-0 z-10 w-full h-full max-sm:flex sm:hidden"
 							priority
 						/>
 					</>
@@ -101,9 +128,9 @@ const Hero = ({
 					firstSection?.button && (
 						<Container
 							maxWidth="100vw"
-							className="flex flex-col items-center justify-center h-full space-y-12 lg:px-40 bg-none/30 "
+							className="flex flex-col justify-center items-center space-y-12 h-full lg:px-40 bg-none/30"
 						>
-							<div className="flex items-end justify-center w-full h-full text-white z-15 lg:p-8 rounded-xl md:justify-start">
+							<div className="flex justify-center items-end w-full h-full text-white rounded-xl z-15 lg:p-8 md:justify-start">
 								<div className="pb-40 space-y-8 md:w-1/2 max-md:w-full max-lg:pb-20 lg: max-md:text-center">
 									<h1 className="text-[3rem]!  md:text-[4.5rem]! lg:text-[5.5rem]! leading-26 tracking-tight font-normal text-center md:text-start   ">
 										{firstSection?.title || t("title")}
@@ -113,7 +140,7 @@ const Hero = ({
 									</p>
 									<Button
 										variant="default"
-										className="size-fit bg-none backdrop-blur-3xl"
+										className="bg-none backdrop-blur-3xl size-fit"
 									>
 										{firstSection?.button || t("ctaButton")}
 									</Button>
