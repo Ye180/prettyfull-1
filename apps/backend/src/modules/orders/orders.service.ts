@@ -268,7 +268,7 @@ export class OrdersService {
 
       if (adminEmails.length > 0) {
         this.orderEventsService.emitNewOrderNotification({
-          orderId: (savedOrder._id as Types.ObjectId).toString(),
+          orderId: savedOrder._id.toString(),
           orderNumber: savedOrderData.orderNumber,
           customerName: `User ${savedOrderData.userId}`, // À améliorer avec populate
           totalAmount: savedOrderData.total,
@@ -435,7 +435,7 @@ export class OrdersService {
       };
 
       this.orderEventsService.emitOrderStatusUpdate({
-        orderId: (updatedOrder._id as Types.ObjectId).toString(),
+        orderId: updatedOrder._id.toString(),
         status,
         timestamp: new Date(),
         message: message || statusMessages[status] || `Statut: ${status}`,
@@ -735,7 +735,7 @@ export class OrdersService {
     orderId: string,
     driverId: string,
     estimatedDelivery: Date,
-  ): Promise<Order> {
+  ): Promise<OrderDocument> {
     // Validate ObjectId
     if (!Types.ObjectId.isValid(orderId)) {
       throw new BadRequestException("L'ID de la commande n'est pas valide");
@@ -745,7 +745,7 @@ export class OrdersService {
     }
 
     // Find order
-    const order = await this.orderModel.findById(orderId).lean();
+    const order = await this.orderModel.findById(orderId);
     if (!order) {
       throw new NotFoundException('Commande introuvable');
     }
@@ -773,8 +773,7 @@ export class OrdersService {
         { new: true },
       )
       .populate('userId', 'name email')
-      .populate('shippingAddress')
-      .lean();
+      .populate('shippingAddress');
 
     if (!updatedOrder) {
       throw new InternalServerErrorException(
@@ -788,7 +787,7 @@ export class OrdersService {
       const shippingData = (updatedOrder as any).shippingAddress;
 
       await this.notificationsProducer.queueOrderShipment({
-        orderId: (updatedOrder._id as Types.ObjectId).toString(),
+        orderId: updatedOrder._id.toString(),
         customerEmail: userData?.email || shippingData?.email || '',
         customerName: userData?.name || shippingData?.fullName || '',
         trackingCode: validationCode,
@@ -813,7 +812,7 @@ export class OrdersService {
 
     // Emit SSE event (Module 3 integration)
     this.orderEventsService.emitOrderStatusUpdate({
-      orderId: (updatedOrder._id as Types.ObjectId).toString(),
+      orderId: updatedOrder._id.toString(),
       status: OrderStatus.SHIPPED,
       timestamp: new Date(),
       message: `Commande assignée au livreur. Code de validation: ${validationCode}`,
@@ -840,7 +839,7 @@ export class OrdersService {
       startDate?: Date;
       endDate?: Date;
     },
-  ): Promise<Order[]> {
+  ): Promise<OrderDocument[]> {
     if (!Types.ObjectId.isValid(driverId)) {
       throw new BadRequestException("L'ID du livreur n'est pas valide");
     }
@@ -868,8 +867,7 @@ export class OrdersService {
       .find(query)
       .populate('userId', 'name email')
       .populate('shippingAddress')
-      .sort({ assignedAt: -1 })
-      .lean();
+      .sort({ assignedAt: -1 });
 
     this.logger.log(
       `📦 Récupération de ${orders.length} commandes pour le livreur ${driverId}`,
@@ -887,14 +885,14 @@ export class OrdersService {
     validationCode: string,
     deliveryNote?: string,
     signatureUrl?: string,
-  ): Promise<Order> {
+  ): Promise<OrderDocument> {
     // Validate ObjectId
     if (!Types.ObjectId.isValid(orderId)) {
       throw new BadRequestException("L'ID de la commande n'est pas valide");
     }
 
     // Find order
-    const order = await this.orderModel.findById(orderId).lean();
+    const order = await this.orderModel.findById(orderId);
     if (!order) {
       throw new NotFoundException('Commande introuvable');
     }
@@ -917,18 +915,16 @@ export class OrdersService {
     }
 
     // Update order to DELIVERED
-    const updatedOrder = await this.orderModel
-      .findByIdAndUpdate(
-        orderId,
-        {
-          status: OrderStatus.DELIVERED,
-          deliveryNote,
-          signatureUrl,
-          deliveredAt: new Date(),
-        },
-        { new: true },
-      )
-      .lean();
+    const updatedOrder = await this.orderModel.findByIdAndUpdate(
+      orderId,
+      {
+        status: OrderStatus.DELIVERED,
+        deliveryNote,
+        signatureUrl,
+        deliveredAt: new Date(),
+      },
+      { new: true },
+    );
 
     if (!updatedOrder) {
       throw new InternalServerErrorException(
@@ -938,7 +934,7 @@ export class OrdersService {
 
     // Emit SSE event (Module 3 integration)
     this.orderEventsService.emitOrderStatusUpdate({
-      orderId: (updatedOrder._id as Types.ObjectId).toString(),
+      orderId: updatedOrder._id.toString(),
       status: OrderStatus.DELIVERED,
       timestamp: new Date(),
       message: 'Commande livrée avec succès',

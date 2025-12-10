@@ -68,7 +68,8 @@ const INITIAL_DRAWER_STATES = {
 type DrawerStatesProps = typeof INITIAL_DRAWER_STATES;
 
 export interface CardProps
-	extends React.HTMLAttributes<HTMLDivElement>,
+	extends
+		React.HTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof cardVariants> {
 	product: PricedProduct;
 	// Toutes les autres props sont dépréciées et seront extraites de `product`
