@@ -31,14 +31,7 @@ const VisualSummary = ({
 	};
 	return (
 		<div className="flex space-x-8 sm:space-x-10">
-			<div
-				className="relative w-40 h-44 bg-gray-100 rounded-md aspect-square"
-				// style={{
-				// 	backgroundImage: `url(${item.image || "/assets/product_1.jpg"})`,
-				// 	backgroundSize: "cover",
-				// 	backgroundPosition: "top",
-				// }}
-			>
+			<div className="relative w-40 h-44 bg-gray-100 rounded-md aspect-square">
 				<div className="overflow-hidden w-40 h-44 rounded-md">
 					<Image
 						src={item.image}

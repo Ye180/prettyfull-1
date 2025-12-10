@@ -74,50 +74,27 @@ const Hero = ({
 					</video>
 				) : (
 					<>
-						{firstSection?.imageUrlMobile && firstSection?.imageUrlDesktop && (
-							<>
-								<Image
-									src={
-										firstSection?.imageUrlMobile + "?view=1" ||
-										"/home/cover-phone.jpg"
-									}
-									alt="Hero background image"
-									fill
-									sizes="100%"
-									className="object-cover absolute top-0 left-0 z-10 w-full h-full max-md:flex md:hidden"
-									priority
-								/>
-								<Image
-									src={
-										firstSection?.imageUrlDesktop + "?view=1" ||
-										"/home/cover-desktop-1.jpg"
-									}
-									alt="Hero background image"
-									fill
-									sizes="100%"
-									className="object-cover absolute top-0 left-0 z-10 w-full h-full max-md:hidden md:flex"
-									priority
-								/>
-							</>
+						{category?.[0]?.product_category_image?.[1]?.url && (
+							<Image
+								src={category[0].product_category_image[1].url}
+								alt="Hero background image"
+								fill
+								sizes="100%"
+								className="object-cover absolute top-0 left-0 z-10 w-full h-full max-sm:hidden sm:flex"
+								priority
+							/>
 						)}
 
-						<Image
-							src={category?.[0]?.product_category_image?.[1]?.url as string}
-							alt="Hero background image"
-							fill
-							sizes="100%"
-							className="object-cover absolute top-0 left-0 z-10 w-full h-full max-sm:hidden sm:flex"
-							priority
-						/>
-
-						<Image
-							src={category?.[0]?.product_category_image?.[0]?.url as string}
-							alt="Hero background image"
-							fill
-							sizes="100%"
-							className="object-cover absolute top-0 left-0 z-10 w-full h-full max-sm:flex sm:hidden"
-							priority
-						/>
+						{category?.[0]?.product_category_image?.[0]?.url && (
+							<Image
+								src={category[0].product_category_image[0].url}
+								alt="Hero background image"
+								fill
+								sizes="100%"
+								className="object-cover absolute top-0 left-0 z-10 w-full h-full max-sm:flex sm:hidden"
+								priority
+							/>
+						)}
 					</>
 				)}
 

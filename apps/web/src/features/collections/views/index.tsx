@@ -10,23 +10,41 @@ import CategoryCollection from "@/features/collections/organims/mini-category";
 
 import NavbarCollection from "@/features/collections/organims/mini-navbar";
 
-import { useGetCollectionsByCategory } from "@/shared/api/medusa/get-collection-same-collection";
-import { RawCollectionProduct, ScrollArea } from "@prettyfull/ui";
+import { useGetSampleProducts } from "@/shared/api/medusa/get-sample-products";
+import {
+	normalizeCollectionProducts,
+	normalizeStandaloneProducts,
+	ScrollArea,
+} from "@prettyfull/ui";
 import { useParams } from "next/navigation";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
 const CollectionViews = () => {
 	const params = useParams();
 
-	// const {
-	// 	data: productSameCollection,
-	// 	isLoading: loadingProductsSameCollection,
-	// } = useGetProductsSameCollection();
+	const { data, isLoading: loadingProducts } = useGetSampleProducts(
+		params.slug as string
+	);
 
-	const {
-		data: collectionsSameCategory,
-		isLoading: loadingCollectionsSameCategory,
-	} = useGetCollectionsByCategory(params.slug as string);
+	// Normaliser les collections
+	const normalizedCollections =
+		data?.collections.map((col) =>
+			normalizeCollectionProducts({
+				collection_id: col.collection_id as string,
+				collection: col.collection,
+				products: col.products,
+			})
+		) ?? [];
+
+	// Normaliser les produits standalone
+	const normalizedStandalone = normalizeStandaloneProducts(
+		data?.standaloneProducts ?? []
+	);
+
+	// Fusionner les deux pour l'affichage
+	const allProducts = [...normalizedCollections, ...normalizedStandalone];
+
+	console.log("allProducts", allProducts);
 
 	return (
 		<div className="pb-32 space-y-16">
@@ -44,18 +62,14 @@ const CollectionViews = () => {
 					<FilterLayout className="h-[200vh] mt-4 border bg-white backdrop-blur-md border-gray-200" />
 					<ScrollArea className="py-4 max-md:hidden md:flex-1 h-[200vh]  scrolbarRecomandation">
 						<GridCollectionLayout
-							products={
-								collectionsSameCategory?.collections as RawCollectionProduct[]
-							}
-							loading={loadingCollectionsSameCategory}
+							products={allProducts}
+							loading={loadingProducts}
 						/>
 					</ScrollArea>
 					<div className="hidden max-md:flex md:hidden">
 						<GridCollectionLayout
-							products={
-								collectionsSameCategory?.collections as RawCollectionProduct[]
-							}
-							loading={loadingCollectionsSameCategory}
+							products={allProducts}
+							loading={loadingProducts}
 						/>
 					</div>
 				</div>

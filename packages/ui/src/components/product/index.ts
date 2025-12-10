@@ -4,14 +4,20 @@
 
 export { CardProduct } from "./card-product";
 export { ColorSelector } from "./color-selector";
+export {
+    normalizeCollectionProducts,
+    normalizeMultipleCollections,
+    normalizeStandaloneProduct,
+    normalizeStandaloneProducts
+} from "./normalize-collectionProducts";
+export type { StandaloneProductInput } from "./normalize-collectionProducts";
 export { SizeSelector } from "./size-selector";
-export { normalizeCollectionProducts, normalizeMultipleCollections } from "./normalize-collectionProducts";
 
 // Types
 export type {
-  RawCollectionProduct,
-  RawProduct,
-  NormalizedCollectionProduct,
-  NormalizedColorVariant,
-  NormalizedVariant,
+    NormalizedCollectionProduct,
+    NormalizedColorVariant,
+    NormalizedVariant, RawCollectionProduct,
+    RawProduct
 } from "./types";
+

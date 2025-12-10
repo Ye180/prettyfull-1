@@ -3,11 +3,11 @@
 // =============================================================================
 
 import type {
-  RawCollectionProduct,
-  RawProduct,
-  NormalizedCollectionProduct,
-  NormalizedColorVariant,
-  NormalizedVariant,
+    NormalizedCollectionProduct,
+    NormalizedColorVariant,
+    NormalizedVariant,
+    RawCollectionProduct,
+    RawProduct,
 } from "./types";
 
 /**
@@ -120,4 +120,59 @@ export function normalizeMultipleCollections(
   rawCollections: RawCollectionProduct[]
 ): NormalizedCollectionProduct[] {
   return rawCollections.map(normalizeCollectionProducts);
+}
+
+// =============================================================================
+// Standalone Products : Produits sans collection (par catégorie uniquement)
+// =============================================================================
+
+export interface StandaloneProductInput {
+  product_id: string;
+  product: RawProduct;
+  category_id: string;
+  category: {
+    id: string;
+    name: string;
+    handle: string;
+  };
+}
+
+/**
+ * Normalise un produit standalone (sans collection) en structure compatible CardProduct.
+ * Le produit est traité comme ayant une seule "couleur" (lui-même).
+ * 
+ * @param input - Données du produit standalone avec sa catégorie
+ * @returns Structure normalisée avec isStandalone = true
+ */
+export function normalizeStandaloneProduct(
+  input: StandaloneProductInput
+): NormalizedCollectionProduct {
+  const { product, category } = input;
+
+  // Le produit standalone devient sa propre "couleur"
+  const color = buildNormalizedColor(product);
+
+  return {
+    // On utilise l'ID du produit comme "collectionId" pour l'unicité
+    collectionId: `standalone_${product.id}`,
+    collectionTitle: product.title,
+    collectionHandle: product.handle,
+    colors: [color],
+    // Marqueurs spécifiques aux produits standalone
+    isStandalone: true,
+    categoryId: category.id,
+    categoryName: category.name,
+  };
+}
+
+/**
+ * Normalise un tableau de produits standalone.
+ * 
+ * @param standaloneProducts - Liste des produits standalone avec leur catégorie
+ * @returns Tableau de structures normalisées
+ */
+export function normalizeStandaloneProducts(
+  standaloneProducts: StandaloneProductInput[]
+): NormalizedCollectionProduct[] {
+  return standaloneProducts.map(normalizeStandaloneProduct);
 }

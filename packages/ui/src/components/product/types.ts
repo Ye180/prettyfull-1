@@ -167,4 +167,10 @@ export interface NormalizedCollectionProduct {
   collectionTitle: string;
   collectionHandle: string;
   colors: NormalizedColorVariant[];
+  /** Indique si c'est un produit standalone (sans collection, une seule couleur) */
+  isStandalone?: boolean;
+  /** ID de la catégorie pour les produits standalone */
+  categoryId?: string;
+  /** Nom de la catégorie pour les produits standalone */
+  categoryName?: string;
 }

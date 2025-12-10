@@ -1,13 +1,12 @@
 "use client";
 
 import { useGetProducts } from "@/features/collections/api/backend/get-product";
-import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
-import { CardProduct, CardProps, GridCardProduct } from "@prettyfull/ui";
+import { GridCardProduct } from "@prettyfull/ui";
 
 const GridWishlistLayout = () => {
 	const { data: products, isLoading } = useGetProducts({ page: 1, limit: 24 });
 	return (
-		<div className="w-full h-full rounded-md pb-44 ">
+		<div className="pb-44 w-full h-full rounded-md">
 			<GridCardProduct>
 				<>
 					{Array.from({ length: 15 }).map((_, i) => {
@@ -21,8 +20,8 @@ const GridWishlistLayout = () => {
 							link: `/produit/${i}`,
 						};
 						return (
-							<div key={product.id} className="w-full space-y-10 aspect-10/9">
-								{products?.map((items: CardProps, i: number) => (
+							<div key={product.id} className="space-y-10 w-full aspect-10/9">
+								{/* {products?.map((items: CardProps, i: number) => (
 									<div key={i} className="w-full aspect-10/9">
 										<CardProduct
 											productId={items.id || items.productId}
@@ -33,9 +32,9 @@ const GridWishlistLayout = () => {
 											smallDescription={items.label}
 											name={items.name}
 											link={PRODUCT_PATHS.productDetail(items.slug as string)}
-										/>
+										/> 
 									</div>
-								))}
+								))} */}
 							</div>
 						);
 					})}

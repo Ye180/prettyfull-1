@@ -18,6 +18,8 @@ interface ColorSelectorProps {
 	onChange: (index: number) => void;
 	/** Nombre max de couleurs à afficher avant "+N" (optionnel) */
 	maxVisible?: number;
+	/** Masquer le sélecteur (pour les produits standalone) */
+	hidden?: boolean;
 }
 
 export const ColorSelector: React.FC<ColorSelectorProps> = ({
@@ -25,8 +27,10 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 	activeIndex,
 	onChange,
 	maxVisible = 5,
+	hidden = false,
 }) => {
-	if (!colors.length) return null;
+	// Ne pas afficher si hidden ou si une seule couleur (produit standalone)
+	if (hidden || !colors.length || colors.length <= 1) return null;
 
 	const visibleColors = colors.slice(0, maxVisible);
 	const remainingCount = colors.length - maxVisible;

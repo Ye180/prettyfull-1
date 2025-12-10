@@ -1,7 +1,6 @@
 "use client";
 
 import { useAddItemToCartMedusa } from "@/features/cart/api/medusa/add-item-to-cart-medusa";
-import ProductSuggestion from "@/features/products/components/organims/product-suggestion";
 import Reviews from "@/features/products/components/organims/reviews";
 import ProductSkeleton from "@/shared/components/organims/product-fiche-loading";
 import { useRegionStore } from "@/stores/useRegion";
@@ -391,7 +390,7 @@ export default function ProductViews() {
 						<Reviews />
 					</div>
 				</div>
-				<ProductSuggestion />
+				{/* <ProductSuggestion /> */}
 			</Container>
 		</>
 	);

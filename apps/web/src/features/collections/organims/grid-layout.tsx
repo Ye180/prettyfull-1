@@ -4,15 +4,14 @@ import ProductCardSkeleton from "@/shared/components/organims/product-loading";
 import {
 	CardProduct,
 	GridCardProduct,
-	normalizeCollectionProducts,
-	RawCollectionProduct,
+	NormalizedCollectionProduct,
 } from "@prettyfull/ui";
 
 const GridCollectionLayout = ({
 	products,
 	loading,
 }: {
-	products: RawCollectionProduct[];
+	products: NormalizedCollectionProduct[];
 	loading: boolean;
 }) => {
 	if (!products || loading) {
@@ -33,17 +32,9 @@ const GridCollectionLayout = ({
 			) : (
 				<GridCardProduct action_grid className="max-sm:gap-y-8">
 					<>
-						{products?.map((group: RawCollectionProduct) => {
-							const normalized = normalizeCollectionProducts(
-								group as RawCollectionProduct
-							);
-							return (
-								<CardProduct
-									key={normalized.collectionId}
-									product={normalized}
-								/>
-							);
-						})}
+						{products?.map((product) => (
+							<CardProduct key={product.collectionId} product={product} />
+						))}
 					</>
 				</GridCardProduct>
 			)}

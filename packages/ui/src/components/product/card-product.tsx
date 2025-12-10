@@ -318,11 +318,12 @@ export const CardProduct: React.FC<CardProductProps> = ({
           )}
         </div> */}
 
-				{/* Sélecteur de couleurs */}
+				{/* Sélecteur de couleurs (masqué pour les produits standalone) */}
 				<ColorSelector
 					colors={product.colors}
 					activeIndex={activeColorIndex}
 					onChange={handleSelectColor}
+					hidden={product.isStandalone}
 				/>
 			</div>
 

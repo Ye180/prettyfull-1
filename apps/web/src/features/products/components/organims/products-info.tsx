@@ -157,7 +157,7 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
 				<p className="text-sm font-medium">{product.price.amount} FCFA</p>
 			</div>
 
-			<div className="h-px w-full bg-gray-200" />
+			<div className="w-full h-px bg-gray-200" />
 
 			{/* TODO: Ajouter un sélecteur de quantité ici, car il n'est pas dans ProductOptions */}
 			{/* Exemple : <input type="number" value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} /> */}
@@ -232,7 +232,7 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
 				}}
 			/>
 
-			<div className="h-px w-full bg-gray-200" />
+			<div className="w-full h-px bg-gray-200" />
 
 			<Reviews />
 		</div>

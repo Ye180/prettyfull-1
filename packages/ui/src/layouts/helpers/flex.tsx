@@ -2,7 +2,15 @@ import { cn } from "@prettyfull/utils";
 import type { HTMLAttributes } from "react";
 
 export interface FlexRowProps extends HTMLAttributes<HTMLDivElement> {
-	as?: "div" | "section" | "article" | "nav" | "aside" | "header" | "footer";
+	as?:
+		| "div"
+		| "section"
+		| "article"
+		| "nav"
+		| "aside"
+		| "header"
+		| "footer"
+		| "span";
 	children: React.ReactNode;
 	settings?: {
 		shouldWrap?: boolean;

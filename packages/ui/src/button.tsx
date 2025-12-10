@@ -1,5 +1,4 @@
 import { cn } from "@prettyfull/utils";
-
 import { cva, type VariantProps } from "class-variance-authority";
 import { ButtonHTMLAttributes, PropsWithChildren } from "react";
 import { Spinner } from "./icons/spinner.icon";
@@ -50,15 +49,17 @@ export const Button = ({
 	size,
 	shape,
 	icon,
+	isLoading,
+	fullWidth,
 	...props
 }: PropsWithChildren<ButtonProps>) => {
-	const disabled = props.disabled || props.isLoading;
+	const disabled = props.disabled || isLoading;
 
 	return (
 		<button
 			className={cn(
 				buttonVariants({ variant, size, shape }),
-				{ "w-full": props.fullWidth },
+				{ "w-full": fullWidth },
 				className
 			)}
 			{...props}
@@ -68,7 +69,7 @@ export const Button = ({
 				{icon && <span className="shrink-0 -mt-1.5">{icon}</span>}
 				<div className="flex gap-3">
 					{children}
-					{props.isLoading && <Spinner />}
+					{isLoading && <Spinner />}
 				</div>
 			</Flex>
 		</button>
