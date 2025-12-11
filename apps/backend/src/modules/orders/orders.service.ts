@@ -659,7 +659,7 @@ export class OrdersService {
       //       name: item.name?.fr || item.sku,
       //       quantity: item.quantity,
       //       price: item.unitPrice,
-      //     })),
+      //     })),e
       //     shippingAddress: {
       //       fullName: `${orderData.shippingAddress.firstName} ${orderData.shipping`Addres`s.lastName}`,
       //       street: orderData.shippingAddress.street,

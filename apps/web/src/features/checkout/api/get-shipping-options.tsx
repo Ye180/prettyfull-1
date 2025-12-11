@@ -18,5 +18,7 @@ export const useGetShippingOptions = (cartId: string | null) => {
 		queryKey: [SHIPPING_OPTIONS_QUERY_KEY, cartId],
 		queryFn: () => getShippingOptionsForCart(cartId!),
 		enabled: !!cartId,
+		retry: 2,
+		staleTime: 1000 * 60 * 5, // 5 minutes
 	});
 };

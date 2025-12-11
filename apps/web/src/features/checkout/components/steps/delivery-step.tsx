@@ -1,5 +1,6 @@
 "use client";
 
+import { sdk } from "@/lib/api/sdk";
 import { Button } from "@prettyfull/ui";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
 import { useState } from "react";
@@ -21,14 +22,18 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 		selectedShippingOptionId
 	);
 	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	const isOpen = isStepActive("delivery");
 	const isCompleted = isStepCompleted("delivery");
 	const canAccess = isStepCompleted("address");
 
 	// Get shipping options for this cart
-	const { data: shippingOptions, isLoading: optionsLoading } =
-		useGetShippingOptions(cartId);
+	const {
+		data: shippingOptions,
+		isLoading: optionsLoading,
+		error: fetchError,
+	} = useGetShippingOptions(cartId);
 	const setShippingMethod = useSetShippingMethod();
 
 	const handleEdit = () => {
@@ -39,19 +44,55 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 		if (!selectedOptionId || !cartId) return;
 
 		setIsLoading(true);
+		setError(null);
 		try {
+			// First, verify the cart has a shipping address
+			const { cart: currentCart } = await sdk.store.cart.retrieve(cartId, {
+				fields: "+shipping_address",
+			});
+
+			console.log("Current cart before setting shipping:", currentCart);
+
+			if (!currentCart.shipping_address) {
+				throw new Error(
+					"Aucune adresse de livraison trouvée. Veuillez compléter l'étape d'adresse."
+				);
+			}
+
 			// Set shipping method on cart via Medusa API
-			await setShippingMethod.mutateAsync({
+			const updatedCart = await setShippingMethod.mutateAsync({
 				cartId,
 				shippingOptionId: selectedOptionId,
 			});
+
+			console.log("Cart after setting shipping method:", updatedCart);
+
+			// Verify shipping method was added successfully
+			const { cart: cartWithShipping } = await sdk.store.cart.retrieve(cartId, {
+				fields: "+shipping_methods",
+			});
+
+			console.log("Shipping methods:", cartWithShipping.shipping_methods);
+
+			if (
+				!cartWithShipping.shipping_methods ||
+				cartWithShipping.shipping_methods.length === 0
+			) {
+				throw new Error(
+					"La méthode de livraison n'a pas pu être ajoutée. Veuillez réessayer."
+				);
+			}
 
 			// Save to store
 			setSelectedShippingOptionId(selectedOptionId);
 
 			onComplete?.(selectedOptionId);
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Failed to set shipping method:", error);
+			setError(
+				error?.message ||
+					"Impossible de définir la méthode de livraison. Veuillez réessayer."
+			);
 		} finally {
 			setIsLoading(false);
 		}
@@ -108,11 +149,28 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 						Select your preferred shipping method
 					</p>
 
+					{(error || fetchError) && (
+						<div className="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg">
+							{error ||
+								"Erreur lors du chargement des options de livraison. Veuillez réessayer."}
+						</div>
+					)}
+
 					{optionsLoading ? (
 						<p className="text-sm text-gray-500">Loading shipping options...</p>
+					) : fetchError ? (
+						<div className="p-4 text-sm text-red-800 bg-red-100 rounded-lg">
+							Impossible de charger les options de livraison. Veuillez vérifier
+							votre connexion et réessayer.
+						</div>
+					) : !shippingOptions || shippingOptions.length === 0 ? (
+						<div className="p-4 text-sm text-yellow-800 bg-yellow-100 rounded-lg">
+							Aucune option de livraison disponible pour votre panier. Veuillez
+							vérifier votre adresse de livraison.
+						</div>
 					) : (
 						<div className="space-y-4">
-							{shippingOptions?.map((option: any) => (
+							{shippingOptions.map((option: any) => (
 								<label
 									key={option.id}
 									className={cn(
@@ -152,16 +210,22 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 						{isLoading ? "Processing..." : "Continue to payment"}
 					</Button>
 				</div>
-			) : isCompleted && selectedShipping ? (
+			) : isCompleted ? (
 				/* Summary when completed */
 				<div className="text-sm text-gray-600">
-					<p className="font-medium">{selectedShipping.name}</p>
-					<p>Standard delivery</p>
-					<p className="mt-1 font-medium">
-						{selectedShipping.amount
-							? formatCurrency_FR(selectedShipping.amount)
-							: "Free"}
-					</p>
+					{selectedShipping ? (
+						<>
+							<p className="font-medium">{selectedShipping.name}</p>
+							<p>Standard delivery</p>
+							<p className="mt-1 font-medium">
+								{selectedShipping.amount
+									? formatCurrency_FR(selectedShipping.amount)
+									: "Free"}
+							</p>
+						</>
+					) : (
+						<p>Delivery method selected</p>
+					)}
 				</div>
 			) : !canAccess ? (
 				<p className="text-sm text-gray-400">

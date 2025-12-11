@@ -20,12 +20,6 @@ interface PaymentStepProps {
 	onComplete?: (paymentMethod: string) => void;
 }
 
-const defaultPaymentMethods: PaymentMethod[] = [
-	{ id: "card", name: "Credit / Debit Card" },
-	{ id: "mobile_money", name: "Mobile Money (MTN, Orange)" },
-	{ id: "paypal", name: "PayPal" },
-];
-
 export function PaymentStep({
 	cartId,
 	regionId,
@@ -38,6 +32,7 @@ export function PaymentStep({
 		selectedPaymentProviderId
 	);
 	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	// Get payment providers for this region
 	const { data: paymentProviders, isLoading: providersLoading } =
@@ -62,6 +57,7 @@ export function PaymentStep({
 		if (!selectedMethod || !cartId) return;
 
 		setIsLoading(true);
+		setError(null);
 		try {
 			// Initialize payment session via Medusa API
 			await initPaymentSession.mutateAsync({
@@ -73,8 +69,20 @@ export function PaymentStep({
 			setSelectedPaymentProviderId(selectedMethod);
 
 			onComplete?.(selectedMethod);
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Failed to initialize payment session:", error);
+			const errorMessage =
+				error?.message ||
+				"Impossible d'initialiser le paiement. Veuillez réessayer.";
+
+			// Check if it's the payment collection error
+			if (errorMessage.includes("No payment collection")) {
+				setError(
+					"La collection de paiement n'a pas été créée. Veuillez retourner à l'étape de livraison et sélectionner à nouveau votre méthode de livraison."
+				);
+			} else {
+				setError(errorMessage);
+			}
 		} finally {
 			setIsLoading(false);
 		}
@@ -165,6 +173,13 @@ export function PaymentStep({
 			{isOpen && canAccess ? (
 				<div className="space-y-6">
 					<p className="text-sm text-gray-600">Select your payment method</p>
+
+					{/* Error Message */}
+					{error && (
+						<div className="p-4 text-sm text-red-800 bg-red-100 rounded-lg">
+							{error}
+						</div>
+					)}
 
 					{/* Payment Methods */}
 					{providersLoading ? (

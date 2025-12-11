@@ -48,6 +48,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 	const updateCartAddress = useUpdateCartAddress();
 	const [isLoading, setIsLoading] = useState(false);
 	const [sameBilling, setSameBilling] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
 	const isOpen = isStepActive("address");
 	const isCompleted = isStepCompleted("address");
@@ -64,7 +65,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 			postCode: "",
 			city: "",
 			region: "",
-			country: "",
+			country: "Cameroun", // Default country
 			phone: "",
 		},
 	});
@@ -73,6 +74,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 		if (!cartId) return;
 
 		setIsLoading(true);
+		setError(null);
 		try {
 			// Map form values to Medusa address format
 			const addressData: AddressData = {
@@ -85,9 +87,11 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 				postal_code: data.postCode,
 				city: data.city,
 				province: data.region,
-				country_code: getCountryCode(data.country || ""),
+				country_code: getCountryCode(data.country || "Cameroun"),
 				phone: data.phone,
 			};
+
+			console.log("Updating cart address:", addressData);
 
 			// Update cart with address via Medusa API
 			await updateCartAddress.mutateAsync({
@@ -101,8 +105,12 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 			setSameBillingAddress(sameBilling);
 
 			onComplete?.(addressData);
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Failed to update address:", error);
+			setError(
+				error?.message ||
+					"Impossible de mettre à jour l'adresse. Veuillez réessayer."
+			);
 		} finally {
 			setIsLoading(false);
 		}
@@ -182,6 +190,13 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 			{isOpen ? (
 				<Form {...form}>
 					<form onSubmit={handleSubmit} className="space-y-6">
+						{/* Error Message */}
+						{error && (
+							<div className="p-4 text-sm text-red-800 bg-red-100 rounded-lg">
+								{error}
+							</div>
+						)}
+
 						{/* Email */}
 						<FormField
 							control={form.control}
@@ -373,7 +388,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							<FormField
 								control={form.control}
 								name="country"
-								// rules={{ required: "Pays requis" }}
+								rules={{ required: "Pays requis" }}
 								render={({ field }) => (
 									<FormItem>
 										<FormControl>

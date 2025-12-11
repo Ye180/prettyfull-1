@@ -45,19 +45,23 @@ const CheckoutView = () => {
 		}
 	}, []);
 
-	sdk.store.fulfillment
-		.listCartOptions({
-			cart_id: cartId as string,
-		})
-		.then(({ shipping_options }) => {
-			console.log(shipping_options); // liste des options possibles
-		})
-		.catch((error) => {
-			console.error(
-				"Erreur lors de la récupération des options de livraison :",
-				error
-			);
-		});
+	useEffect(() => {
+		if (cartId) {
+			sdk.store.fulfillment
+				.listCartOptions({
+					cart_id: cartId,
+				})
+				.then(({ shipping_options }) => {
+					console.log(shipping_options); // liste des options possibles
+				})
+				.catch((error) => {
+					console.error(
+						"Erreur lors de la récupération des options de livraison :",
+						error
+					);
+				});
+		}
+	}, [cartId]);
 
 	const handleAddressComplete = () => {
 		goToNextStep();
