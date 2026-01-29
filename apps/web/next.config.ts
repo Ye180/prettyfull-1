@@ -4,7 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const nextConfig: NextConfig = {
   /* config options here */
   output: "standalone",
-  transpilePackages: ["@prettyfull/ui"],
+  transpilePackages: ["@prettyfull/ui", "@prettyfull/store"],
   images: {
     remotePatterns: [
       // {
