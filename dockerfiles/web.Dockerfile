@@ -4,47 +4,35 @@ FROM base AS builder
 RUN apk update
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-
-# Copy root package.json and lockfile
-COPY ../package.json ../pnpm-lock.yaml ./
-
-# Copy the web apps package.json
-COPY ../apps/web/package.json ./apps/web/
-
-# Install pnpm
+# Install pnpm and turbo globally
 RUN npm install -g pnpm turbo
 
-COPY .. .
+# Copy the entire repository
+# NOTE: This requires the Build Context to be set to the repository Root (/)
+COPY . .
 
-RUN turbo prune web --docker
+# Install dependencies
+# Using plain install as requested to avoid frozen-lockfile issues for now
+RUN pnpm install 
 
-# Add lockfile and package.json's of isolated subworkspace
-FROM base AS installer
-RUN apk update
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
- 
-# First install the dependencies (as they change less often)
-RUN npm install -g pnpm
-COPY --from=builder /app/out/json/ .
-RUN pnpm install --frozen-lockfile
- 
-# Build the project
-COPY --from=builder /app/out/full/ .
-RUN pnpm turbo run build
- 
+# Build the web application
+RUN pnpm --filter web build
+
 FROM base AS runner
 WORKDIR /app
- 
+
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
- 
-CMD node apps/web/server.js
+# Copy the standalone build artifacts
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+
+# Expose the port
+EXPOSE 3000
+
+# Start server using the standalone script
+CMD ["node", "apps/web/server.js"]
