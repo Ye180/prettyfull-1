@@ -6,7 +6,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy root package.json and lockfile
-COPY package.json pnpm-lock.yaml ./
+COPY ../package.json ../pnpm-lock.yaml ./
 
 # Copy the web apps package.json
 COPY ../apps/web/package.json ./apps/web/
@@ -14,7 +14,7 @@ COPY ../apps/web/package.json ./apps/web/
 # Install pnpm
 RUN npm install -g pnpm turbo
 
-COPY . .
+COPY .. .
 
 RUN turbo prune web --docker
 
