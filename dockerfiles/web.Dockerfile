@@ -27,7 +27,7 @@ WORKDIR /app
 # First install the dependencies (as they change less often)
 RUN npm install -g pnpm
 COPY --from=builder /app/out/json/ .
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
  
 # Build the project
 COPY --from=builder /app/out/full/ .
