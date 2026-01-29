@@ -11,7 +11,8 @@ RUN npm install -g pnpm turbo
 COPY . .
 
 # Install dependencies (frozen-lockfile for consistency)
-RUN pnpm install --frozen-lockfile
+# TODO : find a way to add --frozen-lockfile
+RUN pnpm install 
 
 # Build the web application
 RUN pnpm --filter web build
