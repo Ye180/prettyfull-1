@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 
 # Copy the web apps package.json
-COPY apps/web/package.json ./apps/web/
+COPY ../apps/web/package.json ./apps/web/
 
 # Install pnpm
 RUN npm install -g pnpm turbo
