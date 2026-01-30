@@ -11,21 +11,24 @@ COPY . .
 # Turbo va isoler uniquement ce qui est nécessaire pour Medusa
 RUN turbo prune prettyfull-medusa --docker
 
-# --- ÉTAPE 3 : INSTALLER (Installation des dépendances) ---
+# --- ÉTAPE 3 : INSTALLER ---
 FROM base AS installer
 WORKDIR /app
 
-# Copie des fichiers générés par le prune
+# On déclare les arguments pour le build
+ARG DATABASE_URL
+ARG REDIS_URL
+# On les définit comme variables d'environnement pour le processus de build
+ENV DATABASE_URL=postgresql://medusa:PTSaWIgwwhyLFFk4wc8M@prettyfull-medusadb-dvbjzq:5432/medusa-db
+ENV REDIS_URL=redis://default:7bbOrR57ubKPcHyPywtz@prettyfull-medusaredis-6xx16s:6379
+
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-
-# Installation des dépendances uniquement
 RUN pnpm install --no-frozen-lockfile
 
-# Copie du code source complet après l'installation
 COPY --from=builder /app/out/full/ .
 
-# Build effectif de l'application
+# Ajout de l'option --no-cache pour être sûr de voir l'erreur réelle si ça échoue encore
 RUN pnpm turbo run build --filter=prettyfull-medusa
 
 # --- ÉTAPE 4 : RUNNER (Exécution) ---
