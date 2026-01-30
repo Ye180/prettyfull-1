@@ -1,39 +1,47 @@
+# --- ÉTAPE 1 : BASE ---
 FROM node:22-alpine AS base
-
-FROM base AS builder
 RUN apk add --no-cache libc6-compat
-WORKDIR /app
+# On installe pnpm globalement ici pour qu'il soit disponible partout
 RUN npm install -g pnpm turbo
+
+# --- ÉTAPE 2 : BUILDER (Préparation du monorepo) ---
+FROM base AS builder
+WORKDIR /app
 COPY . .
+# Turbo va isoler uniquement ce qui est nécessaire pour Medusa
 RUN turbo prune prettyfull-medusa --docker
 
+# --- ÉTAPE 3 : INSTALLER (Installation des dépendances) ---
 FROM base AS installer
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# --- AJOUT ICI : Il faut réinstaller pnpm dans cette étape ---
-RUN npm install -g pnpm turbo 
-
-# Copie des fichiers générés par turbo prune
+# Copie des fichiers générés par le prune
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
-# Maintenant pnpm sera trouvé !
+# Installation des dépendances (pnpm est trouvé car il est dans 'base')
 RUN pnpm install --no-frozen-lockfile
 
-# Build du projet
+# Build effectif du backend
 COPY --from=builder /app/out/full/ .
 RUN pnpm turbo run build --filter=prettyfull-medusa
 
+# --- ÉTAPE 4 : RUNNER (Exécution) ---
 FROM base AS runner
 WORKDIR /app
+
+# Sécurité : On crée un utilisateur non-root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 medusa
 USER medusa
 
+# On récupère le build final
 COPY --from=installer --chown=medusa:nodejs /app .
 
+# On se place dans le bon dossier du monorepo pour lancer les commandes
 WORKDIR /app/apps/prettyfull-medusa
+
 EXPOSE 9000
 
-CMD ["sh", "-c", "npx medusa db:migrate && pnpm dev"]
+# Commande cruciale : on lance les migrations avant de démarrer
+CMD ["sh", "-c", "npx medusa db:migrate && pnpm start"]
