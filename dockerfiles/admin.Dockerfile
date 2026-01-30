@@ -30,8 +30,8 @@ COPY --from=builder /app/out/full/ .
 # On définit des variables factices pour que 'medusa build' ne crash pas
 # On augmente la RAM allouée au build pour éviter l'exit code 1
 RUN NODE_OPTIONS="--max-old-space-size=4096" \
-    DATABASE_URL="postgresql://medusa:PTSaWIgwwhyLFFk4wc8M@prettyfull-medusadb-dvbjzq:5432/medusa-db" \
-    REDIS_URL="redis://default:7bbOrR57ubKPcHyPywtz@prettyfull-medusaredis-6xx16s:6379" \
+    DATABASE_URL="postgresql://medusa:PTSaWIgwwhyLFFk4wc8M@84.247.187.15:5432/medusa-db" \
+    REDIS_URL="redis://default:7bbOrR57ubKPcHyPywtz@84.247.187.15:6379" \
     pnpm turbo run build --filter=prettyfull-medusa
 
 # --- ÉTAPE 4 : RUNNER (Production) ---
