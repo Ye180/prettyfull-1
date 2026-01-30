@@ -1,50 +1,44 @@
-# FROM node:22-alpine AS base
+# Utilisation de la même base que votre web
+FROM node:22-alpine AS base
 
-# FROM base AS builder
-# RUN apk update
-# RUN apk add --no-cache libc6-compat
-# WORKDIR /app
+FROM base AS builder
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
 
-# # Copy root package.json and lockfile
-# COPY package.json pnpm-lock.yaml ./
+# Installation de pnpm et turbo
+RUN npm install -g pnpm turbo
+COPY . .
+# On isole uniquement le backend Medusa
+RUN turbo prune prettyfull-medusa --docker
 
-# # Copy the admin apps package.json
-# COPY apps/admin/package.json ./apps/admin/
+FROM base AS installer
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
 
-# # Install pnpm
-# RUN npm install -g pnpm turbo
+# Installation des dépendances
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN pnpm install --no-frozen-lockfile
 
-# COPY . .
+# Build du projet
+COPY --from=builder /app/out/full/ .
+RUN pnpm turbo run build --filter=prettyfull-medusa
 
-# RUN turbo prune prettyfull-admin --docker
+FROM base AS runner
+WORKDIR /app
 
-# # Add lockfile and package.json's of isolated subworkspace
-# FROM base AS installer
-# RUN apk update
-# RUN apk add --no-cache libc6-compat
-# WORKDIR /app
- 
-# # First install the dependencies (as they change less often)
-# RUN npm install -g pnpm
-# COPY --from=builder /app/out/json/ .
-# RUN pnpm install --frozen-lockfile
- 
-# # Build the project
-# COPY --from=builder /app/out/full/ .
-# RUN pnpm turbo run build
- 
-# FROM base AS runner
-# WORKDIR /app
- 
-# # Don't run production as root
-# RUN addgroup --system --gid 1001 nodejs
-# RUN adduser --system --uid 1001 nextjs
-# USER nextjs
+# Création d'un utilisateur non-root pour la sécurité
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 medusa
+USER medusa
 
-# # Automatically leverage output traces to reduce image size
-# # https://nextjs.org/docs/advanced-features/output-file-tracing
-# COPY --from=installer --chown=nextjs:nodejs /app/apps/admin/.next/standalone ./
-# COPY --from=installer --chown=nextjs:nodejs /app/apps/admin/.next/static ./apps/admin/.next/static
-# COPY --from=installer --chown=nextjs:nodejs /app/apps/admin/public ./apps/admin/public
- 
-# CMD node apps/admin/server.js
+# Copie des fichiers nécessaires depuis l'installer
+COPY --from=installer --chown=medusa:nodejs /app .
+
+WORKDIR /app/apps/prettyfull-medusa
+
+# Port par défaut de Medusa
+EXPOSE 9000
+
+# Commande pour lancer les migrations puis le serveur
+CMD ["sh", "-c", "pnpm exec medusa user -e admin@me.com -p mypassword && pnpm start"]
