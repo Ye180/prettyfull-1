@@ -8,6 +8,7 @@ module.exports = defineConfig({
   
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    
     redisUrl: process.env.REDIS_URL,
     databaseDriverOptions: {
       ssl: false,
