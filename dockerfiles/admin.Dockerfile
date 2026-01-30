@@ -36,4 +36,4 @@ COPY --from=installer --chown=medusa:nodejs /app .
 WORKDIR /app/apps/prettyfull-medusa
 EXPOSE 9000
 
-CMD ["sh", "-c", "npx medusa db:migrate && pnpm start"]
+CMD ["sh", "-c", "npx medusa db:migrate && pnpm dev"]
