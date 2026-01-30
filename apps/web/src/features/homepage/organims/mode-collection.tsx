@@ -1,15 +1,22 @@
-import { Button, CardProduct, GridCardProduct, normalizeCollectionProducts, RawCollectionProduct } from "@prettyfull/ui";
+import { useGetProductsSameCollection } from "@/shared/api/medusa/get-products-same-collection";
+import {
+	Button,
+	CardProduct,
+	GridCardProduct,
+	normalizeCollectionProducts,
+	RawCollectionProduct,
+} from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-import { useGetProductsSameCollection } from "@/shared/api/medusa/get-products-same-collection";
 
 const ModeCollection = ({ fourth }: { fourth?: any }) => {
 	const t = useTranslations("HomePage.collection");
 
-	
-		const { data: productSameCollection, isLoading: loadingProductsSameCollection } =
-				useGetProductsSameCollection();
+	const {
+		data: productSameCollection,
+		isLoading: loadingProductsSameCollection,
+	} = useGetProductsSameCollection();
 
 	return (
 		<Container
@@ -56,14 +63,22 @@ const ModeCollection = ({ fourth }: { fourth?: any }) => {
 						{t("ctaButton")}
 					</Button>
 				</div>
-				<GridCardProduct classGrid="grid grid-cols-2  ">
+				<GridCardProduct
+					classGrid="grid grid-cols-2 "
+					// className="h-[560px]!"
+				>
 					<>
 						{productSameCollection?.map((group) => {
-													const normalized = normalizeCollectionProducts(group as RawCollectionProduct);
-													return (
-														<CardProduct key={normalized.collectionId} product={normalized} />
-													);
-													})}
+							const normalized = normalizeCollectionProducts(
+								group as RawCollectionProduct
+							);
+							return (
+								<CardProduct
+									key={normalized.collectionId}
+									product={normalized}
+								/>
+							);
+						})}
 					</>
 				</GridCardProduct>
 			</div>

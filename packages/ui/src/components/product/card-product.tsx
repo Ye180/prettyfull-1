@@ -22,6 +22,7 @@ import { Button } from "../../button";
 import { Heart } from "../../icons/heart.icon";
 
 import { useRegionStore } from "../../../../../apps/web/src/stores/useRegion";
+import { AddToCardIcon } from "../../icons/add-cart.icon";
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
@@ -190,8 +191,10 @@ export const CardProduct: React.FC<CardProductProps> = ({
 		);
 	}
 
+	console.log(product);
+
 	return (
-		<article className={cn("space-y-3 w-full group", className)}>
+		<article className={cn("pb-4 space-y-3 w-full group", className)}>
 			{/* ===== Image principale ===== */}
 			<div
 				className="overflow-hidden relative bg-gray-50 rounded-none cursor-pointer"
@@ -258,13 +261,31 @@ export const CardProduct: React.FC<CardProductProps> = ({
 						</button>
 					</div>
 
+					<div className="absolute right-4 bottom-4 flex-col space-y-4 rounded-lg max-md:flex w-fit md:hidden">
+						<button
+							type="button"
+							onClick={handleToggleSizeSelector}
+							className="py-2 px-2 text-[1.4rem] font-medium shadow-sm text-white h-fit w-fit bg-secondary rounded-full"
+						>
+							<AddToCardIcon className="w-12 h-12 text-white" />
+						</button>
+						<button
+							type="button"
+							onClick={(e) => e.stopPropagation()}
+							className="p-4 text-2xl rounded-full shadow-sm cursor-pointer w-fit bg-secondary"
+							aria-label="Ajouter aux favoris"
+						>
+							<Heart className="w-8 h-8" />
+						</button>
+					</div>
+
 					{/* Sélecteur de taille (overlay) */}
 					{showSizeSelector && availableSizes.length > 0 && (
 						<div
-							className="absolute right-4 bottom-4 left-4 p-4 space-y-4 bg-white rounded-lg shadow-xl"
+							className="absolute right-4 bottom-4 left-4 p-4 space-y-4 bg-white rounded-lg shadow-xl lg:px-8 lg:py-5"
 							onClick={(e) => e.stopPropagation()}
 						>
-							<div className="flex justify-between items-center px-8 pb-4 mb-3">
+							<div className="flex justify-between items-center pb-4 mb-3">
 								<span className="text-sm font-semibold">Size</span>
 								<button
 									type="button"
@@ -328,13 +349,13 @@ export const CardProduct: React.FC<CardProductProps> = ({
 			</div>
 
 			{/* ===== Bouton mobile ===== */}
-			<button
+			{/* <button
 				type="button"
 				onClick={handleToggleSizeSelector}
 				className="w-full rounded-full bg-black py-2.5 text-sm font-medium text-white transition hover:bg-black/90 md:hidden"
 			>
 				Ajouter au panier
-			</button>
+			</button> */}
 		</article>
 	);
 };

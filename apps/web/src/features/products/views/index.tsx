@@ -349,11 +349,8 @@ export default function ProductViews() {
 
 	return (
 		<>
-			<Container
-				maxWidth="100vw"
-				className="px-4 py-2 mx-auto sm:py-12 lg:px-40"
-			>
-				<div className="flex flex-col gap-8 justify-center lg:gap-14 lg:flex-row">
+			<Container maxWidth="100vw" className="px-4 py-2 mx-auto sm:py-12">
+				<div className="flex flex-col gap-8 justify-center lg:gap-14 sm:flex-row">
 					{/* Colonne gauche: Galerie */}
 					<div className="flex flex-col space-y-4 sm:space-y-8">
 						<ProductGalleryNew
@@ -386,7 +383,7 @@ export default function ProductViews() {
 					/>
 
 					{/* Reviews mobile */}
-					<div className="md:hidden">
+					<div className="sm:hidden">
 						<Reviews />
 					</div>
 				</div>

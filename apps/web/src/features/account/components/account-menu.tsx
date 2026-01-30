@@ -36,7 +36,7 @@ export const AccountMenu = () => {
 	const pathname = usePathname();
 
 	return (
-		<nav className="flex flex-col h-full bg-white rounded-md border border-gray-100 transition-all duration-200">
+		<nav className="flex flex-col h-full bg-white rounded-md border border-gray-100 transition-all duration-200 shadow-2xs">
 			<div className="px-7 py-8 border-b border-gray-100">
 				<h3 className="text-2xl! font-bold tracking-wider text-gray-900">
 					Mon Compte

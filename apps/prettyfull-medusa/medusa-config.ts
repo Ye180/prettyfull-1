@@ -3,6 +3,14 @@ import { defineConfig, loadEnv } from "@medusajs/framework/utils";
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
 module.exports = defineConfig({
+  plugins: [
+    {
+      resolve: "medusa-plugin-wishlist",
+      options: {},
+    },
+  ],
+
+  
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     redisUrl: process.env.REDIS_URL,

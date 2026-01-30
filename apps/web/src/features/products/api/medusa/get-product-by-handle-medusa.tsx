@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const getProductsByHandleMedusa = async (
 	handle: string,
-	regionId: string
+	regionId: string,
 ) => {
 	const response = await sdk.store.product.list({
 		fields: "*variants.calculated_price",
@@ -22,7 +22,7 @@ export const getProductsByHandleMedusa = async (
 
 export const useGetProductsByHandleMedusa = (
 	handle: string,
-	regionId: string
+	regionId: string,
 ) => {
 	return useQuery({
 		queryKey: [PRODUCT_MEDUSA_BY_HANDLE_QUERY_KEY, handle, regionId],

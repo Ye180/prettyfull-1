@@ -4,7 +4,7 @@ import { PropsWithChildren } from "react";
 
 const AccountLayout = ({ children }: PropsWithChildren<{}>) => {
 	return (
-		<div className="py-12 min-h-screen bg-gray-50/50">
+		<div className="py-12 min-h-screen">
 			<div className="container px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div className="mb-6 md:hidden">
 					<h1 className="text-3xl font-bold text-gray-900">Mon Espace</h1>

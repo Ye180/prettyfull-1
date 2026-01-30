@@ -51,7 +51,7 @@ export function ProductGalleryNew({
 		<>
 			<div className={cn("flex relative gap-4 w-fit", className)}>
 				{/* Thumbnails à gauche - Desktop */}
-				<div className="hidden overflow-y-auto flex-col gap-2 sm:flex h-fit scrollbar-hide md:grid md:grid-cols-2">
+				<div className="hidden overflow-y-auto flex-col gap-1 max-md:w-30 sm:flex h-fit scrollbar-hide md:grid md:grid-cols-2">
 					{images.map((image, index) => (
 						<div
 							key={index}

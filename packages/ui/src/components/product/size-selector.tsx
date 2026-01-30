@@ -72,7 +72,7 @@ export const SizeSelector: React.FC<SizeSelectorProps> = ({
 						onChange(size.code);
 					}}
 					className={cn(
-						"flex   w-full  text-center  h-14 px-4 pb-4 pt-3  mx-auto font-normal text-gray-600 uppercase bg-white border border-gray-300 rounded-sm text-[1.3rem] hover:border-black hover:text-black transition-all duration-200 cursor-pointer active:bg-white hover:bg-white active:text-white",
+						"flex   w-full  text-center  h-12 lg:h-14 px-4 pb-4 pt-3  mx-auto font-normal text-gray-600 uppercase bg-white border border-gray-300 rounded-sm text-[1.3rem] hover:border-black hover:text-black transition-all duration-200 cursor-pointer active:bg-white hover:bg-white active:text-white",
 						compact ? "px-3 py-1 text-xs" : "px-4 py-2 text-sm",
 						selectedSize === size.code
 							? "border-black text-black"

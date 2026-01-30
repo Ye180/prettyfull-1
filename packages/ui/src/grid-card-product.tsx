@@ -20,7 +20,8 @@ const gridVariants = cva(["w-full h-fit  "], {
 });
 
 interface GridCardProductProps
-	extends React.HTMLAttributes<HTMLDivElement>,
+	extends
+		React.HTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof gridVariants> {
 	title?: string;
 	className?: string;
@@ -55,11 +56,7 @@ export const GridCardProduct = ({
 	);
 
 	const responsive =
-		"max-md:grid-cols-3 gap-x-[8px]  max-md:grid-cols-3  max-sm:grid-cols-2     ";
-	// "z-0 mb-6 lg:mb-4 grid grid-cols-2 md:grid-cols-3 gap-x-[1px] md:gap-y-8 lg:grid-cols-4 lg:gap-x-2 lg:gap-y-8 3xl:grid-cols-5";
-	// "max-md:grid-cols-3  max-md:[&>div]:h-[75rem]   max-md:grid-cols-3  max-sm:grid-cols-2 max-sm:gap-x-2  max-sm:[&>div]:h-[450px] max-xs:[&>div]:h-[400px] max-sm: space-y-45 sm:space-y-58 md:space-y-48 lg:space-y-52  ";
-
-	// "z-0 mb-6 lg:mb-4 grid grid-cols-2 md:grid-cols-3 gap-x-[1px] md:gap-y-8 lg:grid-cols-4 lg:gap-x-2 lg:gap-y-8 3xl:grid-cols-5";
+		"max-md:grid-cols-3 gap-x-[8px]  max-md:grid-cols-3  max-sm:grid-cols-2";
 
 	const handleChangeStyle = useCallback(
 		(style: Object, index: number) => {
@@ -78,7 +75,7 @@ export const GridCardProduct = ({
 		}
 
 		if (styleGrid.active === 4) {
-			return "grid grid-cols-4 gap-x-8 gap-y-2";
+			return "grid grid-cols-4 gap-x-8 gap-y-2 ";
 		}
 
 		if (styleGrid.active === 5) {
@@ -93,18 +90,20 @@ export const GridCardProduct = ({
 
 	return (
 		<div
-			className={cn(gridVariants(), "text-black   space-y-4 ", className)}
+			className={cn(gridVariants(), "space-y-4 text-black", className)}
 			{...props}
 		>
 			{action_grid && (
 				<div className="gap-4 py-1 space-x-5 text-black max-md:hidden md:flex md:justify-end md:items-center">
 					<ToPull />
-					<span className="flex items-center justify-center gap-4">
+					<span className="flex gap-4 justify-center items-center">
 						{StyleBar.map((styles, index) => (
 							<GridBar
 								key={index}
 								className={cn(
-									styleGrid.active === styles.number ? "[&>span]:bg-black" : ""
+									styleGrid.active === styles.number
+										? "[&>span]:bg-black h-fit"
+										: ""
 								)}
 								number={styles.number}
 								onclick={() => handleChangeStyle(styles.style, styles.number)}
@@ -115,7 +114,7 @@ export const GridCardProduct = ({
 			)}
 
 			<div
-				className={cn("lg:space-y-10", gridClasses, classGrid, "produit")}
+				className={cn("lg:space-y-10", gridClasses, classGrid, "")}
 				style={{}}
 			>
 				{children}

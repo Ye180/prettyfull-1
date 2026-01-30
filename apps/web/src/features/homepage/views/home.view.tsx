@@ -43,7 +43,7 @@ const HomeView = () => {
 	return (
 		<div className="  w-full *:w-full lg:*:px-40  space-y-4 lg:space-y-4 mb-20">
 			<SearchBar />
-			{/* <ModeCollection /> */}
+
 			<Hero video={false} />
 
 			<Space />
@@ -84,7 +84,7 @@ const HomeView = () => {
 				maxWidth="100vw"
 				className="flex gap-x-12 justify-between items-start px-4 lg:px-40 max-md:flex-col h-fit max-md:space-y-12"
 			>
-				<GridCardProduct className="max-sm:gap-y-8">
+				<GridCardProduct>
 					<>
 						{loadingProductsSameCollection ? (
 							<>

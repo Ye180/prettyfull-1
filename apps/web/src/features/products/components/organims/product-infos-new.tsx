@@ -81,7 +81,7 @@ export function ProductInfosNew({
 	const displayFeatures = features || defaultFeatures;
 
 	return (
-		<div className="w-full lg:w-[400px] space-y-6">
+		<div className="w-full md:w-[400px] space-y-6">
 			{/* Header: Nom, Prix, Rating */}
 			<div className="space-y-2">
 				{/* Breadcrumb / Category */}
