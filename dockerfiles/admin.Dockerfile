@@ -21,8 +21,15 @@ COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 # Installation des dépendances
 RUN pnpm install --no-frozen-lockfile
 
-# Build du projet
-RUN pnpm turbo run build --filter=prettyfull-medusa
+# Build du projet avec variables d'environnement temporaires
+RUN DATABASE_URL="postgresql://medusa:PTSaWIgwwhyLFFk4wc8M@prettyfull-medusadb-dvbjzq:5432/medusa-db" \
+    REDIS_URL="redis://default:7bbOrR57ubKPcHyPywtz@prettyfull-medusaredis-6xx16s:6379" \
+    STORE_CORS="http://localhost:3000" \
+    ADMIN_CORS="http://localhost:9000" \
+    AUTH_CORS="http://localhost:9000" \
+    JWT_SECRET="build-time-secret" \
+    COOKIE_SECRET="build-time-secret" \
+    pnpm turbo run build --filter=prettyfull-medusa
 
 FROM base AS runner
 WORKDIR /app
