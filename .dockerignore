@@ -9,6 +9,8 @@ pnpm-debug.log*
 .next
 dist
 build
+.medusa
+.turbo
 
 # Environment files
 .env

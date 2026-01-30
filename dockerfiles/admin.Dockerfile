@@ -19,11 +19,13 @@ WORKDIR /app
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
-# Installation des dépendances (pnpm est trouvé car il est dans 'base')
+# Installation des dépendances uniquement
 RUN pnpm install --no-frozen-lockfile
 
-# Build effectif du backend
+# Copie du code source complet après l'installation
 COPY --from=builder /app/out/full/ .
+
+# Build effectif de l'application
 RUN pnpm turbo run build --filter=prettyfull-medusa
 
 # --- ÉTAPE 4 : RUNNER (Exécution) ---
