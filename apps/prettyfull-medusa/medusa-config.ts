@@ -19,7 +19,7 @@ module.exports = defineConfig({
   },
   // --- AJOUTE CETTE SECTION ICI ---
   admin: {
-    disable: false, // Assure-toi que c'est activé
+    disable: true, // Assure-toi que c'est activé
     backendUrl: process.env.MEDUSA_BACKEND_URL, // L'URL de ton backend sur Dokploy
   },
   // --------------------------------
