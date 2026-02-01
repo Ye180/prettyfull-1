@@ -3,12 +3,8 @@ import { defineConfig, loadEnv } from "@medusajs/framework/utils";
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
 module.exports = defineConfig({
- 
-
-  
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
-    
     redisUrl: process.env.REDIS_URL,
     databaseDriverOptions: {
       ssl: false,
@@ -21,6 +17,12 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
   },
+  // --- AJOUTE CETTE SECTION ICI ---
+  admin: {
+    disable: false, // Assure-toi que c'est activé
+    backendUrl: process.env.MEDUSA_BACKEND_URL, // L'URL de ton backend sur Dokploy
+  },
+  // --------------------------------
   modules: [
     {
       resolve: "./src/modules/product-media",
@@ -34,7 +36,6 @@ module.exports = defineConfig({
             id: "stripe",
             options: {
               apiKey: process.env.STRIPE_API_KEY,
-              // autres options Stripe possibles...
             },
           },
         ],
