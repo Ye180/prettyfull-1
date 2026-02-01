@@ -33,6 +33,8 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm turbo run build --filter=prett
 WORKDIR /app/apps/prettyfull-medusa
 RUN npx medusa build
 
+
+
 # --- ÉTAPE 4 : RUNNER ---
 FROM base AS runner
 WORKDIR /app
