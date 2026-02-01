@@ -29,6 +29,10 @@ ARG REDIS_URL
 # pour valider la config, mais il n'essaiera pas de s'y connecter si on gère bien le config.ts.
 RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm turbo run build --filter=prettyfull-medusa
 
+# 🔥 BUILD ADMIN MEDUSA (LA LIGNE MANQUANTE)
+WORKDIR /app/apps/prettyfull-medusa
+RUN npx medusa build
+
 # --- ÉTAPE 4 : RUNNER ---
 FROM base AS runner
 WORKDIR /app
