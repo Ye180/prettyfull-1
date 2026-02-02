@@ -1,18 +1,12 @@
-# --- ÉTAPE 1 : BUILD ---
-FROM node:22-alpine AS builder
-WORKDIR /app
-
-RUN npm install -g pnpm
-
-COPY . .
-RUN pnpm install --no-frozen-lockfile
-RUN pnpm build
-
-# --- ÉTAPE 2 : SERVEUR NGINX ---
 FROM nginx:alpine
-# On copie les fichiers statiques générés vers le dossier Nginx
-COPY --from=builder /app/apps/prettyfull-medusa/.medusa/admin /usr/share/nginx/html
 
+# Nettoyage config par défaut
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copier les fichiers statiques
+COPY . /usr/share/nginx/html
+
+# Configuration Nginx pour SPA
 RUN echo 'server { \
   listen 80; \
   server_name _; \
