@@ -1,21 +1,23 @@
-FROM nginx:alpine
+FROM nginx:stable-alpine
 
-# Nettoyage config par défaut
-RUN rm /etc/nginx/conf.d/default.conf
+# On nettoie TOUT (config et fichiers par défaut)
+RUN rm -rf /usr/share/nginx/html/* && rm -rf /etc/nginx/conf.d/*
 
-# Copier les fichiers statiques
+# On copie tout le contenu du dossier actuel
 COPY . /usr/share/nginx/html
 
-# Configuration Nginx pour SPA
-RUN echo 'server { \
-  listen 80; \
-  server_name _; \
-  root /usr/share/nginx/html; \
-  index index.html; \
-  location / { \
-    try_files $uri $uri/ /index.html; \
-  } \
-}' > /etc/nginx/conf.d/default.conf
+# On crée une config ultra-minimaliste
+RUN echo "server { \
+    listen 80; \
+    root /usr/share/nginx/html; \
+    index index.html; \
+    location / { \
+        try_files \$uri \$uri/ /index.html; \
+    } \
+}" > /etc/nginx/conf.d/admin.conf
+
+# PETIT TRUC : On vérifie dans les logs au lancement
+RUN ls -la /usr/share/nginx/html
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
