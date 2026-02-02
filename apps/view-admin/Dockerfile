@@ -25,12 +25,16 @@
 
 FROM nginx:alpine
 
-# On écrase tout pour être sûr
-RUN rm /usr/share/nginx/html/index.html
-RUN echo "<h1>DOKPLOY TEST SUCCESS</h1>" > /usr/share/nginx/html/index.html
+# On vide le dossier par défaut de Nginx
+RUN rm -rf /usr/share/nginx/html/*
 
-# Le reste de ta config
-COPY . /usr/share/nginx/html
+# On copie tes fichiers (index.html, assets, etc.)
+COPY . /usr/share/nginx/html/
+
+# On crée une page de test forcée au cas où la copie échoue
+RUN echo "<h1>ADMIN PRETTYFULL OK</h1>" > /usr/share/nginx/html/test.html
+
+# Config pour le routage SPA
+RUN printf "server {\n  listen 80;\n  location / {\n    root /usr/share/nginx/html;\n    try_files \$uri \$uri/ /index.html;\n  }\n}" > /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
