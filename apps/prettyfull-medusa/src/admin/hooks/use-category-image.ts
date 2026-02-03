@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { sdk } from "../lib/sdk"
 import { CategoryImage } from "../type"
 
@@ -16,7 +16,8 @@ export const useCategoryImageMutations = ({
   onUpdateSuccess,
   onDeleteSuccess,
 }: UseCategoryImageMutationsProps) => {
-  const queryClient = useQueryClient()
+  // Don't use queryClient - let the parent component handle cache invalidation
+  // through the callback functions
 
   const uploadFilesMutation = useMutation({
     mutationFn: async (files: File[]) => {
@@ -46,7 +47,6 @@ export const useCategoryImageMutations = ({
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["category-images", categoryId] })
       onCreateSuccess?.()
     },
   })
@@ -70,7 +70,6 @@ export const useCategoryImageMutations = ({
     return response
   },
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ["category-images", categoryId] })
     onUpdateSuccess?.()
   },
   })
@@ -92,7 +91,6 @@ export const useCategoryImageMutations = ({
     return response
   },
   onSuccess: (_data, deletedIds) => {
-    queryClient.invalidateQueries({ queryKey: ["category-images", categoryId] })
     onDeleteSuccess?.(deletedIds)
   },
 })

@@ -1,5 +1,4 @@
 import { CommandBar } from "@medusajs/ui";
-import { useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 
 import { Button, FocusModal, Heading, toast } from "@medusajs/ui";
@@ -12,23 +11,24 @@ import { CategoryImageUpload } from "./category-image-upload";
 type CategoryMediaModalProps = {
 	categoryId: string;
 	existingImages: CategoryImage[];
+	onSuccess?: () => void;
 };
 
 export const CategoryMediaModal = ({
 	categoryId,
 	existingImages,
+	onSuccess,
 }: CategoryMediaModalProps) => {
 	const [open, setOpen] = useState(false);
 	const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 	const [currentThumbnailId, setCurrentThumbnailId] = useState<string | null>(
-		null
+		null,
 	);
 	const [selectedImageIds, setSelectedImageIds] = useState<Set<string>>(
-		new Set()
+		new Set(),
 	);
 	const [imagesToDelete, setImagesToDelete] = useState<Set<string>>(new Set());
-	const fileInputRef = useRef<HTMLInputElement>(null);
-	const queryClient = useQueryClient();
+	const fileInputRef = useRef<HTMLInputElement>(null!);
 
 	const {
 		uploadFilesMutation,
@@ -40,6 +40,7 @@ export const CategoryMediaModal = ({
 		onCreateSuccess: () => {
 			setOpen(false);
 			resetModalState();
+			onSuccess?.();
 		},
 		onUpdateSuccess: () => {
 			setSelectedImageIds(new Set());
@@ -66,7 +67,7 @@ export const CategoryMediaModal = ({
 
 	const initializeThumbnail = () => {
 		const thumbnailImage = existingImages.find(
-			(img) => img.type === "thumbnail"
+			(img) => img.type === "thumbnail",
 		);
 		if (thumbnailImage?.id) {
 			setCurrentThumbnailId(thumbnailImage.id);
@@ -104,7 +105,7 @@ export const CategoryMediaModal = ({
 		const hasImagesToDelete = imagesToDelete.size > 0;
 
 		const initialThumbnail = existingImages.find(
-			(img) => img.type === "thumbnail"
+			(img) => img.type === "thumbnail",
 		);
 		const thumbnailChanged =
 			currentThumbnailId &&
@@ -152,9 +153,6 @@ export const CategoryMediaModal = ({
 
 			await Promise.all(operations);
 
-			queryClient.invalidateQueries({
-				queryKey: ["category-images", categoryId],
-			});
 			setOpen(false);
 			resetModalState();
 			toast.success("Category media saved successfully");
@@ -189,7 +187,7 @@ export const CategoryMediaModal = ({
 					return file.id === uploadedFileId
 						? { ...file, type: "thumbnail" }
 						: file;
-				})
+				}),
 			);
 		}
 
@@ -214,7 +212,7 @@ export const CategoryMediaModal = ({
 
 		if (uploadedFileIds.length > 0) {
 			setUploadedFiles((prev) =>
-				prev.filter((file) => !uploadedFileIds.includes(file.id))
+				prev.filter((file) => !uploadedFileIds.includes(file.id)),
 			);
 			if (currentThumbnailId?.startsWith("uploaded:")) {
 				const thumbnailFileId = currentThumbnailId.replace("uploaded:", "");
@@ -279,16 +277,12 @@ export const CategoryMediaModal = ({
 								shortcut="t"
 								disabled={selectedImageIds.size !== 1}
 							/>
-
-							<CommandBar open={selectedImageIds.size > 0}>
-								{/* ... */}
-								<CommandBar.Seperator />
-								<CommandBar.Command
-									action={handleDelete}
-									label="Delete"
-									shortcut="d"
-								/>
-							</CommandBar>
+							<CommandBar.Seperator />
+							<CommandBar.Command
+								action={handleDelete}
+								label="Delete"
+								shortcut="d"
+							/>
 						</CommandBar.Bar>
 					</CommandBar>
 				</FocusModal.Body>

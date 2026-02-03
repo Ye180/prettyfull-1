@@ -1,45 +1,66 @@
-// shim defineWidgetConfig when '@medusajs/admin-ui' is not available in this environment
-const defineWidgetConfig = (cfg: any) => cfg;
-
-import { Container, Heading } from "@medusajs/ui";
-// import {
-//   DetailWidgetProps,
-//   AdminProductCategory,
-// } from "@medusajs/framework/types"
-import { useQuery } from "@tanstack/react-query";
-// import { sdk } from "../lib/sdk"
-// import { CategoryImage } from "../types"
-
+import { defineWidgetConfig } from "@medusajs/admin-sdk";
 import { ThumbnailBadge } from "@medusajs/icons";
 import { AdminProductCategory, DetailWidgetProps } from "@medusajs/types";
+import { Container, Heading } from "@medusajs/ui";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { CategoryMediaModal } from "../components/category-media/category-media-modal";
 import { sdk } from "../lib/sdk";
 import { CategoryImage } from "../type";
+
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			refetchOnWindowFocus: false,
+		},
+	},
+});
 
 type CategoryImagesResponse = {
 	category_images: CategoryImage[];
 };
 
-const CategoryMediaWidget = ({
+const CategoryMediaWidgetContent = ({
 	data,
 }: DetailWidgetProps<AdminProductCategory>) => {
-	const { data: response, isLoading } = useQuery({
-		queryKey: ["category-images", data.id],
-		queryFn: async () => {
-			const result = await sdk.client.fetch<CategoryImagesResponse>(
-				`/admin/categories/${data.id}/images`
-			);
-			return result;
-		},
-	});
+	const [images, setImages] = useState<CategoryImage[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [refreshKey, setRefreshKey] = useState(0);
 
-	const images = response?.category_images || [];
+	const refreshImages = () => {
+		setRefreshKey((prev) => prev + 1);
+	};
+
+	useEffect(() => {
+		const fetchImages = async () => {
+			try {
+				setIsLoading(true);
+				const result = await sdk.client.fetch<CategoryImagesResponse>(
+					`/admin/categories/${data.id}/images`,
+				);
+				setImages(result?.category_images || []);
+			} catch (error) {
+				console.error("Failed to fetch category images:", error);
+				setImages([]);
+			} finally {
+				setIsLoading(false);
+			}
+		};
+
+		fetchImages();
+	}, [data.id, refreshKey]);
 
 	return (
 		<Container className="p-0 divide-y">
-			<div className="flex items-center justify-between px-6 py-4">
+			<div className="flex justify-between items-center px-6 py-4">
 				<Heading level="h2">Media</Heading>
-				<CategoryMediaModal categoryId={data.id} existingImages={images} />
+				{!isLoading && (
+					<CategoryMediaModal
+						categoryId={data.id}
+						existingImages={images}
+						onSuccess={refreshImages}
+					/>
+				)}
 			</div>
 			<div className="px-6 py-4">
 				<div className="grid grid-cols-[repeat(auto-fill,96px)] gap-4">
@@ -56,7 +77,7 @@ const CategoryMediaWidget = ({
 					{images.map((image: CategoryImage) => (
 						<div
 							key={image.id}
-							className="relative overflow-hidden border rounded-lg aspect-square border-ui-border-base bg-ui-bg-subtle"
+							className="overflow-hidden relative rounded-lg border aspect-square border-ui-border-base bg-ui-bg-subtle"
 						>
 							<img
 								src={image.url}
@@ -73,6 +94,16 @@ const CategoryMediaWidget = ({
 				</div>
 			</div>
 		</Container>
+	);
+};
+
+const CategoryMediaWidget = (
+	props: DetailWidgetProps<AdminProductCategory>,
+) => {
+	return (
+		<QueryClientProvider client={queryClient}>
+			<CategoryMediaWidgetContent {...props} />
+		</QueryClientProvider>
 	);
 };
 
