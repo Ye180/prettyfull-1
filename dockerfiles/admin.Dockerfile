@@ -29,13 +29,10 @@ ARG REDIS_URL
 ENV COOKIE_SECRET=supersecret_build_temp
 ENV JWT_SECRET=supersecret_build_temp
 
-# Build du Backend
+# Build du Backend (Turbo)
 RUN pnpm turbo run build --filter=prettyfull-medusa
 
-# Build de l'Admin UI
-RUN pnpm turbo run build --filter=prettyfull-medusa --admin-only
-
-# 🔥 FIX: Build de l'Admin UI avec plus de mémoire
+# 🔥 FIX 1: Build de l'Admin UI avec plus de mémoire
 WORKDIR /app/apps/prettyfull-medusa
 # On force la mémoire à 4GB pour le build car l'admin ui est lourd
 RUN NODE_OPTIONS="--max-old-space-size=4096" npx medusa build
@@ -50,7 +47,8 @@ RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 medusa
 # Copie des fichiers de l'application
 COPY --from=installer --chown=medusa:nodejs /app .
 
-# 🔥 FIX CRITIQUE: On recopie explicitement le dossier caché .medusa pour être sûr
+# 🔥 FIX 2 (CRITIQUE): On recopie explicitement le dossier caché .medusa pour être sûr qu'il est là
+# Sans cette ligne, le COPY précédent rate souvent ce dossier caché.
 COPY --from=installer --chown=medusa:nodejs /app/apps/prettyfull-medusa/.medusa /app/apps/prettyfull-medusa/.medusa
 
 WORKDIR /app/apps/prettyfull-medusa

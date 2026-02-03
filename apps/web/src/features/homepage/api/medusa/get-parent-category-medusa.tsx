@@ -8,7 +8,7 @@ export const getParentsCategoryMedusa = async () => {
 	const response = sdk.store.category
 		.list({
 			fields:
-				"name, handle, category_children.id,category_children.name, category_children.handle,category_children.metadata",
+				"name, handle, *product_category_image, category_children.id, category_children.name, category_children.handle, category_children.metadata, category_children.*product_category_image",
 			include_descendants_tree: true,
 		})
 		.then(({ product_categories }) => {
@@ -16,7 +16,7 @@ export const getParentsCategoryMedusa = async () => {
 			const categoriesWithChildren = product_categories.filter(
 				(cat) =>
 					Array.isArray(cat.category_children) &&
-					cat.category_children.length > 0
+					cat.category_children.length > 0,
 			);
 			// categoriesWithChildren contient maintenant uniquement les catégories avec enfants
 			return categoriesWithChildren;

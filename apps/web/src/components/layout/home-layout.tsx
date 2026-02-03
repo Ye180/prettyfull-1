@@ -20,6 +20,8 @@ const HomeLayout = ({
 		isLoading: loadingParentsCategoryMedusa,
 	} = useGetParentsCategoryMedusa();
 
+	console.log(parentsCategoryMedusa);
+
 	useEffect(() => {
 		if (
 			!loadingParentsCategoryMedusa &&
@@ -35,7 +37,7 @@ const HomeLayout = ({
 	}, [parentsCategoryMedusa, loadingParentsCategoryMedusa, pathname, router]);
 
 	return (
-		<div className="flex flex-col min-h-screen overflow-x-hidden">
+		<div className="flex overflow-x-hidden flex-col min-h-screen">
 			<Header
 				main_category={parentsCategoryMedusa}
 				loading={loadingParentsCategoryMedusa}
