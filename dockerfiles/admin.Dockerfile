@@ -51,6 +51,5 @@ COPY --from=installer --chown=medusa:nodejs /app .
 WORKDIR /app/apps/prettyfull-medusa
 EXPOSE 9000
 
-# Commande de démarrage
-# Note: On s'assure que medusa start a bien lieu
-CMD ["sh", "-c", "npx medusa db:migrate && npx medusa start"]
+# MODIFICATION ICI : On force le host et le port dans la commande
+CMD ["sh", "-c", "npx medusa db:migrate && npx medusa start --host 0.0.0.0 --port 9000"]
