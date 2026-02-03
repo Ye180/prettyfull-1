@@ -38,13 +38,19 @@ RUN npx medusa build
 # --- ÉTAPE 4 : RUNNER ---
 FROM base AS runner
 WORKDIR /app
+
+# On définit l'environnement en production
+ENV NODE_ENV=production
+
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 medusa
 USER medusa
 
+# On copie tout (y compris le dossier .medusa généré à l'étape précédente)
 COPY --from=installer --chown=medusa:nodejs /app .
 
 WORKDIR /app/apps/prettyfull-medusa
 EXPOSE 9000
 
-# ICI, les variables d'environnement réelles de ton onglet "Environment" Dokploy seront utilisées.
+# Commande de démarrage
+# Note: On s'assure que medusa start a bien lieu
 CMD ["sh", "-c", "npx medusa db:migrate && npx medusa start"]

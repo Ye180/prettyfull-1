@@ -8,9 +8,11 @@ pnpm-debug.log*
 # Build outputs
 .next
 dist
-build
-.medusa
+
 .turbo
+
+# Assure-toi que ceci n'est PAS ignoré ou ajoute l'exception :
+!apps/prettyfull-medusa/.medusa
 
 # Environment files
 .env
