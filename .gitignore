@@ -24,10 +24,9 @@ coverage
 # Build Outputs
 .next/
 out/
-build
-dist
 
 
+!apps/prettyfull-medusa/.medusa
 # Debug
 npm-debug.log*
 yarn-debug.log*

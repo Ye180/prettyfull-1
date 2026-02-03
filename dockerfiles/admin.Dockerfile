@@ -1,50 +1,62 @@
 # --- ÉTAPE 1 : BASE ---
 FROM node:22-alpine AS base
 RUN npm install -g pnpm turbo
-
-# --- ÉTAPE 2 : BUILDER ---
-FROM base AS builder
+# On ajoute libc6-compat dès la base pour éviter les soucis de compatibilité alpine/node
 RUN apk add --no-cache libc6-compat
+
+# --- ÉTAPE 2 : PRUNER (Turbo) ---
+FROM base AS builder
 WORKDIR /app
 COPY . .
+# On isole uniquement ce qui est nécessaire pour medusa
 RUN turbo prune prettyfull-medusa --docker
 
-# --- ÉTAPE 3 : INSTALLER ---
+# --- ÉTAPE 3 : INSTALLER & BUILDER ---
 FROM base AS installer
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# 1. Installation des dépendances
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN pnpm install --no-frozen-lockfile
+# Installation complète (prod + dev) pour pouvoir builder
+RUN pnpm install --frozen-lockfile
 
+# 2. Copie du code source
 COPY --from=builder /app/out/full/ .
 
-# On utilise des arguments de build (ARG) au lieu de valeurs en dur.
-# Dokploy injectera ces valeurs si tu les configures, sinon elles restent vides.
+# 3. Build du code Backend (TypeScript -> JavaScript)
+# On passe les ARGs ici pour que le build ne casse pas si Medusa vérifie la config
 ARG DATABASE_URL
 ARG REDIS_URL
+# Optionnel : définir une clé temporaire pour le build pour éviter les erreurs de validation
+ENV COOKIE_SECRET=supersecret_build_temp
+ENV JWT_SECRET=supersecret_build_temp
 
-# On lance le build. Medusa v2 a besoin que DATABASE_URL soit définie (même vide)
-# pour valider la config, mais il n'essaiera pas de s'y connecter si on gère bien le config.ts.
-RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm turbo run build --filter=prettyfull-medusa
+# Build du projet via Turbo
+RUN pnpm turbo run build --filter=prettyfull-medusa
 
-# 🔥 BUILD ADMIN MEDUSA (LA LIGNE MANQUANTE)
+# 4. Build de l'Admin UI (CRUCIAL pour la production)
 WORKDIR /app/apps/prettyfull-medusa
+# Cette commande génère le dossier .medusa/server/public/admin
 RUN npx medusa build
-
-
 
 # --- ÉTAPE 4 : RUNNER ---
 FROM base AS runner
 WORKDIR /app
-RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 medusa
-USER medusa
 
+# Création de l'utilisateur sécurisé
+RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 medusa
+
+# Copie de tout le dossier de l'application depuis l'étape installer
+# On change le propriétaire directement lors de la copie pour éviter les problèmes de permissions
 COPY --from=installer --chown=medusa:nodejs /app .
 
+# On se place dans le dossier de l'application
 WORKDIR /app/apps/prettyfull-medusa
+
+USER medusa
 EXPOSE 9000
 
-# ICI, les variables d'environnement réelles de ton onglet "Environment" Dokploy seront utilisées.
+# Commande de démarrage
+# Note: En prod, on utilise 'medusa start', pas 'pnpm dev'
 CMD ["sh", "-c", "npx medusa db:migrate && npx medusa start"]
