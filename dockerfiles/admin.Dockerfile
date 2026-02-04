@@ -1,85 +1,59 @@
 # --- ÉTAPE 1 : BASE ---
 FROM node:22-alpine AS base
 RUN npm install -g pnpm turbo
-
-# --- ÉTAPE 2 : BUILDER ---
-FROM base AS builder
+# On ajoute libc6-compat dès la base pour éviter les soucis de compatibilité alpine/node
 RUN apk add --no-cache libc6-compat
+
+# --- ÉTAPE 2 : PRUNER (Turbo) ---
+FROM base AS builder
 WORKDIR /app
 COPY . .
+# On isole uniquement ce qui est nécessaire pour medusa
 RUN turbo prune prettyfull-medusa --docker
 
 # --- ÉTAPE 3 : INSTALLER ---
 FROM base AS installer
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# Installation des dépendances
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN pnpm install --no-frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
+# Copie du code source complet
 COPY --from=builder /app/out/full/ .
 
-# On utilise des arguments de build (ARG) au lieu de valeurs en dur.
-# Dokploy injectera ces valeurs si tu les configures, sinon elles restent vides.
+# Arguments nécessaires pour le build
 ARG DATABASE_URL
 ARG REDIS_URL
-ARG MEDUSA_BACKEND_URL
-ARG STORE_CORS
-ARG ADMIN_CORS
+ENV COOKIE_SECRET=supersecret_build_temp
+ENV JWT_SECRET=supersecret_build_temp
 
-# Set environment variables for build
-ENV DATABASE_URL=${DATABASE_URL}
-ENV REDIS_URL=${REDIS_URL}
-ENV MEDUSA_BACKEND_URL=${MEDUSA_BACKEND_URL:-http://localhost:9000}
-ENV STORE_CORS=${STORE_CORS:-http://localhost:8000}
-ENV ADMIN_CORS=${ADMIN_CORS:-http://localhost:9000}
+# Build du Backend (Turbo)
+RUN pnpm turbo run build --filter=prettyfull-medusa
 
-# Build le backend et l'admin
+# 🔥 FIX 1: Build de l'Admin UI avec plus de mémoire
 WORKDIR /app/apps/prettyfull-medusa
-
-# Vérifier la structure avant build
-RUN echo "=== Checking directory structure ===" && \
-    ls -la && \
-    echo "=== Checking src/admin ===" && \
-    ls -la src/admin/ && \
-    echo "=== Starting build ===" 
-
-# Build backend et admin ensemble
-RUN set -ex && \
-    NODE_ENV=production NODE_OPTIONS="--max-old-space-size=4096" pnpm build && \
-    echo "=== Build completed, checking output ===" && \
-    ls -la .medusa/ && \
-    ls -la .medusa/admin/ && \
-    if [ ! -f .medusa/admin/index.html ]; then \
-        echo "ERROR: index.html not found after build!" && \
-        exit 1; \
-    fi && \
-    echo "✓ Admin build successful - index.html found"
+# On force la mémoire à 4GB pour le build car l'admin ui est lourd
+RUN NODE_OPTIONS="--max-old-space-size=4096" npx medusa build
 
 # --- ÉTAPE 4 : RUNNER ---
 FROM base AS runner
 WORKDIR /app
+
+# Création user
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 medusa
 
+# Copie des fichiers de l'application
 COPY --from=installer --chown=medusa:nodejs /app .
 
+# 🔥 FIX 2 (CRITIQUE): On recopie explicitement le dossier caché .medusa pour être sûr qu'il est là
+# Sans cette ligne, le COPY précédent rate souvent ce dossier caché.
+COPY --from=installer --chown=medusa:nodejs /app/apps/prettyfull-medusa/.medusa /app/apps/prettyfull-medusa/.medusa
+
 WORKDIR /app/apps/prettyfull-medusa
-
-# Vérifier que les fichiers buildés sont bien présents (non-bloquant)
-RUN echo "=== Verifying build files in runner ===" && \
-    (ls -la .medusa/admin/ && test -f .medusa/admin/index.html && echo "✓ index.html present in runner") || \
-    echo "⚠ index.html missing in runner - will build at startup"
-
 USER medusa
 EXPOSE 9000
 
-# ICI, les variables d'environnement réelles de ton onglet "Environment" Dokploy seront utilisées.
-CMD ["sh", "-c", "\
-    if [ ! -f .medusa/admin/index.html ]; then \
-        echo 'Admin build missing, building now...'; \
-        npx medusa build || echo 'Admin build failed, continuing without admin'; \
-    fi && \
-    npx medusa db:migrate && \
-    npx medusa start \
-"]
+# Commande de démarrage
+CMD ["sh", "-c", "npx medusa db:migrate && npx medusa start"]
