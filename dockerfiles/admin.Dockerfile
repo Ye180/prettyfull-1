@@ -35,31 +35,30 @@ ENV MEDUSA_BACKEND_URL=${MEDUSA_BACKEND_URL:-http://localhost:9000}
 ENV STORE_CORS=${STORE_CORS:-http://localhost:8000}
 ENV ADMIN_CORS=${ADMIN_CORS:-http://localhost:9000}
 
-# Build le backend et l'admin Medusa
+# Build le backend seulement (pas l'admin pour l'instant)
 WORKDIR /app/apps/prettyfull-medusa
-
-# Vérifier que le dossier src/admin existe
-RUN ls -la src/ || echo "No src directory"
-RUN ls -la src/admin/ || echo "No admin directory"
-
-# Build avec la commande du package.json (backend + admin)
-RUN NODE_ENV=production NODE_OPTIONS="--max-old-space-size=4096" pnpm build
-
-# Vérifier que le build a bien créé les fichiers
-RUN echo "Checking build output..." && \
-    ls -la .medusa/ || echo "No .medusa directory after build" && \
-    ls -la .medusa/admin/ || echo "No admin build directory" && \
-    test -f .medusa/admin/index.html && echo "✓ index.html found" || echo "✗ index.html NOT found"
+RUN NODE_ENV=production NODE_OPTIONS="--max-old-space-size=4096" pnpm turbo build
 
 # --- ÉTAPE 4 : RUNNER ---
 FROM base AS runner
 WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 medusa
-USER medusa
 
 COPY --from=installer --chown=medusa:nodejs /app .
 
 WORKDIR /app/apps/prettyfull-medusa
+
+# Build l'admin dans le runner stage avec les bonnes permissions
+USER root
+RUN NODE_ENV=production NODE_OPTIONS="--max-old-space-size=4096" npx medusa build && \
+    echo "Verifying admin build..." && \
+    ls -la .medusa/admin/ && \
+    test -f .medusa/admin/index.html && echo "✓ Admin build successful" || (echo "✗ Admin build failed" && exit 1)
+
+# Changer les permissions pour l'utilisateur medusa
+RUN chown -R medusa:nodejs .medusa
+
+USER medusa
 EXPOSE 9000
 
 # ICI, les variables d'environnement réelles de ton onglet "Environment" Dokploy seront utilisées.
