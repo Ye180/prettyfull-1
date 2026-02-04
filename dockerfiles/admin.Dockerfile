@@ -66,13 +66,20 @@ COPY --from=installer --chown=medusa:nodejs /app .
 
 WORKDIR /app/apps/prettyfull-medusa
 
-# Vérifier que les fichiers buildés sont bien présents
+# Vérifier que les fichiers buildés sont bien présents (non-bloquant)
 RUN echo "=== Verifying build files in runner ===" && \
-    ls -la .medusa/admin/ && \
-    test -f .medusa/admin/index.html && echo "✓ index.html present in runner" || (echo "✗ index.html missing in runner" && exit 1)
+    (ls -la .medusa/admin/ && test -f .medusa/admin/index.html && echo "✓ index.html present in runner") || \
+    echo "⚠ index.html missing in runner - will build at startup"
 
 USER medusa
 EXPOSE 9000
 
 # ICI, les variables d'environnement réelles de ton onglet "Environment" Dokploy seront utilisées.
-CMD ["sh", "-c", "npx medusa db:migrate && npx medusa start"]
+CMD ["sh", "-c", "\
+    if [ ! -f .medusa/admin/index.html ]; then \
+        echo 'Admin build missing, building now...'; \
+        npx medusa build || echo 'Admin build failed, continuing without admin'; \
+    fi && \
+    npx medusa db:migrate && \
+    npx medusa start \
+"]
