@@ -19,8 +19,8 @@ module.exports = defineConfig({
   },
   // --- AJOUTE CETTE SECTION ICI ---
   admin: {
-    disable: false, // Admin activé
-    backendUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
+    disable: true, // Désactivé temporairement - le build de l'admin ne fonctionne pas dans Docker
+    backendUrl: process.env.MEDUSA_BACKEND_URL, // L'URL de ton backend sur Dokploy
     path: "/app",
   },
   // --------------------------------
