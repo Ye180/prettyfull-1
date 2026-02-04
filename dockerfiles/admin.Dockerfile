@@ -24,16 +24,32 @@ COPY --from=builder /app/out/full/ .
 # Dokploy injectera ces valeurs si tu les configures, sinon elles restent vides.
 ARG DATABASE_URL
 ARG REDIS_URL
+ARG MEDUSA_BACKEND_URL
+ARG STORE_CORS
+ARG ADMIN_CORS
 
-# On lance le build. Medusa v2 a besoin que DATABASE_URL soit définie (même vide)
-# pour valider la config, mais il n'essaiera pas de s'y connecter si on gère bien le config.ts.
-RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm turbo run build --filter=prettyfull-medusa
+# Set environment variables for build
+ENV DATABASE_URL=${DATABASE_URL}
+ENV REDIS_URL=${REDIS_URL}
+ENV MEDUSA_BACKEND_URL=${MEDUSA_BACKEND_URL:-http://localhost:9000}
+ENV STORE_CORS=${STORE_CORS:-http://localhost:8000}
+ENV ADMIN_CORS=${ADMIN_CORS:-http://localhost:9000}
 
-# 🔥 BUILD ADMIN MEDUSA (LA LIGNE MANQUANTE)
+# Build le backend et l'admin Medusa
 WORKDIR /app/apps/prettyfull-medusa
-RUN npx medusa build
 
+# Vérifier que le dossier src/admin existe
+RUN ls -la src/ || echo "No src directory"
+RUN ls -la src/admin/ || echo "No admin directory"
 
+# Build avec la commande du package.json (backend + admin)
+RUN NODE_ENV=production NODE_OPTIONS="--max-old-space-size=4096" pnpm build
+
+# Vérifier que le build a bien créé les fichiers
+RUN echo "Checking build output..." && \
+    ls -la .medusa/ || echo "No .medusa directory after build" && \
+    ls -la .medusa/admin/ || echo "No admin build directory" && \
+    test -f .medusa/admin/index.html && echo "✓ index.html found" || echo "✗ index.html NOT found"
 
 # --- ÉTAPE 4 : RUNNER ---
 FROM base AS runner
