@@ -35,7 +35,6 @@ RUN pnpm turbo run build --filter=prettyfull-medusa
 # 🔥 FIX 1: Build de l'Admin UI avec plus de mémoire
 WORKDIR /app/apps/prettyfull-medusa
 # On force la mémoire à 4GB pour le build car l'admin ui est lourd
-RUN NODE_OPTIONS="--max-old-space-size=4096" npx medusa build --only-admin
 
 RUN NODE_OPTIONS="--max-old-space-size=4096" npx medusa build
 
