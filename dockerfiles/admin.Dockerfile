@@ -35,9 +35,27 @@ ENV MEDUSA_BACKEND_URL=${MEDUSA_BACKEND_URL:-http://localhost:9000}
 ENV STORE_CORS=${STORE_CORS:-http://localhost:8000}
 ENV ADMIN_CORS=${ADMIN_CORS:-http://localhost:9000}
 
-# Build le backend seulement (pas l'admin pour l'instant)
+# Build le backend et l'admin
 WORKDIR /app/apps/prettyfull-medusa
-RUN NODE_ENV=production NODE_OPTIONS="--max-old-space-size=4096" pnpm turbo build
+
+# Vérifier la structure avant build
+RUN echo "=== Checking directory structure ===" && \
+    ls -la && \
+    echo "=== Checking src/admin ===" && \
+    ls -la src/admin/ && \
+    echo "=== Starting build ===" 
+
+# Build backend et admin ensemble
+RUN set -ex && \
+    NODE_ENV=production NODE_OPTIONS="--max-old-space-size=4096" pnpm build && \
+    echo "=== Build completed, checking output ===" && \
+    ls -la .medusa/ && \
+    ls -la .medusa/admin/ && \
+    if [ ! -f .medusa/admin/index.html ]; then \
+        echo "ERROR: index.html not found after build!" && \
+        exit 1; \
+    fi && \
+    echo "✓ Admin build successful - index.html found"
 
 # --- ÉTAPE 4 : RUNNER ---
 FROM base AS runner
@@ -48,15 +66,10 @@ COPY --from=installer --chown=medusa:nodejs /app .
 
 WORKDIR /app/apps/prettyfull-medusa
 
-# Build l'admin dans le runner stage avec les bonnes permissions
-USER root
-RUN NODE_ENV=production NODE_OPTIONS="--max-old-space-size=4096" npx medusa build && \
-    echo "Verifying admin build..." && \
+# Vérifier que les fichiers buildés sont bien présents
+RUN echo "=== Verifying build files in runner ===" && \
     ls -la .medusa/admin/ && \
-    test -f .medusa/admin/index.html && echo "✓ Admin build successful" || (echo "✗ Admin build failed" && exit 1)
-
-# Changer les permissions pour l'utilisateur medusa
-RUN chown -R medusa:nodejs .medusa
+    test -f .medusa/admin/index.html && echo "✓ index.html present in runner" || (echo "✗ index.html missing in runner" && exit 1)
 
 USER medusa
 EXPOSE 9000
