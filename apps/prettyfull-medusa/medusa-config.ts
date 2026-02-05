@@ -19,10 +19,11 @@ module.exports = defineConfig({
   },
   // --- AJOUTE CETTE SECTION ICI ---
   admin: {
-    disable: true, // Désactivé temporairement - le build de l'admin ne fonctionne pas dans Docker
+    disable: false, // Désactivé temporairement - le build de l'admin ne fonctionne pas dans Docker
     backendUrl: process.env.MEDUSA_BACKEND_URL, // L'URL de ton backend sur Dokploy
     path: "/app",
   },
+  
   // --------------------------------
   modules: [
     {
