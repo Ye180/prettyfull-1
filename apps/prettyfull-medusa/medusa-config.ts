@@ -19,7 +19,7 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
   },
-  // --- AJOUTE CETTE SECTION ICI ---
+  // // --- AJOUTE CETTE SECTION ICI ---
   admin: {
     disable: false, // Désactivé temporairement - le build de l'admin ne fonctionne pas dans Docker
     backendUrl: process.env.MEDUSA_BACKEND_URL, // L'URL de ton backend sur Dokploy

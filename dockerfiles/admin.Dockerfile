@@ -122,4 +122,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
 # Commande de démarrage
 # 1. Migrations DB
 # 2. Démarrage du serveur
-CMD ["sh", "-c", "pnpm migrate && pnpm start"]
+CMD ["sh", "-c", "pnpm migrate && pnpm start"]  
