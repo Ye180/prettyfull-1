@@ -1,35 +1,43 @@
-# Production Dockerfile for Medusa backend in monorepo
-# Build from monorepo root: docker build -f apps/prettyfull-medusa/Dockerfile -t prettyfull-medusa .
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
-# Set working directory
-WORKDIR /app
-
-# Install pnpm globally
+RUN apk add --no-cache libc6-compat python3 make g++
 RUN npm install -g pnpm@10.21.0
 
-# Copy root package files for monorepo workspace setup
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+WORKDIR /app
+COPY package.json ./
+RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm install
+COPY . .
 
-# Copy the medusa app
-COPY apps/prettyfull-medusa ./apps/prettyfull-medusa
+ENV NODE_ENV=production
+ENV DATABASE_URL="postgres://placeholder:placeholder@localhost:5432/placeholder"
+ENV REDIS_URL="redis://localhost:6379"
+ENV JWT_SECRET="build-time-placeholder"
+ENV COOKIE_SECRET="build-time-placeholder"
+ARG MEDUSA_BACKEND_URL=""
+ENV MEDUSA_BACKEND_URL=$MEDUSA_BACKEND_URL
 
-# Install dependencies for the entire workspace
-RUN pnpm install --frozen-lockfile
+RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm build
+RUN test -f .medusa/server/public/admin/index.html
 
-# Set working directory to medusa app
-WORKDIR /app/apps/prettyfull-medusa
 
-# Build the Medusa application (outputs to .medusa/server)
-RUN pnpm run build
+FROM node:20-alpine AS runner
 
-# Install production dependencies in the build output directory
-WORKDIR /app/apps/prettyfull-medusa/.medusa/server
-ENV CI=true
-RUN pnpm install --prod --frozen-lockfile
+RUN apk add --no-cache libc6-compat curl
+RUN npm install -g pnpm@10.21.0
 
-# Expose Medusa port
+WORKDIR /app
+RUN addgroup --system --gid 1001 nodejs \
+    && adduser --system --uid 1001 medusa
+
+ENV NODE_ENV=production
+COPY --from=builder --chown=medusa:nodejs /app/.medusa/server ./
+RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm install --prod
+RUN chown -R medusa:nodejs /app
+
+USER medusa
 EXPOSE 9000
 
-# Run migrations and start the production server
-CMD ["sh", "-c", "pnpm run predeploy && pnpm run start"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:9000/health || exit 1
+
+CMD ["sh", "-c", "npx medusa db:migrate && npx medusa start"]

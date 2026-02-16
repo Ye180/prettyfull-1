@@ -6,11 +6,11 @@ module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     redisUrl: process.env.REDIS_URL,
-   databaseDriverOptions: {
-    ssl: process.env.NODE_ENV === "production" 
-      ? { rejectUnauthorized: false } 
-      : false,
-  },
+    databaseDriverOptions: {
+      ssl: process.env.DATABASE_SSL === "true"
+        ? { rejectUnauthorized: false }
+        : false,
+    },
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
@@ -19,14 +19,11 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
   },
-  // // --- AJOUTE CETTE SECTION ICI ---
   admin: {
-    disable: false, // Désactivé temporairement - le build de l'admin ne fonctionne pas dans Docker
-    backendUrl: process.env.MEDUSA_BACKEND_URL, // L'URL de ton backend sur Dokploy
+    disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
+    backendUrl: process.env.MEDUSA_BACKEND_URL,
     path: "/app",
   },
-  
-  // --------------------------------
   modules: [
     {
       resolve: "./src/modules/product-media",
