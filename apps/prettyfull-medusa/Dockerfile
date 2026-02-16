@@ -16,7 +16,7 @@ ENV COOKIE_SECRET="build-time-placeholder"
 ARG MEDUSA_BACKEND_URL=""
 ENV MEDUSA_BACKEND_URL=$MEDUSA_BACKEND_URL
 
-RUN NODE_OPTIONS= pnpm build
+RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm build
 RUN test -f .medusa/server/public/admin/index.html
 
 
