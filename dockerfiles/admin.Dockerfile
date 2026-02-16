@@ -9,11 +9,11 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm install
 COPY . .
 
 ENV NODE_ENV=production
-ENV DATABASE_URL="postgres://placeholder:placeholder@localhost:5432/placeholder"
-ENV REDIS_URL="redis://localhost:6379"
-ENV JWT_SECRET="build-time-placeholder"
-ENV COOKIE_SECRET="build-time-placeholder"
-ARG MEDUSA_BACKEND_URL=""
+ENV DATABASE_URL="postgres://medusa:medusa@prettyfull-postgres:5432/medusa"
+ENV REDIS_URL="redis://prettyfull-redis:6379"
+ENV JWT_SECRET="supersecret"
+ENV COOKIE_SECRET="supersecret"
+ARG MEDUSA_BACKEND_URL="http://localhost:9000"
 ENV MEDUSA_BACKEND_URL=$MEDUSA_BACKEND_URL
 
 RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm build
