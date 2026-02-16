@@ -9,11 +9,11 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm install
 COPY . .
 
 ENV NODE_ENV=production
-ENV DATABASE_URL="postgresql://medusa:PTSaWIgwwhyLFFk4wc8M@prettyfull-medusadb-dvbjzq:5432/medusa-db?sslmode=require"
-ENV REDIS_URL="redis://default:7bbOrR57ubKPcHyPywtz@prettyfull-medusaredis-6xx16s:6379"
-ENV JWT_SECRET="supersecret"
-ENV COOKIE_SECRET="supersecret"
-ARG MEDUSA_BACKEND_URL="https://api.prettyfull.shop"
+ENV DATABASE_URL="postgres://placeholder:placeholder@localhost:5432/placeholder"
+ENV REDIS_URL="redis://localhost:6379"
+ENV JWT_SECRET="build-time-placeholder"
+ENV COOKIE_SECRET="build-time-placeholder"
+ARG MEDUSA_BACKEND_URL=""
 ENV MEDUSA_BACKEND_URL=$MEDUSA_BACKEND_URL
 
 RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm build
