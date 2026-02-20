@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+import { useGetCategoryByHandler } from "../api/medusa/get-chidren-metadata";
 import Hero from "../organims/hero-video";
 import ModeCollection from "../organims/mode-collection";
 import NewsArrivals from "../organims/news-arrivals";
@@ -40,18 +41,29 @@ const HomeView = () => {
 		isLoading: loadingProductsSameCollection,
 	} = useGetProductsSameCollection();
 
+	const results = useGetCategoryByHandler(params.id as string, [
+		"third_section",
+		"sixth_section",
+		"eight_section",
+	]);
+
+	const banner = results.map((result) => result?.data?.[0]);
+
 	return (
 		<div className="  w-full *:w-full lg:*:px-40  space-y-4 lg:space-y-4 mb-20">
 			<SearchBar />
-
 			<Hero video={false} />
-
 			<Space />
 			<NewsArrivals />
 			<Space />
 			<PictureBar
-				imageDesktop="/home/promo-desktop-1.jpg"
-				imageMobile="/home/promo-phone.jpg"
+				imageDesktop={
+					banner[0]?.product_category_image?.[0]?.url ||
+					"/home/promo-desktop-1.jpg"
+				}
+				imageMobile={
+					banner[0]?.product_category_image?.[1]?.url || "/home/promo-phone.jpg"
+				}
 			/>
 			<Space />
 			<ModeCollection />
@@ -64,7 +76,9 @@ const HomeView = () => {
 			<Space />
 
 			<PictureBar
-				imageDesktop="/banner/banner8.jpg"
+				imageDesktop={
+					banner[1]?.product_category_image?.[0]?.url || "/banner/banner8.jpg"
+				}
 				imageMobile="/home/promo-phone.jpg"
 			/>
 			<Space />
@@ -74,7 +88,9 @@ const HomeView = () => {
 			<Space />
 
 			<PictureBar
-				imageDesktop="/banner/banner4.jpg"
+				imageDesktop={
+					banner[2]?.product_category_image?.[0]?.url || "/banner/banner4.jpg"
+				}
 				imageMobile="/home/promo-phone.jpg"
 			/>
 			<Space />
@@ -99,7 +115,7 @@ const HomeView = () => {
 							<>
 								{productSameCollection?.map((group) => {
 									const normalized = normalizeCollectionProducts(
-										group as RawCollectionProduct
+										group as RawCollectionProduct,
 									);
 									return (
 										<CardProduct

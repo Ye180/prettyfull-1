@@ -23,12 +23,9 @@ const CheckoutView = () => {
 		.retrieve()
 		.then(({ customer }) => {
 			// Ici, le client est connecté
-			console.log("Client connecté :", customer);
 		})
 		.catch(() => {
 			// Ici, aucun client connecté
-			console.log("Client NON connecté");
-
 			router.push("/login");
 			// par ex. rediriger vers la page de login
 		});
@@ -52,12 +49,12 @@ const CheckoutView = () => {
 					cart_id: cartId,
 				})
 				.then(({ shipping_options }) => {
-					console.log(shipping_options); // liste des options possibles
+					// liste des options possibles
 				})
 				.catch((error) => {
 					console.error(
 						"Erreur lors de la récupération des options de livraison :",
-						error
+						error,
 					);
 				});
 		}

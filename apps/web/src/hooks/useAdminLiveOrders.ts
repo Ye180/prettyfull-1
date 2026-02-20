@@ -71,7 +71,6 @@ export function useAdminLiveOrders(
         ? `${apiBaseUrl}/orders/admin/live?token=${authToken}`
         : `${apiBaseUrl}/orders/admin/live`;
 
-      console.log("🔌 Admin connecting to SSE:", url);
 
       const eventSource = new EventSource(url);
       eventSourceRef.current = eventSource;
@@ -85,7 +84,6 @@ export function useAdminLiveOrders(
       eventSource.addEventListener("new-order", (event: MessageEvent) => {
         try {
           const data: NewOrderNotification = JSON.parse(event.data);
-          console.log("🛒 New order notification received:", data);
 
           setLatestOrder(data);
           setOrders((prev) => [data, ...prev]); // Plus récent en premier

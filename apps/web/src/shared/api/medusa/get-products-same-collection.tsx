@@ -11,8 +11,6 @@ const getProductsSameCollection = async (regionId: string) => {
 		region_id: regionId,
 	});
 
-	console.log("Products:", products);
-
 	const grouped: Record<
 		string,
 		{
@@ -31,7 +29,6 @@ const getProductsSameCollection = async (regionId: string) => {
 		const categorie =
 			typeof categorieId === "string" ? categorieId.split(",") : undefined;
 
-		console.log("Categorie:", categorie);
 		if (!collectionId || !categorie || categorie.length === 0) continue;
 
 		if (!grouped[collectionId]) {
@@ -52,10 +49,10 @@ const getProductsSameCollection = async (regionId: string) => {
 			if (!group.collection_id) return;
 			const { collection } = await sdk.store.collection.retrieve(
 				group.collection_id as string,
-				{ fields: "id,title,handle,metadata" }
+				{ fields: "id,title,handle,metadata" },
 			);
 			group.collection = collection;
-		})
+		}),
 	);
 
 	return Object.values(grouped);

@@ -13,7 +13,7 @@ const AddItemToCartMedusa = async (variant_id: string) => {
 		})
 		.then(({ cart }) => {
 			// Utiliser le panier mis à jour
-			console.log(cart);
+			alert(cart);
 		});
 };
 

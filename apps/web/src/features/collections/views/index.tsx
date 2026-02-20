@@ -23,7 +23,7 @@ const CollectionViews = () => {
 	const params = useParams();
 
 	const { data, isLoading: loadingProducts } = useGetSampleProducts(
-		params.slug as string
+		params.slug as string,
 	);
 
 	// Normaliser les collections
@@ -33,18 +33,16 @@ const CollectionViews = () => {
 				collection_id: col.collection_id as string,
 				collection: col.collection,
 				products: col.products,
-			})
+			}),
 		) ?? [];
 
 	// Normaliser les produits standalone
 	const normalizedStandalone = normalizeStandaloneProducts(
-		data?.standaloneProducts ?? []
+		data?.standaloneProducts ?? [],
 	);
 
 	// Fusionner les deux pour l'affichage
 	const allProducts = [...normalizedCollections, ...normalizedStandalone];
-
-	console.log("allProducts", allProducts);
 
 	return (
 		<div className="pb-32 space-y-16">

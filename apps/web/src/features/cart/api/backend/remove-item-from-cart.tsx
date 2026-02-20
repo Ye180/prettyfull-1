@@ -26,7 +26,7 @@ export const useRemoveCartItem = () => {
 				`/carts/${userId}/items/${productId}`,
 				{
 					data: { selectedVariants },
-				}
+				},
 			);
 
 			return data;
@@ -40,7 +40,6 @@ export const useRemoveCartItem = () => {
 			}
 
 			queryClient.invalidateQueries({ queryKey: [CART_QUERY_KEY, userId] });
-			console.log("🗑️ Article supprimé du panier");
 		},
 
 		onError: (error) => {

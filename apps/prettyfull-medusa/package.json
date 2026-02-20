@@ -15,6 +15,7 @@
 	"scripts": {
 		"build": "medusa build",
 		"seed": "medusa exec ./src/scripts/seed.ts",
+		"seed:categories": "medusa exec ./src/scripts/seed-categories-only.ts",
 		"start": "medusa start",
 		"dev": "medusa develop",
 		"predeploy": "medusa db:migrate",

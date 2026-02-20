@@ -110,48 +110,74 @@ export default async function seedDemoData({ container }: ExecArgs) {
     },
   });
   logger.info("Seeding region data...");
-  const { result: regionResult } = await createRegionsWorkflow(container).run({
-    input: {
-      regions: [
-        {
-          name: "Europe",
-          currency_code: "eur",
-          countries,
-          payment_providers: ["pp_system_default"],
-        },
-      ],
-    },
-  });
-  const region = regionResult[0];
-  logger.info("Finished seeding regions.");
+  
+  const regionModuleService = container.resolve(Modules.REGION);
+  const existingRegions = await regionModuleService.listRegions();
+  
+  let region;
+  if (existingRegions.length > 0) {
+    logger.info(`Found ${existingRegions.length} existing regions. Skipping region creation.`);
+    region = existingRegions[0];
+  } else {
+    const { result: regionResult } = await createRegionsWorkflow(container).run({
+      input: {
+        regions: [
+          {
+            name: "Europe",
+            currency_code: "eur",
+            countries,
+            payment_providers: ["pp_system_default"],
+          },
+        ],
+      },
+    });
+    region = regionResult[0];
+    logger.info("Finished seeding regions.");
+  }
 
   logger.info("Seeding tax regions...");
-  await createTaxRegionsWorkflow(container).run({
-    input: countries.map((country_code) => ({
-      country_code,
-      provider_id: "tp_system",
-    })),
-  });
-  logger.info("Finished seeding tax regions.");
+  const taxRegionModuleService = container.resolve(Modules.TAX);
+  const existingTaxRegions = await taxRegionModuleService.listTaxRegions();
+  
+  if (existingTaxRegions.length > 0) {
+    logger.info(`Found ${existingTaxRegions.length} existing tax regions. Skipping tax region creation.`);
+  } else {
+    await createTaxRegionsWorkflow(container).run({
+      input: countries.map((country_code) => ({
+        country_code,
+        provider_id: "tp_system",
+      })),
+    });
+    logger.info("Finished seeding tax regions.");
+  }
 
   logger.info("Seeding stock location data...");
-  const { result: stockLocationResult } = await createStockLocationsWorkflow(
-    container
-  ).run({
-    input: {
-      locations: [
-        {
-          name: "European Warehouse",
-          address: {
-            city: "Copenhagen",
-            country_code: "DK",
-            address_1: "",
+  const stockLocationModuleService = container.resolve(Modules.STOCK_LOCATION);
+  const existingStockLocations = await stockLocationModuleService.listStockLocations({});
+  
+  let stockLocation;
+  if (existingStockLocations.length > 0) {
+    logger.info(`Found ${existingStockLocations.length} existing stock locations. Using first one.`);
+    stockLocation = existingStockLocations[0];
+  } else {
+    const { result: stockLocationResult } = await createStockLocationsWorkflow(
+      container
+    ).run({
+      input: {
+        locations: [
+          {
+            name: "European Warehouse",
+            address: {
+              city: "Copenhagen",
+              country_code: "DK",
+              address_1: "",
+            },
           },
-        },
-      ],
-    },
-  });
-  const stockLocation = stockLocationResult[0];
+        ],
+      },
+    });
+    stockLocation = stockLocationResult[0];
+  }
 
   await updateStoresWorkflow(container).run({
     input: {
@@ -355,49 +381,393 @@ export default async function seedDemoData({ container }: ExecArgs) {
   });
   logger.info("Finished seeding publishable API key data.");
 
-  logger.info("Seeding product data...");
+  logger.info("Seeding product categories...");
+
+  const parentCategories = [
+    {
+      name: "WOMEN",
+      handle: "women",
+      is_active: true,
+      is_internal: false,
+      description: "Women's fashion collection",
+    },
+    {
+      name: "PLUS+CURVE",
+      handle: "plus-curve",
+      is_active: true,
+      is_internal: false,
+      description: "Plus size and curve fashion",
+    },
+    {
+      name: "MEN",
+      handle: "men",
+      is_active: true,
+      is_internal: false,
+      description: "Men's fashion collection",
+    },
+    {
+      name: "SPORT",
+      handle: "sport",
+      is_active: true,
+      is_internal: false,
+      description: "Sportswear and athletic clothing",
+    },
+    {
+      name: "KIDS",
+      handle: "kids",
+      is_active: true,
+      is_internal: false,
+      description: "Kids fashion collection",
+    },
+    {
+      name: "BEAUTY",
+      handle: "beauty",
+      is_active: true,
+      is_internal: false,
+      description: "Beauty products and accessories",
+    },
+  ];
 
   const { result: categoryResult } = await createProductCategoriesWorkflow(
     container
   ).run({
     input: {
-      product_categories: [
-        {
-          name: "Shirts",
-          is_active: true,
-        },
-        {
-          name: "Sweatshirts",
-          is_active: true,
-        },
-        {
-          name: "Pants",
-          is_active: true,
-        },
-        {
-          name: "Merch",
-          is_active: true,
-        },
-        {
-          name: "Robe",
-          is_active: true,
-        },
-          { name: "Dresses", handle: "dresses",  is_active: true, },
-        { name: "Tops", handle: "tops", is_active: true, },
-        { name: "Bottoms", handle: "bottoms", is_active: true, },
-        { name: "Shoes", handle: "shoes", is_active: true, },
-      ],
+      product_categories: parentCategories,
     },
   });
+
+  logger.info(`Created ${categoryResult.length} parent categories.`);
+
+  const womenCategory = categoryResult.find((cat) => cat.handle === "women");
+  const menCategory = categoryResult.find((cat) => cat.handle === "men");
+  const sportCategory = categoryResult.find((cat) => cat.handle === "sport");
+  const kidsCategory = categoryResult.find((cat) => cat.handle === "kids");
+  const plusCurveCategory = categoryResult.find((cat) => cat.handle === "plus-curve");
+  const beautyCategory = categoryResult.find((cat) => cat.handle === "beauty");
+
+  const childCategories: {
+    name: string;
+    handle: string;
+    is_active: boolean;
+    is_internal: boolean;
+    parent_category_id: string;
+    description: string;
+  }[] = [];
+
+  if (womenCategory) {
+    childCategories.push(
+      {
+        name: "New In",
+        handle: "women-new-in",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Latest arrivals for women",
+      },
+      {
+        name: "Clothing",
+        handle: "women-clothing",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Women's clothing collection",
+      },
+      {
+        name: "NovaDEALS",
+        handle: "women-novadeals",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Special deals for women",
+      },
+      {
+        name: "Dresses",
+        handle: "women-dresses",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Women's dresses collection",
+      },
+      {
+        name: "Matching Sets",
+        handle: "women-matching-sets",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Coordinated matching sets",
+      },
+      {
+        name: "Tops",
+        handle: "women-tops",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Women's tops collection",
+      },
+      {
+        name: "Graphics",
+        handle: "women-graphics",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Graphic tees and printed clothing",
+      },
+      {
+        name: "Jumpsuits & Rompers",
+        handle: "women-jumpsuits-rompers",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Jumpsuits and rompers collection",
+      },
+      {
+        name: "Bottoms",
+        handle: "women-bottoms",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Women's bottoms: pants, skirts, shorts",
+      },
+      {
+        name: "Shoes",
+        handle: "women-shoes",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Women's footwear collection",
+      },
+      {
+        name: "Accessories",
+        handle: "women-accessories",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Women's accessories",
+      },
+      {
+        name: "Swimwear",
+        handle: "women-swimwear",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: womenCategory.id,
+        description: "Swimwear and beachwear",
+      }
+    );
+  }
+
+  if (menCategory) {
+    childCategories.push(
+      {
+        name: "New In",
+        handle: "men-new-in",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: menCategory.id,
+        description: "Latest arrivals for men",
+      },
+      {
+        name: "Clothing",
+        handle: "men-clothing",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: menCategory.id,
+        description: "Men's clothing collection",
+      },
+      {
+        name: "Tops",
+        handle: "men-tops",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: menCategory.id,
+        description: "Men's tops collection",
+      },
+      {
+        name: "Bottoms",
+        handle: "men-bottoms",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: menCategory.id,
+        description: "Men's bottoms: pants, jeans, shorts",
+      },
+      {
+        name: "Shoes",
+        handle: "men-shoes",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: menCategory.id,
+        description: "Men's footwear collection",
+      },
+      {
+        name: "Accessories",
+        handle: "men-accessories",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: menCategory.id,
+        description: "Men's accessories",
+      }
+    );
+  }
+
+  if (sportCategory) {
+    childCategories.push(
+      {
+        name: "Activewear",
+        handle: "sport-activewear",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: sportCategory.id,
+        description: "Athletic and workout clothing",
+      },
+      {
+        name: "Sports Tops",
+        handle: "sport-tops",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: sportCategory.id,
+        description: "Sports tops and t-shirts",
+      },
+      {
+        name: "Sports Bottoms",
+        handle: "sport-bottoms",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: sportCategory.id,
+        description: "Sports pants and leggings",
+      },
+      {
+        name: "Sports Shoes",
+        handle: "sport-shoes",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: sportCategory.id,
+        description: "Athletic footwear",
+      }
+    );
+  }
+
+  if (kidsCategory) {
+    childCategories.push(
+      {
+        name: "Girls",
+        handle: "kids-girls",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: kidsCategory.id,
+        description: "Girls clothing collection",
+      },
+      {
+        name: "Boys",
+        handle: "kids-boys",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: kidsCategory.id,
+        description: "Boys clothing collection",
+      },
+      {
+        name: "Baby",
+        handle: "kids-baby",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: kidsCategory.id,
+        description: "Baby clothing and essentials",
+      }
+    );
+  }
+
+  if (plusCurveCategory) {
+    childCategories.push(
+      {
+        name: "New In",
+        handle: "plus-curve-new-in",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: plusCurveCategory.id,
+        description: "Latest arrivals in plus sizes",
+      },
+      {
+        name: "Dresses",
+        handle: "plus-curve-dresses",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: plusCurveCategory.id,
+        description: "Plus size dresses",
+      },
+      {
+        name: "Tops",
+        handle: "plus-curve-tops",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: plusCurveCategory.id,
+        description: "Plus size tops",
+      },
+      {
+        name: "Bottoms",
+        handle: "plus-curve-bottoms",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: plusCurveCategory.id,
+        description: "Plus size bottoms",
+      }
+    );
+  }
+
+  if (beautyCategory) {
+    childCategories.push(
+      {
+        name: "Makeup",
+        handle: "beauty-makeup",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: beautyCategory.id,
+        description: "Makeup products",
+      },
+      {
+        name: "Skincare",
+        handle: "beauty-skincare",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: beautyCategory.id,
+        description: "Skincare products",
+      },
+      {
+        name: "Hair Care",
+        handle: "beauty-hair-care",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: beautyCategory.id,
+        description: "Hair care products",
+      },
+      {
+        name: "Fragrance",
+        handle: "beauty-fragrance",
+        is_active: true,
+        is_internal: false,
+        parent_category_id: beautyCategory.id,
+        description: "Perfumes and fragrances",
+      }
+    );
+  }
+
+  if (childCategories.length > 0) {
+    const { result: createdChildCategories } =
+      await createProductCategoriesWorkflow(container).run({
+        input: {
+          product_categories: childCategories,
+        },
+      });
+
+    logger.info(`Created ${createdChildCategories.length} child categories.`);
+  }
+
+  logger.info("Finished seeding categories.");
+  logger.info("Seeding product data...");
 
   await createProductsWorkflow(container).run({
     input: {
       products: [
         {
           title: "Medusa T-Shirt",
-          category_ids: [
-            categoryResult.find((cat) => cat.name === "Shirts")!.id,
-          ],
+          category_ids: womenCategory ? [womenCategory.id] : [],
           description:
             "Reimagine the feeling of a classic T-shirt. With our cotton T-shirts, everyday essentials no longer have to be ordinary.",
           handle: "t-shirt",
@@ -582,9 +952,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         },
         {
           title: "Medusa Sweatshirt",
-          category_ids: [
-            categoryResult.find((cat) => cat.name === "Sweatshirts")!.id,
-          ],
+          category_ids: womenCategory ? [womenCategory.id] : [],
           description:
             "Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.",
           handle: "sweatshirt",
@@ -683,9 +1051,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         },
         {
           title: "Medusa Sweatpants",
-          category_ids: [
-            categoryResult.find((cat) => cat.name === "Pants")!.id,
-          ],
+          category_ids: womenCategory ? [womenCategory.id] : [],
           description:
             "Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.",
           handle: "sweatpants",
@@ -784,9 +1150,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         },
         {
           title: "Medusa Shorts",
-          category_ids: [
-            categoryResult.find((cat) => cat.name === "Merch")!.id,
-          ],
+          category_ids: menCategory ? [menCategory.id] : [],
           description:
             "Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.",
           handle: "shorts",

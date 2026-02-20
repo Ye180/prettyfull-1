@@ -18,14 +18,14 @@ export default function ProductViews() {
 	const regions = useRegionStore((state) => state.region);
 	const { data: product, isLoading } = useGetProductsByHandleMedusa(
 		params.handle as string,
-		regions?.id as string
+		regions?.id as string,
 	);
 
 	// Récupérer les produits de la même collection
 	const collectionId = product?.collection?.id;
 	const { data: collectionProducts } = useGetCollectionProductsMedusa(
 		collectionId,
-		regions?.id
+		regions?.id,
 	);
 
 	const [activeImage, setActiveImage] = useState<number>(0);
@@ -40,7 +40,7 @@ export default function ProductViews() {
 		return product?.options?.find(
 			(opt: any) =>
 				opt.title.toLowerCase() === "color" ||
-				opt.title.toLowerCase() === "couleur"
+				opt.title.toLowerCase() === "couleur",
 		);
 	}, [product]);
 
@@ -48,15 +48,13 @@ export default function ProductViews() {
 		return product?.options?.find(
 			(opt: any) =>
 				opt.title.toLowerCase() === "size" ||
-				opt.title.toLowerCase() === "taille"
+				opt.title.toLowerCase() === "taille",
 		);
 	}, [product]);
 
 	// ===== MAPPER LES COULEURS DISPONIBLES =====
 	const colorVariants = useMemo(() => {
 		if (!product?.variants || product.variants.length === 0) return [];
-
-		// console.log("product.variants:", product?.variants);
 
 		const colorMap = new Map<
 			string,
@@ -89,15 +87,16 @@ export default function ProductViews() {
 
 		product.variants.forEach((variant: any) => {
 			const colorValue = variant.options?.find(
-				(opt: any) => opt.option_id === colorOption.id
+				(opt: any) => opt.option_id === colorOption.id,
 			)?.value;
 
 			if (colorValue && !colorMap.has(colorValue)) {
 				// Récupérer tous les variants de cette couleur
 				const colorVariantsList = (product.variants || []).filter((v: any) =>
 					v.options?.some(
-						(o: any) => o.option_id === colorOption.id && o.value === colorValue
-					)
+						(o: any) =>
+							o.option_id === colorOption.id && o.value === colorValue,
+					),
 				);
 
 				// Récupérer toutes les images des variants de cette couleur
@@ -138,7 +137,7 @@ export default function ProductViews() {
 		const sizesSet = new Set<string>();
 		currentColorVariants.forEach((variant: any) => {
 			const sizeValue = variant.options?.find(
-				(opt: any) => opt.option_id === sizeOption.id
+				(opt: any) => opt.option_id === sizeOption.id,
 			)?.value;
 			if (sizeValue) sizesSet.add(sizeValue);
 		});
@@ -153,7 +152,7 @@ export default function ProductViews() {
 		}
 
 		const currentColorVariant = colorVariants.find(
-			(cv) => cv.label === selectedColor
+			(cv) => cv.label === selectedColor,
 		);
 		return currentColorVariant?.images || [];
 	}, [selectedColor, colorVariants, product]);
@@ -175,7 +174,7 @@ export default function ProductViews() {
 			const colorOpt = p.options?.find(
 				(opt: any) =>
 					opt.title.toLowerCase() === "color" ||
-					opt.title.toLowerCase() === "couleur"
+					opt.title.toLowerCase() === "couleur",
 			);
 
 			// Récupérer la première valeur de couleur disponible
@@ -183,7 +182,7 @@ export default function ProductViews() {
 			if (colorOpt && p.variants && p.variants.length > 0) {
 				const firstVariant = p.variants[0];
 				const colorOptValue = firstVariant.options?.find(
-					(o: any) => o.option_id === colorOpt.id
+					(o: any) => o.option_id === colorOpt.id,
 				)?.value;
 				colorValue = colorOptValue || "";
 			}
@@ -217,7 +216,7 @@ export default function ProductViews() {
 			const prices = product.variants
 				.map(
 					(v: any) =>
-						v.calculated_price?.calculated_amount || v.calculated_price || 0
+						v.calculated_price?.calculated_amount || v.calculated_price || 0,
 				)
 				.filter((p: number) => p > 0);
 			return prices.length > 0 ? Math.min(...prices) : 0;
@@ -233,8 +232,6 @@ export default function ProductViews() {
 		setDisabled(true);
 		setActiveImage(0);
 	}, [product?.id]);
-
-	// console.log(colorVariants);
 
 	// ===== INITIALISATION AU CHARGEMENT =====
 	useEffect(() => {
@@ -253,7 +250,7 @@ export default function ProductViews() {
 			const firstColorVariants = colorVariants[0].variants;
 			if (sizeOption && firstColorVariants && firstColorVariants.length > 0) {
 				const firstSize = firstColorVariants[0]?.options?.find(
-					(opt: any) => opt.option_id === sizeOption
+					(opt: any) => opt.option_id === sizeOption,
 				)?.value;
 				if (firstSize) {
 					setSelectedSize(firstSize);
@@ -269,7 +266,6 @@ export default function ProductViews() {
 
 	// ===== GESTION DES CHANGEMENTS =====
 	const handleColorChange = useCallback((newColor: string) => {
-		console.log("Changement de couleur vers:", newColor);
 		setSelectedColor(newColor);
 		setSelectedSize("");
 		setDisabled(true);
@@ -277,7 +273,6 @@ export default function ProductViews() {
 	}, []);
 
 	const handleSizeChange = useCallback((size: string) => {
-		console.log("Changement de taille vers:", size);
 		setSelectedSize(size);
 		setDisabled(false);
 	}, []);
@@ -295,14 +290,14 @@ export default function ProductViews() {
 			// Chercher dans tous les variants du produit par taille
 			matchingVariant = product?.variants?.find((variant: any) => {
 				const variantSize = variant.options?.find(
-					(opt: any) => opt.option_id === sizeOption.id
+					(opt: any) => opt.option_id === sizeOption.id,
 				)?.value;
 				return variantSize === selectedSize;
 			});
 		} else {
 			// Si pas d'option taille, chercher par titre de variant
 			matchingVariant = product?.variants?.find(
-				(variant: any) => variant.title === selectedSize
+				(variant: any) => variant.title === selectedSize,
 			);
 		}
 
@@ -317,16 +312,15 @@ export default function ProductViews() {
 				},
 				{
 					onSuccess: () => {
-						console.log("Produit ajouté !");
 						alert("Produit ajouté au panier !");
 					},
 					onError: (error: any) => {
 						console.error("Erreur lors de l'ajout:", error);
 						alert(
-							`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`
+							`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`,
 						);
 					},
-				}
+				},
 			);
 
 			// TODO: Appeler votre mutation d'ajout au panier ici

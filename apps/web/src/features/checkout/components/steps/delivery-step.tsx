@@ -19,7 +19,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 	const { selectedShippingOptionId, setSelectedShippingOptionId } =
 		useCheckoutStore();
 	const [selectedOptionId, setSelectedOptionId] = useState<string | null>(
-		selectedShippingOptionId
+		selectedShippingOptionId,
 	);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -55,7 +55,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 
 			if (!currentCart.shipping_address) {
 				throw new Error(
-					"Aucune adresse de livraison trouvée. Veuillez compléter l'étape d'adresse."
+					"Aucune adresse de livraison trouvée. Veuillez compléter l'étape d'adresse.",
 				);
 			}
 
@@ -79,7 +79,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 				cartWithShipping.shipping_methods.length === 0
 			) {
 				throw new Error(
-					"La méthode de livraison n'a pas pu être ajoutée. Veuillez réessayer."
+					"La méthode de livraison n'a pas pu être ajoutée. Veuillez réessayer.",
 				);
 			}
 
@@ -91,7 +91,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 			console.error("Failed to set shipping method:", error);
 			setError(
 				error?.message ||
-					"Impossible de définir la méthode de livraison. Veuillez réessayer."
+					"Impossible de définir la méthode de livraison. Veuillez réessayer.",
 			);
 		} finally {
 			setIsLoading(false);
@@ -99,7 +99,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 	};
 
 	const selectedShipping = shippingOptions?.find(
-		(o: any) => o.id === selectedOptionId
+		(o: any) => o.id === selectedOptionId,
 	);
 
 	return (
@@ -112,7 +112,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 						{
 							"opacity-50 pointer-events-none select-none":
 								!isOpen && !canAccess,
-						}
+						},
 					)}
 				>
 					Delivery
@@ -177,7 +177,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 										"flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-all",
 										selectedOptionId === option.id
 											? "border-black bg-gray-50"
-											: "border-gray-200 hover:border-gray-400"
+											: "border-gray-200 hover:border-gray-400",
 									)}
 								>
 									<div className="flex gap-4 items-center">

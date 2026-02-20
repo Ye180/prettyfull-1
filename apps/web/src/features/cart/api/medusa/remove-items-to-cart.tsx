@@ -6,7 +6,6 @@ const removeItem = (itemId: string) => {
 	if (!cartId) return;
 	sdk.store.cart.deleteLineItem(cartId, itemId).then(({ parent: cart }) => {
 		// Utiliser le panier mis à jour
-		console.log(cart);
 	});
 };
 

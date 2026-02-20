@@ -8,7 +8,7 @@ const Checkout = () => {
 		.retrieve()
 		.then(({ customer }) => {
 			// ICI => l'utilisateur est connecté
-			console.log("Customer connecté:", customer);
+			throw new Error("Customer connecté");
 		})
 		.catch(() => {
 			// ICI => l'utilisateur n'est PAS connecté

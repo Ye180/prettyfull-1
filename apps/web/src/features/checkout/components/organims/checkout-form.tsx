@@ -13,7 +13,6 @@ const CheckoutForm = () => {
 
 	const handleSubmit = () => {
 		if (!isFormValid || !termsAccepted) return;
-		console.log("✅ Proceeding to payment...");
 	};
 
 	const isDisabled = !isFormValid || !termsAccepted;

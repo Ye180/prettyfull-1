@@ -10,7 +10,7 @@ const PictureBar = ({
 	imageMobile: string | StaticImport;
 }) => {
 	return (
-		<Container maxWidth="100vw" className="h-[40vh] px-4 lg:h-[80vh] lg:px-40 ">
+		<Container maxWidth="100vw" className="h-[60vh] px-4 lg:h-[80vh] lg:px-40 ">
 			<div className="overflow-hidden relative h-full bg-center bg-no-repeat bg-cover max-lg:hidden lg:flex">
 				<Image
 					src={imageDesktop}

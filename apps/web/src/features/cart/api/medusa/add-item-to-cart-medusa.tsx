@@ -28,7 +28,7 @@ export const useAddItemToCartMedusa = (): UseMutationResult<
 				})
 				.then(({ cart }) => {
 					// Utiliser le panier mis à jour
-					console.log(cart);
+					alert(cart);
 				});
 		},
 

@@ -8,10 +8,20 @@ import {
 } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+import { useGetCategoryByHandler } from "../api/medusa/get-chidren-metadata";
 
 const ModeCollection = ({ fourth }: { fourth?: any }) => {
 	const t = useTranslations("HomePage.collection");
+
+	const params = useParams();
+
+	const results = useGetCategoryByHandler(
+		params.id as string,
+		"fourth_section",
+	);
+	const category = results[0]?.data;
 
 	const {
 		data: productSameCollection,
@@ -37,7 +47,10 @@ const ModeCollection = ({ fourth }: { fourth?: any }) => {
 			</div>
 			<div className="relative flex items-end w-full md:w-1/2 h-160 md:h-[90vh]  overflow-hidden  bg-cover  bg-no-repeat">
 				<Image
-					src="/home/promo-phone.jpg"
+					src={
+						category?.[0]?.product_category_image?.[0]?.url ||
+						"/home/promo-phone.jpg"
+					}
 					alt="phone image"
 					fill
 					objectFit="cover"
@@ -70,7 +83,7 @@ const ModeCollection = ({ fourth }: { fourth?: any }) => {
 					<>
 						{productSameCollection?.map((group) => {
 							const normalized = normalizeCollectionProducts(
-								group as RawCollectionProduct
+								group as RawCollectionProduct,
 							);
 							return (
 								<CardProduct

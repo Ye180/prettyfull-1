@@ -94,14 +94,13 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
 			},
 			{
 				onSuccess: () => {
-					console.log("Produit ajouté au panier via API !");
 					alert("Produit ajouté au panier !");
 				},
 				onError: (error) => {
 					console.error("Erreur lors de l'ajout au panier:", error);
 					alert(`Erreur: ${error.message || "Impossible d'ajouter au panier"}`);
 				},
-			}
+			},
 		);
 	};
 
@@ -117,14 +116,10 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
 		}
 
 		addToWishlistMutation.mutate(product._id, {
-			onSuccess: () => {
-				console.log("Produit ajouté à la wishlist !");
-				alert("Produit ajouté à la wishlist !");
-			},
+			onSuccess: () => {},
 			onError: (error) => {
-				console.error("Erreur lors de l'ajout à la wishlist:", error);
 				alert(
-					`Erreur: ${error.message || "Impossible d'ajouter à la wishlist"}`
+					`Erreur: ${error.message || "Impossible d'ajouter à la wishlist"}`,
 				);
 			},
 		});

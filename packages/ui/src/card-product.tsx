@@ -105,11 +105,12 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 	const colorOption = medusaOptions?.find(
 		(opt: any) =>
 			opt.title.toLowerCase() === "color" ||
-			opt.title.toLowerCase() === "couleur"
+			opt.title.toLowerCase() === "couleur",
 	);
 	const sizeOption = medusaOptions?.find(
 		(opt: any) =>
-			opt.title.toLowerCase() === "size" || opt.title.toLowerCase() === "taille"
+			opt.title.toLowerCase() === "size" ||
+			opt.title.toLowerCase() === "taille",
 	);
 
 	// ===== MAPPER LES COULEURS DISPONIBLES =====
@@ -140,15 +141,16 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 
 		medusaVariants.forEach((variant: any) => {
 			const colorValue = variant.options?.find(
-				(opt: any) => opt.option_id === colorOption.id
+				(opt: any) => opt.option_id === colorOption.id,
 			)?.value;
 
 			if (colorValue && !colorMap.has(colorValue)) {
 				// Récupérer tous les variants de cette couleur
 				const colorVariantsList = medusaVariants.filter((v: any) =>
 					v.options?.some(
-						(o: any) => o.option_id === colorOption.id && o.value === colorValue
-					)
+						(o: any) =>
+							o.option_id === colorOption.id && o.value === colorValue,
+					),
 				);
 
 				// Prendre la photo du premier variant de cette couleur
@@ -215,7 +217,7 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 			? {
 					reduced_price: { amount: minCalculatedPrice, currency },
 					pourcentage: Math.round(
-						((minOriginalPrice - minCalculatedPrice) / minOriginalPrice) * 100
+						((minOriginalPrice - minCalculatedPrice) / minOriginalPrice) * 100,
 					),
 				}
 			: null;
@@ -235,7 +237,7 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 	const router = useRouter();
 	const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
 	const [drawerStates, setDrawerStates] = useState<DrawerStatesProps>(
-		INITIAL_DRAWER_STATES
+		INITIAL_DRAWER_STATES,
 	);
 
 	// --- LOGIQUE D'AJOUT AU PANIER ---
@@ -248,7 +250,7 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 		(key: keyof DrawerStatesProps, value: SetStateAction<boolean>) => {
 			setDrawerStates((prev) => ({ ...prev, [key]: value }));
 		},
-		[]
+		[],
 	);
 
 	// ===== TAILLES DISPONIBLES POUR LA COULEUR ACTIVE =====
@@ -269,7 +271,7 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 
 		currentColorVariants.forEach((variant: any) => {
 			const sizeValue = variant.options?.find(
-				(opt: any) => opt.option_id === sizeOption.id
+				(opt: any) => opt.option_id === sizeOption.id,
 			)?.value;
 			if (sizeValue) sizesSet.add(sizeValue);
 		});
@@ -289,7 +291,7 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 			e.stopPropagation();
 			updateDrawerState("showSizes", !drawerStates.showSizes);
 		},
-		[drawerStates.showSizes, updateDrawerState]
+		[drawerStates.showSizes, updateDrawerState],
 	);
 
 	// --- FONCTION handleSizeSelect (AJOUT AU PANIER AVEC MEDUSA) ---
@@ -309,14 +311,14 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 			// Cas normal : chercher par option de taille
 			matchingVariant = currentColor.variants.find((variant: any) => {
 				const variantSize = variant.options?.find(
-					(opt: any) => opt.option_id === sizeOption.id
+					(opt: any) => opt.option_id === sizeOption.id,
 				)?.value;
 				return variantSize === selectedSizeValue;
 			});
 		} else {
 			// Cas sans option taille : chercher par title
 			matchingVariant = currentColor.variants.find(
-				(variant: any) => variant.title === selectedSizeValue
+				(variant: any) => variant.title === selectedSizeValue,
 			);
 		}
 
@@ -324,12 +326,6 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 			alert("Variant non trouvé pour cette taille et couleur");
 			return;
 		}
-
-		console.log("Ajout au panier Medusa:", {
-			productId,
-			variantId: matchingVariant.id,
-			quantity: 1,
-		});
 
 		const cartId = localStorage.getItem("cart_id");
 
@@ -343,16 +339,15 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 			},
 			{
 				onSuccess: () => {
-					console.log("Produit ajouté !");
 					alert("Produit ajouté au panier !");
 				},
 				onError: (error: any) => {
 					console.error("Erreur lors de l'ajout:", error);
 					alert(
-						`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`
+						`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`,
 					);
 				},
-			}
+			},
 		);
 
 		updateDrawerState("showSizes", false);
@@ -366,10 +361,6 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 		e: React.MouseEvent<HTMLButtonElement>;
 		index: number;
 	}) => {
-		console.log(
-			`Changement de couleur vers "${colorVariants[index]?.label}" (index ${index})`
-		);
-		console.log("Thumbnail de cette couleur:", colorVariants[index]?.thumbnail);
 		setActiveColorIndex(index);
 		setSelectedSize(""); // Reset size selection
 		e.stopPropagation();
@@ -439,7 +430,7 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 						"
 						className={cn(
 							"object-contain w-full h-full  transition-opacity duration-300 ",
-							i === activeColorIndex ? "opacity-100 " : "hidden opacity-0"
+							i === activeColorIndex ? "opacity-100 " : "hidden opacity-0",
 						)}
 						priority={i === 0}
 						placeholder="blur"
@@ -552,7 +543,7 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 							"px-4 py-2 text-[1.3rem] border bg-white rounded-full transition-all duration-200 hover:shadow-sm capitalize font-medium",
 							i === activeColorIndex
 								? "border-black shadow-md bg-black text-white"
-								: "border-gray-300 text-gray-700 hover:border-gray-400"
+								: "border-gray-300 text-gray-700 hover:border-gray-400",
 						)}
 						onClick={(e) => handleColorClick({ e, index: i })}
 						disabled={drawerStates.showSizes}

@@ -20,8 +20,6 @@ const HomeLayout = ({
 		isLoading: loadingParentsCategoryMedusa,
 	} = useGetParentsCategoryMedusa();
 
-	console.log(parentsCategoryMedusa);
-
 	useEffect(() => {
 		if (
 			!loadingParentsCategoryMedusa &&

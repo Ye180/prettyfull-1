@@ -32,7 +32,6 @@ const CartSummary = ({
 			.then(({ customer }) => {
 				// ICI => l'utilisateur est connecté
 				router.push("/checkout");
-				console.log("Customer connecté:", customer);
 			})
 			.catch(() => {
 				router.push("/login?callbackUrl=/checkout");

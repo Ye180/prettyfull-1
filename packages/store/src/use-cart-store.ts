@@ -148,7 +148,6 @@ export const useCartStore = create<CartState>((set, get) => ({
 
       if (!response.ok) {
         if (response.status === 404) {
-          console.log("Cart not found on backend, keeping local cart");
           return;
         }
         throw new Error(`HTTP error! status: ${response.status}`);

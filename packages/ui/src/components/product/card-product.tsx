@@ -107,9 +107,8 @@ export const CardProduct: React.FC<CardProductProps> = ({
 	const handleSelectSize = useCallback(
 		(size: string) => {
 			setSelectedSize(size);
-			console.log("Selected size:", size);
 		},
-		[selectedSize]
+		[selectedSize],
 	);
 
 	const handleToggleSizeSelector = useCallback((e: React.MouseEvent) => {
@@ -132,7 +131,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 			// if (!onAddToCart || !activeColor) return;
 
 			const matchingVariant = activeColor?.variants.find(
-				(variant) => variant.size === selectedSize
+				(variant) => variant.size === selectedSize,
 			);
 
 			const cartId = localStorage.getItem("cart_id");
@@ -147,16 +146,15 @@ export const CardProduct: React.FC<CardProductProps> = ({
 				},
 				{
 					onSuccess: () => {
-						console.log("Produit ajouté !");
 						alert("Produit ajouté au panier !");
 					},
 					onError: (error: any) => {
 						console.error("Erreur lors de l'ajout:", error);
 						alert(
-							`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`
+							`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`,
 						);
 					},
-				}
+				},
 			);
 
 			if (!matchingVariant) {
@@ -166,10 +164,9 @@ export const CardProduct: React.FC<CardProductProps> = ({
 
 			//   onAddToCart(matchingVariant.id, 1);
 
-			console.log(matchingVariant.id);
 			setShowSizeSelector(false);
 		},
-		[selectedSize, onAddToCart, activeColor]
+		[selectedSize, onAddToCart, activeColor],
 	);
 
 	const handleCloseSizeSelector = useCallback(
@@ -177,7 +174,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 			e.stopPropagation();
 			setShowSizeSelector(false);
 		},
-		[selectedSize]
+		[selectedSize],
 	);
 
 	// --- Rendu conditionnel si pas de couleur ---
@@ -190,8 +187,6 @@ export const CardProduct: React.FC<CardProductProps> = ({
 			</article>
 		);
 	}
-
-	console.log(product);
 
 	return (
 		<article className={cn("pb-4 space-y-3 w-full group", className)}>
@@ -229,7 +224,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 						"
 						className={cn(
 							"object-cover transition-opacity duration-300",
-							isImageLoading ? "opacity-0" : "opacity-100"
+							isImageLoading ? "opacity-0" : "opacity-100",
 						)}
 						onLoad={() => setIsImageLoading(false)}
 						priority
@@ -318,7 +313,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 					<h3 className="text-2xl!  max-md:text-[2rem]! md:text-[2.2rem]!whitespace-nowrap">
 						{formatCurrency_FR(
 							activeColor?.price,
-							regions?.currency_code === "xof" ? "FCFA" : "$"
+							regions?.currency_code === "xof" ? "FCFA" : "$",
 						)}
 					</h3>
 				</div>

@@ -139,7 +139,7 @@ export function CurrencySelector() {
 										"flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-200 cursor-pointer",
 										selectedRegion?.id === region.id
 											? "border-black bg-black text-white"
-											: "border-gray-200 bg-white hover:border-gray-400 hover:bg-gray-50"
+											: "border-gray-200 bg-white hover:border-gray-400 hover:bg-gray-50",
 									)}
 								>
 									<div className="flex gap-3 items-center">
@@ -148,7 +148,7 @@ export function CurrencySelector() {
 												"flex items-center justify-center size-12 rounded-full p-3 text-[1rem] font-bold",
 												selectedRegion?.id === region.id
 													? "bg-white text-black"
-													: "bg-gray-100 text-gray-700"
+													: "bg-gray-100 text-gray-700",
 											)}
 										>
 											{region.currency_code?.toUpperCase() === "USD"
@@ -164,7 +164,7 @@ export function CurrencySelector() {
 													"text-[1rem]",
 													selectedRegion === region.currency_code
 														? "text-gray-300"
-														: "text-gray-500"
+														: "text-gray-500",
 												)}
 											>
 												{region.name}

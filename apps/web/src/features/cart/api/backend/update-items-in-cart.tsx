@@ -25,7 +25,7 @@ export const useUpdateCartItem = () => {
 			// ✅ CORRECT : on envoie les variantes
 			const { data } = await client.patch(
 				`/carts/${userId}/items/${productId}`,
-				{ quantity, selectedVariants }
+				{ quantity, selectedVariants },
 			);
 
 			return data;
@@ -34,12 +34,10 @@ export const useUpdateCartItem = () => {
 		onSuccess: (data) => {
 			if (data?.items) setCart(data.items);
 			queryClient.invalidateQueries({ queryKey: [CART_QUERY_KEY, userId] });
-			console.log("Quantité mise à jour ✅");
 		},
 
 		onError: (error: any) => {
 			console.error("Erreur lors de la mise à jour de l'article:", error);
-			console.log("Erreur lors de la mise à jour de la quantité ❌");
 		},
 	});
 };

@@ -18,20 +18,14 @@ const initPaymentSession = async ({
 		fields: "+payment_collection,+shipping_methods",
 	});
 
-	console.log("Cart before payment init:", cart);
-
 	// If no payment collection exists, try to create one by updating the cart
 	// In Medusa v2, payment collection should be created automatically when shipping method is added
 	// But sometimes we need to trigger it manually
 	if (!cart.payment_collection?.id) {
-		console.log(
-			"No payment collection found, attempting to trigger creation..."
-		);
-
 		// Verify shipping method exists
 		if (!cart.shipping_methods || cart.shipping_methods.length === 0) {
 			throw new Error(
-				"Aucune méthode de livraison trouvée. Veuillez retourner à l'étape de livraison et sélectionner une méthode."
+				"Aucune méthode de livraison trouvée. Veuillez retourner à l'étape de livraison et sélectionner une méthode.",
 			);
 		}
 
@@ -51,11 +45,9 @@ const initPaymentSession = async ({
 		});
 		cart = result.cart;
 
-		console.log("Cart after update:", cart);
-
 		if (!cart.payment_collection?.id) {
 			throw new Error(
-				"La collection de paiement n'a pas pu être créée automatiquement. Veuillez contacter le support."
+				"La collection de paiement n'a pas pu être créée automatiquement. Veuillez contacter le support.",
 			);
 		}
 	}
@@ -66,7 +58,7 @@ const initPaymentSession = async ({
 		cart as any,
 		{
 			provider_id: providerId,
-		}
+		},
 	);
 
 	return payment_collection;

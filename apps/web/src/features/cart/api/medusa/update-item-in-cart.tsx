@@ -6,9 +6,7 @@ const UpdateQuantity = (itemId: string, quantity: number) => {
 	if (!cartId) return;
 	sdk.store.cart
 		.updateLineItem(cartId, itemId, { quantity })
-		.then(({ cart }) => {
-			console.log(cart);
-		});
+		.then(({ cart }) => {});
 };
 
 export const useUpdateItemInCart = ({

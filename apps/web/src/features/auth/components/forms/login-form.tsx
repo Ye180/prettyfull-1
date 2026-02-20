@@ -16,14 +16,8 @@ import { loginSchema, type LoginFormData } from "../../schemas/login.schema";
 
 export function LoginForm() {
 	const router = useRouter();
-	// const [callbackUrl] = useQueryState(
-	// 	"callbackUrl",
-	// 	parseAsString.withDefault("")
-	// );
 
 	const [callbackUrl] = useQueryState("callbackUrl");
-
-	console.log("Callback URL:", callbackUrl);
 
 	// // Redirige si déjà authentifié (ce hook existe déjà)
 	// useAuthRedirect("/account");
@@ -40,7 +34,6 @@ export function LoginForm() {
 	const { currentCartId } = useCartStore(); // 5. Obtenir l'ID du panier invité
 
 	const onSubmit = async (data: LoginFormData) => {
-		console.log("Login data submitted:", data);
 		// another identity (for example, admin user)
 		// exists with the same email. So, use the auth
 		// flow to login and create a customer.
@@ -65,7 +58,7 @@ export function LoginForm() {
 
 		if (typeof loginResponse !== "string") {
 			alert(
-				"Authentication requires more actions, which isn't supported by this flow."
+				"Authentication requires more actions, which isn't supported by this flow.",
 			);
 			return;
 		}
@@ -99,7 +92,7 @@ export function LoginForm() {
 					</Flex>
 					<Flex
 						settings={{ align: "center" }}
-						className="w-full my-12 font-medium text-center"
+						className="my-12 w-full font-medium text-center"
 					>
 						<div className="w-1/2 border-t border-black/10" />
 						or

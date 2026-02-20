@@ -35,8 +35,6 @@ export function RegisterForm() {
 	const [loading, setLoading] = useState(false);
 
 	const onSubmit = async (data: RegisterFormData) => {
-		console.log("Registration data submitted:", data);
-
 		if (!data.email || !data.password) {
 			return;
 		}
@@ -68,8 +66,6 @@ export function RegisterForm() {
 			});
 
 			setLoading(false);
-
-			console.log(customer);
 			// TODO redirect to login page
 		} catch (error) {
 			console.error(error);

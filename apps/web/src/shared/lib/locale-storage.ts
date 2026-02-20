@@ -4,8 +4,8 @@ export function setItem(key: string, value: unknown) {
       if (typeof window === "undefined") return; // côté serveur, on ne fait rien
       try { 
             window.localStorage.setItem(key,JSON.stringify(value) )
-      } catch(error) {
-            console.log(error)
+      } catch (error) {
+              throw new Error("Failed to clear local storage = " + error)
       }
 }
 
@@ -14,8 +14,8 @@ export function removeItem(key: string,) {
       try { 
             const item = localStorage.removeItem(key)
             // return item ? JSON.parse(item) : undefined
-      } catch(error) {
-            console.log(error)
+      } catch (error) {
+              throw new Error("Failed to clear local storage = " + error)
       }
 }
 
@@ -24,8 +24,8 @@ export function getItem(key: string,) {
       try { 
             const item = localStorage.getItem(key)
             return item ? JSON.parse(item) : undefined
-      } catch(error) {
-            console.log(error)
+      } catch (error) {
+              throw new Error("Failed to get item from local storage = " + error)
       }
 }
 
@@ -34,6 +34,6 @@ export function clearLocal() {
       try { 
             localStorage.clear()
       } catch(error) {
-            console.log(error)
+            throw new Error("Failed to clear local storage = " + error)
       }
  }
