@@ -1,8 +1,9 @@
 "use client";
 
+import { sdk } from "@/lib/api/sdk";
 import { cn } from "@prettyfull/utils";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AddressIcon } from "../../../../../../packages/ui/src/icons/adresse.icon";
 import { DashboardIcon } from "../../../../../../packages/ui/src/icons/dashboard.icon";
 import { Heart } from "../../../../../../packages/ui/src/icons/heart.icon";
@@ -34,6 +35,17 @@ const menuItems = [
 
 export const AccountMenu = () => {
 	const pathname = usePathname();
+	const router = useRouter();
+
+	const handleLogout = async () => {
+		try {
+			await sdk.auth.logout();
+		} catch (e) {
+			// ignore
+		}
+		localStorage.removeItem("cart_id");
+		router.push("/login");
+	};
 
 	return (
 		<nav className="flex flex-col h-full bg-white rounded-md border border-gray-100 transition-all duration-200 shadow-2xs">
@@ -59,7 +71,7 @@ export const AccountMenu = () => {
 								"flex overflow-hidden relative items-center px-5 py-4 text-base font-medium rounded-xl transition-all duration-200 group",
 								isActive
 									? "text-gray-900 bg-gray-50/80"
-									: "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+									: "text-gray-500 hover:text-gray-900 hover:bg-gray-50",
 							)}
 						>
 							{isActive && (
@@ -71,7 +83,7 @@ export const AccountMenu = () => {
 									"mr-4 w-6 h-6 transition-colors duration-200",
 									isActive
 										? "text-gray-900"
-										: "text-gray-400 group-hover:text-gray-900"
+										: "text-gray-400 group-hover:text-gray-900",
 								)}
 							/>
 							{item.label}
@@ -81,7 +93,10 @@ export const AccountMenu = () => {
 			</div>
 
 			<div className="p-5 mt-auto border-t border-gray-100">
-				<button className="flex items-center px-5 py-4 w-full text-base font-medium text-gray-500 rounded-xl transition-all duration-200 hover:text-red-600 hover:bg-red-50 group">
+				<button
+					onClick={handleLogout}
+					className="flex items-center px-5 py-4 w-full text-base font-medium text-gray-500 rounded-xl transition-all duration-200 hover:text-red-600 hover:bg-red-50 group"
+				>
 					<LogoutIcon className="mr-4 w-6 h-6 text-gray-400 transition-colors group-hover:text-red-500" />
 					Se déconnecter
 				</button>

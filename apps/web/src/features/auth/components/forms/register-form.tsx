@@ -97,7 +97,7 @@ export function RegisterForm() {
 					</Flex>
 					<Flex
 						settings={{ align: "center" }}
-						className="w-full my-12 font-medium text-center"
+						className="my-12 w-full font-medium text-center"
 					>
 						<div className="w-1/2 border-t border-black/10" />
 						or

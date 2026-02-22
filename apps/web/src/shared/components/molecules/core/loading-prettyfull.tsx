@@ -1,9 +1,15 @@
+import { cn } from "@prettyfull/utils";
 import Image from "next/image";
 
 const FALLBACK_IMAGE = "/assets/logo.png";
 
-export const LoadingPrettyfull = () => (
-	<div className="flex justify-center items-center w-full h-full bg-gray-200">
+export const LoadingPrettyfull = ({ className }: { className?: string }) => (
+	<div
+		className={cn(
+			"flex justify-center items-center w-full h-full bg-gray-200",
+			className,
+		)}
+	>
 		<Image
 			src={FALLBACK_IMAGE}
 			alt="Hero background image"

@@ -29,7 +29,7 @@ interface GridCardProductProps
 	style_everst?: string;
 	grid_card?: string;
 	action_grid?: boolean;
-	children: ReactElement<any, any>;
+	children: ReactElement<any, any> | ReactElement<any, any>[];
 }
 
 export const GridCardProduct = ({
@@ -52,7 +52,7 @@ export const GridCardProduct = ({
 				},
 			},
 			active: 4,
-		}
+		},
 	);
 
 	const responsive =
@@ -66,7 +66,7 @@ export const GridCardProduct = ({
 			});
 			console.log(style);
 		},
-		[styleGrid]
+		[styleGrid],
 	);
 
 	const handleStyles = useCallback(() => {
@@ -85,7 +85,7 @@ export const GridCardProduct = ({
 
 	const gridClasses = useMemo(
 		() => cn("", handleStyles(), responsive, grid_card),
-		[responsive, grid_card, handleStyles]
+		[responsive, grid_card, handleStyles],
 	);
 
 	return (
@@ -103,7 +103,7 @@ export const GridCardProduct = ({
 								className={cn(
 									styleGrid.active === styles.number
 										? "[&>span]:bg-black h-fit"
-										: ""
+										: "",
 								)}
 								number={styles.number}
 								onclick={() => handleChangeStyle(styles.style, styles.number)}

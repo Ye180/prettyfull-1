@@ -44,6 +44,8 @@ const CollectionViews = () => {
 	// Fusionner les deux pour l'affichage
 	const allProducts = [...normalizedCollections, ...normalizedStandalone];
 
+	console.log(normalizedCollections, data);
+
 	return (
 		<div className="pb-32 space-y-16">
 			<div className="relative h-[20vh] md:h-[35vh] px-4 bg-white">

@@ -10,7 +10,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
 import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
 import CartDropdown from "./carte-dropdown";
@@ -30,13 +30,31 @@ const NavBarHeaders = ({
 	const [division] = useQueryState("division");
 	const t = useTranslations("HomePage.header");
 
-	// Initialize cart ID from localStorage on client side only
-	useEffect(() => {
+	const syncCartId = useCallback(() => {
 		const storedCartId = localStorage.getItem("cart_id");
-		if (storedCartId) {
-			setCartId(storedCartId);
-		}
+		setCartId(storedCartId);
 	}, []);
+
+	// Initialize cart ID from localStorage and listen for changes
+	useEffect(() => {
+		syncCartId();
+
+		// Listen for cross-tab localStorage changes
+		const handleStorage = (e: StorageEvent) => {
+			if (e.key === "cart_id") syncCartId();
+		};
+
+		// Listen for same-tab cart updates (dispatched from add-to-cart)
+		const handleCartUpdate = () => syncCartId();
+
+		window.addEventListener("storage", handleStorage);
+		window.addEventListener("cart_id_updated", handleCartUpdate);
+
+		return () => {
+			window.removeEventListener("storage", handleStorage);
+			window.removeEventListener("cart_id_updated", handleCartUpdate);
+		};
+	}, [syncCartId]);
 
 	const { data: itemsCart } = useGetItemsCart(cartId || "");
 
@@ -67,7 +85,7 @@ const NavBarHeaders = ({
 										className={cn(
 											"font-black tracking-wide uppercase text-[#262626] hover:text-black text-sm transition-all",
 											isActive &&
-												"underline decoration-[3px] underline-offset-[6px]"
+												"underline decoration-[3px] underline-offset-[6px]",
 										)}
 									>
 										{items.name}
@@ -99,7 +117,7 @@ const NavBarHeaders = ({
 									href={item.href}
 									aria-label="Liste de souhaits"
 									className={cn(
-										"relative p-3 text-black transition-colors rounded-full hover:bg-gray-100  hover:[&>span]:flex"
+										"relative p-3 text-black transition-colors rounded-full hover:bg-gray-100  hover:[&>span]:flex",
 									)}
 								>
 									{item.infos?.count && (

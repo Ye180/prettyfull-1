@@ -1,4 +1,5 @@
 import { useGetProductsSameCollection } from "@/shared/api/medusa/get-products-same-collection";
+import { LoadingPrettyfull } from "@/shared/components/molecules/core/loading-prettyfull";
 import {
 	Button,
 	CardProduct,
@@ -9,90 +10,157 @@ import {
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import { useMemo } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 import { useGetCategoryByHandler } from "../api/medusa/get-chidren-metadata";
 
-const ModeCollection = ({ fourth }: { fourth?: any }) => {
-	const t = useTranslations("HomePage.collection");
+interface ModeCollectionProps {
+	fourth?: {
+		title?: string;
+		description?: string;
+	};
+}
 
+const IMAGE_CONTAINER_CLASS =
+	"relative flex items-end w-full md:w-1/2 h-160 md:h-[90vh] overflow-hidden";
+
+const SectionHeader = ({
+	title,
+	description,
+	ctaLabel,
+	variant,
+}: {
+	title: string;
+	description: string;
+	ctaLabel: string;
+	variant: "mobile" | "desktop";
+}) => {
+	const isMobile = variant === "mobile";
+
+	return (
+		<div
+			className={
+				isMobile
+					? "space-y-4 md:hidden text-center! w-full"
+					: "space-y-0 max-md:hidden"
+			}
+		>
+			<h2
+				className={
+					isMobile
+						? "text-[3.5rem]! md:text-[4rem]! font-semibold text-black"
+						: "text-[4rem]! font-semibold text-black tracking-wide"
+				}
+			>
+				{title}
+			</h2>
+			<p
+				className={
+					isMobile
+						? "text-[1.5rem] font-light text-black/70"
+						: "text-[1.8rem] font-normal text-black/70"
+				}
+			>
+				{description}
+			</p>
+			<Button
+				variant="default"
+				className={`px-12 py-4 size-fit ${isMobile ? "mt-4" : "mt-6"}`}
+			>
+				{ctaLabel}
+			</Button>
+		</div>
+	);
+};
+
+const CategoryImage = ({
+	imageUrl,
+	dealLabel,
+}: {
+	imageUrl: string;
+	dealLabel: string;
+}) => (
+	<div className={IMAGE_CONTAINER_CLASS}>
+		<Image
+			src={imageUrl}
+			alt="Collection image"
+			fill
+			sizes="(max-width: 768px) 100vw, 50vw"
+			className="object-cover h-full"
+		/>
+		<div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-t from-black/40 to-black/0" />
+		<div className="flex static z-20 justify-between items-center p-8 pb-16 w-full">
+			<h4 className="text-[16px] text-white">{dealLabel}</h4>
+		</div>
+	</div>
+);
+
+const ModeCollection = ({ fourth }: ModeCollectionProps) => {
+	const t = useTranslations("HomePage.collection");
 	const params = useParams();
 
 	const results = useGetCategoryByHandler(
 		params.id as string,
 		"fourth_section",
 	);
-	const category = results[0]?.data;
+
+	const queryResult = results[0];
+	const isLoading = queryResult?.isLoading ?? true;
+	const firstCategory = useMemo(
+		() => queryResult?.data?.[0],
+		[queryResult?.data],
+	);
 
 	const {
 		data: productSameCollection,
 		isLoading: loadingProductsSameCollection,
 	} = useGetProductsSameCollection();
 
+	const normalizedProducts = useMemo(
+		() =>
+			productSameCollection?.map((group) =>
+				normalizeCollectionProducts(group as RawCollectionProduct),
+			) ?? [],
+		[productSameCollection],
+	);
+
+	const title = fourth?.title || t("title");
+	const description = fourth?.description || t("subtitle");
+	const ctaLabel = t("ctaButton");
+	const imageUrl =
+		firstCategory?.product_category_image?.[0]?.url || "/home/promo-phone.jpg";
+
+	console.log("products", normalizedProducts);
+
 	return (
 		<Container
 			maxWidth="100vw"
 			className="flex gap-x-12 justify-between items-start px-4 lg:px-40 max-md:flex-col h-fit max-md:space-y-12"
 		>
-			<div className="space-y-4 md:hidden max-md:text-center! max-md:w-full">
-				<h2 className="text-[3.5rem]! md:text-[4rem]! font-semibold text-black">
-					{fourth?.title || t("title")}
-				</h2>
-				<p className="text-[1.5rem] font-light text-black/70">
-					{fourth?.description || t("subtitle")}
-				</p>
-				<Button variant="default" className="px-12 py-4 mt-4 size-fit">
-					{" "}
-					{t("ctaButton")}
-				</Button>
-			</div>
-			<div className="relative flex items-end w-full md:w-1/2 h-160 md:h-[90vh]  overflow-hidden  bg-cover  bg-no-repeat">
-				<Image
-					src={
-						category?.[0]?.product_category_image?.[0]?.url ||
-						"/home/promo-phone.jpg"
-					}
-					alt="phone image"
-					fill
-					objectFit="cover"
-					className="overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"
-				/>
+			<SectionHeader
+				title={title}
+				description={description}
+				ctaLabel={ctaLabel}
+				variant="mobile"
+			/>
 
-				<div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-t from-black/40 to-black/0" />
+			{isLoading || !firstCategory ? (
+				<LoadingPrettyfull className="w-full md:w-1/2 h-160 md:h-[90vh]" />
+			) : (
+				<CategoryImage imageUrl={imageUrl} dealLabel={t("deal")} />
+			)}
 
-				<div className="flex static z-20 justify-between items-center p-8 pb-16 w-full">
-					<h4 className="text-[16px] text-white">{t("deal")}</h4>
-				</div>
-			</div>
 			<div className="overflow-hidden space-y-12 w-full md:w-1/2 h-fit">
-				<div className="space-y-0 max-md:hidden">
-					<h2 className="text-[4rem]! font-semibold text-black tracking-wide">
-						{fourth?.title || t("title")}
-					</h2>
-					<p className="text-[1.8rem] font-normal text-black/70">
-						{fourth?.description || t("subtitle")}
-					</p>
-					<Button variant="default" className="px-12 py-4 mt-6 size-fit">
-						{" "}
-						{t("ctaButton")}
-					</Button>
-				</div>
-				<GridCardProduct
-					classGrid="grid grid-cols-2 "
-					// className="h-[560px]!"
-				>
-					<>
-						{productSameCollection?.map((group) => {
-							const normalized = normalizeCollectionProducts(
-								group as RawCollectionProduct,
-							);
-							return (
-								<CardProduct
-									key={normalized.collectionId}
-									product={normalized}
-								/>
-							);
-						})}
-					</>
+				<SectionHeader
+					title={title}
+					description={description}
+					ctaLabel={ctaLabel}
+					variant="desktop"
+				/>
+				<GridCardProduct classGrid="grid grid-cols-2">
+					{normalizedProducts.map((product) => (
+						<CardProduct key={product.collectionId} product={product} />
+					))}
 				</GridCardProduct>
 			</div>
 		</Container>

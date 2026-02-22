@@ -1,51 +1,84 @@
+"use client";
+
+import { useGetCustomerOrders } from "@/features/account/api/get-orders";
 import { OrderCard } from "@/features/account/components/order-card";
-import { Button } from "@prettyfull/ui";
+import { sdk } from "@/lib/api/sdk";
+import { useRegionStore } from "@/stores/useRegion";
+import { Button, Skeleton } from "@prettyfull/ui";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { OrderIcon } from "../../../../../../../../packages/ui/src/icons/order.icon";
 
-const MOCK_ORDERS = [
-	{
-		id: "ord_01",
-		displayId: "7782",
-		createdAt: "2024-10-24T14:30:00Z",
-		status: "delivered" as const,
-		total: 145.0,
-		currency: "€",
-		items: [
-			{
-				id: "1",
-				title: "T-shirt Noir",
-				quantity: 1,
-				thumbnail: "/assets/product_1.jpg",
-			},
-			{
-				id: "2",
-				title: "Casquette",
-				quantity: 2,
-				thumbnail: "/assets/product_2.jpg",
-			},
-		],
-	},
-	{
-		id: "ord_02",
-		displayId: "7750",
-		createdAt: "2024-09-12T09:15:00Z",
-		status: "processing" as const,
-		total: 89.9,
-		currency: "€",
-		items: [
-			{
-				id: "3",
-				title: "Sneakers",
-				quantity: 1,
-				thumbnail: "/assets/product5.webp",
-			},
-		],
-	},
-];
+const mapFulfillmentStatus = (
+	status: string,
+): "pending" | "processing" | "shipped" | "delivered" | "cancelled" => {
+	switch (status) {
+		case "fulfilled":
+		case "delivered":
+			return "delivered";
+		case "shipped":
+		case "partially_shipped":
+			return "shipped";
+		case "canceled":
+			return "cancelled";
+		case "not_fulfilled":
+			return "processing";
+		default:
+			return "pending";
+	}
+};
 
 export default function OrdersPage() {
-	const orders = MOCK_ORDERS;
+	const router = useRouter();
+	const [isAuthChecking, setIsAuthChecking] = useState(true);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const region = useRegionStore((state) => state.region);
+	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
+
+	useEffect(() => {
+		sdk.store.customer
+			.retrieve()
+			.then(() => {
+				setIsAuthenticated(true);
+			})
+			.catch(() => {
+				router.push("/login");
+			})
+			.finally(() => {
+				setIsAuthChecking(false);
+			});
+	}, [router]);
+
+	const { data, isLoading, error } = useGetCustomerOrders();
+	const orders = data?.orders ?? [];
+
+	if (isAuthChecking) {
+		return (
+			<div className="space-y-8">
+				<Skeleton className="w-60 h-10" />
+				<Skeleton className="w-full h-40" />
+				<Skeleton className="w-full h-40" />
+			</div>
+		);
+	}
+
+	if (!isAuthenticated) return null;
+
+	const mappedOrders = orders.map((order: any) => ({
+		id: order.id,
+		displayId: String(order.display_id),
+		createdAt: order.created_at,
+		status: mapFulfillmentStatus(order.fulfillment_status || "pending"),
+		total: order.total ?? 0,
+		currency,
+		items: (order.items || []).map((item: any) => ({
+			id: item.id,
+			title: item.product_title || "Produit",
+			quantity: item.quantity,
+			thumbnail: item.thumbnail || "/assets/placeholder.jpg",
+		})),
+	}));
 
 	return (
 		<div className="space-y-8">
@@ -60,9 +93,19 @@ export default function OrdersPage() {
 				</div>
 			</div>
 
-			{orders.length > 0 ? (
+			{isLoading ? (
 				<div className="grid gap-6">
-					{orders.map((order) => (
+					{[1, 2].map((i) => (
+						<Skeleton key={i} className="w-full h-60 rounded-md" />
+					))}
+				</div>
+			) : error ? (
+				<div className="p-6 text-sm text-red-800 bg-red-50 rounded-lg border border-red-200">
+					Impossible de charger vos commandes. Veuillez réessayer.
+				</div>
+			) : mappedOrders.length > 0 ? (
+				<div className="grid gap-6">
+					{mappedOrders.map((order: any) => (
 						<OrderCard key={order.id} order={order} />
 					))}
 				</div>
@@ -75,8 +118,8 @@ export default function OrdersPage() {
 						Aucune commande pour le moment
 					</h3>
 					<p className="mx-auto mt-2 mb-8 max-w-sm text-gray-500">
-						Vous n'avez pas encore passé de commande. Découvrez nos dernières
-						nouveautés et laissez-vous tenter !
+						Vous n&apos;avez pas encore passé de commande. Découvrez nos
+						dernières nouveautés et laissez-vous tenter !
 					</p>
 					<Link href="/products">
 						<Button className="px-8 py-6 h-auto text-base text-white bg-black rounded-full hover:bg-gray-800">

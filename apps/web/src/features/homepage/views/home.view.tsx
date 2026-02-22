@@ -49,6 +49,8 @@ const HomeView = () => {
 
 	const banner = results.map((result) => result?.data?.[0]);
 
+	const isLoading = results.some((result) => result?.isLoading);
+
 	return (
 		<div className="  w-full *:w-full lg:*:px-40  space-y-4 lg:space-y-4 mb-20">
 			<SearchBar />
@@ -57,13 +59,9 @@ const HomeView = () => {
 			<NewsArrivals />
 			<Space />
 			<PictureBar
-				imageDesktop={
-					banner[0]?.product_category_image?.[0]?.url ||
-					"/home/promo-desktop-1.jpg"
-				}
-				imageMobile={
-					banner[0]?.product_category_image?.[1]?.url || "/home/promo-phone.jpg"
-				}
+				isLoading={isLoading}
+				imageDesktop={banner[0]?.product_category_image?.[0]?.url || ""}
+				imageMobile={banner[0]?.product_category_image?.[1]?.url || ""}
 			/>
 			<Space />
 			<ModeCollection />
@@ -76,9 +74,8 @@ const HomeView = () => {
 			<Space />
 
 			<PictureBar
-				imageDesktop={
-					banner[1]?.product_category_image?.[0]?.url || "/banner/banner8.jpg"
-				}
+				isLoading={isLoading}
+				imageDesktop={banner[1]?.product_category_image?.[0]?.url || ""}
 				imageMobile="/home/promo-phone.jpg"
 			/>
 			<Space />
@@ -88,9 +85,8 @@ const HomeView = () => {
 			<Space />
 
 			<PictureBar
-				imageDesktop={
-					banner[2]?.product_category_image?.[0]?.url || "/banner/banner4.jpg"
-				}
+				isLoading={isLoading}
+				imageDesktop={banner[2]?.product_category_image?.[0]?.url || ""}
 				imageMobile="/home/promo-phone.jpg"
 			/>
 			<Space />

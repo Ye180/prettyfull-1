@@ -29,7 +29,7 @@ export function PaymentStep({
 	const { selectedPaymentProviderId, setSelectedPaymentProviderId } =
 		useCheckoutStore();
 	const [selectedMethod, setSelectedMethod] = useState<string | null>(
-		selectedPaymentProviderId
+		selectedPaymentProviderId,
 	);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -78,7 +78,7 @@ export function PaymentStep({
 			// Check if it's the payment collection error
 			if (errorMessage.includes("No payment collection")) {
 				setError(
-					"La collection de paiement n'a pas été créée. Veuillez retourner à l'étape de livraison et sélectionner à nouveau votre méthode de livraison."
+					"La collection de paiement n'a pas été créée. Veuillez retourner à l'étape de livraison et sélectionner à nouveau votre méthode de livraison.",
 				);
 			} else {
 				setError(errorMessage);
@@ -119,6 +119,7 @@ export function PaymentStep({
 	};
 
 	const isStripeProvider = selectedMethod?.includes("stripe");
+	const isSystemProvider = selectedMethod?.includes("system");
 
 	const isCardFormValid =
 		isStripeProvider &&
@@ -140,7 +141,7 @@ export function PaymentStep({
 						{
 							"opacity-50 pointer-events-none select-none":
 								!isOpen && !canAccess,
-						}
+						},
 					)}
 				>
 					Payment
@@ -193,7 +194,7 @@ export function PaymentStep({
 										"flex items-center gap-4 px-4 py-8 border rounded-lg cursor-pointer transition-all",
 										selectedMethod === provider.id
 											? "border-black bg-gray-50"
-											: "border-gray-200 hover:border-gray-400"
+											: "border-gray-200 hover:border-gray-400",
 									)}
 								>
 									<input
@@ -209,6 +210,19 @@ export function PaymentStep({
 									</span>
 								</label>
 							))}
+						</div>
+					)}
+
+					{/* COD Info - Show for System/Manual provider */}
+					{isSystemProvider && (
+						<div className="p-4 space-y-2 text-sm bg-green-50 rounded-lg border border-green-200">
+							<p className="font-medium text-green-800">
+								Paiement à la livraison
+							</p>
+							<p className="text-green-700">
+								Vous paierez en espèces ou par mobile money au moment de la
+								livraison. Aucun paiement en ligne requis.
+							</p>
 						</div>
 					)}
 

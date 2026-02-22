@@ -66,8 +66,12 @@ const CartDropdown = (cart: any) => {
 					<Link href={paths.cart} className="flex">
 						<Cart />
 						{cart?.cart?.length > 0 && (
-							<p className="absolute flex items-center justify-center text-[0.8rem] border bottom-2 left-3  text-center content-center w-6 h-6 lg:w-[1.8rem] lg:h-[1.8rem] text-xs text-white bg-red-500 rounded-full lg:right-2 lg:bottom-0 lg:text-[1rem] font-semibold lg:border-2 lg:p-2 border-white">
-								{cart.cart.length}
+							<p className="absolute flex items-center justify-center text-[0.8rem] border -top-1 -right-1 text-center content-center w-6 h-6 lg:w-[1.8rem] lg:h-[1.8rem] text-xs text-white bg-red-500 rounded-full lg:text-[1rem] font-semibold lg:border-2 lg:p-2 border-white">
+								{cart.cart.reduce(
+									(total: number, item: StoreCartLineItem) =>
+										total + item.quantity,
+									0,
+								)}
 							</p>
 						)}
 					</Link>
@@ -140,7 +144,7 @@ const CartDropdown = (cart: any) => {
 													<p className="font-bold whitespace-nowrap">
 														{formatCurrency_FR(
 															item.unit_price,
-															regions?.currency_code === "xof" ? "FCFA" : "$"
+															regions?.currency_code === "xof" ? "FCFA" : "$",
 														)}
 													</p>
 												</div>

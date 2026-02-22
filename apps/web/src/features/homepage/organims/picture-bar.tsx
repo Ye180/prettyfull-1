@@ -1,16 +1,29 @@
+import { LoadingPrettyfull } from "@/shared/components/molecules/core/loading-prettyfull";
+import { cn } from "@prettyfull/utils";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
 const PictureBar = ({
 	imageDesktop,
+	isLoading,
 	imageMobile,
 }: {
 	imageDesktop: string | StaticImport;
+	isLoading?: boolean;
 	imageMobile: string | StaticImport;
 }) => {
+	const className = "h-[60vh] px-4 lg:h-[80vh] lg:px-40";
+	if (isLoading || !imageMobile || !imageDesktop) {
+		return (
+			<Container maxWidth="100vw" className={className}>
+				<LoadingPrettyfull />
+			</Container>
+		);
+	}
+
 	return (
-		<Container maxWidth="100vw" className="h-[60vh] px-4 lg:h-[80vh] lg:px-40 ">
+		<Container maxWidth="100vw" className={cn(className)}>
 			<div className="overflow-hidden relative h-full bg-center bg-no-repeat bg-cover max-lg:hidden lg:flex">
 				<Image
 					src={imageDesktop}

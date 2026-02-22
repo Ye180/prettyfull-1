@@ -124,29 +124,29 @@ export async function addToCart({
   quantity: number
   countryCode: string
 }) {
-  // if (!variantId) {
-  //   throw new Error("Missing variant ID when adding to cart")
-  // }
+  if (!variantId) {
+    throw new Error("Missing variant ID when adding to cart")
+  }
 
-  // const cart = await getOrSetCart(countryCode)
+  const cart = await getOrSetCart(countryCode)
 
-  // if (!cart) {
-  //   throw new Error("Error retrieving or creating cart")
-  // }
+  if (!cart) {
+    throw new Error("Error retrieving or creating cart")
+  }
 
-  // const headers = {
-  //   ...(await getAuthHeaders()),
-  // }
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
 
   await sdk.store.cart
     .createLineItem(
-      "cart_123",
+      cart.id,
       {
         variant_id: variantId,
         quantity,
       },
       {},
-      // headers
+      headers
     )
     .then(async () => {
       const cartCacheTag = await getCacheTag("carts")

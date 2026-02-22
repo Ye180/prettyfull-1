@@ -1,7 +1,15 @@
-// web/src/app/(home)/(informations)/account/page.tsx
+"use client";
+
 import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
-import { Button, Input } from "@prettyfull/ui";
+import { useGetCustomerOrders } from "@/features/account/api/get-orders";
+import { sdk } from "@/lib/api/sdk";
+import { useRegionStore } from "@/stores/useRegion";
+import { Button, Input, Skeleton } from "@prettyfull/ui";
+import { formatCurrency_FR } from "@prettyfull/utils";
+import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Separator } from "../../../../../../../packages/ui/src/components/ui/separator";
 import { AddressIcon } from "../../../../../../../packages/ui/src/icons/adresse.icon";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
@@ -28,21 +36,111 @@ const StatCard = ({ icon: Icon, label, value, href }: any) => (
 	</Link>
 );
 
+const statusLabels: Record<string, { label: string; className: string }> = {
+	not_fulfilled: {
+		label: "En préparation",
+		className: "bg-blue-100 text-blue-800",
+	},
+	fulfilled: { label: "Livré", className: "bg-green-100 text-green-800" },
+	shipped: { label: "Expédié", className: "bg-indigo-100 text-indigo-800" },
+	canceled: { label: "Annulé", className: "bg-red-100 text-red-800" },
+	pending: { label: "En attente", className: "bg-yellow-100 text-yellow-800" },
+};
+
 export default function AccountPage() {
+	const router = useRouter();
+	const [customer, setCustomer] = useState<any>(null);
+	const [isAuthChecking, setIsAuthChecking] = useState(true);
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [email, setEmail] = useState("");
+	const [phone, setPhone] = useState("");
+	const [isSaving, setIsSaving] = useState(false);
+	const [saveSuccess, setSaveSuccess] = useState(false);
+
+	const region = useRegionStore((state) => state.region);
+	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
+
+	const { data: ordersData, isLoading: ordersLoading } = useGetCustomerOrders();
+	const orders = ordersData?.orders ?? [];
+	const ordersCount = ordersData?.count ?? 0;
+
+	useEffect(() => {
+		sdk.store.customer
+			.retrieve()
+			.then(({ customer }) => {
+				setCustomer(customer);
+				setFirstName(customer.first_name || "");
+				setLastName(customer.last_name || "");
+				setEmail(customer.email || "");
+				setPhone(customer.phone || "");
+			})
+			.catch(() => {
+				router.push("/login");
+			})
+			.finally(() => {
+				setIsAuthChecking(false);
+			});
+	}, [router]);
+
+	const handleSaveProfile = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setIsSaving(true);
+		setSaveSuccess(false);
+		try {
+			const { customer: updated } = await sdk.store.customer.update({
+				first_name: firstName,
+				last_name: lastName,
+				phone: phone || undefined,
+			});
+			setCustomer(updated);
+			setSaveSuccess(true);
+			setTimeout(() => setSaveSuccess(false), 3000);
+		} catch (err) {
+			console.error("Failed to update profile:", err);
+		} finally {
+			setIsSaving(false);
+		}
+	};
+
+	if (isAuthChecking) {
+		return (
+			<div className="pb-20 space-y-12">
+				<Skeleton className="w-60 h-10" />
+				<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+					{[1, 2, 3].map((i) => (
+						<Skeleton key={i} className="w-full h-60 rounded-md" />
+					))}
+				</div>
+			</div>
+		);
+	}
+
+	if (!customer) return null;
+
+	const lastOrder = orders[0];
+	const lastOrderStatus = lastOrder
+		? statusLabels[lastOrder.fulfillment_status] || statusLabels.pending
+		: null;
+
+	const defaultAddress = customer.addresses?.[0];
+
 	return (
 		<div className="pb-20 space-y-12">
 			<div className="flex flex-col gap-4 justify-between xs:flex-row xs:items-center xs:px-3">
 				<div>
 					<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-						Vue d'ensemble
+						Vue d&apos;ensemble
 					</h2>
-					<p className="text-gray-500">Heureux de vous revoir, Track.</p>
+					<p className="text-gray-500">
+						Heureux de vous revoir, {customer.first_name || customer.email}.
+					</p>
 				</div>
 				<Button
 					variant="outline"
 					className="py-6! rounded-full border-gray-200 w-fit px-12!"
 				>
-					Besoin d'aide ?
+					Besoin d&apos;aide ?
 				</Button>
 			</div>
 
@@ -50,19 +148,19 @@ export default function AccountPage() {
 				<StatCard
 					icon={OrderIcon}
 					label="Commandes"
-					value="12"
+					value={ordersLoading ? "..." : String(ordersCount)}
 					href="/account/orders"
 				/>
 				<StatCard
 					icon={Heart}
 					label="Wishlist"
-					value="4"
+					value="0"
 					href="/account/wishlist"
 				/>
 				<StatCard
 					icon={AddressIcon}
 					label="Adresses"
-					value="2"
+					value={String(customer.addresses?.length ?? 0)}
 					href="/account/addresses"
 				/>
 			</div>
@@ -74,26 +172,57 @@ export default function AccountPage() {
 							<p className=" text-gray-800 font-semibold text-xl! ">
 								Dernière commande
 							</p>
-							<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-								Livré
-							</span>
+							{lastOrderStatus && (
+								<span
+									className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${lastOrderStatus.className}`}
+								>
+									{lastOrderStatus.label}
+								</span>
+							)}
 						</div>
-						<div className="flex gap-4">
-							<div className="w-24 h-24 bg-gray-100 rounded-lg shrink-0" />
-							<div>
-								<p className="text-sm font-medium text-gray-900">
-									Commande #ORD-7782
-								</p>
-								<p className="text-sm text-gray-500">Le 24 Octobre 2024</p>
-								<p className="mt-1 text-sm font-medium text-gray-900">
-									145,00 €
-								</p>
+						{ordersLoading ? (
+							<Skeleton className="w-full h-24" />
+						) : lastOrder ? (
+							<div className="flex gap-4">
+								<div className="overflow-hidden w-24 h-24 bg-gray-100 rounded-lg shrink-0">
+									{lastOrder.items?.[0]?.thumbnail && (
+										<Image
+											src={lastOrder.items[0].thumbnail}
+											alt={lastOrder.items[0].product_title || "Produit"}
+											width={96}
+											height={96}
+											className="object-cover w-24 h-24"
+										/>
+									)}
+								</div>
+								<div>
+									<p className="text-sm font-medium text-gray-900">
+										Commande #{lastOrder.display_id}
+									</p>
+									<p className="text-sm text-gray-500">
+										{new Date(lastOrder.created_at).toLocaleDateString(
+											"fr-FR",
+											{
+												day: "numeric",
+												month: "long",
+												year: "numeric",
+											},
+										)}
+									</p>
+									<p className="mt-1 text-sm font-medium text-gray-900">
+										{formatCurrency_FR(lastOrder.total ?? 0, currency)}
+									</p>
+								</div>
 							</div>
-						</div>
+						) : (
+							<p className="text-sm text-gray-500">Aucune commande</p>
+						)}
 					</div>
-					<Button variant="outline" className="mt-6 w-full border-gray-200">
-						Voir la commande
-					</Button>
+					<Link href="/account/orders">
+						<Button variant="outline" className="mt-6 w-full border-gray-200">
+							Voir la commande
+						</Button>
+					</Link>
 				</div>
 
 				<div className="flex flex-col justify-between p-6 bg-white border border-gray-100 rounded-md!">
@@ -103,11 +232,23 @@ export default function AccountPage() {
 								Adresse par défaut
 							</p>
 						</div>
-						<address className="space-y-1 text-sm not-italic text-gray-600">
-							<p className="font-medium text-gray-900">Track G.</p>
-							<p>12 Avenue des Champs-Élysées</p>
-							<p>75008 Paris, France</p>
-						</address>
+						{defaultAddress ? (
+							<address className="space-y-1 text-sm not-italic text-gray-600">
+								<p className="font-medium text-gray-900">
+									{defaultAddress.first_name} {defaultAddress.last_name}
+								</p>
+								<p>{defaultAddress.address_1}</p>
+								{defaultAddress.address_2 && <p>{defaultAddress.address_2}</p>}
+								<p>
+									{defaultAddress.postal_code} {defaultAddress.city}
+								</p>
+								<p>{defaultAddress.country_code?.toUpperCase()}</p>
+							</address>
+						) : (
+							<address className="space-y-1 text-sm not-italic text-gray-600">
+								<p className="text-gray-500">Aucune adresse enregistrée</p>
+							</address>
+						)}
 
 						<Button variant="outline" className="mt-6 w-full border-gray-200">
 							Modifier
@@ -129,18 +270,22 @@ export default function AccountPage() {
 					</div>
 				</div>
 				<div className="px-8 py-12 bg-white border border-gray-100 rounded-md!">
-					<form className="space-y-10 w-full">
+					<form className="space-y-10 w-full" onSubmit={handleSaveProfile}>
 						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 							<Input
 								label="First name"
-								placeholder="Write first name "
+								placeholder="Write first name"
 								className=""
+								value={firstName}
+								onChange={(e) => setFirstName(e.target.value)}
 							/>
 
 							<Input
 								label="Last name"
-								placeholder="Write last name "
+								placeholder="Write last name"
 								className=""
+								value={lastName}
+								onChange={(e) => setLastName(e.target.value)}
 							/>
 						</div>
 						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -149,14 +294,31 @@ export default function AccountPage() {
 								label="Email"
 								placeholder="exemple@gmail.com"
 								className=""
+								value={email}
+								disabled
 							/>
 
-							<Input label="Number" placeholder="+33 6..." className="" />
+							<Input
+								label="Number"
+								placeholder="+33 6..."
+								className=""
+								value={phone}
+								onChange={(e) => setPhone(e.target.value)}
+							/>
 						</div>
 						<div className="flex gap-4 items-center pt-6">
-							<Button className="px-8 font-medium text-white bg-black rounded-full shadow-lg transition-all hover:bg-gray-800 shadow-gray-200">
-								Enregistrer
+							<Button
+								type="submit"
+								className="px-8 font-medium text-white bg-black rounded-full shadow-lg transition-all hover:bg-gray-800 shadow-gray-200"
+								disabled={isSaving}
+							>
+								{isSaving ? "Enregistrement..." : "Enregistrer"}
 							</Button>
+							{saveSuccess && (
+								<span className="text-sm text-green-600">
+									Profil mis à jour !
+								</span>
+							)}
 						</div>
 					</form>
 				</div>

@@ -1,4 +1,5 @@
 import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
+import { LoadingPrettyfull } from "@/shared/components/molecules/core/loading-prettyfull";
 import Title from "@/shared/components/molecules/core/title";
 import { Button } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
@@ -17,7 +18,23 @@ const TrendReport = ({ five }: { five?: any }) => {
 
 	const categories = results[0]?.data;
 
-	console.log(categories);
+	const isLoading = results[0]?.isLoading;
+
+	if (isLoading) {
+		return (
+			<div className="grid overflow-x-auto grid-cols-2 gap-x-4 md:grid-cols-4 md:gap-x-20">
+				{Array.from({ length: 4 }).map((_, index) => (
+					<div
+						key={index}
+						className="flex relative justify-center items-center mt-4 shadow-md p max-md:h-140 h-240"
+					>
+						<LoadingPrettyfull />
+					</div>
+				))}
+			</div>
+		);
+	}
+
 	return (
 		<Container maxWidth="100vw" className="px-4 w-full lg:px-40">
 			<Title
@@ -39,9 +56,6 @@ const TrendReport = ({ five }: { five?: any }) => {
 							alt={category?.name}
 							width={500}
 							height={800}
-							// fill
-							// objectFit="cover"
-							// layout="fill"
 							className="object-cover object-center absolute top-0 left-0 z-0 w-full h-full"
 							priority
 						/>
