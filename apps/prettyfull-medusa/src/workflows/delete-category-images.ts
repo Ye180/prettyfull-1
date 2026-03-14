@@ -1,10 +1,11 @@
 import {
-  createWorkflow,
   WorkflowResponse,
+  createWorkflow,
   transform,
 } from "@medusajs/framework/workflows-sdk"
-import { deleteFilesWorkflow, useQueryGraphStep } from "@medusajs/medusa/core-flows"
+import { useQueryGraphStep } from "@medusajs/medusa/core-flows"
 import { deleteCategoryImagesStep } from "./setps/delete-category-images"
+import { safeDeleteFilesStep } from "./setps/safe-delete-files"
 
 
 export type DeleteCategoryImagesInput = {
@@ -32,12 +33,7 @@ export const deleteCategoryImagesWorkflow = createWorkflow(
       (data) => data.categoryImages.map((img) => img.file_id)
     )
 
-    // Delete the files from storage
-    deleteFilesWorkflow.runAsStep({
-      input: {
-        ids: fileIds,
-      },
-    })
+    safeDeleteFilesStep({ ids: fileIds })
 
     // Then delete the category image records
     const result = deleteCategoryImagesStep({ ids: input.ids })

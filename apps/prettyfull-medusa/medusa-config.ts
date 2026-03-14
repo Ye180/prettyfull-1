@@ -26,6 +26,28 @@ module.exports = defineConfig({
   },
   modules: [
     {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/file-s3",
+            id: "garage",
+            options: {
+              file_url: process.env.GARAGE_PUBLIC_URL,
+              access_key_id: process.env.GARAGE_ACCESS_KEY,
+              secret_access_key: process.env.GARAGE_SECRET_KEY,
+              region: process.env.GARAGE_REGION,
+              bucket: process.env.GARAGE_BUCKET,
+              endpoint: process.env.GARAGE_ENDPOINT,
+              additional_client_config: {
+                forcePathStyle: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
       resolve: "./src/modules/product-media",
     },
     {

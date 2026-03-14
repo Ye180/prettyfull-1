@@ -141,8 +141,11 @@ const Hero = ({ video, firstSection }: HeroProps) => {
 
 	const firstCategory = useMemo(() => category?.[0], [category]);
 
-	const desktopUrl = firstCategory?.product_category_image?.[1]?.url;
-	const mobileUrl = firstCategory?.product_category_image?.[0]?.url;
+	const desktopUrl = `${firstCategory?.product_category_image?.[2]?.url}?view=1`;
+	const mobileUrl = `${firstCategory?.product_category_image?.[3]?.url}?view=1`;
+
+	// const desktopUrl = firstCategory?.product_category_image?.[1]?.url;
+	// const mobileUrl = firstCategory?.product_category_image?.[0]?.url;	console.log("mobileUrl", mobileUrl);
 
 	const handleHeroClick = useCallback(() => {
 		if (firstCategory?.handle) {

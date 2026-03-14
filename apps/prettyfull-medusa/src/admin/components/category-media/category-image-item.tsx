@@ -1,6 +1,8 @@
 import { ThumbnailBadge } from "@medusajs/icons";
 import { Checkbox, clx } from "@medusajs/ui";
 
+import { withGarageViewParam } from "../../lib/garage-url";
+
 type CategoryImageItemProps = {
 	id: string;
 	url: string;
@@ -31,13 +33,13 @@ export const CategoryImageItem = ({
 			<div
 				className={clx(
 					"transition-fg absolute right-2 top-2 opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 group-focus:opacity-100",
-					isSelected && "opacity-100"
+					isSelected && "opacity-100",
 				)}
 			>
 				<Checkbox checked={isSelected} onCheckedChange={onToggleSelect} />
 			</div>
 			<img
-				src={url}
+				src={withGarageViewParam(url)}
 				alt={alt}
 				className="object-cover object-center size-full"
 			/>

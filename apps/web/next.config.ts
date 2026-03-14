@@ -7,10 +7,11 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@prettyfull/ui", "@prettyfull/store"],
   images: {
     remotePatterns: [
-      // {
-      //   protocol: "https",
-      //   hostname: "dev-storage.prettyfull.shop","https://medusa-public-images.s3.eu-west-1.amazonaws.com",
-      // },
+      {
+        protocol: "https",
+        hostname: "dev-storage.prettyfull.shop",
+        pathname: "/api/browse/prettyfull/**",
+      },
       {
         protocol: "https",
         hostname: "medusa-public-images.s3.eu-west-1.amazonaws.com",

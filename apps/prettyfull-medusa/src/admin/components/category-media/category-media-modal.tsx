@@ -37,11 +37,6 @@ export const CategoryMediaModal = ({
 		deleteImagesMutation,
 	} = useCategoryImageMutations({
 		categoryId,
-		onCreateSuccess: () => {
-			setOpen(false);
-			resetModalState();
-			onSuccess?.();
-		},
 		onUpdateSuccess: () => {
 			setSelectedImageIds(new Set());
 		},
@@ -155,6 +150,7 @@ export const CategoryMediaModal = ({
 
 			setOpen(false);
 			resetModalState();
+			onSuccess?.();
 			toast.success("Category media saved successfully");
 		} catch (error) {
 			toast.error("Failed to save changes");

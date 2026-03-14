@@ -5,6 +5,7 @@ import { Container, Heading } from "@medusajs/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { CategoryMediaModal } from "../components/category-media/category-media-modal";
+import { withGarageViewParam } from "../lib/garage-url";
 import { sdk } from "../lib/sdk";
 import { CategoryImage } from "../type";
 
@@ -80,7 +81,7 @@ const CategoryMediaWidgetContent = ({
 							className="overflow-hidden relative rounded-lg border aspect-square border-ui-border-base bg-ui-bg-subtle"
 						>
 							<img
-								src={image.url}
+								src={withGarageViewParam(image.url)}
 								alt={`Category ${image.type}`}
 								className="object-cover w-full h-full"
 							/>
