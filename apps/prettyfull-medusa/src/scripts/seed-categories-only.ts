@@ -1,7 +1,7 @@
 import { ExecArgs } from "@medusajs/framework/types";
 import {
-    ContainerRegistrationKeys,
-    Modules,
+  ContainerRegistrationKeys,
+  Modules,
 } from "@medusajs/framework/utils";
 import { createProductCategoriesWorkflow } from "@medusajs/medusa/core-flows";
 

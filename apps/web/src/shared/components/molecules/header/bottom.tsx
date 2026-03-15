@@ -1,5 +1,5 @@
 "use client";
-import { Category } from "@/features/homepage/api/backend/get-category";
+import { Category } from "@/features/homepage/api/medusa/get-category";
 import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
 import { Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
@@ -27,14 +27,14 @@ const BottomHeader = ({
 		<div
 			className={cn(
 				"max-xs:hidden sm:flex items-center justify-start gap-6 mt-4  text-[1.5rem] ",
-				className
+				className,
 			)}
 		>
-			<div className="w-full overflow-x-auto h-fit ">
+			<div className="overflow-x-auto w-full h-fit">
 				<div
 					className={cn(
 						"flex max-sm:snap-x md:w-full md:overflow-hidden overflow-y-hidden lg:overflow-visible space-y-0 space-x-0 scrollbar-hide scroll-smooth snap-x lg:snap-mandatory gap-x-6 text-[1.5rem]",
-						className_2
+						className_2,
 					)}
 				>
 					{loading && <Skeleton className="w-full h-9" />}
@@ -44,7 +44,7 @@ const BottomHeader = ({
 							<Link
 								href={buildLinkHref(items.handle as string)}
 								key={index}
-								className="text-sm snap-center tracking-wide whitespace-nowrap hover:text-primary font-semibold uppercase transition-all duration-300 ease-in-out"
+								className="text-sm font-semibold tracking-wide uppercase whitespace-nowrap transition-all duration-300 ease-in-out snap-center hover:text-primary"
 							>
 								{items.name}
 							</Link>

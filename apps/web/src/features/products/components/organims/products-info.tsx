@@ -9,7 +9,6 @@ import { TProduct } from "../../types";
 
 // Imports des hooks
 import { useAddItemToCart } from "@/features/cart/api/backend/add-item-to-cart";
-import { useCreateWishlist } from "@/features/wishlist/api/create-wishlist";
 import { useAuth } from "@/hooks/useAuth";
 
 // Imports des composants UI et Icônes
@@ -40,7 +39,7 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
 
 	// Nos hooks de mutation
 	const addItemToCartMutation = useAddItemToCart();
-	const addToWishlistMutation = useCreateWishlist();
+	// const addToWishlistMutation = useCreateWishlist();
 
 	// États pour le modal et le stock
 	const [isNotifyModalOpen, setIsNotifyModalOpen] = useState(false);
@@ -114,15 +113,6 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
 			console.error("ID de produit manquant");
 			return;
 		}
-
-		addToWishlistMutation.mutate(product._id, {
-			onSuccess: () => {},
-			onError: (error) => {
-				alert(
-					`Erreur: ${error.message || "Impossible d'ajouter à la wishlist"}`,
-				);
-			},
-		});
 	};
 
 	// --- CORRECTIONS CALLBACKS ---
@@ -205,12 +195,8 @@ export const ProductsInfos = ({ product }: { product: TProduct }) => {
 					variant={"secondary"}
 					className="w-full"
 					onClick={handleAddToWishlist}
-					disabled={addToWishlistMutation.isPending}
 				>
 					<Heart />
-					{addToWishlistMutation.isPending
-						? "Ajout..."
-						: "Ajouter à la Wishlist"}
 				</Button>
 			</div>
 

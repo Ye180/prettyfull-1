@@ -1,4 +1,4 @@
-import { Category } from "@/features/homepage/api/backend/get-category";
+import { Category } from "@/features/homepage/api/medusa/get-category";
 import { COLLECTION_PATHS, PAGES_PATHS } from "@/lib/routes/paths-en";
 import {
 	Accordion,

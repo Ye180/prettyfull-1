@@ -1,7 +1,4 @@
-import { useGetProducts } from "@/features/collections/api/backend/get-product";
-import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
 import {
-
 	GridCardProduct,
 	Tabs,
 	TabsContent,
@@ -14,7 +11,6 @@ import Container from "../../../../../../packages/ui/src/layouts/helpers/contain
 const Recommendation = () => {
 	const t = useTranslations("HomePage.recommendation");
 
-
 	const TABS = {
 		for_you: t("forYou"),
 		woman: t("woman"),
@@ -24,9 +20,7 @@ const Recommendation = () => {
 	const handleGridClick = (value: number) => {
 		return (
 			<GridCardProduct>
-				<>
-					
-				</>
+				<></>
 			</GridCardProduct>
 		);
 	};

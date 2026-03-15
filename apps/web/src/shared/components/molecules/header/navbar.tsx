@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetItemsCart } from "@/features/cart/api/medusa/get-items-cart";
-import { Category } from "@/features/homepage/api/backend/get-category";
+import { Category } from "@/features/homepage/api/medusa/get-category";
 import { PAGES_PATHS } from "@/lib/routes/paths-en";
 import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
 import { Input, Logo, Skeleton } from "@prettyfull/ui";

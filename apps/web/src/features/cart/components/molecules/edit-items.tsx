@@ -1,6 +1,4 @@
 "use client";
-
-import { useCreateWishlist } from "@/features/wishlist/api/create-wishlist";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
@@ -14,7 +12,6 @@ export const EditItems = ({ productId }: Props) => {
 	const router = useRouter();
 	const { isAuthenticated } = useAuth();
 	const removeMutation = useRemoveCartItem();
-	const wishlistMutation = useCreateWishlist();
 
 	const handleRemove = () => {
 		if (window.confirm("Supprimer cet article du panier ?")) {
@@ -28,29 +25,22 @@ export const EditItems = ({ productId }: Props) => {
 			return;
 		}
 
-		wishlistMutation.mutate(productId, {
-			onSuccess: () => {
-				alert("Ajouté à la wishlist !");
-			},
-			onError: (error) => {
-				alert(`Erreur: ${error.message || "Impossible d'ajouter"}`);
-			},
-		});
+		console.log("Add to wishlist", productId);
 	};
 
 	return (
-		<div className="flex items-center gap-3">
+		<div className="flex gap-3 items-center">
 			<button
 				onClick={handleWishlist}
-				disabled={wishlistMutation.isPending}
-				className="flex items-center gap-2 px-2 py-1 text-sm text-gray-600 transition rounded-md hover:text-black"
+				disabled={false}
+				className="flex gap-2 items-center px-2 py-1 text-sm text-gray-600 rounded-md transition hover:text-black"
 			>
 				<Heart className="w-5 h-5" />
 			</button>
 			<button
 				onClick={handleRemove}
 				disabled={removeMutation.isPending}
-				className="flex items-center gap-2 px-2 py-1 text-sm text-gray-600 transition rounded-md hover:text-red-600"
+				className="flex gap-2 items-center px-2 py-1 text-sm text-gray-600 rounded-md transition hover:text-red-600"
 			>
 				<TrashIcon className="w-5 h-5" />
 				{removeMutation.isPending ? "..." : ""}

@@ -1,20 +1,3 @@
-// export const StyleBar = [
-//   {
-//     number: 3,
-//     style: "grid grid-cols-3 gap-x-8 gap-y-8 [&>div]:h-[75rem]",
-//   },
-//   {
-//     number: 4,
-//     style: "grid grid-cols-4 gap-x-8 gap-y-8 [&>div]:h-[60rem]",
-//   },
-//   {
-//     number: 5,
-//     style: " grid grid-cols-5 gap-x-8 gap-y-8 [&>div]:h-[55rem]",
-//   },
-// ];
-
-
-
 export const StyleBar = [
   {
             number: 3,

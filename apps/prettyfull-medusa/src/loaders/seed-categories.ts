@@ -1,6 +1,6 @@
 import { LoaderOptions } from "@medusajs/framework/types";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import seedCategories from "../scripts/seed-categories";
+import seedCategories from "../scripts/seed-categories-only";
 
 export default async function categorySeedLoader({
   container,
