@@ -24,7 +24,7 @@ const DropdownContentCart = () => {
 	const { isAuthenticated, isLoading } = useAuth();
 	const total = items.reduce(
 		(acc, item) => acc + (item.unitPrice?.amount || 0) * item.quantity,
-		0
+		0,
 	);
 
 	const subtotal = useMemo(() => {
@@ -32,7 +32,7 @@ const DropdownContentCart = () => {
 			.reduce(
 				(acc, item) =>
 					acc + (item.unitPrice?.amount ?? 0) * (item.quantity ?? 0),
-				0
+				0,
 			)
 			.toFixed(2);
 	}, [items]); // ⬅️ 3. CRÉER LA MÊME LOGIQUE DE REDIRECTION SÉCURISÉE
@@ -55,23 +55,17 @@ const DropdownContentCart = () => {
 	};
 
 	return (
-		<span className="absolute z-50 h-fit p-4 py-6 mt-2 text-sm text-black bg-white rounded-md shadow-2xl w-[40rem] -left-[36rem] top-20 flex flex-col justify-center border border-gray-100 max-sm:hidden">
-			{" "}
+		<span className="absolute top-20 z-50 flex-col justify-center p-4 py-6 text-sm text-black bg-white rounded-md border border-gray-100 shadow-2xl -left-144 h-fit w-160 max-sm:hidden">
 			{items.length === 0 ? (
 				<div className="py-8 text-center">
-					         {" "}
-					<h4 className="mb-4 !text-[1.8rem] font-semibold font-manrope">
-						            {t("empty")}         {" "}
+					<h4 className="mb-4 text-[1.8rem]! font-semibold font-manrope">
+						{t("empty")}
 					</h4>
-					       {" "}
 				</div>
 			) : (
 				<>
-					         {" "}
 					<ScrollArea className="h-[200px] w-full pr-4">
-						           {" "}
 						<div className="flex flex-col gap-4">
-							             
 							{items.map((item) => (
 								<div key={item.product.id} className="flex gap-4">
 									<img
@@ -101,7 +95,7 @@ const DropdownContentCart = () => {
 						         {" "}
 					</ScrollArea>
 					         {" "}
-					<div className="w-full pt-4 mt-4 border-t">
+					<div className="pt-4 mt-4 w-full border-t">
 						           {" "}
 						<div className="flex justify-between font-semibold">
 							              <p>{t("subtotal")}</p>             {" "}
