@@ -144,9 +144,6 @@ const Hero = ({ video, firstSection }: HeroProps) => {
 	const desktopUrl = `${firstCategory?.product_category_image?.[2]?.url}?view=1`;
 	const mobileUrl = `${firstCategory?.product_category_image?.[3]?.url}?view=1`;
 
-	// const desktopUrl = firstCategory?.product_category_image?.[1]?.url;
-	// const mobileUrl = firstCategory?.product_category_image?.[0]?.url;	console.log("mobileUrl", mobileUrl);
-
 	const handleHeroClick = useCallback(() => {
 		if (firstCategory?.handle) {
 			router.push(COLLECTION_PATHS.collectionDetail(firstCategory.handle));

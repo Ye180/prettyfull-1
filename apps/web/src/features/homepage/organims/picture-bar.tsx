@@ -29,7 +29,6 @@ const PictureBar = ({
 					src={imageDesktop}
 					alt="desktop image"
 					fill
-					objectFit="cover"
 					className="overflow-hidden h-full bg-center bg-no-repeat bg-cover max-lg:hidden lg:flex bg-black/60"
 				/>
 			</div>
