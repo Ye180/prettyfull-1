@@ -75,7 +75,7 @@ const HeroImages = ({
 
 	return (
 		<>
-			{desktopUrl && (
+			{desktopUrl ? (
 				<Image
 					src={desktopUrl}
 					alt="Hero background image"
@@ -84,8 +84,8 @@ const HeroImages = ({
 					className={`${heroImageClassName} max-sm:hidden sm:flex`}
 					priority
 				/>
-			)}
-			{mobileUrl && (
+			) : null}
+			{mobileUrl ? (
 				<Image
 					src={mobileUrl}
 					alt="Hero background image"
@@ -94,7 +94,7 @@ const HeroImages = ({
 					className={`${heroImageClassName} max-sm:flex sm:hidden`}
 					priority
 				/>
-			)}
+			) : null}
 		</>
 	);
 };
@@ -141,8 +141,12 @@ const Hero = ({ video, firstSection }: HeroProps) => {
 
 	const firstCategory = useMemo(() => category?.[0], [category]);
 
-	const desktopUrl = `${firstCategory?.product_category_image?.[2]?.url}?view=1`;
-	const mobileUrl = `${firstCategory?.product_category_image?.[3]?.url}?view=1`;
+	const desktopUrl = firstCategory?.product_category_image?.[2]?.url
+		? `${firstCategory.product_category_image[2].url}?view=1`
+		: undefined;
+	const mobileUrl = firstCategory?.product_category_image?.[3]?.url
+		? `${firstCategory.product_category_image[3].url}?view=1`
+		: undefined;
 
 	const handleHeroClick = useCallback(() => {
 		if (firstCategory?.handle) {
