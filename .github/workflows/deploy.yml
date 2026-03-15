@@ -7,7 +7,7 @@ on:
       - develop
     paths:
       - "apps/web/**"
-      - "apps/backend/**"
+      - "apps/prettyfull-medusa/**"
 jobs:
   # Job séparé pour l'application web
   deploy-web:
@@ -76,7 +76,7 @@ jobs:
         with:
           filters: |
             backend:
-              - 'apps/backend/**'
+              - 'apps/prettyfull-medusa/**'
               - 'packages/**'
 
       - name: Set up Docker Buildx
