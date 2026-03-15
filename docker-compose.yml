@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -46,10 +46,10 @@ services:
       COOKIE_SECRET: supersecret-change-in-production
       NODE_ENV: production
       PORT: 9000
-      MEDUSA_BACKEND_URL: http://localhost:9000
-      STORE_CORS: http://localhost:3000
-      ADMIN_CORS: http://localhost:9000
-      AUTH_CORS: http://localhost:9000,http://localhost:3000
+      MEDUSA_BACKEND_URL: http://localhost:9000,https://dev.prettyfull.shop/
+      STORE_CORS: http://localhost:3000,https://dev.prettyfull.shop/
+      ADMIN_CORS: http://localhost:9000,https://dev.prettyfull.shop/
+      AUTH_CORS: http://localhost:9000,http://localhost:3000,https://dev.prettyfull.shop/
     ports:
       - "9000:9000"
     restart: unless-stopped
