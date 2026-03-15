@@ -38,9 +38,9 @@ docker run -d \
   -e NODE_ENV=production \
   -e PORT=9000 \
   -e MEDUSA_BACKEND_URL=http://localhost:9000 \
-  -e STORE_CORS=http://localhost:3000,https://dev.prettyfull.shop/ \
-  -e ADMIN_CORS=http://localhost:9000,https://dev.prettyfull.shop/ \
-  -e AUTH_CORS=http://localhost:9000,http://localhost:3000,https://dev.prettyfull.shop/ \
+  -e STORE_CORS=http://localhost:3000,https://dev.prettyfull.shop \
+  -e ADMIN_CORS=http://localhost:9000,https://dev.prettyfull.shop \
+  -e AUTH_CORS=http://localhost:9000,http://localhost:3000,https://dev.prettyfull.shop \
   -p 9000:9000 \
   prettyfull-medusa-admin 2>/dev/null || docker start prettyfull-medusa
 

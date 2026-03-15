@@ -89,7 +89,7 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
 
   // Trusted origins pour CORS
   trustedOrigins:
-    'http://localhost:3000,http://localhost:3001,http://localhost:3002,https://dev.prettyfull.shop/'.split(
+    'http://localhost:3000,http://localhost:3001,http://localhost:3002,https://dev.prettyfull.shop'.split(
       ',',
     ),
 
