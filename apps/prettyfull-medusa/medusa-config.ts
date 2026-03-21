@@ -12,9 +12,9 @@ module.exports = defineConfig({
         : false,
     },
     http: {
-      storeCors: process.env.STORE_CORS!,
-      adminCors: process.env.ADMIN_CORS!,
-      authCors: process.env.AUTH_CORS!,
+      storeCors: "http://dev.prettyfull.shop,https://dev.prettyfull.shop",
+      adminCors: "http://dev.prettyfull.shop,https://dev.prettyfull.shop",
+      authCors: "http://dev.prettyfull.shop,https://dev.prettyfull.shop",
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
