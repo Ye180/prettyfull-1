@@ -2,6 +2,10 @@ import { defineConfig, loadEnv } from "@medusajs/framework/utils";
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
+const STORE_CORS = process.env.STORE_CORS!;
+const ADMIN_CORS = process.env.ADMIN_CORS!;
+const AUTH_CORS = process.env.AUTH_CORS!;
+
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
@@ -12,9 +16,9 @@ module.exports = defineConfig({
         : false,
     },
   http: {
-      storeCors: "http://dev.prettyfull.shop,https://dev.prettyfull.shop",
-      adminCors: "http://dev.prettyfull.shop,https://dev.prettyfull.shop",
-      authCors: "http://dev.prettyfull.shop,https://dev.prettyfull.shop",
+      storeCors: STORE_CORS,
+      adminCors: ADMIN_CORS,
+      authCors: AUTH_CORS,
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
