@@ -12,11 +12,11 @@ module.exports = defineConfig({
         : false,
     },
   http: {
-      storeCors: process.env.STORE_CORS!,
-      adminCors: process.env.ADMIN_CORS!,
-      authCors: process.env.AUTH_CORS!,
-      jwtSecret: process.env.JWT_SECRET || "supersecret",
-      cookieSecret: process.env.COOKIE_SECRET || "supersecret",
+      storeCors: "https://dev.prettyfull.shop,http://dev.prettyfull.shop,http://localhost:3000,http://localhost:8000,https://docs.medusajs.co",
+      adminCors: "https://dev.prettyfull.shop,http://dev.prettyfull.shop,http://localhost:3000,http://localhost:8000,https://docs.medusajs.co",
+      authCors: "https://dev.prettyfull.shop,http://dev.prettyfull.shop,http://localhost:3000,http://localhost:8000,https://docs.medusajs.co",
+      jwtSecret: "supersecret",
+      cookieSecret: "supersecret",
     },
   },
   admin: {
