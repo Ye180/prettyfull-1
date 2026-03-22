@@ -88,7 +88,9 @@ const NewsArrivals = () => {
 						<CategoryCard
 							key={category.id ?? category.handle ?? index}
 							name={category.name || ""}
-							imageUrl={category.product_category_image?.[0]?.url || ""}
+							imageUrl={
+								category.product_category_image?.[1]?.url + "?view=1" || ""
+							}
 							priority={index === 0}
 						/>
 					))}

@@ -110,7 +110,6 @@ const ModeCollection = ({ fourth }: ModeCollectionProps) => {
 		() => queryResult?.data?.[0],
 		[queryResult?.data],
 	);
-
 	const {
 		data: productSameCollection,
 		isLoading: loadingProductsSameCollection,
@@ -128,7 +127,8 @@ const ModeCollection = ({ fourth }: ModeCollectionProps) => {
 	const description = fourth?.description || t("subtitle");
 	const ctaLabel = t("ctaButton");
 	const imageUrl =
-		firstCategory?.product_category_image?.[0]?.url || "/home/promo-phone.jpg";
+		firstCategory?.product_category_image?.[1]?.url + "?view=1" ||
+		"/home/promo-phone.jpg";
 
 	console.log("products", normalizedProducts);
 

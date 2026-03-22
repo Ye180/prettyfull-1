@@ -5,6 +5,7 @@ const MEDUSA_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 
 export const sdk = new Medusa({
   baseUrl: MEDUSA_BACKEND_URL  || "https://admin.prettyfull.shop/",
+  // baseUrl: "http://localhost:9000/",
   auth: {
     type: "jwt",
   },
@@ -16,6 +17,7 @@ export const sdk = new Medusa({
 
 export const sdkStore = new Medusa({
   baseUrl: MEDUSA_BACKEND_URL || "https://admin.prettyfull.shop/",
+  // baseUrl: "http://localhost:9000",
   auth: {
     type: "session",
   },

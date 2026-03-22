@@ -13,8 +13,8 @@ module.exports = defineConfig({
     },
   http: {
       storeCors: "https://dev.prettyfull.shop,http://dev.prettyfull.shop,http://localhost:3000,http://localhost:8000,https://docs.medusajs.co",
-      adminCors: "https://dev.prettyfull.shop,http://dev.prettyfull.shop,http://localhost:3000,http://localhost:8000,https://docs.medusajs.co",
-      authCors: "https://dev.prettyfull.shop,http://dev.prettyfull.shop,http://localhost:3000,http://localhost:8000,https://docs.medusajs.co",
+      adminCors: "http://dev.prettyfull.shop,https://dev.prettyfull.shop,http://localhost:3000,https://docs.medusajs.com",
+      authCors: "http://dev.prettyfull.shop,https://dev.prettyfull.shop,http://localhost:3000,http://localhost:9000,https://docs.medusajs.com",
       jwtSecret: "supersecret",
       cookieSecret: "supersecret",
     },

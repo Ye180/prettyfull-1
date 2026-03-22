@@ -50,7 +50,7 @@ const TrendReport = ({ five }: { five?: any }) => {
 					>
 						<Image
 							src={
-								category?.product_category_image?.[0]?.url ||
+								category?.product_category_image?.[1]?.url + "?view=1" ||
 								"/images/placeholder.png"
 							}
 							alt={category?.name}

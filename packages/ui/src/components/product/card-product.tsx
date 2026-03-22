@@ -206,7 +206,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 
 					{/* Image */}
 					<Image
-						src={activeColor.thumbnail}
+						src={activeColor.thumbnail + "?view=1"}
 						alt={`${product.collectionTitle} - ${activeColor.label}`}
 						width={600}
 						height={800}

@@ -23,10 +23,7 @@ import TrendReport from "../organims/trend-report";
 
 const HomeView = () => {
 	const t = useTranslations("HomePage.containers");
-
 	const params = useParams();
-
-	const id = params?.id;
 
 	const region = useRegionStore((state) => state.region);
 
@@ -51,6 +48,8 @@ const HomeView = () => {
 
 	const isLoading = results.some((result) => result?.isLoading);
 
+	console.log("banner", banner);
+
 	return (
 		<div className="  w-full *:w-full lg:*:px-40  space-y-4 lg:space-y-4 mb-20">
 			<SearchBar />
@@ -60,8 +59,8 @@ const HomeView = () => {
 			<Space />
 			<PictureBar
 				isLoading={isLoading}
-				imageDesktop={banner[0]?.product_category_image?.[0]?.url || ""}
-				imageMobile={banner[0]?.product_category_image?.[1]?.url || ""}
+				imageDesktop={banner[0]?.product_category_image?.[3]?.url || ""}
+				imageMobile={banner[0]?.product_category_image?.[2]?.url || ""}
 			/>
 			<Space />
 			<ModeCollection />
@@ -75,8 +74,8 @@ const HomeView = () => {
 
 			<PictureBar
 				isLoading={isLoading}
-				imageDesktop={banner[1]?.product_category_image?.[0]?.url || ""}
-				imageMobile="/home/promo-phone.jpg"
+				imageDesktop={banner[1]?.product_category_image?.[1]?.url || ""}
+				imageMobile={banner[1]?.product_category_image?.[1]?.url || ""}
 			/>
 			<Space />
 			<ShopGrid />
@@ -86,8 +85,8 @@ const HomeView = () => {
 
 			<PictureBar
 				isLoading={isLoading}
-				imageDesktop={banner[2]?.product_category_image?.[0]?.url || ""}
-				imageMobile="/home/promo-phone.jpg"
+				imageDesktop={banner[2]?.product_category_image?.[1]?.url || ""}
+				imageMobile={banner[2]?.product_category_image?.[2]?.url || ""}
 			/>
 			<Space />
 			{/* <Recommendation /> */}
