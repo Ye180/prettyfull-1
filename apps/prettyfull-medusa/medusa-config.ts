@@ -21,7 +21,7 @@ module.exports = defineConfig({
   },
   admin: {
     disable: false,
-    backendUrl: process.env.MEDUSA_BACKEND_URL,
+    backendUrl: "https://admin.prettyfull.shop",
     // backendUrl: "http://localhost:9000",
     path: "/app",
   },
