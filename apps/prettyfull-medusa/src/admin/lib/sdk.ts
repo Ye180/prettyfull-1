@@ -1,6 +1,6 @@
 import Medusa from "@medusajs/js-sdk"
 
-let MEDUSA_BACKEND_URL = "https://admin.prettyfull.shop"
+const MEDUSA_BACKEND_URL = __BACKEND_URL__ ?? ""
 
 export const sdk = new Medusa({
   baseUrl: MEDUSA_BACKEND_URL,
