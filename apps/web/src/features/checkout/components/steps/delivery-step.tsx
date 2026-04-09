@@ -51,8 +51,6 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 				fields: "+shipping_address",
 			});
 
-			console.log("Current cart before setting shipping:", currentCart);
-
 			if (!currentCart.shipping_address) {
 				throw new Error(
 					"Aucune adresse de livraison trouvée. Veuillez compléter l'étape d'adresse.",
@@ -65,14 +63,10 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 				shippingOptionId: selectedOptionId,
 			});
 
-			console.log("Cart after setting shipping method:", updatedCart);
-
 			// Verify shipping method was added successfully
 			const { cart: cartWithShipping } = await sdk.store.cart.retrieve(cartId, {
 				fields: "+shipping_methods",
 			});
-
-			console.log("Shipping methods:", cartWithShipping.shipping_methods);
 
 			if (
 				!cartWithShipping.shipping_methods ||
@@ -88,7 +82,6 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 
 			onComplete?.(selectedOptionId);
 		} catch (error: any) {
-			console.error("Failed to set shipping method:", error);
 			setError(
 				error?.message ||
 					"Impossible de définir la méthode de livraison. Veuillez réessayer.",

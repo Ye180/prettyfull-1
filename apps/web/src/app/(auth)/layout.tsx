@@ -12,8 +12,8 @@ const AuthRootLayout = ({ children }: { children: React.ReactNode }) => {
 			rightChildren={
 				<div>
 					<Image
-						className="object-cover"
-						src="/assets/auth-bg.png"
+						className="object-cover object-top-right"
+						src="/home/cover-box-7.jpg"
 						fill
 						priority
 						alt="Auth Right Background"

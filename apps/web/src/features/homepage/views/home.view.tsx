@@ -1,6 +1,5 @@
 "use client";
 import { useGetProductsSameCollection } from "@/shared/api/medusa/get-products-same-collection";
-import SearchBar from "@/shared/components/molecules/core/search";
 import Space from "@/shared/components/molecules/core/space";
 import { useRegionStore } from "@/stores/useRegion";
 import {
@@ -48,11 +47,8 @@ const HomeView = () => {
 
 	const isLoading = results.some((result) => result?.isLoading);
 
-	console.log("banner", banner);
-
 	return (
 		<div className="  w-full *:w-full lg:*:px-40  space-y-4 lg:space-y-4 mb-20">
-			<SearchBar />
 			<Hero video={false} />
 			<Space />
 			<NewsArrivals />
@@ -80,9 +76,6 @@ const HomeView = () => {
 			<Space />
 			<ShopGrid />
 			<Space />
-			{/* <GridCategory /> */}
-			<Space />
-
 			<PictureBar
 				isLoading={isLoading}
 				imageDesktop={banner[2]?.product_category_image?.[1]?.url || ""}

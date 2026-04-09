@@ -63,7 +63,7 @@ const CartItems = ({
 					>
 						<div className="relative w-48 h-44 rounded-md md:h-58 aspect-square">
 							<Image
-								src={imageSrc}
+								src={imageSrc + "?view=1"}
 								alt={item.product_title || "Product Image"}
 								width={230}
 								height={230}
@@ -86,7 +86,7 @@ const CartItems = ({
 									<p className="text-lg font-semibold text-gray-800 whitespace-nowrap">
 										{formatCurrency_FR(
 											item.unit_price,
-											regions?.currency_code === "xof" ? "FCFA" : "$"
+											regions?.currency_code === "xof" ? "FCFA" : "$",
 										)}
 									</p>
 								</div>
@@ -100,7 +100,7 @@ const CartItems = ({
 							</div>
 
 							{/* Description + variantes */}
-							<p className="mt-1 text-sm text-gray-500 whitespace-nowrap">
+							<p className="mt-1 text-sm text-gray-500 uppercase whitespace-nowrap">
 								{item.variant_title || "Variante"}
 							</p>
 

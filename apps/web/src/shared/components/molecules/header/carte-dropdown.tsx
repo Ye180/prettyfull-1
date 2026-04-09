@@ -56,17 +56,13 @@ const CartDropdown = (cart: any) => {
 	};
 
 	return (
-		<div
-			className="z-50 h-full"
-			onMouseEnter={openAndCancel}
-			onMouseLeave={close}
-		>
-			<Popover className="relative">
+		<div className="h-full" onMouseEnter={openAndCancel} onMouseLeave={close}>
+			<Popover className="relative z-30">
 				<PopoverButton className="focus:outline-none">
 					<Link href={paths.cart} className="flex">
 						<Cart />
 						{cart?.cart?.length > 0 && (
-							<p className="absolute flex items-center justify-center text-[0.8rem] border -top-1 -right-1 text-center content-center w-6 h-6 lg:w-[1.8rem] lg:h-[1.8rem] text-xs text-white bg-red-500 rounded-full lg:text-[1rem] font-semibold lg:border-2 lg:p-2 border-white">
+							<p className="absolute flex items-center justify-center text-[0.8rem] border bottom-1 -right-1 text-center content-center w-6 h-6 lg:w-[1.8rem] lg:h-[1.8rem] text-xs text-white bg-red-500 rounded-full lg:text-[1rem] font-semibold lg:border-2 lg:p-2 border-white">
 								{cart.cart.reduce(
 									(total: number, item: StoreCartLineItem) =>
 										total + item.quantity,
@@ -89,7 +85,7 @@ const CartDropdown = (cart: any) => {
 				>
 					<PopoverPanel
 						static
-						className="absolute right-0 z-10 w-[400px] mt-3 bg-white border border-gray-200 rounded-lg shadow-xl"
+						className="absolute right-0 z-50 w-[400px] mt-3 bg-white border border-gray-200 rounded-lg shadow-xl max-md:hidden"
 					>
 						<div className="p-6">
 							<h3 className="mb-4 text-3xl! font-semibold text-gray-900">
@@ -126,14 +122,14 @@ const CartDropdown = (cart: any) => {
 								{cart?.cart?.map((item: StoreCartLineItem, index: number) => {
 									return (
 										<div className="flex gap-x-8 mb-12" key={index}>
-											<div className="rounded-lg border border-gray-300 size-24">
+											<div className="overflow-hidden rounded-lg border border-gray-300 size-24">
 												{" "}
 												<Image
-													src={item.thumbnail as string}
-													alt={item.product_title as string}
+													src={item.thumbnail + "?view=1" || ""}
+													alt={item.product_title || ""}
 													width={96}
 													height={96}
-													className="object-cover w-24 h-24 rounded-lg"
+													className="object-fill rounded-lg"
 												/>
 											</div>
 											<div className="flex flex-col justify-between w-full text-[1.5rem]!">

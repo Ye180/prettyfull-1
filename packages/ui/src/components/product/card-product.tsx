@@ -19,10 +19,12 @@ import { SizeSelector } from "./size-selector";
 import type { NormalizedCollectionProduct } from "./types";
 
 import { Button } from "../../button";
+import { CloseIcon as CloseIconImported } from "../../icons/close.icon";
 import { Heart } from "../../icons/heart.icon";
 
 import { useRegionStore } from "../../../../../apps/web/src/stores/useRegion";
 import { AddToCardIcon } from "../../icons/add-cart.icon";
+import { Drawer, DrawerClose, DrawerContent } from "../ui/drawer";
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
@@ -77,6 +79,17 @@ export const CardProduct: React.FC<CardProductProps> = ({
 	const [selectedSize, setSelectedSize] = useState<string | null>(null);
 	const [showSizeSelector, setShowSizeSelector] = useState(false);
 	const [isImageLoading, setIsImageLoading] = useState(true);
+	const [isMobile, setIsMobile] = useState(false);
+
+	// Détecter si on est sur mobile
+	React.useEffect(() => {
+		const checkMobile = () => {
+			setIsMobile(window.innerWidth < 768);
+		};
+		checkMobile();
+		window.addEventListener("resize", checkMobile);
+		return () => window.removeEventListener("resize", checkMobile);
+	}, []);
 
 	const addItemToCartMutation = useAddItemToCartMedusa();
 
@@ -264,18 +277,18 @@ export const CardProduct: React.FC<CardProductProps> = ({
 						>
 							<AddToCardIcon className="w-12 h-12 text-white" />
 						</button>
-						<button
+						{/* <button
 							type="button"
 							onClick={(e) => e.stopPropagation()}
 							className="p-4 text-2xl rounded-full shadow-sm cursor-pointer w-fit bg-secondary"
 							aria-label="Ajouter aux favoris"
 						>
 							<Heart className="w-8 h-8" />
-						</button>
+						</button> */}
 					</div>
 
-					{/* Sélecteur de taille (overlay) */}
-					{showSizeSelector && availableSizes.length > 0 && (
+					{/* Sélecteur de taille - Desktop (overlay) */}
+					{!isMobile && showSizeSelector && availableSizes.length > 0 && (
 						<div
 							className="absolute right-4 bottom-4 left-4 p-4 space-y-4 bg-white rounded-lg shadow-xl lg:px-8 lg:py-5"
 							onClick={(e) => e.stopPropagation()}
@@ -303,14 +316,48 @@ export const CardProduct: React.FC<CardProductProps> = ({
 				</div>
 			</div>
 
+			{/* Sélecteur de taille - Mobile (drawer du bas) */}
+			{isMobile && (
+				<Drawer open={showSizeSelector} onOpenChange={setShowSizeSelector}>
+					<DrawerContent
+						className="max-h-[80vh]"
+						onClick={(e) => e.stopPropagation()}
+					>
+						<div className="px-6 pb-4 h-[20vh]">
+							<div className="flex justify-between items-center pb-2 mb-6 border-b border-gray-200">
+								<h3 className="text-[2rem] font-semibold ">
+									Sélectionnez une taille
+								</h3>
+								<DrawerClose asChild>
+									<button
+										type="button"
+										className="text-gray-500 hover:text-black"
+										aria-label="Fermer"
+									>
+										<CloseIconImported className="w-8 h-8" />
+									</button>
+								</DrawerClose>
+							</div>
+							<SizeSelector
+								sizes={availableSizes}
+								selectedSize={selectedSize}
+								onChange={handleSelectSize}
+								onClick={(e, size) => handleAddToCart(e, size)}
+								compact={false}
+							/>
+						</div>
+					</DrawerContent>
+				</Drawer>
+			)}
+
 			{/* ===== Infos produit ===== */}
 			<div className="space-y-2">
 				{/* Titre */}
 				<div className="flex justify-between items-start text-[#000] ">
-					<h3 className="tracking-[0.03em] text-2xl! max-md:text-[2rem]!  md:text-[2.2rem]! truncate line-clamp-1">
+					<h3 className="tracking-[0.03em] text-2xl! max-md:text-[1.8rem]! truncate line-clamp-1">
 						{activeColor?.title}
 					</h3>
-					<h3 className="text-2xl!  max-md:text-[2rem]! md:text-[2.2rem]!whitespace-nowrap">
+					<h3 className="tracking-[0.03em] text-2xl! max-md:text-[1.8rem]! whitespace-nowrap!">
 						{formatCurrency_FR(
 							activeColor?.price,
 							regions?.currency_code === "xof" ? "FCFA" : "$",

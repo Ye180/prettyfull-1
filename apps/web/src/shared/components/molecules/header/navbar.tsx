@@ -4,13 +4,14 @@ import { useGetItemsCart } from "@/features/cart/api/medusa/get-items-cart";
 import { Category } from "@/features/homepage/api/medusa/get-category";
 import { PAGES_PATHS } from "@/lib/routes/paths-en";
 import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
-import { Input, Logo, Skeleton } from "@prettyfull/ui";
+import { Logo, Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useCallback, useEffect, useState } from "react";
+import { EnterIcon } from "../../../../../../../packages/ui/src/icons/enter.icon";
 import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
 import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
 import CartDropdown from "./carte-dropdown";
@@ -68,7 +69,7 @@ const NavBarHeaders = ({
 					>
 						<Logo />
 					</Link>
-					<div className=" max-md:hidden flex text-[1.2rem] text-black items-center space-x-6">
+					<div className=" max-md:hidden flex text-[1.2rem] text-black items-center space-x-6 scrollbar-hide">
 						{main_category ? (
 							main_category.map((items: Category, index: number) => {
 								const itemHandle = items.handle as string;
@@ -99,12 +100,20 @@ const NavBarHeaders = ({
 				</div>
 				<div className="flex gap-2 items-center md:gap-6">
 					<div className="flex gap-2 items-center md:gap-6">
-						<div className="flex gap-2 justify-start items-center px-6 py-3 w-full text-gray-500 rounded-2xl border border-gray-300 px- outline-gray-700 max-sm:hidden lg:w-140">
-							<Search className="" />
-							<Input
-								placeholder={t("placeholder")}
-								className="h-4  border-none outline-1 text-black font-light px-2 py-4 border-gray-300  text-[1.6rem] max-sm:hidden w-full sm:w-full placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.5rem] "
-							/>
+						<div className="px-4 py-3 w-[300px] max-md:hidden">
+							<div className="flex items-center px-4 py-3 rounded-lg border border-gray-300">
+								<Search className="w-5 h-5 text-gray-400 shrink-0" />
+								<input
+									placeholder={t("placeholder")}
+									className="flex-1 min-w-0 px-3 text-[1.4rem] font-light text-black bg-transparent border-none outline-none placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.3rem]"
+								/>
+								<button
+									type="button"
+									className="flex justify-center items-center w-8 h-8 text-white bg-black rounded-lg transition-colors cursor-pointer shrink-0 hover:bg-gray-800"
+								>
+									<EnterIcon className="w-4 h-4" />
+								</button>
+							</div>
 						</div>
 						<div className="max-md:hidden">
 							<CurrencySelector />
@@ -148,6 +157,7 @@ const NavBarHeaders = ({
 						onClick={() => setIsMobileMenuOpen(false)}
 						main_category={main_category}
 						secondary_category={secondary_category}
+						cartItems={itemsCart?.items || []}
 					/>
 				)}{" "}
 			</div>

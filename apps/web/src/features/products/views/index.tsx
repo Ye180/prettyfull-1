@@ -212,7 +212,6 @@ export default function ProductViews() {
 	// Calcul du prix
 	const productPrice = useMemo(() => {
 		if (product?.variants && product.variants.length > 0) {
-			console.log(product.variants);
 			const prices = product.variants
 				.map(
 					(v: any) =>

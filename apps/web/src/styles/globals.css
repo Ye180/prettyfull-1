@@ -16,7 +16,7 @@ h3 {
 	font-size: clamp(2.5rem, 4vw + 1rem, 4.2rem);
 }
 h4 {
-	font-size: clamp(2rem, 2vw + 1rem, 4rem);
+	font-size: clamp(2rem, 2vw + 1rem, 4.5rem);
 }
 h5 {
 	font-size: clamp(1.5rem, 1vw + 1rem, 2rem);
@@ -119,4 +119,16 @@ h6 {
 .scrollbar-hide {
 	-ms-overflow-style: none; /* IE et Edge */
 	scrollbar-width: none; /* Firefox */
+}
+
+.horizontal-scroll {
+	overflow-x: auto !important;
+	padding: 1rem 0;
+	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+.horizontal-scroll::-webkit-scrollbar {
+	display: none;
 }

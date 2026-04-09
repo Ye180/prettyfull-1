@@ -29,7 +29,7 @@ export function ProductGallery({
 		<div
 			className={cn(
 				"flex relative flex-row gap-4 justify-center items-start",
-				className
+				className,
 			)}
 		>
 			{/* <h2>{title}</h2> */}
@@ -43,7 +43,7 @@ export function ProductGallery({
 							"w-20 h-20 cursor-pointer border hover:border-black rounded-sm overflow-hidden transition-all hidden sm:flex",
 							activeImage === index
 								? "border-black shadow-md"
-								: "border-gray-200"
+								: "border-gray-200",
 						)}
 					>
 						<div className="overflow-hidden relative w-full h-full">
@@ -70,7 +70,7 @@ export function ProductGallery({
 					priority
 				/>
 				{promotion && (
-					<span className="fond-semibold bg-red-700 text-white !text-[1.2rem] lg:!text-xs  absolute top-4 right-4 px-4 py-2 rounded-full">
+					<span className="fond-semibold bg-red-700 text-white text-[1.2rem]! lg:text-xs!  absolute top-4 right-4 px-4 py-2 rounded-full">
 						{promotion.pourcentage}% OFF
 					</span>
 				)}
@@ -80,7 +80,7 @@ export function ProductGallery({
 			<div className="overflow-x-auto w-full sm:hidden h-fit max-sm:flex">
 				<div
 					className={cn(
-						"flex   max-sm:snap-x md:w-full  md:overflow-hidden overflow-y-hidden  lg:overflow-visible   space-y-0  space-x-0  scrollbar-hide  scroll-smooth snap-x  lg:snap-mandatory gap-x-1  scrolbar text-[1.5rem]"
+						"flex   max-sm:snap-x md:w-full  md:overflow-hidden overflow-y-hidden  lg:overflow-visible   space-y-0  space-x-0  scrollbar-hide  scroll-smooth snap-x  lg:snap-mandatory gap-x-1  scrolbar text-[1.5rem]",
 					)}
 				>
 					{images?.map((image, index) => (

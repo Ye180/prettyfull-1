@@ -34,11 +34,11 @@ const VisualSummary = ({
 			<div className="relative w-40 h-44 bg-gray-100 rounded-md aspect-square">
 				<div className="overflow-hidden w-40 h-44 rounded-md">
 					<Image
-						src={item.image}
+						src={item.image + "?view=1"}
 						alt={item.name}
 						width={100}
 						height={100}
-						className="object-cover w-40 rounded h-58"
+						className="object-top w-40 rounded h-58"
 					/>
 				</div>
 
@@ -60,7 +60,9 @@ const VisualSummary = ({
 					</p>
 
 					<div className="flex gap-10 justify-start items-center">
-						<p className="text-gray-500 text-md">Size: {item.size || "-"}</p>
+						<p className="text-gray-500 text-md">
+							Size: <span className="uppercase">{item.size || "-"}</span>
+						</p>
 						<button
 							onClick={() => handleRemove(item.id)}
 							disabled={loadingId === item.id}

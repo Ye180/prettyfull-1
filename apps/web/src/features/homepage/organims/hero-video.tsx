@@ -67,9 +67,7 @@ const HeroImages = ({
 	desktopUrl?: string;
 	mobileUrl?: string;
 }) => {
-	const hasImages = desktopUrl || mobileUrl;
-
-	if (isLoading || !hasImages) {
+	if (isLoading) {
 		return <LoadingPrettyfull />;
 	}
 

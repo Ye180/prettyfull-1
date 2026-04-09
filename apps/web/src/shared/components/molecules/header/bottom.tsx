@@ -30,10 +30,10 @@ const BottomHeader = ({
 				className,
 			)}
 		>
-			<div className="overflow-x-auto w-full h-fit">
+			<div className="overflow-x-auto w-full h-fit scrollbar-hide">
 				<div
 					className={cn(
-						"flex max-sm:snap-x md:w-full md:overflow-hidden overflow-y-hidden lg:overflow-visible space-y-0 space-x-0 scrollbar-hide scroll-smooth snap-x lg:snap-mandatory gap-x-6 text-[1.5rem]",
+						"flex max-sm:snap-x md:w-full md:overflow-hidden overflow-y-hidden lg:overflow-visible space-y-0 space-x-0 scrollbar-hide scroll-smooth snap-x lg:snap-mandatory gap-x-6 text-[1.5rem] ",
 						className_2,
 					)}
 				>

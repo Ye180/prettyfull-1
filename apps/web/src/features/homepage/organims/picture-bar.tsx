@@ -14,7 +14,7 @@ const PictureBar = ({
 	imageMobile: string | StaticImport;
 }) => {
 	const className = "h-[75vh] px-4 lg:h-[80vh] lg:px-40";
-	if (isLoading || !imageDesktop || !imageMobile) {
+	if (isLoading) {
 		return (
 			<Container maxWidth="100vw" className={className}>
 				<LoadingPrettyfull />
@@ -22,27 +22,34 @@ const PictureBar = ({
 		);
 	}
 
+	console.log("imageDesktop", imageDesktop);
+	console.log("imageMobile", imageMobile);
+
 	return (
-		<Container maxWidth="100vw" className={cn(className)}>
-			<div className="overflow-hidden relative h-full bg-center bg-no-repeat bg-cover hidden! sm:flex! ">
-				<Image
-					src={imageDesktop + "?view=1" || ""}
-					alt="phone image"
-					fill
-					objectFit="cover"
-					className="flex overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"
-				/>
-			</div>
-			<div className="overflow-hidden relative h-full bg-center bg-no-repeat bg-cover flex! sm:hidden!">
-				<Image
-					src={imageMobile + "?view=1" || ""}
-					alt="phone image"
-					fill
-					objectFit="cover"
-					className="flex overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"
-				/>
-			</div>
-		</Container>
+		<>
+			{imageDesktop || imageMobile ? (
+				<Container maxWidth="100vw" className={cn(className)}>
+					<div className="overflow-hidden relative h-full bg-center bg-no-repeat bg-cover hidden! sm:flex! ">
+						<Image
+							src={imageDesktop + "?view=1" || ""}
+							alt="phone image"
+							fill
+							objectFit="cover"
+							className="flex overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"
+						/>
+					</div>
+					<div className="overflow-hidden relative h-full bg-center bg-no-repeat bg-cover flex! sm:hidden!">
+						<Image
+							src={imageMobile + "?view=1" || ""}
+							alt="phone image"
+							fill
+							objectFit="cover"
+							className="flex overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"
+						/>
+					</div>
+				</Container>
+			) : null}
+		</>
 	);
 };
 

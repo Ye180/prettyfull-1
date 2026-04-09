@@ -22,14 +22,14 @@ const menuItems = [
 		icon: OrderIcon,
 	},
 	{
-		label: "Ma Wishlist",
-		href: "/account/wishlist",
-		icon: Heart,
-	},
-	{
 		label: "Adresses",
 		href: "/account/addresses",
 		icon: AddressIcon,
+	},
+	{
+		label: "Ma Wishlist",
+		href: "/account/wishlist",
+		icon: Heart,
 	},
 ];
 

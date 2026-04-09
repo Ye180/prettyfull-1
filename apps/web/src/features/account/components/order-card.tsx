@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
-import { Button } from "@prettyfull/ui";
+import { formatCurrency_FR } from "@prettyfull/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -78,7 +78,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 	});
 
 	return (
-		<div className="bg-white rounded-md border border-gray-100 transition-all duration-200 group">
+		<div className="w-[83%]  rounded-md border border-gray-100 transition-all duration-200 group">
 			<div className="flex flex-col gap-4 justify-between p-6 border-b border-gray-100/80 sm:flex-row sm:items-start">
 				<div className="space-y-3">
 					<div className="flex gap-3 items-center">
@@ -105,10 +105,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 
 				<div className="text-left sm:text-right">
 					<p className="text-xl font-bold tracking-tight text-gray-900">
-						{order.total.toFixed(2)}{" "}
-						<span className="text-lg font-medium text-gray-500">
-							{order.currency}
-						</span>
+						{formatCurrency_FR(order.total, order.currency)}
 					</p>
 					<p className="mt-1 text-sm font-medium text-gray-500">
 						{order.items.length} article{order.items.length > 1 ? "s" : ""}
@@ -117,17 +114,17 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 			</div>
 
 			<div className="p-6 bg-gray-50/30">
-				<div className="flex overflow-x-auto gap-4 items-center pb-2 h-60 scrollbar-hide">
+				<div className="flex gap-x-10 items-center pb-2 h-60 horizontal-scroll scrollbar-hide">
 					{order.items.map((item) => (
 						<div key={item.id} className="flex space-x-8 sm:space-x-10">
 							<div className="relative w-40 h-44 bg-gray-100 rounded-md aspect-square">
-								<div className="overflow-hidden w-40 h-44 rounded-md">
+								<div className="overflow-hidden w-40 h-44 rounded-md border border-gray-200">
 									<Image
 										src={item.thumbnail}
 										alt={item.title}
 										width={100}
 										height={100}
-										className="object-cover w-40 rounded h-58"
+										className="object-top rounded"
 									/>
 								</div>
 								{item.quantity > 1 && (
@@ -141,7 +138,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 				</div>
 			</div>
 
-			<div className="flex justify-between items-center p-5 px-6 border-t border-gray-100">
+			<div className="flex justify-between items-start p-5 px-6 border-t border-gray-100 md:items-center max-md:flex-col max-md:gap-y-10">
 				<Link
 					href={`/account/orders/${order.id}`}
 					className="flex items-center text-sm font-semibold text-gray-600 transition-colors group/link hover:text-black"
@@ -150,9 +147,9 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 					<ArrowRightIcon className="ml-2 w-4 h-4 opacity-0 transition-all duration-200 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0" />
 				</Link>
 
-				<Button className="py-4 text-white bg-black rounded-full w-fit">
+				{/* <Button className="py-4 text-white bg-black rounded-full w-fit">
 					Suivre le colis
-				</Button>
+				</Button> */}
 			</div>
 		</div>
 	);

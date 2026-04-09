@@ -1,7 +1,5 @@
 "use client";
 
-import { AppleIcon } from "@/components/icons/apple-icon";
-import { GoogleIcon } from "@/components/icons/google-icon";
 import { useActionEvent } from "@/hooks/use-action-event";
 import { sdk } from "@/lib/api/sdk";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,75 +32,47 @@ export function LoginForm() {
 	const { currentCartId } = useCartStore(); // 5. Obtenir l'ID du panier invité
 
 	const onSubmit = async (data: LoginFormData) => {
-		// another identity (for example, admin user)
-		// exists with the same email. So, use the auth
-		// flow to login and create a customer.
+		startLoading();
 
-		// pousser sur "/checkout " si la reponse login est favorable et qu'il y a un panier en cours
-
-		const loginResponse = await sdk.auth
-			.login("customer", "emailpass", {
+		try {
+			const loginResponse = await sdk.auth.login("customer", "emailpass", {
 				email: data.email,
 				password: data.password,
-			})
-
-			.catch((e) => {
-				alert(`An error occurred while creating account: ${e}`);
 			});
 
-		if (!loginResponse) {
-			return;
-		}
-		// Si un panier invité existe, le fusionner avec le compte utilisateur
-		callbackUrl ? router.push(callbackUrl) : router.push("/");
+			if (!loginResponse) {
+				alert("Erreur lors de la connexion");
+				endLoading();
+				return;
+			}
 
-		if (typeof loginResponse !== "string") {
-			alert(
-				"Authentication requires more actions, which isn't supported by this flow.",
-			);
-			return;
+			if (typeof loginResponse !== "string") {
+				alert(
+					"Authentication requires more actions, which isn't supported by this flow.",
+				);
+				endLoading();
+				return;
+			}
+
+			// Succès - rediriger
+			endLoading();
+			callbackUrl ? router.push(callbackUrl) : router.push("/");
+		} catch (e: any) {
+			alert(`Erreur lors de la connexion: ${e.message || e}`);
+			endLoading();
 		}
 	};
 
 	return (
 		<Flex settings={{ justify: "center", isColumn: true }}>
-			<header>
-				<div className="space-y-8">
-					<div className="mb-20">
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<main className="space-y-12">
+					<div className="mb-16">
 						<h3>Welcome Back to Snaely</h3>
 						<p className="text-neutral-500">
 							Log in to your account to shopping the newest fashion style
 						</p>
 					</div>
-					<Flex className="flex-col">
-						<Button
-							variant="outline"
-							icon={<AppleIcon className="size-12" />}
-							fullWidth
-						>
-							Continue with Apple
-						</Button>
-						<Button
-							variant="outline"
-							icon={<GoogleIcon className="size-11" />}
-							fullWidth
-						>
-							Continue with Google
-						</Button>
-					</Flex>
-					<Flex
-						settings={{ align: "center" }}
-						className="my-12 w-full font-medium text-center"
-					>
-						<div className="w-1/2 border-t border-black/10" />
-						or
-						<div className="w-1/2 border-t border-black/10" />
-					</Flex>
-				</div>
-			</header>
-
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<main>
 					<div className="space-y-8">
 						<Input
 							label="Email"
@@ -116,16 +86,36 @@ export function LoginForm() {
 							errorMessage={errors.password?.message}
 						/>
 					</div>
+					<Button type="submit" isLoading={loading} fullWidth>
+						Login
+					</Button>
 				</main>
+				<header>
+					<div className="">
+						{/* <Flex className="max-md:flex-col">
+							<Button
+								variant="outline"
+								icon={<AppleIcon className="size-12" />}
+								fullWidth
+							>
+								Continue with Apple
+							</Button>
+							<Button
+								variant="outline"
+								icon={<GoogleIcon className="size-8" />}
+								fullWidth
+							>
+								Continue with Google
+							</Button>
+						</Flex> */}
+					</div>
+				</header>
 
 				<Flex
 					as="footer"
 					settings={{ isColumn: true, align: "center", spacing: "gap-10" }}
 					className="mt-[5.2rem]"
 				>
-					<Button type="submit" isLoading={loading} fullWidth>
-						Login
-					</Button>
 					<p className="font-medium text-grey">
 						Don't have an account?{" "}
 						<Link href="/create-account" className="text-black underline">

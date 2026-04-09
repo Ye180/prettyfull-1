@@ -24,8 +24,6 @@ export const EditItems = ({ productId }: Props) => {
 			router.push("/login");
 			return;
 		}
-
-		console.log("Add to wishlist", productId);
 	};
 
 	return (

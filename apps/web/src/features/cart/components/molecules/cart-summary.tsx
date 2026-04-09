@@ -1,10 +1,12 @@
 "use client";
 
+import { LoginModal } from "@/features/auth/components/modals/login-modal";
 import { sdk } from "@/lib/api/sdk";
 import { Button, DropdownMenuSeparator } from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface CartSummaryProps {
 	subtotal?: number;
@@ -22,21 +24,25 @@ const CartSummary = ({
 	currency = "USD",
 }: CartSummaryProps) => {
 	const t = useTranslations("CheckoutPage.summary");
+	const router = useRouter();
+	const [showLoginModal, setShowLoginModal] = useState(false);
 
-	const router = useRouter(); // 2. Initialiser le router
+	// Vérifier si l'utilisateur est connecté avant d'aller au checkout
+	const handleCheckout = async () => {
+		try {
+			// Vérifier si l'utilisateur est authentifié
+			await sdk.store.customer.retrieve();
+			// Utilisateur connecté -> aller au checkout
+			router.push("/checkout");
+		} catch (error) {
+			// Utilisateur non connecté -> ouvrir le modal de login
+			setShowLoginModal(true);
+		}
+	};
 
-	// 4. Logique de redirection
-	const handleCheckout = () => {
-		sdk.store.customer
-			.retrieve()
-			.then(({ customer }) => {
-				// ICI => l'utilisateur est connecté
-				router.push("/checkout");
-			})
-			.catch(() => {
-				router.push("/login?callbackUrl=/checkout");
-				// ICI => l'utilisateur n'est PAS connecté
-			});
+	// Après login réussi dans le modal, rediriger vers checkout
+	const handleLoginSuccess = () => {
+		router.push("/checkout");
 	};
 
 	return (
@@ -78,6 +84,13 @@ const CartSummary = ({
 					<span className="text-[1.6rem] font-semibold">Checkout</span>
 				</Button>
 			</div>
+
+			{/* Modal de login */}
+			<LoginModal
+				open={showLoginModal}
+				onOpenChange={setShowLoginModal}
+				onLoginSuccess={handleLoginSuccess}
+			/>
 		</>
 	);
 };

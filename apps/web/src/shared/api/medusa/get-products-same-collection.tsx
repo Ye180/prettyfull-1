@@ -40,7 +40,7 @@ const getProductsSameCollection = async (regionId: string) => {
 			};
 		}
 
-		grouped[collectionId].products.push(product);
+		grouped[collectionId]?.products.push(product);
 	}
 
 	// Then, fetch the collection data for each group

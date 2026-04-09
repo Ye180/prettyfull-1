@@ -29,13 +29,24 @@ const SectionHeader = ({
 	description,
 	ctaLabel,
 	variant,
+	isLoading,
 }: {
 	title: string;
 	description: string;
 	ctaLabel: string;
 	variant: "mobile" | "desktop";
+	isLoading?: boolean;
 }) => {
 	const isMobile = variant === "mobile";
+
+	if (isLoading) {
+		return (
+			<div className="">
+				<div className="w-full h-24 bg-gray-200 rounded-2xl animate-pulse" />
+				<div className="mt-4 w-1/4 h-16 bg-gray-200 rounded-lg animate-pulse" />
+			</div>
+		);
+	}
 
 	return (
 		<div
@@ -126,44 +137,59 @@ const ModeCollection = ({ fourth }: ModeCollectionProps) => {
 	const title = fourth?.title || t("title");
 	const description = fourth?.description || t("subtitle");
 	const ctaLabel = t("ctaButton");
-	const imageUrl =
-		firstCategory?.product_category_image?.[1]?.url + "?view=1" ||
-		"/home/promo-phone.jpg";
+	const imageUrl = firstCategory?.product_category_image?.[1]?.url + "?view=1";
 
-	console.log("products", normalizedProducts);
+	console.log("imageUrl", firstCategory);
 
 	return (
-		<Container
-			maxWidth="100vw"
-			className="flex gap-x-12 justify-between items-start px-4 lg:px-40 max-md:flex-col h-fit max-md:space-y-12"
-		>
-			<SectionHeader
-				title={title}
-				description={description}
-				ctaLabel={ctaLabel}
-				variant="mobile"
-			/>
+		<>
+			{(firstCategory?.product_category_image?.length ?? 0) > 0 && (
+				<Container
+					maxWidth="100vw"
+					className="flex gap-x-12 justify-between items-start px-4 lg:px-40 max-md:flex-col h-fit max-md:space-y-12"
+				>
+					<SectionHeader
+						title={title}
+						description={description}
+						ctaLabel={ctaLabel}
+						variant="mobile"
+						isLoading={isLoading}
+					/>
 
-			{isLoading || !firstCategory ? (
-				<LoadingPrettyfull className="w-full md:w-1/2 h-160 md:h-[90vh]" />
-			) : (
-				<CategoryImage imageUrl={imageUrl} dealLabel={t("deal")} />
+					{isLoading || !firstCategory ? (
+						<LoadingPrettyfull className="w-full md:w-1/2 h-160 md:h-[90vh]" />
+					) : (
+						<CategoryImage imageUrl={imageUrl} dealLabel={t("deal")} />
+					)}
+					<div className="overflow-hidden space-y-12 w-full md:w-1/2 h-fit">
+						<SectionHeader
+							title={title}
+							description={description}
+							ctaLabel={ctaLabel}
+							variant="desktop"
+							isLoading={isLoading}
+						/>
+						{loadingProductsSameCollection ? (
+							<div className="grid grid-cols-2 gap-4">
+								{Array.from({ length: 2 }, (_, i) => (
+									<div key={i} className="space-y-3 animate-pulse">
+										<div className="w-full bg-gray-200 rounded-lg h-200" />
+										<div className="w-3/4 h-6 bg-gray-200 rounded" />
+										<div className="w-1/3 h-6 bg-gray-300 rounded" />
+									</div>
+								))}
+							</div>
+						) : (
+							<GridCardProduct classGrid="grid grid-cols-2">
+								{normalizedProducts.map((product) => (
+									<CardProduct key={product.collectionId} product={product} />
+								))}
+							</GridCardProduct>
+						)}
+					</div>
+				</Container>
 			)}
-
-			<div className="overflow-hidden space-y-12 w-full md:w-1/2 h-fit">
-				<SectionHeader
-					title={title}
-					description={description}
-					ctaLabel={ctaLabel}
-					variant="desktop"
-				/>
-				<GridCardProduct classGrid="grid grid-cols-2">
-					{normalizedProducts.map((product) => (
-						<CardProduct key={product.collectionId} product={product} />
-					))}
-				</GridCardProduct>
-			</div>
-		</Container>
+		</>
 	);
 };
 

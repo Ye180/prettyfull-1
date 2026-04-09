@@ -2,6 +2,7 @@
 
 import CartSummary from "@/features/cart/components/molecules/cart-summary";
 import CartItems from "@/features/cart/components/organims/cart-items";
+import { useCartPersistence } from "@/hooks/use-cart-persistence";
 import { useRegionStore } from "@/stores/useRegion";
 import { StoreCart } from "@medusajs/types";
 import { useRouter } from "next/navigation";
@@ -16,6 +17,9 @@ const FREE_SHIPPING_THRESHOLD = 50000;
 const CartView = () => {
 	const router = useRouter();
 	const { items, setCart } = useCartStore();
+
+	// Garantir que le cart_id persiste pendant toute la navigation
+	useCartPersistence();
 
 	const cartId = localStorage.getItem("cart_id");
 	const { data: cart, isLoading } = useGetItemsCart(cartId as string);
@@ -34,7 +38,7 @@ const CartView = () => {
 						<h2 className="py-8 text-[3rem]! lg:text-[3.5rem]!">
 							Votre panier
 						</h2>
-						<span className="text-sm text-gray-500">
+						<span className="text-gray-500 text-md">
 							{cart?.items?.length ?? 0} article
 							{(cart?.items?.length ?? 0) > 1 ? "s" : ""}
 						</span>

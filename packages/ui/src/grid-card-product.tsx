@@ -64,7 +64,6 @@ export const GridCardProduct = ({
 				...styleGrid,
 				active: index,
 			});
-			console.log(style);
 		},
 		[styleGrid],
 	);

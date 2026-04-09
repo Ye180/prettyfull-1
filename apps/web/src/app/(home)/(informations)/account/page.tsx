@@ -62,6 +62,7 @@ export default function AccountPage() {
 	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
 
 	const { data: ordersData, isLoading: ordersLoading } = useGetCustomerOrders();
+	const [showPassword, setShowPassword] = useState(false);
 	const orders = ordersData?.orders ?? [];
 	const ordersCount = ordersData?.count ?? 0;
 
@@ -191,7 +192,7 @@ export default function AccountPage() {
 											alt={lastOrder.items[0].product_title || "Produit"}
 											width={96}
 											height={96}
-											className="object-cover w-24 h-24"
+											className="object-fill object-top"
 										/>
 									)}
 								</div>
@@ -220,7 +221,7 @@ export default function AccountPage() {
 					</div>
 					<Link href="/account/orders">
 						<Button variant="outline" className="mt-6 w-full border-gray-200">
-							Voir la commande
+							Voir les commandes
 						</Button>
 					</Link>
 				</div>
@@ -249,10 +250,11 @@ export default function AccountPage() {
 								<p className="text-gray-500">Aucune adresse enregistrée</p>
 							</address>
 						)}
-
-						<Button variant="outline" className="mt-6 w-full border-gray-200">
-							Modifier
-						</Button>
+						<Link href="/account/addresses">
+							<Button variant="outline" className="mt-6 w-full border-gray-200">
+								Voir les adresses
+							</Button>
+						</Link>
 					</div>
 				</div>
 			</div>
@@ -275,7 +277,7 @@ export default function AccountPage() {
 							<Input
 								label="First name"
 								placeholder="Write first name"
-								className=""
+								className="h-fit"
 								value={firstName}
 								onChange={(e) => setFirstName(e.target.value)}
 							/>
@@ -283,7 +285,7 @@ export default function AccountPage() {
 							<Input
 								label="Last name"
 								placeholder="Write last name"
-								className=""
+								className="h-fit"
 								value={lastName}
 								onChange={(e) => setLastName(e.target.value)}
 							/>
@@ -293,7 +295,7 @@ export default function AccountPage() {
 								type="email"
 								label="Email"
 								placeholder="exemple@gmail.com"
-								className=""
+								className="h-fit"
 								value={email}
 								disabled
 							/>
@@ -301,7 +303,7 @@ export default function AccountPage() {
 							<Input
 								label="Number"
 								placeholder="+33 6..."
-								className=""
+								className="h-fit"
 								value={phone}
 								onChange={(e) => setPhone(e.target.value)}
 							/>

@@ -12,29 +12,6 @@ const CheckoutSummary = ({ currency }: { currency: string }) => {
 	const cartId = localStorage.getItem("cart_id");
 	const { data: cart, isLoading } = useGetItemsCart(cartId as string);
 
-	//Add elements dans le local storage
-	// const [checkoutSummary, setCheckoutSummary] = useLocalStorage(
-	// 	"checkout_summary",
-	// 	{
-	// 		subtotal: 0,
-	// 		shipping: 0,
-	// 		taxes: 0,
-	// 		total: 0,
-	// 	}
-	// );
-
-	// // Set the checkout summary data when cart is loaded
-	// useEffect(() => {
-	// 	if (cart) {
-	// 		setCheckoutSummary({
-	// 			subtotal: cart.item_subtotal ?? 0,
-	// 			shipping: cart.shipping_total ?? 0,
-	// 			taxes: cart.item_tax_total ?? 0,
-	// 			total: cart.item_total ?? 0,
-	// 		});
-	// 	}
-	// }, [cart, setCheckoutSummary]);
-
 	return (
 		<div className="py-6 w-full bg-white">
 			{/* SECTION: Produits visuels */}

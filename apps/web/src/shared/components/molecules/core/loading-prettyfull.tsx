@@ -6,7 +6,7 @@ const FALLBACK_IMAGE = "/assets/logo.png";
 export const LoadingPrettyfull = ({ className }: { className?: string }) => (
 	<div
 		className={cn(
-			"flex justify-center items-center w-full h-full bg-gray-200",
+			"flex relative justify-center items-center w-full h-full bg-gray-200 animate-pulse",
 			className,
 		)}
 	>
@@ -15,10 +15,9 @@ export const LoadingPrettyfull = ({ className }: { className?: string }) => (
 			alt="Hero background image"
 			width={900}
 			height={300}
-			// fill
-			// sizes={"100%"}
 			className="w-full h-fit"
 			priority
 		/>
+		<div className="absolute inset-0 w-full h-full bg-gray-300/50"></div>
 	</div>
 );

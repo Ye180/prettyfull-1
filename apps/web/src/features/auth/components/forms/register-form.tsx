@@ -1,7 +1,6 @@
 "use client";
 
-import { AppleIcon } from "@/components/icons/apple-icon";
-import { GoogleIcon } from "@/components/icons/google-icon";
+import { EyesClosed, EyesOpen } from "@/components/icons/eyes-icon";
 import { sdk } from "@/lib/api/sdk";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FetchError } from "@medusajs/js-sdk";
@@ -30,9 +29,8 @@ export function RegisterForm() {
 		resolver: zodResolver(registerSchema),
 	});
 
-	// const { startLoading, endLoading, loading } = useActionEvent();
-
 	const [loading, setLoading] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 
 	const onSubmit = async (data: RegisterFormData) => {
 		if (!data.email || !data.password) {
@@ -76,48 +74,21 @@ export function RegisterForm() {
 
 	return (
 		<Flex settings={{ justify: "center", isColumn: true }}>
-			<header>
-				<div className="space-y-8">
-					<h3>Create an account</h3>
-					<Flex>
-						<Button
-							variant="outline"
-							icon={<AppleIcon className="size-12" />}
-							fullWidth
-						>
-							Continue with Apple
-						</Button>
-						<Button
-							variant="outline"
-							icon={<GoogleIcon className="size-11" />}
-							fullWidth
-						>
-							Continue with Google
-						</Button>
-					</Flex>
-					<Flex
-						settings={{ align: "center" }}
-						className="my-12 w-full font-medium text-center"
-					>
-						<div className="w-1/2 border-t border-black/10" />
-						or
-						<div className="w-1/2 border-t border-black/10" />
-					</Flex>
-				</div>
-			</header>
-
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<main>
+				<main className="space-y-12">
+					<h3>Create an account</h3>
 					<div className="grid grid-cols-2 gap-8">
 						<Input
 							label="First Name"
 							{...register("firstName")}
 							errorMessage={errors.firstName?.message}
+							className="h-fit"
 						/>
 						<Input
 							label="Last Name"
 							{...register("lastName")}
 							errorMessage={errors.lastName?.message}
+							className="h-fit"
 						/>
 						<div className="col-span-2">
 							<Input
@@ -127,15 +98,38 @@ export function RegisterForm() {
 								errorMessage={errors.email?.message}
 							/>
 						</div>
-						<div className="col-span-2">
+						<div className="relative col-span-2">
 							<Input
 								label="Password"
-								type="password"
+								type={showPassword ? "text" : "password"}
 								{...register("password")}
 								errorMessage={errors.password?.message}
 							/>
+							{showPassword ? (
+								<span
+									className="absolute right-3 opacity-40 -translate-y-2.5 top-3/5 cursor-pointer"
+									onClick={() => setShowPassword(false)}
+								>
+									<EyesClosed />
+								</span>
+							) : (
+								<span
+									className="absolute right-3 opacity-40 -translate-y-2.5 top-3/5 cursor-pointer"
+									onClick={() => setShowPassword(true)}
+								>
+									<EyesOpen />
+								</span>
+							)}
 						</div>
 					</div>
+					{/* <Flex
+						settings={{ align: "center" }}
+						className="my-12 w-full font-medium text-center"
+					>
+						<div className="w-1/2 border-t border-black/10" />
+						or
+						<div className="w-1/2 border-t border-black/10" />
+					</Flex> */}
 				</main>
 
 				<Flex
@@ -154,6 +148,28 @@ export function RegisterForm() {
 					</p>
 				</Flex>
 			</form>
+			<header>
+				<div className="space-y-8">
+					{/* <Flex className="max-md:flex-col">
+						<Button
+							variant="outline"
+							icon={<AppleIcon className="size-12" />}
+							fullWidth
+							className="whitespace-nowrap"
+						>
+							Continue with Apple
+						</Button>
+						<Button
+							variant="outline"
+							icon={<GoogleIcon className="size-11" />}
+							fullWidth
+							className="whitespace-nowrap"
+						>
+							Continue with Google
+						</Button>
+					</Flex> */}
+				</div>
+			</header>
 		</Flex>
 	);
 }

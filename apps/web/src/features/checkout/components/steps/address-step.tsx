@@ -91,8 +91,6 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 				phone: data.phone,
 			};
 
-			console.log("Updating cart address:", addressData);
-
 			// Update cart with address via Medusa API
 			await updateCartAddress.mutateAsync({
 				cartId,
@@ -109,7 +107,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 			console.error("Failed to update address:", error);
 			setError(
 				error?.message ||
-					"Impossible de mettre à jour l'adresse. Veuillez réessayer."
+					"Impossible de mettre à jour l'adresse. Veuillez réessayer.",
 			);
 		} finally {
 			setIsLoading(false);
@@ -157,7 +155,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 						{
 							"opacity-50 pointer-events-none select-none":
 								!isOpen && !isCompleted,
-						}
+						},
 					)}
 				>
 					Shipping Address

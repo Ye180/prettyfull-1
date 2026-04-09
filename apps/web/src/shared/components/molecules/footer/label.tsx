@@ -5,8 +5,8 @@ import Link from "next/link";
 
 const DescriptionFooter = () => {
 	return (
-		<div className="flex flex-col space-y-10 text-md max-lg:w-full lg:w-2/6 md:items-start ">
-			<h3 className="!text-[3.5rem] font-semibold tracking-wider">
+		<div className="flex flex-col space-y-10 text-md max-lg:w-full lg:w-2/6 md:items-start">
+			<h3 className="text-[3.5rem]! font-semibold tracking-wider">
 				PRETTYFULL
 			</h3>
 			<p className="w-full font-light leading-relaxed text-white/80">
@@ -17,17 +17,17 @@ const DescriptionFooter = () => {
 
 			{/* Newsletter */}
 			<div className="w-full max-w-sm">
-				<label htmlFor="email" className="font-semibold tracking-wider ">
+				<label htmlFor="email" className="font-semibold tracking-wider">
 					EMAIL
 				</label>
 				<div className="relative mt-2">
 					<input
 						type="email"
 						id="email"
-						className="w-full py-2 pr-10 bg-transparent border-b border-gray-600 outline-none focus:border-white focus:ring-0"
+						className="py-2 pr-10 w-full bg-transparent border-b border-gray-600 outline-none focus:border-white focus:ring-0"
 						placeholder="Your email address"
 					/>
-					<button className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+					<button className="flex absolute inset-y-0 right-0 items-center pr-3 cursor-pointer">
 						<ArrowLinearIcon className="text-gray-400 transition-colors rotate-90 hover:text-white" />
 					</button>
 				</div>
@@ -40,7 +40,7 @@ const DescriptionFooter = () => {
 						key={index}
 						href={items.href}
 						aria-label={items.label}
-						className="text-gray-400 transition-colors !text-md hover:text-white"
+						className="text-gray-400 transition-colors text-md! hover:text-white"
 					>
 						{<items.icon />}
 					</Link>
