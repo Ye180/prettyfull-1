@@ -28,7 +28,7 @@ export function useLocalStorage<T>(
             const item = window.localStorage.getItem(key);
             return item ? JSON.parse(item) : initialValue;
         } catch (error) {
-            console.error(`Error reading localStorage key "${key}":`, error);
+          
             return initialValue;
         }
     });
@@ -97,7 +97,6 @@ export function useCopyToClipboard(): [
             setIsCopied(true);
             setTimeout(() => setIsCopied(false), 2000);
         } catch (error) {
-            console.error('Failed to copy text:', error);
             setIsCopied(false);
         }
     };

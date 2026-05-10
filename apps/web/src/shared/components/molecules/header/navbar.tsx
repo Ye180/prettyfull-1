@@ -6,17 +6,15 @@ import { PAGES_PATHS } from "@/lib/routes/paths-en";
 import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
 import { Logo, Skeleton } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useCallback, useEffect, useState } from "react";
-import { EnterIcon } from "../../../../../../../packages/ui/src/icons/enter.icon";
 import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
-import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
 import CartDropdown from "./carte-dropdown";
 import { CurrencySelector } from "./currency-selector";
 import NavbarResponsive from "./navbar-responsive";
+import SearchBar from "./search-bar";
 
 const NavBarHeaders = ({
 	main_category,
@@ -29,7 +27,6 @@ const NavBarHeaders = ({
 	const [cartId, setCartId] = useState<string | null>(null);
 	const pathname = usePathname();
 	const [division] = useQueryState("division");
-	const t = useTranslations("HomePage.header");
 
 	const syncCartId = useCallback(() => {
 		const storedCartId = localStorage.getItem("cart_id");
@@ -100,20 +97,8 @@ const NavBarHeaders = ({
 				</div>
 				<div className="flex gap-2 items-center md:gap-6">
 					<div className="flex gap-2 items-center md:gap-6">
-						<div className="px-4 py-3 w-[300px] max-md:hidden">
-							<div className="flex items-center px-4 py-3 rounded-lg border border-gray-300">
-								<Search className="w-5 h-5 text-gray-400 shrink-0" />
-								<input
-									placeholder={t("placeholder")}
-									className="flex-1 min-w-0 px-3 text-[1.4rem] font-light text-black bg-transparent border-none outline-none placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.3rem]"
-								/>
-								<button
-									type="button"
-									className="flex justify-center items-center w-8 h-8 text-white bg-black rounded-lg transition-colors cursor-pointer shrink-0 hover:bg-gray-800"
-								>
-									<EnterIcon className="w-4 h-4" />
-								</button>
-							</div>
+						<div className="py-3 w-[400px] lg:w-[400px] max-md:hidden">
+							<SearchBar />
 						</div>
 						<div className="max-md:hidden">
 							<CurrencySelector />

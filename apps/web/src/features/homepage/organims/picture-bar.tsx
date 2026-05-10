@@ -22,9 +22,6 @@ const PictureBar = ({
 		);
 	}
 
-	console.log("imageDesktop", imageDesktop);
-	console.log("imageMobile", imageMobile);
-
 	return (
 		<>
 			{imageDesktop || imageMobile ? (
@@ -34,8 +31,8 @@ const PictureBar = ({
 							src={imageDesktop + "?view=1" || ""}
 							alt="phone image"
 							fill
-							objectFit="cover"
-							className="flex overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"
+							sizes="(min-width: 640px) 100vw, 1px"
+							className="object-cover flex overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"
 						/>
 					</div>
 					<div className="overflow-hidden relative h-full bg-center bg-no-repeat bg-cover flex! sm:hidden!">
@@ -43,8 +40,8 @@ const PictureBar = ({
 							src={imageMobile + "?view=1" || ""}
 							alt="phone image"
 							fill
-							objectFit="cover"
-							className="flex overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"
+							sizes="(max-width: 639px) 100vw, 1px"
+							className="object-cover flex overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"
 						/>
 					</div>
 				</Container>

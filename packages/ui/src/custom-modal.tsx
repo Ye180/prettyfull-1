@@ -59,7 +59,7 @@ export function CustomModal({
 					onInteractOutside={(event) => event.preventDefault()}
 					className={cn(
 						"overflow-hidden w-1/2 rounded-3xl border-none outline-none",
-						className
+						className,
 					)}
 				>
 					<AnimatePresence mode="wait">
@@ -70,7 +70,7 @@ export function CustomModal({
 							transition={{ duration: 0.2 }} // Durée de la transition
 						>
 							{close && (
-								<DialogClose className="absolute top-4 right-6 p-2 rounded-full transition-colors cursor-pointer hover:bg-gray-100 focus:outline-none">
+								<DialogClose className="absolute top-4 right-6 p-2 rounded-full border-0 transition-colors cursor-pointer hover:bg-gray-100 focus:outline-none focus:ring-0 focus:ring-gray-300 focus:ring-offset-0">
 									<X className="text-gray-500 size-6 hover:text-gray-800" />
 								</DialogClose>
 							)}
@@ -79,7 +79,7 @@ export function CustomModal({
 								<DialogTitle
 									className={cn(
 										"h-fit text-center text-[2rem]! tracking-wider lg:text-[4.5rem]! pt-6 ",
-										titleClassName
+										titleClassName,
 									)}
 								>
 									{title}

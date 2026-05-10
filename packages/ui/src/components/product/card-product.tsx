@@ -24,6 +24,7 @@ import { Heart } from "../../icons/heart.icon";
 
 import { useRegionStore } from "../../../../../apps/web/src/stores/useRegion";
 import { AddToCardIcon } from "../../icons/add-cart.icon";
+import { toast } from "../toast/toaster";
 import { Drawer, DrawerClose, DrawerContent } from "../ui/drawer";
 // -----------------------------------------------------------------------------
 // Types
@@ -151,6 +152,12 @@ export const CardProduct: React.FC<CardProductProps> = ({
 
 			// IMPORTANT: Avec Medusa, on envoie le variant_id directement
 			// Adapter votre API backend pour accepter variant_id au lieu de selectedVariants
+			const loadingId = toast.loading("Ajout au panier...", {
+				description: product?.collectionTitle
+					? `${product.collectionTitle}`
+					: "Merci de patienter un instant.",
+			});
+
 			addItemToCartMutation.mutate(
 				{
 					cartId: cartId || "",
@@ -159,13 +166,21 @@ export const CardProduct: React.FC<CardProductProps> = ({
 				},
 				{
 					onSuccess: () => {
-						alert("Produit ajouté au panier !");
+						toast.cart("Ajouté au panier", {
+							id: loadingId,
+							description: product?.collectionTitle
+								? `${product.collectionTitle} a été ajouté à votre panier.`
+								: "Votre article a été ajouté à votre panier.",
+						});
 					},
 					onError: (error: any) => {
 						console.error("Erreur lors de l'ajout:", error);
-						alert(
-							`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`,
-						);
+						toast.error("Impossible d'ajouter au panier", {
+							id: loadingId,
+							description:
+								error?.message ||
+								"Une erreur est survenue. Merci de réessayer.",
+						});
 					},
 				},
 			);

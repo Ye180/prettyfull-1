@@ -1,7 +1,7 @@
 const ItemsCategory = () => {
 	return (
 		<div
-			className="overflow-hidden relative h-full bg-gray-100 w-68 sm:w-100 aspect-square pointer-cursor shrink-0 snap-center"
+			className="overflow-hidden relative w-40 h-full min-w-92 pointer-cursor snap-center"
 			style={{
 				backgroundImage: `url('/assets/product_1.jpg')`,
 				backgroundSize: "cover",

@@ -68,7 +68,6 @@ export const getServerSession = cache(async (): Promise<Session | null> => {
     const session = await response.json();
     return session;
   } catch (error) {
-    console.error("Error fetching server session:", error);
     return null;
   }
 });

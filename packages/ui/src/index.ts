@@ -28,6 +28,8 @@ export * from "../src/components/ui/tabs";
 
 export * from "../src/custom-modal";
 
+export * from "./components/toast/toaster";
+
 
 
 // --- Import des icônes ---
@@ -35,22 +37,22 @@ export * from "./icons/spinner.icon"; // <-- AJOUTEZ CETTE LIGNE
 
 // --- Lucide icons re-export ---
 export {
-      Check,
-      ChevronDown,
-      ChevronLeft,
-      ChevronRight,
-      ChevronUp,
-      Globe,
-      Heart,
-      Menu,
-      Minus,
-      Plus,
-      Search,
-      ShoppingBag,
-      ShoppingCart,
-      Trash2,
-      User,
-      Wallet,
-      X
+    Check,
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight,
+    ChevronUp,
+    Globe,
+    Heart,
+    Menu,
+    Minus,
+    Plus,
+    Search,
+    ShoppingBag,
+    ShoppingCart,
+    Trash2,
+    User,
+    Wallet,
+    X
 } from "lucide-react";
 

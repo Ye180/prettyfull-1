@@ -4,9 +4,8 @@ import { Logo, ScrollArea, Skeleton } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
-import { EnterIcon } from "../../../../../../../packages/ui/src/icons/enter.icon";
-import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
 import { CurrencySelector } from "./currency-selector";
+import SearchBar from "./search-bar";
 
 const NavbarResponsive = ({
 	close,
@@ -48,19 +47,7 @@ const NavbarResponsive = ({
 
 			{/* Barre de recherche */}
 			<div className="px-4 py-3 border-b border-gray-100">
-				<div className="flex items-center px-4 py-3 rounded-lg border border-gray-300">
-					<Search className="w-5 h-5 text-gray-400 shrink-0" />
-					<input
-						placeholder="Search for products..."
-						className="flex-1 min-w-0 px-3 text-[1.4rem] font-light text-black bg-transparent border-none outline-none placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.3rem]"
-					/>
-					<button
-						type="button"
-						className="flex justify-center items-center w-8 h-8 text-white bg-black rounded-lg transition-colors shrink-0 hover:bg-gray-800"
-					>
-						<EnterIcon className="w-4 h-4" />
-					</button>
-				</div>
+				<SearchBar onNavigate={close} />
 			</div>
 
 			{/* Catégories principales horizontales */}

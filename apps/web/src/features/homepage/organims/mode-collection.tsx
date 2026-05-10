@@ -139,8 +139,6 @@ const ModeCollection = ({ fourth }: ModeCollectionProps) => {
 	const ctaLabel = t("ctaButton");
 	const imageUrl = firstCategory?.product_category_image?.[1]?.url + "?view=1";
 
-	console.log("imageUrl", firstCategory);
-
 	return (
 		<>
 			{(firstCategory?.product_category_image?.length ?? 0) > 0 && (

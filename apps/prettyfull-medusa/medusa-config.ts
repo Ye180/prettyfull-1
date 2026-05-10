@@ -12,17 +12,17 @@ module.exports = defineConfig({
         : false,
     },
   http: {
-      storeCors: process.env.STORE_CORS || "http://localhost:3000",
-      adminCors: process.env.ADMIN_CORS || "http://localhost:9000",
-      authCors: process.env.AUTH_CORS || "http://localhost:9000,http://localhost:3000",
+      storeCors: process.env.STORE_CORS!,
+      adminCors: process.env.ADMIN_CORS!,
+      authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
   },
   admin: {
     disable: false,
-    backendUrl:process.env.MEDUSA_BACKEND_URL,
-    // backendUrl: "http://localhost:9000",
+    // backendUrl:process.env.MEDUSA_BACKEND_URL,
+    backendUrl: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL,
     path: "/app",
   },
   modules: [

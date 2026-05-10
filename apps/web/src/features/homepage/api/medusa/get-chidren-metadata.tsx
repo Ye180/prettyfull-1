@@ -30,14 +30,10 @@ export const getCategoryByHandler = async (
 	if (!category?.category_children) {
 		return [];
 	}
-
-	console.log(children_of_category_children);
 	// Filtre les enfants qui ont la clé metadata spécifiée
 	const childrenWithMetadata = category.category_children.filter(
 		(child) => child?.metadata && metadataKey in child.metadata,
 	);
-
-	console.log(childrenWithMetadata);
 
 	return childrenWithMetadata;
 };

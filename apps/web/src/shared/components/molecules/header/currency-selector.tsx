@@ -115,7 +115,7 @@ export function CurrencySelector() {
 				title="Préférences"
 				description="Choisissez votre langue et devise"
 				// close={true}
-				className="max-w-2xl! w-[95vw] lg:w-[40vw] p-0 overflow-hidden"
+				className="!w-[95vw] lg:!w-[40vw] p-0 overflow-hidden"
 				titleClassName="text-[1.8rem]! lg:text-[2.2rem]! font-bold"
 			>
 				<div className="px-6 pb-6 space-y-6">

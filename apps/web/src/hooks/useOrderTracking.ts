@@ -73,13 +73,13 @@ export function useOrderTracking(
       }
 
       const url = `${apiBaseUrl}/orders/${orderId}/track`;
-      console.log("🔌 Connecting to SSE:", url);
+     
 
       const eventSource = new EventSource(url);
       eventSourceRef.current = eventSource;
 
       eventSource.onopen = () => {
-        console.log("✅ SSE connection established");
+   
         setIsConnected(true);
         setError(null);
       };
@@ -87,7 +87,7 @@ export function useOrderTracking(
       eventSource.addEventListener("status-update", (event: MessageEvent) => {
         try {
           const data: OrderStatusUpdate = JSON.parse(event.data);
-          console.log("📦 Status update received:", data);
+       
 
           setStatus(data.status);
           setMessage(data.message);
@@ -102,18 +102,15 @@ export function useOrderTracking(
       });
 
       eventSource.onerror = (err) => {
-        console.error("❌ SSE connection error:", err);
         setIsConnected(false);
         setError("Connection lost. Reconnecting...");
 
         // Tenter une reconnexion après 5 secondes
         reconnectTimeoutRef.current = setTimeout(() => {
-          console.log("🔄 Attempting to reconnect...");
           connect();
         }, 5000);
       };
     } catch (err) {
-      console.error("❌ Failed to establish SSE connection:", err);
       setError("Failed to connect");
     }
   }, [orderId, apiBaseUrl]);
@@ -128,7 +125,7 @@ export function useOrderTracking(
 
     // Cleanup
     return () => {
-      console.log("🧹 Cleaning up SSE connection");
+    
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
         eventSourceRef.current = null;

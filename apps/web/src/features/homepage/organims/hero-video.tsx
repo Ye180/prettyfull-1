@@ -78,7 +78,7 @@ const HeroImages = ({
 					src={desktopUrl}
 					alt="Hero background image"
 					fill
-					sizes="100vw"
+					sizes="(min-width: 640px) 100vw, 1px"
 					className={`${heroImageClassName} max-sm:hidden sm:flex`}
 					priority
 				/>
@@ -88,7 +88,7 @@ const HeroImages = ({
 					src={mobileUrl}
 					alt="Hero background image"
 					fill
-					sizes="100vw"
+					sizes="(max-width: 639px) 100vw, 1px"
 					className={`${heroImageClassName} max-sm:flex sm:hidden`}
 					priority
 				/>

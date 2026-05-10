@@ -41,7 +41,6 @@ const CategoryMediaWidgetContent = ({
 				);
 				setImages(result?.category_images || []);
 			} catch (error) {
-				console.error("Failed to fetch category images:", error);
 				setImages([]);
 			} finally {
 				setIsLoading(false);

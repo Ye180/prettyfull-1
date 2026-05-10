@@ -46,7 +46,6 @@ const CartDropdown = (cart: any) => {
 			.deleteLineItem(cartId as string, itemId)
 			.then(({ parent: cart }) => {
 				// Utiliser le panier mis à jour
-				console.log(cart);
 
 				// Invalider et refetch les données du panier
 				queryClient.invalidateQueries({
