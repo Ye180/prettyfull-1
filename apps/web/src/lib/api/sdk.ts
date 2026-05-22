@@ -8,7 +8,7 @@ export const sdk = new Medusa({
   auth: {
     type: "jwt",
   },
-  publishableKey: MEDUSA_PUBLISHABLE_KEY!,
+  publishableKey: "pk_1528422233a9c4c28cf0560e3270f8072fda717ed5793a9e2f5e57ea8ee41f46",
   globalHeaders: {
     "Access-Control-Allow-Origin": "*",
   },
@@ -19,7 +19,7 @@ export const sdkStore = new Medusa({
   auth: {
     type: "session",
   },
-  publishableKey: MEDUSA_PUBLISHABLE_KEY!,
+  publishableKey:"pk_1528422233a9c4c28cf0560e3270f8072fda717ed5793a9e2f5e57ea8ee41f46",
   globalHeaders: {
     "Access-Control-Allow-Origin": "*",
   },
