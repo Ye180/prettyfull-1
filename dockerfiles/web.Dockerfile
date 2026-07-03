@@ -27,7 +27,7 @@ WORKDIR /app
 # First install the dependencies (as they change less often)
 RUN npm install -g pnpm
 COPY --from=builder /app/out/json/ .
-RUN pnpm install --no-frozen-lockfile
+RUN pnpm install --frozen-lockfile
  
 # Build-time public env vars (must be available during `next build` to be inlined in the client bundle)
 ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL

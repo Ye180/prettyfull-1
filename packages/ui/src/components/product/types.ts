@@ -110,6 +110,8 @@ export interface RawVariant {
   updated_at: string;
   deleted_at: string | null;
   options: RawVariantOption[];
+  /** Quantité en stock (gérée par Medusa inventory) */
+  inventory_quantity?: number;
   /** Present when pricing context is requested (region_id, currency_code) */
   calculated_price?: {
     calculated_amount: number;
@@ -144,6 +146,8 @@ export interface NormalizedVariant {
   title: string;
   sku: string | null;
   size: string;
+  /** true si la taille peut être commandée (stock > 0 ou backorder autorisé) */
+  purchasable: boolean;
   calculated_price: {
     calculated_amount: number;
   };

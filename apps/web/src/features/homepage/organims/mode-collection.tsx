@@ -1,5 +1,7 @@
 import { useGetProductsSameCollection } from "@/shared/api/medusa/get-products-same-collection";
 import { LoadingPrettyfull } from "@/shared/components/molecules/core/loading-prettyfull";
+import { getMediaUrl } from "@prettyfull/utils";
+import { useRegionStore } from "@/stores/useRegion";
 import {
 	Button,
 	CardProduct,
@@ -121,6 +123,7 @@ const ModeCollection = ({ fourth }: ModeCollectionProps) => {
 		() => queryResult?.data?.[0],
 		[queryResult?.data],
 	);
+	const currencyCode = useRegionStore((state) => state.region?.currency_code);
 	const {
 		data: productSameCollection,
 		isLoading: loadingProductsSameCollection,
@@ -137,7 +140,8 @@ const ModeCollection = ({ fourth }: ModeCollectionProps) => {
 	const title = fourth?.title || t("title");
 	const description = fourth?.description || t("subtitle");
 	const ctaLabel = t("ctaButton");
-	const imageUrl = firstCategory?.product_category_image?.[1]?.url + "?view=1";
+	const imageUrl =
+		getMediaUrl(firstCategory?.product_category_image?.[1]?.url) ?? "";
 
 	return (
 		<>
@@ -180,7 +184,11 @@ const ModeCollection = ({ fourth }: ModeCollectionProps) => {
 						) : (
 							<GridCardProduct classGrid="grid grid-cols-2">
 								{normalizedProducts.map((product) => (
-									<CardProduct key={product.collectionId} product={product} />
+									<CardProduct
+										key={product.collectionId}
+										product={product}
+										currencyCode={currencyCode}
+									/>
 								))}
 							</GridCardProduct>
 						)}

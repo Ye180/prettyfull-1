@@ -27,12 +27,13 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "dev-storage.prettyfull.shop",
-        pathname: "/api/browse/prettyfull/**",
+        hostname: "prettyfull-rustfs-w3tvbr-30153d-84-247-187-15.traefik.me",
+        pathname: "/medusa-media/**",
       },
       {
         protocol: "https",
-        hostname: "dev-storage.prettyfull.com",
+        hostname: "dev-storage.prettyfull.shop",
+        pathname: "/api/browse/**",
       },
       {
         protocol: "https",

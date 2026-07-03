@@ -3,11 +3,11 @@
 // =============================================================================
 
 import type {
-    NormalizedCollectionProduct,
-    NormalizedColorVariant,
-    NormalizedVariant,
-    RawCollectionProduct,
-    RawProduct,
+  NormalizedCollectionProduct,
+  NormalizedColorVariant,
+  NormalizedVariant,
+  RawCollectionProduct,
+  RawProduct,
 } from "./types";
 
 /**
@@ -57,11 +57,16 @@ function buildNormalizedColor(product: RawProduct): NormalizedColorVariant {
         opt.option.title.toLowerCase() === "size" ||
         opt.option.title.toLowerCase() === "taille"
     );
+    const purchasable =
+      !variant.manage_inventory ||
+      variant.allow_backorder ||
+      (variant.inventory_quantity ?? 1) > 0;
     return {
       id: variant.id,
       title: variant.title,
       sku: variant.sku,
       size: sizeOpt?.value || variant.title,
+      purchasable,
       calculated_price: {
         calculated_amount: variant.calculated_price?.calculated_amount ?? 0,
       },
@@ -69,7 +74,7 @@ function buildNormalizedColor(product: RawProduct): NormalizedColorVariant {
   });
 
   // Trier les images par rank
-  const sortedImages = [...product.images].sort((a, b) => a.rank - b.rank);
+  const sortedImages = [...(product.images ?? [])].sort((a, b) => a.rank - b.rank);
 
   // Thumbnail principal
   const thumbnail =

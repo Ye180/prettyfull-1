@@ -4,8 +4,10 @@ export const queryConfig = {
 	queries: {
 		// throwOnError: true,
 		refetchOnWindowFocus: false,
+		refetchOnMount: false,
 		retry: false,
-		staleTime: 1000 * 30,
+		staleTime: 5 * 60 * 1000,
+		gcTime: 10 * 60 * 1000,
 	},
 } satisfies DefaultOptions;
 

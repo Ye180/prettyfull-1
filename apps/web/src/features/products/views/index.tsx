@@ -7,6 +7,8 @@ import { useRegionStore } from "@/stores/useRegion";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+// import { toast } from "sonner";
+import { toast } from "@prettyfull/ui";
 import { useGetCollectionProductsMedusa } from "../api/medusa/get-collection-products-medusa";
 import { useGetProductsByHandleMedusa } from "../api/medusa/get-product-by-handle-medusa";
 import { ProductGalleryNew } from "../components/organims/product-gallery-new";
@@ -31,7 +33,6 @@ export default function ProductViews() {
 	const [activeImage, setActiveImage] = useState<number>(0);
 	const [selectedColor, setSelectedColor] = useState<string>("");
 	const [selectedSize, setSelectedSize] = useState<string>("");
-	const [disabled, setDisabled] = useState(true);
 
 	const addItemToCartMutation = useAddItemToCartMedusa();
 
@@ -225,10 +226,8 @@ export default function ProductViews() {
 
 	// ===== RÉINITIALISATION QUAND LE PRODUIT CHANGE =====
 	useEffect(() => {
-		// Réinitialiser les sélections quand le produit change
 		setSelectedColor("");
 		setSelectedSize("");
-		setDisabled(true);
 		setActiveImage(0);
 	}, [product?.id]);
 
@@ -245,87 +244,84 @@ export default function ProductViews() {
 			const defaultColor = colorVariants[0].label;
 			setSelectedColor(defaultColor);
 
-			// Définir la première taille par défaut si disponible
 			const firstColorVariants = colorVariants[0].variants;
 			if (sizeOption && firstColorVariants && firstColorVariants.length > 0) {
 				const firstSize = firstColorVariants[0]?.options?.find(
-					(opt: any) => opt.option_id === sizeOption,
+					(opt: any) => opt.option_id === sizeOption.id,
 				)?.value;
-				if (firstSize) {
-					setSelectedSize(firstSize);
-					setDisabled(false);
-				}
+				if (firstSize) setSelectedSize(firstSize);
 			}
 		}
 	}, [product, colorVariants, sizeOption, selectedColor]);
-
-	const sizeOnly = sizeOption?.values?.map((item) => {
-		return item.value;
-	});
 
 	// ===== GESTION DES CHANGEMENTS =====
 	const handleColorChange = useCallback((newColor: string) => {
 		setSelectedColor(newColor);
 		setSelectedSize("");
-		setDisabled(true);
 		setActiveImage(0);
 	}, []);
 
 	const handleSizeChange = useCallback((size: string) => {
 		setSelectedSize(size);
-		setDisabled(false);
 	}, []);
 
-	const handleClick = async () => {
+	const handleClick = () => {
 		if (!selectedSize) {
-			console.error("Veuillez sélectionner une taille");
+			toast.error("Sélectionnez une taille", {
+				description: "Veuillez choisir une taille avant d'ajouter au panier.",
+			});
 			return;
 		}
 
-		// Trouver le variant correspondant
-		let matchingVariant;
+		const matchingVariant = sizeOption
+			? product?.variants?.find(
+					(variant: any) =>
+						variant.options?.find((opt: any) => opt.option_id === sizeOption.id)
+							?.value === selectedSize,
+				)
+			: product?.variants?.find(
+					(variant: any) => variant.title === selectedSize,
+				);
 
-		if (sizeOption) {
-			// Chercher dans tous les variants du produit par taille
-			matchingVariant = product?.variants?.find((variant: any) => {
-				const variantSize = variant.options?.find(
-					(opt: any) => opt.option_id === sizeOption.id,
-				)?.value;
-				return variantSize === selectedSize;
+		if (!matchingVariant) {
+			toast.error("Taille non disponible", {
+				description: "Ce variant n'existe pas.",
 			});
-		} else {
-			// Si pas d'option taille, chercher par titre de variant
-			matchingVariant = product?.variants?.find(
-				(variant: any) => variant.title === selectedSize,
-			);
+			return;
+		}
+
+		const purchasable =
+			!matchingVariant.manage_inventory ||
+			matchingVariant.allow_backorder ||
+			(matchingVariant.inventory_quantity ?? 1) > 0;
+
+		if (!purchasable) {
+			toast.error("Rupture de stock", {
+				description: "Cette taille n'est plus disponible.",
+			});
+			return;
 		}
 
 		const cartId = localStorage.getItem("cart_id");
+		const loadingId = toast.loading("Ajout au panier...");
 
-		if (matchingVariant) {
-			addItemToCartMutation.mutate(
-				{
-					cartId: cartId || "",
-					quantity: 1,
-					variant_id: matchingVariant.id, // ou adapter votre API
+		addItemToCartMutation.mutate(
+			{ cartId: cartId || "", quantity: 1, variant_id: matchingVariant.id },
+			{
+				onSuccess: () => {
+					toast.cart("Ajouté au panier", {
+						id: loadingId,
+						description: `${product?.title} a été ajouté à votre panier.`,
+					});
 				},
-				{
-					onSuccess: () => {
-						alert("Produit ajouté au panier !");
-					},
-					onError: (error: any) => {
-						console.error("Erreur lors de l'ajout:", error);
-						alert(
-							`Erreur: ${error?.message || "Impossible d'ajouter au panier"}`,
-						);
-					},
+				onError: (error: any) => {
+					toast.error("Impossible d'ajouter au panier", {
+						id: loadingId,
+						description: error?.message ?? "Une erreur est survenue.",
+					});
 				},
-			);
-
-			// TODO: Appeler votre mutation d'ajout au panier ici
-		} else {
-			console.error("Variant non trouvé");
-		}
+			},
+		);
 	};
 
 	if (isLoading) {
@@ -335,10 +331,12 @@ export default function ProductViews() {
 	if (!product) {
 		return (
 			<Container maxWidth="100vw" className="px-4 py-12 text-center">
-				<ProductSkeleton />;
+				<ProductSkeleton />
 			</Container>
 		);
 	}
+
+	console.log(product);
 
 	return (
 		<>
@@ -347,7 +345,11 @@ export default function ProductViews() {
 					{/* Colonne gauche: Galerie */}
 					<div className="flex flex-col space-y-4 sm:space-y-8">
 						<ProductGalleryNew
-							images={product?.images?.map((img: any) => img.url) || []}
+							images={
+								currentImages.length > 0
+									? currentImages
+									: product?.images?.map((img: any) => img.url) || []
+							}
 							title={product?.title || "Produit"}
 							activeImage={activeImage}
 							setActiveImage={setActiveImage}
@@ -363,13 +365,13 @@ export default function ProductViews() {
 						productCategory={product?.collection?.title || "Collection"}
 						price={productPrice}
 						colors={availableColors}
-						sizes={sizeOnly as string[]}
+						sizes={availableSizes}
 						selectedColor={selectedColor}
 						selectedSize={selectedSize}
 						onColorChange={handleColorChange}
 						onSizeChange={handleSizeChange}
 						onAddToCart={handleClick}
-						disabled={disabled}
+						disabled={!selectedSize || addItemToCartMutation.isPending}
 						isLoading={addItemToCartMutation.isPending}
 						collectionColorVariants={collectionColorVariants}
 						currency={regions?.currency_code === "xof" ? "FCFA" : "$"}

@@ -1,6 +1,7 @@
 import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
 import { LoadingPrettyfull } from "@/shared/components/molecules/core/loading-prettyfull";
 import Title from "@/shared/components/molecules/core/title";
+import { getMediaUrl } from "@prettyfull/utils";
 import { Button } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
@@ -52,7 +53,7 @@ const TrendReport = ({ five }: { five?: any }) => {
 							<Box key={index} className={cn(BOX_CLASS)}>
 								<Image
 									src={
-										category?.product_category_image?.[1]?.url + "?view=1" ||
+										getMediaUrl(category?.product_category_image?.[1]?.url) ??
 										"/images/placeholder.png"
 									}
 									alt={category?.name}

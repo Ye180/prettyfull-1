@@ -1,68 +1,49 @@
 import { sdk } from "@/lib/api/sdk";
 import type { StoreProductCategoryListResponse } from "@medusajs/types";
-import { useQueries } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
-export const getCategoryByHandler = async (
-	handle: string,
-	metadataKey: string,
-) => {
-	// ...
+export const CATEGORIES_ALL_KEY = "product-categories-all";
 
+const CATEGORY_FIELDS =
+	"*category_children, *products, *product_category_image, *category_children.metadata, *category_children.product_category_image, *category_children";
+
+export const fetchAllProductCategories = async () => {
 	const { product_categories } =
 		await sdk.client.fetch<StoreProductCategoryListResponse>(
 			`/store/product-categories`,
-			{
-				query: {
-					fields:
-						"*category_children, *products, *product_category_image, *category_children.metadata , *category_children.product_category_image ,*category_children",
-					// ...
-				},
-				// ...
-			},
+			{ query: { fields: CATEGORY_FIELDS } },
 		);
-
-	const category = product_categories.find((cat) => cat.handle === handle);
-
-	const children_of_category_children = category?.category_children?.find(
-		(cat) => cat.handle === handle,
-	);
-
-	if (!category?.category_children) {
-		return [];
-	}
-	// Filtre les enfants qui ont la clé metadata spécifiée
-	const childrenWithMetadata = category.category_children.filter(
-		(child) => child?.metadata && metadataKey in child.metadata,
-	);
-
-	return childrenWithMetadata;
+	return product_categories;
 };
 
 export const useGetCategoryByHandler = (
 	handle: string,
 	metadata: string | string[],
 ) => {
-	const queries =
-		metadata instanceof Array
-			? metadata.map((m) => ({
-					queryKey: ["ddd", handle, m],
-					queryFn: () => getCategoryByHandler(handle, m),
-				}))
-			: [
-					{
-						queryKey: ["ddd", handle, metadata],
-						queryFn: () => getCategoryByHandler(handle, metadata),
-					},
-				];
+	const metadataArray = Array.isArray(metadata) ? metadata : [metadata];
 
-	return useQueries({ queries });
+	const { data: allCategories, isLoading } = useQuery({
+		queryKey: [CATEGORIES_ALL_KEY],
+		queryFn: fetchAllProductCategories,
+		staleTime: 5 * 60 * 1000,
+	});
+
+	return metadataArray.map((metadataKey) => {
+		const category = allCategories?.find((cat) => cat.handle === handle);
+		const data = category?.category_children?.filter(
+			(child) =>
+				child?.metadata &&
+				metadataKey in (child.metadata as Record<string, unknown>),
+		);
+		return {
+			isLoading,
+			data: data ?? (isLoading ? undefined : []),
+		};
+	});
 };
 
-export const getCategoryByHandle = async (categoryHandle: string[]) => {
+export const getCategoryByHandle = async (_categoryHandle: string[]) => {
 	return sdk.client.fetch("/store/product-categories", {
-		query: {
-			fields: "*category_children, *products, *product_category_image",
-			// ...
-		},
+		query: { fields: "*category_children, *products, *product_category_image" },
 	});
 };

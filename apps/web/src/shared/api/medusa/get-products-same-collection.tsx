@@ -7,7 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 
 const getProductsSameCollection = async (regionId: string) => {
 	const { products } = await sdk.store.product.list({
-		fields: "*variants.calculated_price, *collection",
+		fields:
+			"*variants.calculated_price, +variants.inventory_quantity, +variants.manage_inventory, +variants.allow_backorder, *images, *options, *options.values, *variants.options, *variants.options.option, *collection, *collection.metadata",
 		region_id: regionId,
 	});
 
@@ -21,10 +22,8 @@ const getProductsSameCollection = async (regionId: string) => {
 		}
 	> = {};
 
-	// First, group products by collection_id
 	for (const product of products) {
 		const collectionId = product.collection_id;
-
 		const categorieId = product.collection?.metadata?.categorie_id;
 		const categorie =
 			typeof categorieId === "string" ? categorieId.split(",") : undefined;
@@ -34,26 +33,14 @@ const getProductsSameCollection = async (regionId: string) => {
 		if (!grouped[collectionId]) {
 			grouped[collectionId] = {
 				collection_id: collectionId,
-				collection: null,
+				collection: product.collection ?? null,
 				products: [],
-				categorie: categorie,
+				categorie,
 			};
 		}
 
 		grouped[collectionId]?.products.push(product);
 	}
-
-	// Then, fetch the collection data for each group
-	await Promise.all(
-		Object.values(grouped).map(async (group) => {
-			if (!group.collection_id) return;
-			const { collection } = await sdk.store.collection.retrieve(
-				group.collection_id as string,
-				{ fields: "id,title,handle,metadata" },
-			);
-			group.collection = collection;
-		}),
-	);
 
 	return Object.values(grouped);
 };
