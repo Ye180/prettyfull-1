@@ -6,7 +6,7 @@
 
 ---
 
-## 📊 Vue d'ensemble
+## 📊 Overview
 
 Backend NestJS complet pour une application e-commerce avec support multilingue (FR/EN), gestion des stocks atomique, transactions MongoDB, CMS léger, et système de notifications asynchrones.
 

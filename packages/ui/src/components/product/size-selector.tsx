@@ -55,8 +55,8 @@ export const SizeSelector: React.FC<SizeSelectorProps> = ({
 							onChange(code);
 						}}
 						className={cn(
-							"h-12 lg:h-14 px-4 pb-4 pt-3 font-normal uppercase bg-white border rounded-sm text-[1.3rem] transition-all duration-200 min-w-[56px]",
-							compact ? "px-3 h-10 text-xs min-w-[44px]" : "",
+							"p-0 font-normal uppercase bg-white border rounded-sm text-[1.3rem] transition-all duration-200",
+							compact ? "w-10 h-10 text-xs" : "w-12 h-12 lg:w-14 lg:h-14",
 							outOfStock
 								? "text-gray-300 border-gray-200 cursor-not-allowed line-through"
 								: isSelected

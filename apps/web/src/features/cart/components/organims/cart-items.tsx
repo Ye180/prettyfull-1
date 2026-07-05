@@ -68,6 +68,7 @@ const CartItems = ({
 								width={230}
 								height={230}
 								className="object-contain rounded-md"
+							unoptimized
 							/>
 
 							<button className="flex absolute top-4 right-4 p-2 rounded-full border transition hover:bg-gray-100 md:hidden">

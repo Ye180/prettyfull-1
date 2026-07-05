@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 export const CATEGORIES_ALL_KEY = "product-categories-all";
 
 const CATEGORY_FIELDS =
-	"*category_children, *products, *product_category_image, *category_children.metadata, *category_children.product_category_image, *category_children";
+	"name, handle, *product_category_image, *category_children, *category_children.metadata, *category_children.product_category_image";
 
 export const fetchAllProductCategories = async () => {
 	const { product_categories } =
@@ -25,7 +25,7 @@ export const useGetCategoryByHandler = (
 	const { data: allCategories, isLoading } = useQuery({
 		queryKey: [CATEGORIES_ALL_KEY],
 		queryFn: fetchAllProductCategories,
-		staleTime: 5 * 60 * 1000,
+		staleTime: 10 * 60 * 1000,
 	});
 
 	return metadataArray.map((metadataKey) => {

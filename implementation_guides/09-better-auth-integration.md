@@ -1,6 +1,6 @@
 # Guide d'Intégration Better Auth - Authentification Complète
 
-## 📋 Vue d'ensemble
+## 📋 Overview
 
 Ce guide vous accompagne dans l'intégration de **Better Auth** pour remplacer l'authentification actuelle Passport/JWT par une solution moderne, type-safe et complète avec support de :
 
@@ -117,119 +117,119 @@ import { Document } from "mongoose";
 export type UserDocument = User & Document;
 
 export enum UserRole {
-  USER = "user",
-  ADMIN = "admin",
+	USER = "user",
+	ADMIN = "admin",
 }
 
 export enum UserStatus {
-  ACTIVE = "active",
-  INACTIVE = "inactive",
-  BANNED = "banned",
+	ACTIVE = "active",
+	INACTIVE = "inactive",
+	BANNED = "banned",
 }
 
 export enum Language {
-  FR = "fr",
-  EN = "en",
+	FR = "fr",
+	EN = "en",
 }
 
 export enum Currency {
-  XOF = "XOF",
-  USD = "USD",
+	XOF = "XOF",
+	USD = "USD",
 }
 
 @Schema({
-  collection: "user", // Better Auth attend 'user' par défaut
-  timestamps: true,
-  toJSON: {
-    transform: function (doc, ret) {
-      delete ret.password;
-      delete ret.__v;
-      return ret;
-    },
-  },
+	collection: "user", // Better Auth attend 'user' par défaut
+	timestamps: true,
+	toJSON: {
+		transform: function (doc, ret) {
+			delete ret.password;
+			delete ret.__v;
+			return ret;
+		},
+	},
 })
 export class User {
-  @Prop({ required: true, unique: true, lowercase: true })
-  email: string;
+	@Prop({ required: true, unique: true, lowercase: true })
+	email: string;
 
-  @Prop({ required: false }) // Peut être null pour OAuth
-  password?: string;
+	@Prop({ required: false }) // Peut être null pour OAuth
+	password?: string;
 
-  @Prop({ required: true })
-  firstName: string; // Mappé à 'name' dans Better Auth
+	@Prop({ required: true })
+	firstName: string; // Mappé à 'name' dans Better Auth
 
-  @Prop({ required: true })
-  lastName: string;
+	@Prop({ required: true })
+	lastName: string;
 
-  @Prop()
-  phone?: string;
+	@Prop()
+	phone?: string;
 
-  @Prop({ type: String, enum: UserRole, default: UserRole.USER })
-  role: UserRole;
+	@Prop({ type: String, enum: UserRole, default: UserRole.USER })
+	role: UserRole;
 
-  @Prop({ type: String, enum: UserStatus, default: UserStatus.ACTIVE })
-  status: UserStatus;
+	@Prop({ type: String, enum: UserStatus, default: UserStatus.ACTIVE })
+	status: UserStatus;
 
-  @Prop({ type: String, enum: Language, default: Language.FR })
-  preferredLanguage: Language;
+	@Prop({ type: String, enum: Language, default: Language.FR })
+	preferredLanguage: Language;
 
-  @Prop({ type: String, enum: Currency, default: Currency.XOF })
-  preferredCurrency: Currency;
+	@Prop({ type: String, enum: Currency, default: Currency.XOF })
+	preferredCurrency: Currency;
 
-  @Prop({ type: String, default: "CI" })
-  country: string;
+	@Prop({ type: String, default: "CI" })
+	country: string;
 
-  @Prop()
-  avatar?: string; // Mappé à 'image' dans Better Auth
+	@Prop()
+	avatar?: string; // Mappé à 'image' dans Better Auth
 
-  @Prop()
-  dateOfBirth?: Date;
+	@Prop()
+	dateOfBirth?: Date;
 
-  @Prop({
-    type: {
-      street: String,
-      city: String,
-      postalCode: String,
-      country: String,
-    },
-  })
-  address?: {
-    street: string;
-    city: string;
-    postalCode: string;
-    country: string;
-  };
+	@Prop({
+		type: {
+			street: String,
+			city: String,
+			postalCode: String,
+			country: String,
+		},
+	})
+	address?: {
+		street: string;
+		city: string;
+		postalCode: string;
+		country: string;
+	};
 
-  @Prop({ default: Date.now })
-  lastLoginAt?: Date;
+	@Prop({ default: Date.now })
+	lastLoginAt?: Date;
 
-  @Prop({ default: false })
-  emailVerified: boolean; // Better Auth utilise 'emailVerified'
+	@Prop({ default: false })
+	emailVerified: boolean; // Better Auth utilise 'emailVerified'
 
-  @Prop()
-  emailVerificationToken?: string;
+	@Prop()
+	emailVerificationToken?: string;
 
-  @Prop()
-  passwordResetToken?: string;
+	@Prop()
+	passwordResetToken?: string;
 
-  @Prop()
-  passwordResetExpires?: Date;
+	@Prop()
+	passwordResetExpires?: Date;
 
-  // Champs Better Auth additionnels
-  @Prop()
-  twoFactorEnabled?: boolean;
+	// Champs Better Auth additionnels
+	@Prop()
+	twoFactorEnabled?: boolean;
 
-  @Prop()
-  twoFactorSecret?: string;
+	@Prop()
+	twoFactorSecret?: string;
 
-  @Prop()
-  banned?: boolean;
+	@Prop()
+	banned?: boolean;
 
-  @Prop()
-  banReason?: string;
+	@Prop()
+	banReason?: string;
 
-  @Prop()
-  banExpiresAt?: Date;
+	@Prop()
+	banExpiresAt?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -239,23 +239,23 @@ UserSchema.index({ email: 1 });
 
 // Hook pre-save pour hasher le mot de passe
 UserSchema.pre<UserDocument>("save", async function (next) {
-  if (!this.isModified("password") || !this.password) return next();
+	if (!this.isModified("password") || !this.password) return next();
 
-  try {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error as Error);
-  }
+	try {
+		const salt = await bcrypt.genSalt(12);
+		this.password = await bcrypt.hash(this.password, salt);
+		next();
+	} catch (error) {
+		next(error as Error);
+	}
 });
 
 // Méthode pour comparer les mots de passe
 UserSchema.methods.comparePassword = async function (
-  candidatePassword: string
+	candidatePassword: string,
 ): Promise<boolean> {
-  if (!this.password) return false;
-  return bcrypt.compare(candidatePassword, this.password);
+	if (!this.password) return false;
+	return bcrypt.compare(candidatePassword, this.password);
 };
 ```
 
@@ -270,30 +270,30 @@ import { Document, Schema as MongooseSchema } from "mongoose";
 export type SessionDocument = Session & Document;
 
 @Schema({
-  collection: "session",
-  timestamps: true,
+	collection: "session",
+	timestamps: true,
 })
 export class Session {
-  @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: "User" })
-  userId: MongooseSchema.Types.ObjectId;
+	@Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: "User" })
+	userId: MongooseSchema.Types.ObjectId;
 
-  @Prop({ required: true })
-  token: string;
+	@Prop({ required: true })
+	token: string;
 
-  @Prop({ required: true })
-  expiresAt: Date;
+	@Prop({ required: true })
+	expiresAt: Date;
 
-  @Prop()
-  ipAddress?: string;
+	@Prop()
+	ipAddress?: string;
 
-  @Prop()
-  userAgent?: string;
+	@Prop()
+	userAgent?: string;
 
-  @Prop({ default: Date.now })
-  createdAt: Date;
+	@Prop({ default: Date.now })
+	createdAt: Date;
 
-  @Prop({ default: Date.now })
-  updatedAt: Date;
+	@Prop({ default: Date.now })
+	updatedAt: Date;
 }
 
 export const SessionSchema = SchemaFactory.createForClass(Session);
@@ -313,36 +313,36 @@ import { Document, Schema as MongooseSchema } from "mongoose";
 export type AccountDocument = Account & Document;
 
 @Schema({
-  collection: "account",
-  timestamps: true,
+	collection: "account",
+	timestamps: true,
 })
 export class Account {
-  @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: "User" })
-  userId: MongooseSchema.Types.ObjectId;
+	@Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: "User" })
+	userId: MongooseSchema.Types.ObjectId;
 
-  @Prop({ required: true }) // 'google', 'facebook', etc.
-  providerId: string;
+	@Prop({ required: true }) // 'google', 'facebook', etc.
+	providerId: string;
 
-  @Prop({ required: true }) // ID de l'utilisateur chez le provider
-  providerAccountId: string;
+	@Prop({ required: true }) // ID de l'utilisateur chez le provider
+	providerAccountId: string;
 
-  @Prop()
-  accessToken?: string;
+	@Prop()
+	accessToken?: string;
 
-  @Prop()
-  refreshToken?: string;
+	@Prop()
+	refreshToken?: string;
 
-  @Prop()
-  expiresAt?: Date;
+	@Prop()
+	expiresAt?: Date;
 
-  @Prop()
-  tokenType?: string;
+	@Prop()
+	tokenType?: string;
 
-  @Prop()
-  scope?: string;
+	@Prop()
+	scope?: string;
 
-  @Prop()
-  idToken?: string;
+	@Prop()
+	idToken?: string;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
@@ -361,21 +361,21 @@ import { Document } from "mongoose";
 export type VerificationDocument = Verification & Document;
 
 @Schema({
-  collection: "verification",
-  timestamps: true,
+	collection: "verification",
+	timestamps: true,
 })
 export class Verification {
-  @Prop({ required: true })
-  identifier: string; // Email ou phone
+	@Prop({ required: true })
+	identifier: string; // Email ou phone
 
-  @Prop({ required: true })
-  token: string;
+	@Prop({ required: true })
+	token: string;
 
-  @Prop({ required: true })
-  expiresAt: Date;
+	@Prop({ required: true })
+	expiresAt: Date;
 
-  @Prop({ default: Date.now })
-  createdAt: Date;
+	@Prop({ default: Date.now })
+	createdAt: Date;
 }
 
 export const VerificationSchema = SchemaFactory.createForClass(Verification);
@@ -396,202 +396,202 @@ import { admin, multiSession, twoFactor } from "better-auth/plugins";
 import { MongoClient } from "mongodb";
 
 export async function createBetterAuth() {
-  const databaseUrl =
-    process.env.DATABASE_URL ||
-    "mongodb://localhost:27017/prettyfull-ecommerce";
+	const databaseUrl =
+		process.env.DATABASE_URL ||
+		"mongodb://localhost:27017/prettyfull-ecommerce";
 
-  // Créer le client MongoDB
-  const client = new MongoClient(databaseUrl);
-  await client.connect();
-  const db = client.db();
+	// Créer le client MongoDB
+	const client = new MongoClient(databaseUrl);
+	await client.connect();
+	const db = client.db();
 
-  return betterAuth({
-    // Configuration de base
-    secret: process.env.BETTER_AUTH_SECRET!,
-    baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3001",
-    basePath: "/api/auth",
+	return betterAuth({
+		// Configuration de base
+		secret: process.env.BETTER_AUTH_SECRET!,
+		baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3001",
+		basePath: "/api/auth",
 
-    // Origines de confiance
-    trustedOrigins: (
-      process.env.BETTER_AUTH_TRUSTED_ORIGINS || "http://localhost:3000"
-    ).split(","),
+		// Origines de confiance
+		trustedOrigins: (
+			process.env.BETTER_AUTH_TRUSTED_ORIGINS || "http://localhost:3000"
+		).split(","),
 
-    // Adapter MongoDB
-    database: mongodbAdapter(db, {
-      collectionNames: {
-        user: "user",
-        session: "session",
-        account: "account",
-        verification: "verification",
-      },
-    }),
+		// Adapter MongoDB
+		database: mongodbAdapter(db, {
+			collectionNames: {
+				user: "user",
+				session: "session",
+				account: "account",
+				verification: "verification",
+			},
+		}),
 
-    // Configuration Email/Password
-    emailAndPassword: {
-      enabled: true,
-      requireEmailVerification: true,
-      minPasswordLength: 6,
-      maxPasswordLength: 128,
-      autoSignIn: false, // Nécessite vérification email
-    },
+		// Configuration Email/Password
+		emailAndPassword: {
+			enabled: true,
+			requireEmailVerification: true,
+			minPasswordLength: 6,
+			maxPasswordLength: 128,
+			autoSignIn: false, // Nécessite vérification email
+		},
 
-    // Configuration de session
-    session: {
-      expiresIn: 60 * 60 * 24 * 7, // 7 jours
-      updateAge: 60 * 60 * 24, // Mise à jour quotidienne
-      cookieCache: {
-        enabled: true,
-        maxAge: 60 * 5, // 5 minutes
-      },
-    },
+		// Configuration de session
+		session: {
+			expiresIn: 60 * 60 * 24 * 7, // 7 jours
+			updateAge: 60 * 60 * 24, // Mise à jour quotidienne
+			cookieCache: {
+				enabled: true,
+				maxAge: 60 * 5, // 5 minutes
+			},
+		},
 
-    // Configuration User
-    user: {
-      // Mapping des champs
-      fields: {
-        email: "email",
-        emailVerified: "emailVerified",
-        name: "firstName", // Better Auth 'name' → notre 'firstName'
-        image: "avatar", // Better Auth 'image' → notre 'avatar'
-      },
-      // Champs additionnels personnalisés
-      additionalFields: {
-        lastName: {
-          type: "string",
-          required: true,
-        },
-        phone: {
-          type: "string",
-          required: false,
-        },
-        role: {
-          type: "string",
-          required: true,
-          defaultValue: "user",
-          validator: (value: string) => ["user", "admin"].includes(value),
-        },
-        status: {
-          type: "string",
-          required: true,
-          defaultValue: "active",
-        },
-        preferredLanguage: {
-          type: "string",
-          required: true,
-          defaultValue: "fr",
-        },
-        preferredCurrency: {
-          type: "string",
-          required: true,
-          defaultValue: "XOF",
-        },
-        country: {
-          type: "string",
-          required: false,
-          defaultValue: "CI",
-        },
-        dateOfBirth: {
-          type: "date",
-          required: false,
-        },
-        address: {
-          type: "object",
-          required: false,
-        },
-        lastLoginAt: {
-          type: "date",
-          required: false,
-        },
-      },
-    },
+		// Configuration User
+		user: {
+			// Mapping des champs
+			fields: {
+				email: "email",
+				emailVerified: "emailVerified",
+				name: "firstName", // Better Auth 'name' → notre 'firstName'
+				image: "avatar", // Better Auth 'image' → notre 'avatar'
+			},
+			// Champs additionnels personnalisés
+			additionalFields: {
+				lastName: {
+					type: "string",
+					required: true,
+				},
+				phone: {
+					type: "string",
+					required: false,
+				},
+				role: {
+					type: "string",
+					required: true,
+					defaultValue: "user",
+					validator: (value: string) => ["user", "admin"].includes(value),
+				},
+				status: {
+					type: "string",
+					required: true,
+					defaultValue: "active",
+				},
+				preferredLanguage: {
+					type: "string",
+					required: true,
+					defaultValue: "fr",
+				},
+				preferredCurrency: {
+					type: "string",
+					required: true,
+					defaultValue: "XOF",
+				},
+				country: {
+					type: "string",
+					required: false,
+					defaultValue: "CI",
+				},
+				dateOfBirth: {
+					type: "date",
+					required: false,
+				},
+				address: {
+					type: "object",
+					required: false,
+				},
+				lastLoginAt: {
+					type: "date",
+					required: false,
+				},
+			},
+		},
 
-    // Providers OAuth
-    socialProviders: {
-      google: {
-        clientId: process.env.GOOGLE_CLIENT_ID!,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        redirectURI: `${process.env.BETTER_AUTH_URL}/api/auth/callback/google`,
-        scopes: ["email", "profile"],
-      },
-      facebook: {
-        clientId: process.env.FACEBOOK_CLIENT_ID!,
-        clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
-        redirectURI: `${process.env.BETTER_AUTH_URL}/api/auth/callback/facebook`,
-        scopes: ["email", "public_profile"],
-      },
-    },
+		// Providers OAuth
+		socialProviders: {
+			google: {
+				clientId: process.env.GOOGLE_CLIENT_ID!,
+				clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+				redirectURI: `${process.env.BETTER_AUTH_URL}/api/auth/callback/google`,
+				scopes: ["email", "profile"],
+			},
+			facebook: {
+				clientId: process.env.FACEBOOK_CLIENT_ID!,
+				clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+				redirectURI: `${process.env.BETTER_AUTH_URL}/api/auth/callback/facebook`,
+				scopes: ["email", "public_profile"],
+			},
+		},
 
-    // Email sender (pour vérification et reset password)
-    emailVerification: {
-      sendOnSignUp: true,
-      expiresIn: 60 * 60 * 24, // 24 heures
-      sendEmail: async (email, url, token) => {
-        // TODO: Intégrer avec votre service email
-        console.log(`
+		// Email sender (pour vérification et reset password)
+		emailVerification: {
+			sendOnSignUp: true,
+			expiresIn: 60 * 60 * 24, // 24 heures
+			sendEmail: async (email, url, token) => {
+				// TODO: Intégrer avec votre service email
+				console.log(`
           📧 Email de vérification
           To: ${email}
           URL: ${url}
           Token: ${token}
         `);
-        // Exemple avec Nodemailer (à implémenter)
-        // await sendVerificationEmail(email, url);
-      },
-    },
+				// Exemple avec Nodemailer (à implémenter)
+				// await sendVerificationEmail(email, url);
+			},
+		},
 
-    // Plugins
-    plugins: [
-      // Plugin admin pour gérer les rôles
-      admin({
-        impersonationSessionDuration: 60 * 60, // 1 heure
-      }),
+		// Plugins
+		plugins: [
+			// Plugin admin pour gérer les rôles
+			admin({
+				impersonationSessionDuration: 60 * 60, // 1 heure
+			}),
 
-      // Support multi-session
-      multiSession(),
+			// Support multi-session
+			multiSession(),
 
-      // Two-factor authentication (optionnel)
-      twoFactor({
-        issuer: "PrettyFull",
-        otpOptions: {
-          period: 30,
-        },
-      }),
-    ],
+			// Two-factor authentication (optionnel)
+			twoFactor({
+				issuer: "PrettyFull",
+				otpOptions: {
+					period: 30,
+				},
+			}),
+		],
 
-    // Hooks
-    hooks: {
-      after: [
-        {
-          matcher(context) {
-            return context.path === "/sign-in/email";
-          },
-          handler: async (ctx) => {
-            if (ctx.context.user) {
-              // Mettre à jour lastLoginAt
-              await db
-                .collection("user")
-                .updateOne(
-                  { _id: ctx.context.user.id },
-                  { $set: { lastLoginAt: new Date() } }
-                );
-            }
-          },
-        },
-      ],
-    },
+		// Hooks
+		hooks: {
+			after: [
+				{
+					matcher(context) {
+						return context.path === "/sign-in/email";
+					},
+					handler: async (ctx) => {
+						if (ctx.context.user) {
+							// Mettre à jour lastLoginAt
+							await db
+								.collection("user")
+								.updateOne(
+									{ _id: ctx.context.user.id },
+									{ $set: { lastLoginAt: new Date() } },
+								);
+						}
+					},
+				},
+			],
+		},
 
-    // Configuration avancée
-    advanced: {
-      cookiePrefix: "better-auth",
-      crossSubDomainCookies: {
-        enabled: false,
-      },
-      useSecureCookies: process.env.NODE_ENV === "production",
-      generateId: () => {
-        // Génération d'ID personnalisée si nécessaire
-        return crypto.randomUUID();
-      },
-    },
-  });
+		// Configuration avancée
+		advanced: {
+			cookiePrefix: "better-auth",
+			crossSubDomainCookies: {
+				enabled: false,
+			},
+			useSecureCookies: process.env.NODE_ENV === "production",
+			generateId: () => {
+				// Génération d'ID personnalisée si nécessaire
+				return crypto.randomUUID();
+			},
+		},
+	});
 }
 ```
 
@@ -610,28 +610,28 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { Session, SessionSchema } from "./schemas/session.schema";
 import { Account, AccountSchema } from "./schemas/account.schema";
 import {
-  Verification,
-  VerificationSchema,
+	Verification,
+	VerificationSchema,
 } from "./schemas/verification.schema";
 
 @Global()
 @Module({
-  imports: [
-    ConfigModule,
-    MongooseModule.forFeature([
-      { name: Session.name, schema: SessionSchema },
-      { name: Account.name, schema: AccountSchema },
-      { name: Verification.name, schema: VerificationSchema },
-    ]),
-  ],
-  controllers: [BetterAuthController],
-  providers: [BetterAuthService, BetterAuthGuard],
-  exports: [BetterAuthService, BetterAuthGuard],
+	imports: [
+		ConfigModule,
+		MongooseModule.forFeature([
+			{ name: Session.name, schema: SessionSchema },
+			{ name: Account.name, schema: AccountSchema },
+			{ name: Verification.name, schema: VerificationSchema },
+		]),
+	],
+	controllers: [BetterAuthController],
+	providers: [BetterAuthService, BetterAuthGuard],
+	exports: [BetterAuthService, BetterAuthGuard],
 })
 export class BetterAuthModule implements OnModuleInit {
-  async onModuleInit() {
-    console.log("✅ Better Auth Module initialized");
-  }
+	async onModuleInit() {
+		console.log("✅ Better Auth Module initialized");
+	}
 }
 ```
 
@@ -646,41 +646,41 @@ import type { Auth } from "better-auth";
 
 @Injectable()
 export class BetterAuthService implements OnModuleInit {
-  private authInstance: Auth;
+	private authInstance: Auth;
 
-  async onModuleInit() {
-    this.authInstance = await createBetterAuth();
-  }
+	async onModuleInit() {
+		this.authInstance = await createBetterAuth();
+	}
 
-  getAuth(): Auth {
-    return this.authInstance;
-  }
+	getAuth(): Auth {
+		return this.authInstance;
+	}
 
-  // Méthodes utilitaires
-  async verifySession(token: string) {
-    return this.authInstance.api.getSession({
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    });
-  }
+	// Méthodes utilitaires
+	async verifySession(token: string) {
+		return this.authInstance.api.getSession({
+			headers: {
+				authorization: `Bearer ${token}`,
+			},
+		});
+	}
 
-  async getUserFromSession(token: string) {
-    const session = await this.verifySession(token);
-    return session?.user;
-  }
+	async getUserFromSession(token: string) {
+		const session = await this.verifySession(token);
+		return session?.user;
+	}
 
-  async revokeSession(sessionId: string) {
-    return this.authInstance.api.revokeSession({
-      body: { sessionId },
-    });
-  }
+	async revokeSession(sessionId: string) {
+		return this.authInstance.api.revokeSession({
+			body: { sessionId },
+		});
+	}
 
-  async listUserSessions(userId: string) {
-    return this.authInstance.api.listSessions({
-      query: { userId },
-    });
-  }
+	async listUserSessions(userId: string) {
+		return this.authInstance.api.listSessions({
+			query: { userId },
+		});
+	}
 }
 ```
 
@@ -695,17 +695,17 @@ import { BetterAuthService } from "./better-auth.service";
 
 @Controller("auth")
 export class BetterAuthController {
-  constructor(private readonly betterAuthService: BetterAuthService) {}
+	constructor(private readonly betterAuthService: BetterAuthService) {}
 
-  /**
-   * Route catch-all pour Better Auth
-   * Toutes les routes /api/auth/* sont gérées par Better Auth
-   */
-  @All("*")
-  async handleAuth(@Req() req: Request, @Res() res: Response) {
-    const auth = this.betterAuthService.getAuth();
-    return auth.handler(req, res);
-  }
+	/**
+	 * Route catch-all pour Better Auth
+	 * Toutes les routes /api/auth/* sont gérées par Better Auth
+	 */
+	@All("*")
+	async handleAuth(@Req() req: Request, @Res() res: Response) {
+		const auth = this.betterAuthService.getAuth();
+		return auth.handler(req, res);
+	}
 }
 ```
 
@@ -715,10 +715,10 @@ export class BetterAuthController {
 
 ```typescript
 import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  UnauthorizedException,
+	Injectable,
+	CanActivate,
+	ExecutionContext,
+	UnauthorizedException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { BetterAuthService } from "../better-auth.service";
@@ -729,39 +729,39 @@ import { BetterAuthService } from "../better-auth.service";
  */
 @Injectable()
 export class BetterAuthGuard implements CanActivate {
-  constructor(
-    private readonly betterAuthService: BetterAuthService,
-    private readonly reflector: Reflector
-  ) {}
+	constructor(
+		private readonly betterAuthService: BetterAuthService,
+		private readonly reflector: Reflector,
+	) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+	async canActivate(context: ExecutionContext): Promise<boolean> {
+		const request = context.switchToHttp().getRequest();
 
-    // Récupérer le token depuis le cookie ou header
-    const token =
-      request.cookies?.["better-auth.session_token"] ||
-      request.headers.authorization?.replace("Bearer ", "");
+		// Récupérer le token depuis le cookie ou header
+		const token =
+			request.cookies?.["better-auth.session_token"] ||
+			request.headers.authorization?.replace("Bearer ", "");
 
-    if (!token) {
-      throw new UnauthorizedException("No authentication token found");
-    }
+		if (!token) {
+			throw new UnauthorizedException("No authentication token found");
+		}
 
-    try {
-      const session = await this.betterAuthService.verifySession(token);
+		try {
+			const session = await this.betterAuthService.verifySession(token);
 
-      if (!session || !session.user) {
-        throw new UnauthorizedException("Invalid or expired session");
-      }
+			if (!session || !session.user) {
+				throw new UnauthorizedException("Invalid or expired session");
+			}
 
-      // Attacher l'utilisateur à la requête
-      request.user = session.user;
-      request.session = session;
+			// Attacher l'utilisateur à la requête
+			request.user = session.user;
+			request.session = session;
 
-      return true;
-    } catch (error) {
-      throw new UnauthorizedException("Authentication failed");
-    }
-  }
+			return true;
+		} catch (error) {
+			throw new UnauthorizedException("Authentication failed");
+		}
+	}
 }
 
 /**
@@ -770,32 +770,32 @@ export class BetterAuthGuard implements CanActivate {
  */
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+	constructor(private readonly reflector: Reflector) {}
 
-  canActivate(context: ExecutionContext): boolean {
-    const roles = this.reflector.get<string[]>("roles", context.getHandler());
+	canActivate(context: ExecutionContext): boolean {
+		const roles = this.reflector.get<string[]>("roles", context.getHandler());
 
-    if (!roles) {
-      return true;
-    }
+		if (!roles) {
+			return true;
+		}
 
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
+		const request = context.switchToHttp().getRequest();
+		const user = request.user;
 
-    if (!user) {
-      throw new UnauthorizedException("User not authenticated");
-    }
+		if (!user) {
+			throw new UnauthorizedException("User not authenticated");
+		}
 
-    const hasRole = roles.includes(user.role);
+		const hasRole = roles.includes(user.role);
 
-    if (!hasRole) {
-      throw new UnauthorizedException(
-        `User role '${user.role}' is not authorized. Required: ${roles.join(", ")}`
-      );
-    }
+		if (!hasRole) {
+			throw new UnauthorizedException(
+				`User role '${user.role}' is not authorized. Required: ${roles.join(", ")}`,
+			);
+		}
 
-    return true;
-  }
+		return true;
+	}
 }
 ```
 
@@ -815,10 +815,10 @@ export const Roles = (...roles: string[]) => SetMetadata("roles", roles);
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
 export const CurrentUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    return request.user;
-  }
+	(data: unknown, ctx: ExecutionContext) => {
+		const request = ctx.switchToHttp().getRequest();
+		return request.user;
+	},
 );
 ```
 
@@ -831,13 +831,13 @@ export const CurrentUser = createParamDecorator(
 import { BetterAuthModule } from "./modules/auth/better-auth.module";
 
 @Module({
-  imports: [
-    // ... autres imports
-    BetterAuthModule, // Remplace AuthModule
-    UsersModule,
-    // ... autres modules
-  ],
-  // ...
+	imports: [
+		// ... autres imports
+		BetterAuthModule, // Remplace AuthModule
+		UsersModule,
+		// ... autres modules
+	],
+	// ...
 })
 export class AppModule {}
 ```
@@ -864,13 +864,13 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL!,
+	baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL!,
 
-  // Configuration des cookies
-  cookiePrefix: "better-auth",
+	// Configuration des cookies
+	cookiePrefix: "better-auth",
 
-  // Plugins côté client
-  plugins: [],
+	// Plugins côté client
+	plugins: [],
 });
 
 // Types pour TypeScript
@@ -912,44 +912,44 @@ import { authClient } from "./client";
 
 // Hook pour la session
 export const useSession = () => {
-  return authClient.useSession();
+	return authClient.useSession();
 };
 
 // Hook pour sign in avec email/password
 export const useSignIn = () => {
-  return authClient.signIn.email;
+	return authClient.signIn.email;
 };
 
 // Hook pour sign up avec email/password
 export const useSignUp = () => {
-  return authClient.signUp.email;
+	return authClient.signUp.email;
 };
 
 // Hook pour sign out
 export const useSignOut = () => {
-  return authClient.signOut;
+	return authClient.signOut;
 };
 
 // Hook pour Google OAuth
 export const useGoogleSignIn = () => {
-  return authClient.signIn.social;
+	return authClient.signIn.social;
 };
 
 // Hook pour Facebook OAuth
 export const useFacebookSignIn = () => {
-  return authClient.signIn.social;
+	return authClient.signIn.social;
 };
 
 // Hook pour vérifier si l'utilisateur est admin
 export const useIsAdmin = () => {
-  const { data: session } = useSession();
-  return session?.user?.role === "admin";
+	const { data: session } = useSession();
+	return session?.user?.role === "admin";
 };
 
 // Hook pour obtenir l'utilisateur courant
 export const useCurrentUser = () => {
-  const { data: session } = useSession();
-  return session?.user;
+	const { data: session } = useSession();
+	return session?.user;
 };
 ```
 
@@ -1353,69 +1353,69 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get("better-auth.session_token")?.value;
+	const token = request.cookies.get("better-auth.session_token")?.value;
 
-  // Routes publiques
-  const publicPaths = ["/auth/signin", "/auth/signup", "/auth/verify-email"];
-  const isPublicPath = publicPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path)
-  );
+	// Routes publiques
+	const publicPaths = ["/auth/signin", "/auth/signup", "/auth/verify-email"];
+	const isPublicPath = publicPaths.some((path) =>
+		request.nextUrl.pathname.startsWith(path),
+	);
 
-  // Routes protégées
-  const protectedPaths = ["/dashboard", "/profile", "/orders"];
-  const isProtectedPath = protectedPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path)
-  );
+	// Routes protégées
+	const protectedPaths = ["/dashboard", "/profile", "/orders"];
+	const isProtectedPath = protectedPaths.some((path) =>
+		request.nextUrl.pathname.startsWith(path),
+	);
 
-  // Routes admin
-  const adminPaths = ["/admin"];
-  const isAdminPath = adminPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path)
-  );
+	// Routes admin
+	const adminPaths = ["/admin"];
+	const isAdminPath = adminPaths.some((path) =>
+		request.nextUrl.pathname.startsWith(path),
+	);
 
-  // Si route protégée et pas de token, rediriger vers login
-  if (isProtectedPath && !token) {
-    return NextResponse.redirect(new URL("/auth/signin", request.url));
-  }
+	// Si route protégée et pas de token, rediriger vers login
+	if (isProtectedPath && !token) {
+		return NextResponse.redirect(new URL("/auth/signin", request.url));
+	}
 
-  // Si route publique et token présent, rediriger vers dashboard
-  if (isPublicPath && token) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
+	// Si route publique et token présent, rediriger vers dashboard
+	if (isPublicPath && token) {
+		return NextResponse.redirect(new URL("/dashboard", request.url));
+	}
 
-  // Pour les routes admin, vérifier le rôle (nécessite un appel API)
-  if (isAdminPath && token) {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/session`,
-        {
-          headers: {
-            cookie: `better-auth.session_token=${token}`,
-          },
-        }
-      );
+	// Pour les routes admin, vérifier le rôle (nécessite un appel API)
+	if (isAdminPath && token) {
+		try {
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/session`,
+				{
+					headers: {
+						cookie: `better-auth.session_token=${token}`,
+					},
+				},
+			);
 
-      const session = await response.json();
+			const session = await response.json();
 
-      if (session?.user?.role !== "admin") {
-        return NextResponse.redirect(new URL("/unauthorized", request.url));
-      }
-    } catch (error) {
-      return NextResponse.redirect(new URL("/auth/signin", request.url));
-    }
-  }
+			if (session?.user?.role !== "admin") {
+				return NextResponse.redirect(new URL("/unauthorized", request.url));
+			}
+		} catch (error) {
+			return NextResponse.redirect(new URL("/auth/signin", request.url));
+		}
+	}
 
-  return NextResponse.next();
+	return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/profile/:path*",
-    "/orders/:path*",
-    "/admin/:path*",
-    "/auth/:path*",
-  ],
+	matcher: [
+		"/dashboard/:path*",
+		"/profile/:path*",
+		"/orders/:path*",
+		"/admin/:path*",
+		"/auth/:path*",
+	],
 };
 ```
 
@@ -1463,26 +1463,26 @@ import * as nodemailer from "nodemailer";
 
 @Injectable()
 export class EmailService {
-  private transporter: nodemailer.Transporter;
+	private transporter: nodemailer.Transporter;
 
-  constructor(private configService: ConfigService) {
-    this.transporter = nodemailer.createTransporter({
-      host: this.configService.get("SMTP_HOST"),
-      port: this.configService.get("SMTP_PORT"),
-      secure: false,
-      auth: {
-        user: this.configService.get("SMTP_USER"),
-        pass: this.configService.get("SMTP_PASSWORD"),
-      },
-    });
-  }
+	constructor(private configService: ConfigService) {
+		this.transporter = nodemailer.createTransporter({
+			host: this.configService.get("SMTP_HOST"),
+			port: this.configService.get("SMTP_PORT"),
+			secure: false,
+			auth: {
+				user: this.configService.get("SMTP_USER"),
+				pass: this.configService.get("SMTP_PASSWORD"),
+			},
+		});
+	}
 
-  async sendVerificationEmail(email: string, verificationUrl: string) {
-    const mailOptions = {
-      from: this.configService.get("EMAIL_FROM"),
-      to: email,
-      subject: "Vérifiez votre compte PrettyFull",
-      html: `
+	async sendVerificationEmail(email: string, verificationUrl: string) {
+		const mailOptions = {
+			from: this.configService.get("EMAIL_FROM"),
+			to: email,
+			subject: "Vérifiez votre compte PrettyFull",
+			html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1>Bienvenue sur PrettyFull! 🎉</h1>
           <p>Merci de vous être inscrit. Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :</p>
@@ -1498,17 +1498,17 @@ export class EmailService {
           </p>
         </div>
       `,
-    };
+		};
 
-    await this.transporter.sendMail(mailOptions);
-  }
+		await this.transporter.sendMail(mailOptions);
+	}
 
-  async sendPasswordResetEmail(email: string, resetUrl: string) {
-    const mailOptions = {
-      from: this.configService.get("EMAIL_FROM"),
-      to: email,
-      subject: "Réinitialisation de votre mot de passe PrettyFull",
-      html: `
+	async sendPasswordResetEmail(email: string, resetUrl: string) {
+		const mailOptions = {
+			from: this.configService.get("EMAIL_FROM"),
+			to: email,
+			subject: "Réinitialisation de votre mot de passe PrettyFull",
+			html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1>Réinitialisation de mot de passe</h1>
           <p>Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le lien ci-dessous :</p>
@@ -1524,10 +1524,10 @@ export class EmailService {
           </p>
         </div>
       `,
-    };
+		};
 
-    await this.transporter.sendMail(mailOptions);
-  }
+		await this.transporter.sendMail(mailOptions);
+	}
 }
 ```
 
@@ -1620,26 +1620,26 @@ import { CurrentUser } from "../auth/decorators/current-user.decorator";
 
 @Controller("products")
 export class ProductsController {
-  // Route publique
-  @Get()
-  findAll() {
-    return this.productsService.findAll();
-  }
+	// Route publique
+	@Get()
+	findAll() {
+		return this.productsService.findAll();
+	}
 
-  // Route authentifiée
-  @Get("my-products")
-  @UseGuards(BetterAuthGuard)
-  findMyProducts(@CurrentUser() user: any) {
-    return this.productsService.findByUser(user.id);
-  }
+	// Route authentifiée
+	@Get("my-products")
+	@UseGuards(BetterAuthGuard)
+	findMyProducts(@CurrentUser() user: any) {
+		return this.productsService.findByUser(user.id);
+	}
 
-  // Route admin uniquement
-  @Post()
-  @UseGuards(BetterAuthGuard, RolesGuard)
-  @Roles("admin")
-  create(@CurrentUser() user: any, @Body() dto: CreateProductDto) {
-    return this.productsService.create(dto, user.id);
-  }
+	// Route admin uniquement
+	@Post()
+	@UseGuards(BetterAuthGuard, RolesGuard)
+	@Roles("admin")
+	create(@CurrentUser() user: any, @Body() dto: CreateProductDto) {
+		return this.productsService.create(dto, user.id);
+	}
 }
 ```
 
@@ -1697,7 +1697,7 @@ export function SignOutButton() {
 
   return (
     <Button onClick={handleSignOut} variant="outline">
-      Se déconnecter
+      Logout
     </Button>
   );
 }

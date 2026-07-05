@@ -12,22 +12,22 @@ import { OrderIcon } from "../../../../../../packages/ui/src/icons/order.icon";
 
 const menuItems = [
 	{
-		label: "Vue d'ensemble",
+		label: "Overview",
 		href: "/account",
 		icon: DashboardIcon,
 	},
 	{
-		label: "Mes Commandes",
+		label: "My Orders",
 		href: "/account/orders",
 		icon: OrderIcon,
 	},
 	{
-		label: "Adresses",
+		label: "Addresses",
 		href: "/account/addresses",
 		icon: AddressIcon,
 	},
 	{
-		label: "Ma Wishlist",
+		label: "My Wishlist",
 		href: "/account/wishlist",
 		icon: Heart,
 	},
@@ -51,9 +51,9 @@ export const AccountMenu = () => {
 		<nav className="flex flex-col h-full bg-white rounded-md border border-gray-100 transition-all duration-200 shadow-2xs">
 			<div className="px-7 py-8 border-b border-gray-100">
 				<h3 className="text-2xl! font-bold tracking-wider text-gray-900">
-					Mon Compte
+					My account
 				</h3>
-				<p className="mt-2 text-gray-500 text-md">Gérez vos préférences</p>
+				<p className="mt-2 text-gray-500 text-md">Manage your preferences</p>
 			</div>
 
 			<div className="flex-1 px-4 py-6 space-y-2">
@@ -98,7 +98,7 @@ export const AccountMenu = () => {
 					className="flex items-center px-5 py-4 w-full text-base font-medium text-gray-500 rounded-xl transition-all duration-200 hover:text-red-600 hover:bg-red-50 group"
 				>
 					<LogoutIcon className="mr-4 w-6 h-6 text-gray-400 transition-colors group-hover:text-red-500" />
-					Se déconnecter
+					Logout
 				</button>
 			</div>
 		</nav>

@@ -69,6 +69,7 @@ export function ProductGalleryNew({
 								width={64}
 								height={90}
 								className="object-cover w-full h-full"
+								unoptimized
 							/>
 						</div>
 					))}
@@ -87,6 +88,7 @@ export function ProductGalleryNew({
 							height={640}
 							className="object-cover rounded"
 							priority
+							unoptimized
 						/>
 						{promotion && (
 							<span className="absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white bg-red-600 rounded">
@@ -110,6 +112,7 @@ export function ProductGalleryNew({
 									setActiveImage(index);
 									setIsZoomed(true);
 								}}
+								unoptimized
 							/>
 							{index === 0 && promotion && (
 								<span className="absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white bg-red-600 rounded">
@@ -149,6 +152,7 @@ export function ProductGalleryNew({
 								height={900}
 								className="object-contain max-h-[80vh] w-auto mx-auto rounded-lg transition-all"
 								priority
+								unoptimized
 							/>
 
 							{images.length > 1 && (
@@ -195,6 +199,7 @@ export function ProductGalleryNew({
 										alt={`${title} miniature ${index + 1}`}
 										fill
 										className="object-cover"
+										unoptimized
 									/>
 								</div>
 							))}

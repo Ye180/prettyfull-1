@@ -32,8 +32,8 @@ interface I18nString {
 
 ```typescript
 interface Price {
-  amount: number; // Montant en XOF
-  currency: "XOF"; // Toujours XOF en base
+	amount: number; // Montant en XOF
+	currency: "XOF"; // Toujours XOF en base
 }
 ```
 
@@ -65,10 +65,10 @@ interface Price {
 ```typescript
 // Hash automatique du mot de passe
 UserSchema.pre<UserDocument>("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  const salt = await bcrypt.genSalt(12);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+	if (!this.isModified("password")) return next();
+	const salt = await bcrypt.genSalt(12);
+	this.password = await bcrypt.hash(this.password, salt);
+	next();
 });
 ```
 
@@ -109,7 +109,7 @@ UserSchema.pre<UserDocument>("save", async function (next) {
 
 - **OrderItem** : Sous-schéma pour les articles de commande
 - **Snapshot des prix** : Prix figés au moment de la commande
-- **Adresses** : Livraison et facturation séparées
+- **Addresses** : Livraison et facturation séparées
 
 #### Gestion des États
 

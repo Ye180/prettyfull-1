@@ -4,11 +4,10 @@ import { useAddItemToCartMedusa } from "@/features/cart/api/medusa/add-item-to-c
 import Reviews from "@/features/products/components/organims/reviews";
 import ProductSkeleton from "@/shared/components/organims/product-fiche-loading";
 import { useRegionStore } from "@/stores/useRegion";
+import { toast } from "@prettyfull/ui";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-// import { toast } from "sonner";
-import { toast } from "@prettyfull/ui";
 import { useGetCollectionProductsMedusa } from "../api/medusa/get-collection-products-medusa";
 import { useGetProductsByHandleMedusa } from "../api/medusa/get-product-by-handle-medusa";
 import { ProductGalleryNew } from "../components/organims/product-gallery-new";
@@ -68,21 +67,31 @@ export default function ProductViews() {
 
 		// Si pas d'option couleur, créer une entrée par variant avec son thumbnail
 		if (!colorOption) {
-			product.variants.forEach((variant: any, index: number) => {
-				const variantLabel = variant.title || `Variant ${index + 1}`;
-				const variantImage =
-					variant.thumbnail || product.images?.[0]?.url || "";
-
-				if (!colorMap.has(variantLabel)) {
-					colorMap.set(variantLabel, {
-						label: variantLabel,
-						variants: [variant],
-						images: variantImage
-							? [variantImage]
-							: product.images?.map((img: any) => img.url) || [],
-					});
-				}
-			});
+			const prodImgs = product.images?.map((img: any) => img.url) || [];
+			if (sizeOption) {
+				// Pas de couleur mais des tailles — grouper TOUS les variants ensemble
+				const thumbs = product.variants
+					.map((v: any) => v.thumbnail)
+					.filter(Boolean);
+				colorMap.set("__default__", {
+					label: "__default__",
+					variants: product.variants,
+					images: [...new Set([...thumbs, ...prodImgs])],
+				});
+			} else {
+				product.variants.forEach((variant: any, index: number) => {
+					const variantLabel = variant.title || `Variant ${index + 1}`;
+					const variantImage =
+						variant.thumbnail || product.images?.[0]?.url || "";
+					if (!colorMap.has(variantLabel)) {
+						colorMap.set(variantLabel, {
+							label: variantLabel,
+							variants: [variant],
+							images: [...new Set([...(variantImage ? [variantImage] : []), ...prodImgs])],
+						});
+					}
+				});
+			}
 			return Array.from(colorMap.values());
 		}
 
@@ -103,13 +112,12 @@ export default function ProductViews() {
 				// Récupérer toutes les images des variants de cette couleur
 				const colorImages = colorVariantsList
 					.map((v: any) => v.thumbnail)
-					.filter((img: string) => img);
+					.filter((img: string) => !!img);
 
-				// Si pas d'images spécifiques, utiliser les images du produit
-				const finalImages =
-					colorImages.length > 0
-						? colorImages
-						: product.images?.map((img: any) => img.url) || [];
+				// Combiner thumbnails variants + images produit (déduplication)
+				const productImgUrls = product.images?.map((img: any) => img.url) || [];
+				const allImages = [...new Set([...colorImages, ...productImgUrls])];
+				const finalImages = allImages.length > 0 ? allImages : productImgUrls;
 
 				colorMap.set(colorValue, {
 					label: colorValue,
@@ -120,7 +128,7 @@ export default function ProductViews() {
 		});
 
 		return Array.from(colorMap.values());
-	}, [product, colorOption]);
+	}, [product, colorOption, sizeOption]);
 
 	// ===== TAILLES DISPONIBLES POUR LA COULEUR ACTIVE =====
 	const availableSizes = useMemo(() => {
@@ -148,14 +156,15 @@ export default function ProductViews() {
 
 	// ===== IMAGES POUR LA COULEUR ACTIVE =====
 	const currentImages = useMemo(() => {
+		const productImgUrls = product?.images?.map((img: any) => img.url) || [];
 		if (!selectedColor || colorVariants.length === 0) {
-			return product?.images?.map((img: any) => img.url) || [];
+			return productImgUrls;
 		}
-
 		const currentColorVariant = colorVariants.find(
 			(cv) => cv.label === selectedColor,
 		);
-		return currentColorVariant?.images || [];
+		const variantImgs = currentColorVariant?.images || [];
+		return [...new Set([...variantImgs, ...productImgUrls])];
 	}, [selectedColor, colorVariants, product]);
 
 	// Extraire les noms de couleurs disponibles
@@ -335,8 +344,6 @@ export default function ProductViews() {
 			</Container>
 		);
 	}
-
-	console.log(product);
 
 	return (
 		<>

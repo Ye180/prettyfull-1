@@ -18,6 +18,6 @@ export interface CartSummaryType {
 
 
 export interface CheckoutSummaryProps {
-  totalAmount: string; // Le sous-total calculé (ex: "150.00")
+  totalAmount: string; // Le Subtotal calculé (ex: "150.00")
   cartItems: CartItemType[]; // Le tableau des articles pour l'aperçu visuel
 }

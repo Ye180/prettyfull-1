@@ -10,6 +10,7 @@ const getProductsSameCollection = async (regionId: string) => {
 		fields:
 			"*variants.calculated_price, +variants.inventory_quantity, +variants.manage_inventory, +variants.allow_backorder, *images, *options, *options.values, *variants.options, *variants.options.option, *collection, *collection.metadata",
 		region_id: regionId,
+		limit: 250,
 	});
 
 	const grouped: Record<
@@ -52,6 +53,7 @@ export const useGetProductsSameCollection = () => {
 	return useQuery({
 		queryKey: [COLLECTIONS_MEDUSA_QUERY_KEY, regionId],
 		queryFn: () => getProductsSameCollection(regionId!),
+		staleTime: 5 * 60 * 1000,
 		enabled: !!regionId,
 	});
 };

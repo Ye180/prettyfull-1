@@ -53,7 +53,7 @@
 		},
 		"summary": {
 			"title": "Résumé",
-			"subtotal": "Sous-total",
+			"subtotal": "Subtotal",
 			"shipping": "Frais de port",
 			"taxes": "Estimation des droits et taxes",
 			"total": "Total",
@@ -67,7 +67,7 @@
 	"CheckoutPage": {
 		"checkoutForm": {
 			"labelName": "Nom",
-      "labelEmail": "Email",
+			"labelEmail": "Email",
 			"labelMethod": "Comment souhaitez-vous recevoir votre commande ?",
 			"placeholderMethod": "Entrez votre méthode de livraison...",
 			"labelAddress": "Entrer votre numero, nom et adresse",

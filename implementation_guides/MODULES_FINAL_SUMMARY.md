@@ -7,7 +7,7 @@
 
 ---
 
-## 📊 Vue d'Ensemble
+## 📊 Overview
 
 Implémentation complète des 4 modules du système de gestion de commandes avec cart, notifications, tracking temps réel, et livraison.
 

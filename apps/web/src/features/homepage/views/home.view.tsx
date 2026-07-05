@@ -25,6 +25,8 @@ const HomeView = () => {
 
 	const banner = results.map((result) => result?.data?.[0]);
 
+	console.log("banner", banner);
+
 	const isLoading = results.some((result) => result?.isLoading);
 
 	return (
@@ -36,10 +38,10 @@ const HomeView = () => {
 			<PictureBar
 				isLoading={isLoading}
 				imageDesktop={
-					getMediaUrl(banner[0]?.product_category_image?.[3]?.url) || ""
+					getMediaUrl(banner[0]?.product_category_image?.[0]?.url) || ""
 				}
 				imageMobile={
-					getMediaUrl(banner[0]?.product_category_image?.[2]?.url) || ""
+					getMediaUrl(banner[0]?.product_category_image?.[1]?.url) || ""
 				}
 			/>
 			<Space />
