@@ -1,6 +1,5 @@
 import { useGetProductsSameCollection } from "@/shared/api/medusa/get-products-same-collection";
 import { LoadingPrettyfull } from "@/shared/components/molecules/core/loading-prettyfull";
-import { getMediaUrl } from "@prettyfull/utils";
 import { useRegionStore } from "@/stores/useRegion";
 import {
 	Button,
@@ -9,6 +8,7 @@ import {
 	normalizeCollectionProducts,
 	RawCollectionProduct,
 } from "@prettyfull/ui";
+import { getMediaUrl } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -141,7 +141,7 @@ const ModeCollection = ({ fourth }: ModeCollectionProps) => {
 	const description = fourth?.description || t("subtitle");
 	const ctaLabel = t("ctaButton");
 	const imageUrl =
-		getMediaUrl(firstCategory?.product_category_image?.[1]?.url) ?? "";
+		getMediaUrl(firstCategory?.product_category_image?.[0]?.url) ?? "";
 
 	return (
 		<>

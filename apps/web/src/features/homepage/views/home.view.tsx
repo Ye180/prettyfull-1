@@ -9,7 +9,6 @@ import Hero from "../organims/hero-video";
 import ModeCollection from "../organims/mode-collection";
 import NewsArrivals from "../organims/news-arrivals";
 import PictureBar from "../organims/picture-bar";
-import Recommendation from "../organims/recommendation";
 import ShopGrid from "../organims/shop-grid";
 import TrendReport from "../organims/trend-report";
 
@@ -57,10 +56,10 @@ const HomeView = () => {
 			<PictureBar
 				isLoading={isLoading}
 				imageDesktop={
-					getMediaUrl(banner[1]?.product_category_image?.[1]?.url) || ""
+					getMediaUrl(banner[0]?.product_category_image?.[0]?.url) || ""
 				}
 				imageMobile={
-					getMediaUrl(banner[1]?.product_category_image?.[1]?.url) || ""
+					getMediaUrl(banner[0]?.product_category_image?.[1]?.url) || ""
 				}
 			/>
 			<Space />
@@ -69,14 +68,14 @@ const HomeView = () => {
 			<PictureBar
 				isLoading={isLoading}
 				imageDesktop={
-					getMediaUrl(banner[2]?.product_category_image?.[1]?.url) || ""
+					getMediaUrl(banner[0]?.product_category_image?.[0]?.url) || ""
 				}
 				imageMobile={
-					getMediaUrl(banner[2]?.product_category_image?.[2]?.url) || ""
+					getMediaUrl(banner[0]?.product_category_image?.[1]?.url) || ""
 				}
 			/>
 			<Space />
-			<Recommendation />
+			{/* <Recommendation /> */}
 		</div>
 	);
 };
