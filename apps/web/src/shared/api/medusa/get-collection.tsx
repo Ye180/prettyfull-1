@@ -13,6 +13,7 @@ export const useGetCollection = () => {
 	return useQuery({
 		queryKey: [COLLECTIONS_MEDUSA_QUERY_KEY],
 		queryFn: getCollection,
+		staleTime: 10 * 60 * 1000,
 	});
 };
 

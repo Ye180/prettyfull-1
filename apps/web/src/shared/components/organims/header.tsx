@@ -19,10 +19,14 @@ const Header = ({
 	// Determine active category handle from URL or query param
 	const activeHandle = division || params.id;
 
-	// Find the active category and its children
+	// Find the active category and its children (fallback to first category)
 	const activeCategory = useMemo(() => {
-		if (!main_category || !activeHandle) return null;
-		return main_category.find((cat: any) => cat.handle === activeHandle);
+		if (!main_category || main_category.length === 0) return null;
+		if (activeHandle) {
+			const found = main_category.find((cat: any) => cat.handle === activeHandle);
+			if (found) return found;
+		}
+		return main_category[0] ?? null;
 	}, [main_category, activeHandle]);
 
 	// Determine parent slug for bottom header navigation

@@ -11,5 +11,6 @@ export const useGetRegion = () => {
 	return useQuery({
 		queryKey: [REGIONS_MEDUSA_QUERY_KEY],
 		queryFn: getRegion,
+		staleTime: 60 * 60 * 1000,
 	});
 };

@@ -2,7 +2,7 @@ import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
 import { LoadingPrettyfull } from "@/shared/components/molecules/core/loading-prettyfull";
 import Title from "@/shared/components/molecules/core/title";
 import { Button } from "@prettyfull/ui";
-import { cn } from "@prettyfull/utils";
+import { cn, getMediaUrl } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -93,7 +93,7 @@ const NewsArrivals = () => {
 									key={category.id ?? category.handle ?? index}
 									name={category.name || ""}
 									imageUrl={
-										category.product_category_image?.[1]?.url + "?view=1" || ""
+										getMediaUrl(category.product_category_image?.[0]?.url) || ""
 									}
 									priority={index === 0}
 								/>

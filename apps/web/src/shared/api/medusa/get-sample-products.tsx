@@ -79,6 +79,7 @@ export const useGetStandaloneProductsByCategory = (categoryHandle: string) => {
 			regionId,
 		],
 		queryFn: () => getStandaloneProductsByCategory(regionId!, categoryHandle),
+		staleTime: 5 * 60 * 1000,
 		enabled: !!regionId && !!categoryHandle,
 	});
 };

@@ -26,6 +26,7 @@ export const useGetCollectionProductsMedusa = (
 	return useQuery({
 		queryKey: ["collection-products", collectionId, regionId],
 		queryFn: () => getCollectionProductsMedusa(collectionId!, regionId!),
+		staleTime: 5 * 60 * 1000,
 		enabled: !!collectionId && !!regionId,
 	});
 };

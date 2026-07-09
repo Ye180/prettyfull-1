@@ -125,6 +125,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 										width={100}
 										height={100}
 										className="object-top rounded"
+										unoptimized
 									/>
 								</div>
 								{item.quantity > 1 && (
@@ -143,7 +144,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 					href={`/account/orders/${order.id}`}
 					className="flex items-center text-sm font-semibold text-gray-600 transition-colors group/link hover:text-black"
 				>
-					Détails de la commande
+					Order details
 					<ArrowRightIcon className="ml-2 w-4 h-4 opacity-0 transition-all duration-200 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0" />
 				</Link>
 

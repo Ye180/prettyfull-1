@@ -209,7 +209,7 @@ NEXT_PUBLIC_BETTER_AUTH_URL="http://localhost:7777/api/v1/auth"
 ### Test 3 : Déconnexion
 
 ```bash
-# 1. Sur /account, cliquer sur "Se déconnecter"
+# 1. Sur /account, cliquer sur "Logout"
 # Résultat attendu : Redirection vers /login
 ```
 

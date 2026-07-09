@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 // --- Types
 export interface CartProduct {
@@ -37,12 +38,11 @@ const calculateTotalItems = (items: CartItem[]): number => {
 };
 
 // --- Store
-export const useCartStore = create<CartState>((set, get) => ({
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
   items: [],
-  currentCartId:
-    typeof window !== "undefined"
-      ? localStorage.getItem("guest_cart_id") || undefined
-      : undefined,
+  currentCartId: undefined,
   totalItems: 0,
 
   setCart: (items) => set({ items, totalItems: calculateTotalItems(items) }),
@@ -165,4 +165,20 @@ export const useCartStore = create<CartState>((set, get) => ({
       console.error("❌ Error syncing cart:", error);
     }
   },
-}));
+    }),
+    {
+      name: "prettyfull-cart",
+      storage: createJSONStorage(() => {
+        if (typeof window === "undefined") {
+          return {
+            getItem: () => null,
+            setItem: () => {},
+            removeItem: () => {},
+          };
+        }
+        return localStorage;
+      }),
+      partialize: (state: CartState) => ({ currentCartId: state.currentCartId }),
+    }
+  )
+);

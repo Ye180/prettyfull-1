@@ -85,10 +85,10 @@ export default function OrdersPage() {
 			<div className="flex flex-col gap-4 justify-between sm:flex-row sm:items-center">
 				<div>
 					<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-						Mes Commandes
+						My Orders
 					</h2>
 					<p className="mt-1 text-gray-500">
-						Suivez et gérez vos commandes récentes.
+						Track and manage your recent orders.
 					</p>
 				</div>
 			</div>
@@ -101,7 +101,7 @@ export default function OrdersPage() {
 				</div>
 			) : error ? (
 				<div className="p-6 text-sm text-red-800 bg-red-50 rounded-lg border border-red-200">
-					Impossible de charger vos commandes. Veuillez réessayer.
+					Unable to load your orders. Please try again.
 				</div>
 			) : mappedOrders.length > 0 ? (
 				<div className="grid gap-6">
@@ -114,16 +114,14 @@ export default function OrdersPage() {
 					<div className="flex justify-center items-center mb-4 w-16 h-16 bg-gray-50 rounded-full">
 						<OrderIcon className="w-8 h-8 text-gray-400" />
 					</div>
-					<h3 className="text-lg font-semibold text-gray-900">
-						Aucune commande pour le moment
-					</h3>
+					<h3 className="text-lg font-semibold text-gray-900">No orders yet</h3>
 					<p className="mx-auto mt-2 mb-8 max-w-sm text-gray-500">
-						Vous n&apos;avez pas encore passé de commande. Découvrez nos
-						dernières nouveautés et laissez-vous tenter !
+						You haven&apos;t placed any orders yet. Discover our latest news and
+						let yourself be tempted!
 					</p>
 					<Link href="/products">
 						<Button className="px-8 py-6 h-auto text-base text-white bg-black rounded-full hover:bg-gray-800">
-							Commencer le shopping
+							Start shopping
 						</Button>
 					</Link>
 				</div>

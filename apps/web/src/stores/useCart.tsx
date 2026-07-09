@@ -1,4 +1,4 @@
-import { useCartStore } from "../../../../packages/store/src/use-cart-store";
+import { useCartStore } from "@prettyfull/store";
 
 export const useCart = () => {
 	const { items, setCart, addItem, removeItem, clearCart } = useCartStore();

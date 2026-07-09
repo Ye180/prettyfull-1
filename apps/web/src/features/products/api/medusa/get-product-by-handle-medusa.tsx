@@ -9,7 +9,7 @@ export const getProductsByHandleMedusa = async (
 	regionId: string,
 ) => {
 	const response = await sdk.store.product.list({
-		fields: "*variants.calculated_price",
+		fields: "*images, *options, *options.values, *variants.calculated_price, *variants.options, *variants.prices, variants.inventory_quantity, variants.manage_inventory, variants.allow_backorder, variants.thumbnail",
 		region_id: regionId,
 		handle,
 	});
@@ -27,6 +27,7 @@ export const useGetProductsByHandleMedusa = (
 	return useQuery({
 		queryKey: [PRODUCT_MEDUSA_BY_HANDLE_QUERY_KEY, handle, regionId],
 		queryFn: () => getProductsByHandleMedusa(handle, regionId),
+		staleTime: 2 * 60 * 1000,
 		enabled: !!handle && !!regionId,
 	});
 };

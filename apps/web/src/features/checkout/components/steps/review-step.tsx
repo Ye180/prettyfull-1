@@ -93,6 +93,7 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 													width={100}
 													height={100}
 													className="object-cover w-32 h-52 bg-amber-400 rounded"
+												unoptimized
 												/>
 											)}
 										</div>

@@ -1,6 +1,7 @@
 "use client";
 
 import ProductCardSkeleton from "@/shared/components/organims/product-loading";
+import { useRegionStore } from "@/stores/useRegion";
 import {
 	CardProduct,
 	GridCardProduct,
@@ -14,6 +15,7 @@ const GridCollectionLayout = ({
 	products: NormalizedCollectionProduct[];
 	loading: boolean;
 }) => {
+	const currencyCode = useRegionStore((state) => state.region?.currency_code);
 	if (!products || loading) {
 		return (
 			<div className="grid grid-cols-4 gap-x-4 gap-y-8 px-2 w-full rounded-md max-sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 scrolbar">
@@ -32,8 +34,13 @@ const GridCollectionLayout = ({
 			) : (
 				<GridCardProduct action_grid className="max-sm:gap-y-8">
 					<>
-						{products?.map((product) => (
-							<CardProduct key={product.collectionId} product={product} />
+						{products?.map((product, index) => (
+							<CardProduct
+								key={product.collectionId}
+								product={product}
+								currencyCode={currencyCode}
+								priority={index < 4}
+							/>
 						))}
 					</>
 				</GridCardProduct>

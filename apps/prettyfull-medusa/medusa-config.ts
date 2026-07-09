@@ -2,6 +2,19 @@ import { defineConfig, loadEnv } from "@medusajs/framework/utils";
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
+if (process.env.S3_DISABLE_SSL_VERIFY === "true") {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
+
+const jwtSecret = process.env.JWT_SECRET;
+const cookieSecret = process.env.COOKIE_SECRET;
+
+if (!jwtSecret || !cookieSecret) {
+  throw new Error(
+    "Missing required environment variables: JWT_SECRET and COOKIE_SECRET must be set."
+  );
+}
+
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
@@ -11,17 +24,16 @@ module.exports = defineConfig({
         ? { rejectUnauthorized: false }
         : false,
     },
-  http: {
+    http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
       authCors: process.env.AUTH_CORS!,
-      jwtSecret: process.env.JWT_SECRET || "supersecret",
-      cookieSecret: process.env.COOKIE_SECRET || "supersecret",
+      jwtSecret,
+      cookieSecret,
     },
   },
   admin: {
     disable: false,
-    // backendUrl:process.env.MEDUSA_BACKEND_URL,
     backendUrl: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL,
     path: "/app",
   },
@@ -32,7 +44,7 @@ module.exports = defineConfig({
         providers: [
           {
             resolve: "@medusajs/file-s3",
-            id: "garage",
+            id: "rustfs",
             options: {
               file_url: process.env.RUSTFS_PUBLIC_URL,
               access_key_id: process.env.S3_ACCESS_KEY_ID,
@@ -45,7 +57,6 @@ module.exports = defineConfig({
               },
             },
           },
-
         ],
       },
     },
@@ -68,16 +79,3 @@ module.exports = defineConfig({
     },
   ],
 });
-
-
-//           {
-//    resolve: "@medusajs/file-s3",
-//   options: {
-//     s3_url: process.env.S3_ENDPOINT,
-//     bucket: process.env.S3_BUCKET,
-//     region: process.env.S3_REGION,
-//     access_key_id: process.env.S3_ACCESS_KEY_ID,
-//     secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
-//     s3_force_path_style: true, // Très important pour les solutions auto-hébergées comme RustFS
-//   },
-// },

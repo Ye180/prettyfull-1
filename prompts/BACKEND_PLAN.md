@@ -73,7 +73,7 @@ Responsabilités des Modules :
 
 AuthModule: Gère l'inscription, la connexion (stratégies local), la validation des tokens JWT (stratégie jwt), et la gestion des rôles.
 
-UsersModule: CRUD pour les utilisateurs, gestion des profils, adresses, etc.
+UsersModule: CRUD pour les utilisateurs, gestion des profils, Addresses, etc.
 
 ProductsModule: Logique métier liée aux produits : CRUD, gestion des stocks, recherche, filtrage.
 
