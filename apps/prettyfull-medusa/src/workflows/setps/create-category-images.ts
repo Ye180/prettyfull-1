@@ -1,5 +1,6 @@
 import { MedusaError } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+import { deleteFilesWorkflow } from "@medusajs/medusa/core-flows"
 import { PRODUCT_MEDIA_MODULE } from "../../modules/product-media"
 import ProductMediaModuleService from "../../modules/product-media/service"
 
@@ -55,8 +56,29 @@ export const createCategoryImagesStep = createStep(
     const productMediaService: ProductMediaModuleService =
       container.resolve(PRODUCT_MEDIA_MODULE)
 
+    // 1. Supprimer les lignes créées en base
     await productMediaService.deleteProductCategoryImages(
-      compensationData
+      compensationData.map((img) => img.id)
     )
+
+    // 2. Nettoyer les fichiers S3 uploadés en amont, sinon ils restent orphelins
+    //    lorsque le workflow échoue. On avale l'erreur pour ne pas faire échouer
+    //    la compensation elle-même.
+    const fileIds = compensationData
+      .map((img) => img.file_id)
+      .filter(Boolean)
+
+    if (fileIds.length) {
+      try {
+        await deleteFilesWorkflow(container).run({
+          input: { ids: fileIds },
+        })
+      } catch (error) {
+        console.warn(
+          "[create-category-images] Échec du nettoyage des fichiers S3 lors de la compensation",
+          { fileIds, error }
+        )
+      }
+    }
   }
 )

@@ -10,7 +10,7 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { useAddItemToCartMedusa } from "../../../apps/web/src/features/cart/api/medusa/add-item-to-cart-medusa";
+import { useCartActions } from "./context/cart-actions";
 import { Button } from "./button";
 import { toast } from "./components/toast/toaster";
 import DrawerCart from "./drawer-cart";
@@ -242,7 +242,7 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 	);
 
 	// --- LOGIQUE D'AJOUT AU PANIER ---
-	const addItemToCartMutation = useAddItemToCartMedusa();
+	const { addToCart } = useCartActions();
 
 	const [selectedSize, setSelectedSize] = useState<string>("");
 	// --- FIN DE LA LOGIQUE ---
@@ -336,7 +336,7 @@ export function CardProduct({ product, className, ...props }: CardProps) {
 			description: "Merci de patienter un instant.",
 		});
 
-		addItemToCartMutation.mutate(
+		addToCart(
 			{
 				cartId: cartId || "",
 				quantity: 1,

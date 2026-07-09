@@ -35,7 +35,7 @@ export const CategoryImageUpload = ({
               ref={fileInputRef}
               type="file"
               multiple
-              accept="image/jpeg,image/png,image/gif,image/webp,image/heic,image/svg+xml"
+              accept="image/jpeg,image/png,image/gif,image/webp,image/heic"
               onChange={(e) => onFileSelect(e.target.files)}
               hidden
             />

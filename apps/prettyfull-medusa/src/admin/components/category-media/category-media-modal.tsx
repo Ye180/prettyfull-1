@@ -48,10 +48,24 @@ export const CategoryMediaModal = ({
 		},
 	});
 
+	// L'upload doit bloquer la sauvegarde : sinon on peut cliquer "Save" avant
+	// que `uploadedFiles` soit peuplé (onSuccess pas encore déclenché) et fermer
+	// le modal sans persister les images tout juste uploadées.
 	const isSaving =
+		uploadFilesMutation.isPending ||
 		createImagesMutation.isPending ||
 		updateImagesMutation.isPending ||
 		deleteImagesMutation.isPending;
+
+	// Types et taille autorisés côté client (le drop bypassait l'attribut accept).
+	const ACCEPTED_IMAGE_TYPES = [
+		"image/jpeg",
+		"image/png",
+		"image/gif",
+		"image/webp",
+		"image/heic",
+	];
+	const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 Mo
 
 	const resetModalState = () => {
 		setUploadedFiles([]);
@@ -84,9 +98,29 @@ export const CategoryMediaModal = ({
 		}
 		const filesArray = Array.from(files);
 
+		// Validation type + taille (le chemin drag-and-drop ne passe pas par
+		// l'attribut `accept` du picker).
+		const invalid = filesArray.filter(
+			(f) => !ACCEPTED_IMAGE_TYPES.includes(f.type) || f.size > MAX_FILE_SIZE,
+		);
+		if (invalid.length > 0) {
+			toast.error(
+				`Fichier(s) refusé(s) : ${invalid
+					.map((f) => f.name)
+					.join(", ")} — image (jpeg/png/gif/webp/heic) de 10 Mo max requise.`,
+			);
+			if (fileInputRef.current) {
+				fileInputRef.current.value = "";
+			}
+			return;
+		}
+
 		uploadFilesMutation.mutate(filesArray, {
 			onSuccess: (data) => {
 				setUploadedFiles((prev) => [...prev, ...data.files]);
+			},
+			onError: () => {
+				toast.error("Échec de l'upload des fichiers. Veuillez réessayer.");
 			},
 		});
 
@@ -153,6 +187,9 @@ export const CategoryMediaModal = ({
 			onSuccess?.();
 			toast.success("Category media saved successfully");
 		} catch (error) {
+			// En cas d'échec partiel (certaines opérations ont pu réussir), on
+			// resynchronise la galerie avec l'état réel du serveur.
+			onSuccess?.();
 			toast.error("Failed to save changes");
 		}
 	};

@@ -12,7 +12,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Image = NextImage as any;
 
-import { useAddItemToCartMedusa } from "../../../../../apps/web/src/features/cart/api/medusa/add-item-to-cart-medusa";
+import { useCartActions } from "../../context/cart-actions";
 import { ColorSelector } from "./color-selector";
 import { SizeSelector } from "./size-selector";
 import type { NormalizedCollectionProduct } from "./types";
@@ -93,7 +93,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 		return () => mq.removeEventListener("change", handler);
 	}, []);
 
-	const addItemToCartMutation = useAddItemToCartMedusa();
+	const { addToCart } = useCartActions();
 
 	// --- Données dérivées ---
 	const activeColor = product?.colors[activeColorIndex];
@@ -162,7 +162,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 					product?.collectionTitle ?? "Merci de patienter un instant.",
 			});
 
-			addItemToCartMutation.mutate(
+			addToCart(
 				{
 					cartId: cartId || "",
 					quantity: 1,
@@ -190,7 +190,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 				},
 			);
 		},
-		[activeColor, product?.collectionTitle, addItemToCartMutation],
+		[activeColor, product?.collectionTitle, addToCart],
 	);
 
 	const handleCloseSizeSelector = useCallback((e: React.MouseEvent) => {

@@ -28,6 +28,9 @@ export * from "../src/components/ui/tabs";
 
 export * from "../src/custom-modal";
 
+// --- Contexte d'injection des actions panier (inversion de dépendance ui/web) ---
+export * from "./context/cart-actions";
+
 export * from "./components/toast/toaster";
 
 

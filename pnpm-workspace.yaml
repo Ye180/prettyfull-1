@@ -2,6 +2,17 @@ packages:
   - apps/*
   - packages/*
 
+overrides:
+  '@types/react': 19.1.0
+  '@types/react-dom': 19.1.1
+  csstype: 3.1.3
+  '@medusajs/types': 2.11.3
+  '@medusajs/js-sdk': 2.11.3
+  '@medusajs/framework': 2.11.3
+  # Force une copie unique et à jour de caniuse-lite (évite l'avertissement
+  # "browsers data is X months old" et le doublon de versions transitif).
+  caniuse-lite: ^1.0.30001803
+
 onlyBuiltDependencies:
   - '@nestjs/core'
   - '@parcel/watcher'

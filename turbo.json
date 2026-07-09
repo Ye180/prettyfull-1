@@ -6,7 +6,13 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"outputs": [".next/**", "!.next/cache/**", "dist/**", ".medusa/**"]
+			"outputs": [
+				".next/**",
+				"!.next/cache/**",
+				"dist/**",
+				".medusa/**",
+				"storybook-static/**"
+			]
 		},
 		"dev": {
 			"dependsOn": ["^build"],

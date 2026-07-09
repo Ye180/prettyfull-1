@@ -33,10 +33,14 @@ export const deleteCategoryImagesWorkflow = createWorkflow(
       (data) => data.categoryImages.map((img) => img.file_id)
     )
 
-    safeDeleteFilesStep({ ids: fileIds })
-
-    // Then delete the category image records
+    // Supprimer d'abord les lignes en base (étape avec compensation : elle
+    // peut recréer les lignes si une étape ultérieure échoue).
     const result = deleteCategoryImagesStep({ ids: input.ids })
+
+    // Puis supprimer les fichiers du stockage EN DERNIER : la suppression S3
+    // est irréversible, elle doit être l'action terminale pour qu'un échec
+    // en amont laisse les fichiers intacts (pas de références cassées).
+    safeDeleteFilesStep({ ids: fileIds })
 
     return new WorkflowResponse(result)
   }

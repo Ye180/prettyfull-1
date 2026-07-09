@@ -68,6 +68,7 @@ export function ProductGalleryNew({
 								alt={`${title} - vue ${index + 1}`}
 								width={64}
 								height={90}
+								sizes="72px"
 								className="object-cover w-full h-full"
 								unoptimized
 							/>
@@ -86,6 +87,7 @@ export function ProductGalleryNew({
 							alt={title}
 							width={480}
 							height={640}
+							sizes="(min-width: 640px) 480px, 100vw"
 							className="object-cover rounded"
 							priority
 							unoptimized
@@ -107,6 +109,7 @@ export function ProductGalleryNew({
 								alt={`${title} - vue ${index + 1}`}
 								width={280}
 								height={400}
+								sizes="280px"
 								className="rounded cursor-zoom-in"
 								onClick={() => {
 									setActiveImage(index);
@@ -150,6 +153,7 @@ export function ProductGalleryNew({
 								alt={title}
 								width={600}
 								height={900}
+								sizes="(min-width: 768px) 600px, 90vw"
 								className="object-contain max-h-[80vh] w-auto mx-auto rounded-lg transition-all"
 								priority
 								unoptimized
@@ -198,6 +202,7 @@ export function ProductGalleryNew({
 										src={image}
 										alt={`${title} miniature ${index + 1}`}
 										fill
+										sizes="64px"
 										className="object-cover"
 										unoptimized
 									/>

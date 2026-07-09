@@ -45,8 +45,8 @@ h6 {
 }
 
 @theme {
-	--font-manrope: "manrope", sans-serif;
-	--font-bebas-neue: "bebas neue", sans-serif;
+	--font-manrope: "Manrope Variable", system-ui, sans-serif;
+	--font-bebas-neue: "Bebas Neue", sans-serif;
 }
 
 @media screen and (40rem <=width<= 76.8rem) {

@@ -1,6 +1,29 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { sdk } from "../lib/sdk"
 import { CategoryImage } from "../type"
+
+export const CATEGORY_IMAGES_QUERY_KEY = "category-images"
+
+type CategoryImagesResponse = {
+  category_images: CategoryImage[]
+}
+
+/**
+ * Lecture des images d'une catégorie via React Query (cache + dédup + refetch),
+ * en remplacement du useState/useEffect/refreshKey manuel.
+ */
+export const useCategoryImages = (categoryId?: string) => {
+  return useQuery({
+    queryKey: [CATEGORY_IMAGES_QUERY_KEY, categoryId],
+    queryFn: async () => {
+      const res = await sdk.client.fetch<CategoryImagesResponse>(
+        `/admin/categories/${categoryId}/images`
+      )
+      return res?.category_images ?? []
+    },
+    enabled: !!categoryId,
+  })
+}
 
 
 type UseCategoryImageMutationsProps = {

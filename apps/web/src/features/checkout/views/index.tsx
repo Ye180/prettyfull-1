@@ -19,16 +19,21 @@ const CheckoutView = () => {
 
 	const regionss = useRegionStore((state) => state.region);
 
-	sdk.store.customer
-		.retrieve()
-		.then(({ customer }) => {
-			// Ici, le client est connecté
-		})
-		.catch(() => {
-			// Ici, aucun client connecté
-			router.push("/login");
-			// par ex. rediriger vers la page de login
-		});
+	useEffect(() => {
+		let cancelled = false;
+		sdk.store.customer
+			.retrieve()
+			.then(() => {
+				// Le client est connecté
+			})
+			.catch(() => {
+				// Aucun client connecté : rediriger vers le login
+				if (!cancelled) router.push("/login");
+			});
+		return () => {
+			cancelled = true;
+		};
+	}, [router]);
 
 	const { goToNextStep } = useCheckoutStep();
 	const region = useRegionStore((state) => state.region);

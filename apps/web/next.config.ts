@@ -23,7 +23,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  experimental: {
+    optimizePackageImports: [
+      "framer-motion",
+      "@headlessui/react",
+      "@medusajs/js-sdk",
+    ],
+  },
   images: {
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",

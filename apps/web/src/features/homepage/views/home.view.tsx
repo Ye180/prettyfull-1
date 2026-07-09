@@ -24,9 +24,9 @@ const HomeView = () => {
 
 	const banner = results.map((result) => result?.data?.[0]);
 
-	console.log("banner", banner);
-
 	const isLoading = results.some((result) => result?.isLoading);
+
+	console.log(banner);
 
 	return (
 		<div className="  w-full *:w-full lg:*:px-40  space-y-4 lg:space-y-4 mb-20">
@@ -52,7 +52,6 @@ const HomeView = () => {
 			<Space />
 			<TrendReport />
 			<Space />
-
 			<PictureBar
 				isLoading={isLoading}
 				imageDesktop={
@@ -75,7 +74,6 @@ const HomeView = () => {
 				}
 			/>
 			<Space />
-			{/* <Recommendation /> */}
 		</div>
 	);
 };

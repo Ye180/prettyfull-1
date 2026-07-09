@@ -10,6 +10,7 @@ import {
 	RawCollectionProduct,
 } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 
 const ShopGrid = () => {
@@ -21,23 +22,27 @@ const ShopGrid = () => {
 		isLoading: loadingProductsSameCollection,
 	} = useGetProductsSameCollection();
 
+	// Normalisation mémoïsée : évite de re-mapper toute la liste à chaque rendu.
+	const normalizedProducts = useMemo(
+		() =>
+			productSameCollection?.map((group) =>
+				normalizeCollectionProducts(group as RawCollectionProduct),
+			) ?? [],
+		[productSameCollection],
+	);
+
 	return (
 		<Container maxWidth="100vw" className="px-4 space-y-8 w-full lg:px-40">
 			<Title title="$4 & UNDER BLOWOUT!" buttonLabel={t("viewAll")} />
 			<GridCardProduct>
 				<>
-					{productSameCollection?.map((group) => {
-						const normalized = normalizeCollectionProducts(
-							group as RawCollectionProduct,
-						);
-						return (
-							<CardProduct
-								key={normalized.collectionId}
-								product={normalized}
-								currencyCode={currencyCode}
-							/>
-						);
-					})}
+					{normalizedProducts.map((normalized, index) => (
+						<CardProduct
+							key={normalized.collectionId ?? index}
+							product={normalized}
+							currencyCode={currencyCode}
+						/>
+					))}
 				</>
 			</GridCardProduct>
 		</Container>

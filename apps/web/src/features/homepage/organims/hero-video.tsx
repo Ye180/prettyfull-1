@@ -47,12 +47,11 @@ const PromoBanner = ({ ctaLabel }: { ctaLabel: string }) => (
 
 const HeroVideo = () => (
 	<video
-		width="500"
-		height="500"
 		autoPlay
 		muted
 		loop
 		playsInline
+		preload="metadata"
 		className={`flex ${heroImageClassName}`}
 	>
 		<source src="/video/video.mp4" type="video/mp4" />
@@ -82,6 +81,7 @@ const HeroImages = ({
 					sizes="(min-width: 640px) 100vw, 1px"
 					className={`${heroImageClassName} max-sm:hidden sm:flex`}
 					priority
+					unoptimized
 				/>
 			) : null}
 			{mobileUrl ? (
@@ -92,6 +92,7 @@ const HeroImages = ({
 					sizes="(max-width: 639px) 100vw, 1px"
 					className={`${heroImageClassName} max-sm:flex sm:hidden`}
 					priority
+					unoptimized
 				/>
 			) : null}
 		</>

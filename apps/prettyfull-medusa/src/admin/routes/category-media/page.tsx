@@ -1,59 +1,39 @@
 import { Container, Heading } from "@medusajs/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CategoryMediaModal } from "../../components/category-media/category-media-modal";
-import { sdk } from "../../lib/sdk";
-import { CategoryImage } from "../../type";
-
-type CategoryImagesResponse = {
-	category_images: CategoryImage[];
-};
+import { useCategoryImages } from "../../hooks/use-category-image";
 
 const queryClient = new QueryClient();
 
-const CategoryMediaPage = () => {
+const CategoryMediaPageContent = () => {
 	const { id } = useParams<{ id: string }>();
-	const [images, setImages] = useState<CategoryImage[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-
-	const fetchImages = async () => {
-		if (!id) return;
-		try {
-			setIsLoading(true);
-			const result = await sdk.client.fetch<CategoryImagesResponse>(
-				`/admin/categories/${id}/images`,
-			);
-			setImages(result?.category_images || []);
-		} catch (error) {
-			setImages([]);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	useEffect(() => {
-		fetchImages();
-	}, [id]);
+	const { data: images = [], isLoading, refetch } = useCategoryImages(id);
 
 	if (!id) {
 		return <div>Category ID not found</div>;
 	}
 
 	return (
+		<Container>
+			<div className="flex justify-between items-center mb-4">
+				<Heading level="h1">Category Media</Heading>
+			</div>
+			{!isLoading && (
+				<CategoryMediaModal
+					categoryId={id}
+					existingImages={images}
+					onSuccess={() => refetch()}
+				/>
+			)}
+		</Container>
+	);
+};
+
+const CategoryMediaPage = () => {
+	return (
 		<QueryClientProvider client={queryClient}>
-			<Container>
-				<div className="flex justify-between items-center mb-4">
-					<Heading level="h1">Category Media</Heading>
-				</div>
-				{!isLoading && (
-					<CategoryMediaModal
-						categoryId={id}
-						existingImages={images}
-						onSuccess={fetchImages}
-					/>
-				)}
-			</Container>
+			<CategoryMediaPageContent />
 		</QueryClientProvider>
 	);
 };

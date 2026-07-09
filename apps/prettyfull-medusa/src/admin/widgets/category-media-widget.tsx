@@ -3,10 +3,9 @@ import { ThumbnailBadge } from "@medusajs/icons";
 import { AdminProductCategory, DetailWidgetProps } from "@medusajs/types";
 import { Container, Heading } from "@medusajs/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { CategoryMediaModal } from "../components/category-media/category-media-modal";
+import { useCategoryImages } from "../hooks/use-category-image";
 import { withGarageViewParam } from "../lib/garage-url";
-import { sdk } from "../lib/sdk";
 import { CategoryImage } from "../type";
 
 const queryClient = new QueryClient({
@@ -17,38 +16,10 @@ const queryClient = new QueryClient({
 	},
 });
 
-type CategoryImagesResponse = {
-	category_images: CategoryImage[];
-};
-
 const CategoryMediaWidgetContent = ({
 	data,
 }: DetailWidgetProps<AdminProductCategory>) => {
-	const [images, setImages] = useState<CategoryImage[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [refreshKey, setRefreshKey] = useState(0);
-
-	const refreshImages = () => {
-		setRefreshKey((prev) => prev + 1);
-	};
-
-	useEffect(() => {
-		const fetchImages = async () => {
-			try {
-				setIsLoading(true);
-				const result = await sdk.client.fetch<CategoryImagesResponse>(
-					`/admin/categories/${data.id}/images`,
-				);
-				setImages(result?.category_images || []);
-			} catch (error) {
-				setImages([]);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		fetchImages();
-	}, [data.id, refreshKey]);
+	const { data: images = [], isLoading, refetch } = useCategoryImages(data.id);
 
 	return (
 		<Container className="p-0 divide-y">
@@ -58,7 +29,7 @@ const CategoryMediaWidgetContent = ({
 					<CategoryMediaModal
 						categoryId={data.id}
 						existingImages={images}
-						onSuccess={refreshImages}
+						onSuccess={() => refetch()}
 					/>
 				)}
 			</div>
