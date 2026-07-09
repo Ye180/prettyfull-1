@@ -131,10 +131,10 @@ export default function AccountPage() {
 			<div className="flex flex-col gap-4 justify-between xs:flex-row xs:items-center xs:px-3">
 				<div>
 					<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-						Vue d&apos;ensemble
+						Overview
 					</h2>
 					<p className="text-gray-500">
-						Heureux de vous revoir, {customer.first_name || customer.email}.
+						Happy to see you again, {customer.first_name || customer.email}.
 					</p>
 				</div>
 				<Button
@@ -148,7 +148,7 @@ export default function AccountPage() {
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 				<StatCard
 					icon={OrderIcon}
-					label="Commandes"
+					label="Orders"
 					value={ordersLoading ? "..." : String(ordersCount)}
 					href="/account/orders"
 				/>
@@ -160,7 +160,7 @@ export default function AccountPage() {
 				/>
 				<StatCard
 					icon={AddressIcon}
-					label="Adresses"
+					label="Addresses"
 					value={String(customer.addresses?.length ?? 0)}
 					href="/account/addresses"
 				/>
@@ -171,7 +171,7 @@ export default function AccountPage() {
 					<div className="space-y-10">
 						<div className="flex justify-between items-center">
 							<p className=" text-gray-800 font-semibold text-xl! ">
-								Dernière commande
+								Last Order
 							</p>
 							{lastOrderStatus && (
 								<span
@@ -193,12 +193,13 @@ export default function AccountPage() {
 											width={96}
 											height={96}
 											className="object-fill object-top"
+											unoptimized
 										/>
 									)}
 								</div>
 								<div>
 									<p className="text-sm font-medium text-gray-900">
-										Commande #{lastOrder.display_id}
+										Order #{lastOrder.display_id}
 									</p>
 									<p className="text-sm text-gray-500">
 										{new Date(lastOrder.created_at).toLocaleDateString(
@@ -216,12 +217,12 @@ export default function AccountPage() {
 								</div>
 							</div>
 						) : (
-							<p className="text-sm text-gray-500">Aucune commande</p>
+							<p className="text-sm text-gray-500">No order</p>
 						)}
 					</div>
 					<Link href="/account/orders">
 						<Button variant="outline" className="mt-6 w-full border-gray-200">
-							Voir les commandes
+							See orders
 						</Button>
 					</Link>
 				</div>
@@ -230,7 +231,7 @@ export default function AccountPage() {
 					<div className="space-y-10">
 						<div className="flex justify-between items-center mb-4">
 							<p className=" text-gray-800 font-semibold  text-xl! ">
-								Adresse par défaut
+								Default Address
 							</p>
 						</div>
 						{defaultAddress ? (
@@ -247,12 +248,12 @@ export default function AccountPage() {
 							</address>
 						) : (
 							<address className="space-y-1 text-sm not-italic text-gray-600">
-								<p className="text-gray-500">Aucune adresse enregistrée</p>
+								<p className="text-gray-500">No address registered</p>
 							</address>
 						)}
 						<Link href="/account/addresses">
 							<Button variant="outline" className="mt-6 w-full border-gray-200">
-								Voir les adresses
+								See Addresses
 							</Button>
 						</Link>
 					</div>
@@ -264,11 +265,9 @@ export default function AccountPage() {
 				<div className="flex flex-col gap-4 justify-between sm:flex-row sm:items-center">
 					<div>
 						<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-							Informations Personnelles
+							Personal Information
 						</h2>
-						<p className="text-gray-500">
-							Mettez à jour vos informations de connexion.
-						</p>
+						<p className="text-gray-500">Update your login information.</p>
 					</div>
 				</div>
 				<div className="px-8 py-12 bg-white border border-gray-100 rounded-md!">
@@ -314,12 +313,10 @@ export default function AccountPage() {
 								className="px-8 font-medium text-white bg-black rounded-full shadow-lg transition-all hover:bg-gray-800 shadow-gray-200"
 								disabled={isSaving}
 							>
-								{isSaving ? "Enregistrement..." : "Enregistrer"}
+								{isSaving ? "Saving..." : "Save"}
 							</Button>
 							{saveSuccess && (
-								<span className="text-sm text-green-600">
-									Profil mis à jour !
-								</span>
+								<span className="text-sm text-green-600">Profile updated!</span>
 							)}
 						</div>
 					</form>

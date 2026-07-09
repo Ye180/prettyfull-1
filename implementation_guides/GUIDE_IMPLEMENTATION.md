@@ -1,6 +1,6 @@
 # 🚀 Guide d'Implémentation - PrettyFull E-Commerce v2.0
 
-## 📋 Vue d'Ensemble
+## 📋 Overview
 
 Ce guide documente l'architecture mise à jour de l'application e-commerce PrettyFull, incluant les systèmes de panier robuste, notifications asynchrones, commandes temps réel, livraison, paiement multi-pays et internationalisation.
 
@@ -124,20 +124,20 @@ Event Trigger → BullMQ Producer → Redis Queue → BullMQ Worker → Email Se
 ```typescript
 // apps/backend/src/shared/config/bull.config.ts
 export const bullConfig = {
-  redis: {
-    host: process.env.REDIS_HOST || "localhost",
-    port: parseInt(process.env.REDIS_PORT) || 6379,
-    password: process.env.REDIS_PASSWORD,
-  },
-  defaultJobOptions: {
-    attempts: 3,
-    backoff: {
-      type: "exponential",
-      delay: 2000,
-    },
-    removeOnComplete: 100,
-    removeOnFail: 50,
-  },
+	redis: {
+		host: process.env.REDIS_HOST || "localhost",
+		port: parseInt(process.env.REDIS_PORT) || 6379,
+		password: process.env.REDIS_PASSWORD,
+	},
+	defaultJobOptions: {
+		attempts: 3,
+		backoff: {
+			type: "exponential",
+			delay: 2000,
+		},
+		removeOnComplete: 100,
+		removeOnFail: 50,
+	},
 };
 ```
 
@@ -146,10 +146,10 @@ export const bullConfig = {
 ```typescript
 // Dans OrdersService
 await this.notificationsService.sendOrderConfirmation({
-  to: order.customer.email,
-  orderNumber: order.orderNumber,
-  customerName: order.customer.name,
-  // ...
+	to: order.customer.email,
+	orderNumber: order.orderNumber,
+	customerName: order.customer.name,
+	// ...
 });
 ```
 
@@ -307,24 +307,24 @@ Response: {
 
 ```typescript
 interface PaymentProcessor {
-  processPayment(order: Order): Promise<PaymentResult>;
-  refund(transactionId: string): Promise<RefundResult>;
-  getPaymentStatus(transactionId: string): Promise<PaymentStatus>;
+	processPayment(order: Order): Promise<PaymentResult>;
+	refund(transactionId: string): Promise<RefundResult>;
+	getPaymentStatus(transactionId: string): Promise<PaymentStatus>;
 }
 
 class PaymentProcessorFactory {
-  static create(country: string): PaymentProcessor {
-    switch (country) {
-      case "US":
-        return new StripeProcessor();
-      case "CI":
-        return new PixelPayProcessor();
-      case "FR":
-        return new StripeProcessor(); // Stripe Europe
-      default:
-        throw new Error(`No payment processor for ${country}`);
-    }
-  }
+	static create(country: string): PaymentProcessor {
+		switch (country) {
+			case "US":
+				return new StripeProcessor();
+			case "CI":
+				return new PixelPayProcessor();
+			case "FR":
+				return new StripeProcessor(); // Stripe Europe
+			default:
+				throw new Error(`No payment processor for ${country}`);
+		}
+	}
 }
 ```
 
@@ -507,14 +507,14 @@ Accept-Language: fr
 import { useSSE } from "@/hooks/use-sse";
 
 export function OrdersDashboard() {
-  const { events } = useSSE("/api/admin/orders/stream");
+	const { events } = useSSE("/api/admin/orders/stream");
 
-  return (
-    <div>
-      <OrdersList orders={events} />
-      <RealTimeStats />
-    </div>
-  );
+	return (
+		<div>
+			<OrdersList orders={events} />
+			<RealTimeStats />
+		</div>
+	);
 }
 ```
 
@@ -523,17 +523,17 @@ export function OrdersDashboard() {
 ```tsx
 // apps/admin/src/pages/orders/[id]/assign-driver.tsx
 export function AssignDriverPage() {
-  const { order } = useOrder(orderId);
-  const { drivers } = useDrivers({
-    locality: order.deliveryAddress.city,
-  });
+	const { order } = useOrder(orderId);
+	const { drivers } = useDrivers({
+		locality: order.deliveryAddress.city,
+	});
 
-  const handleAssign = async (driverId: string) => {
-    await api.admin.assignDriver(order.id, driverId);
-    toast.success("Livreur assigné ! Code envoyé au client");
-  };
+	const handleAssign = async (driverId: string) => {
+		await api.admin.assignDriver(order.id, driverId);
+		toast.success("Livreur assigné ! Code envoyé au client");
+	};
 
-  return <DriverSelector drivers={drivers} onSelect={handleAssign} />;
+	return <DriverSelector drivers={drivers} onSelect={handleAssign} />;
 }
 ```
 
@@ -542,16 +542,16 @@ export function AssignDriverPage() {
 ```tsx
 // apps/admin/src/pages/analytics/abandoned-carts.tsx
 export function AbandonedCartsPage() {
-  const { carts } = useAbandonedCarts({ hours: 24 });
+	const { carts } = useAbandonedCarts({ hours: 24 });
 
-  return (
-    <div>
-      <CartsList carts={carts} />
-      <button onClick={() => sendRecoveryEmail(cart.userId)}>
-        Relancer par Email
-      </button>
-    </div>
-  );
+	return (
+		<div>
+			<CartsList carts={carts} />
+			<button onClick={() => sendRecoveryEmail(cart.userId)}>
+				Relancer par Email
+			</button>
+		</div>
+	);
 }
 ```
 
@@ -560,27 +560,27 @@ export function AbandonedCartsPage() {
 ```tsx
 // apps/admin/src/pages/settings/payments.tsx
 export function PaymentSettings() {
-  return (
-    <div>
-      <h2>Processeurs de Paiement</h2>
+	return (
+		<div>
+			<h2>Processeurs de Paiement</h2>
 
-      <PaymentProcessorCard
-        country="US"
-        processor="Stripe"
-        status="active"
-        config={stripeConfig}
-      />
+			<PaymentProcessorCard
+				country="US"
+				processor="Stripe"
+				status="active"
+				config={stripeConfig}
+			/>
 
-      <PaymentProcessorCard
-        country="CI"
-        processor="PixelPay"
-        status="active"
-        config={pixelPayConfig}
-      />
+			<PaymentProcessorCard
+				country="CI"
+				processor="PixelPay"
+				status="active"
+				config={pixelPayConfig}
+			/>
 
-      <button onClick={addNewProcessor}>+ Ajouter Processeur</button>
-    </div>
-  );
+			<button onClick={addNewProcessor}>+ Ajouter Processeur</button>
+		</div>
+	);
 }
 ```
 

@@ -595,10 +595,10 @@ export default function AddressesPage() {
 			<div className="flex flex-col gap-8 justify-between sm:flex-row sm:items-center">
 				<div>
 					<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-						Mes Adresses
+						My Addresses
 					</h2>
 					<p className="mt-1 text-gray-500">
-						Gérez vos adresses de livraison et de facturation.
+						Manage your delivery and billing addresses.
 					</p>
 				</div>
 				<Button
@@ -606,7 +606,7 @@ export default function AddressesPage() {
 					className="flex gap-2 items-center self-start px-8 text-white bg-black rounded-full max-md:py-4 hover:bg-gray-800 w-fit"
 				>
 					<PlusIcon className="size-10" />
-					Ajouter une adresse
+					Add an address
 				</Button>
 			</div>
 
@@ -652,7 +652,7 @@ export default function AddressesPage() {
 							<PlusIcon className="w-6 h-6 text-gray-400 group-hover:text-gray-600" />
 						</div>
 						<span className="text-sm font-medium text-gray-500 group-hover:text-gray-700">
-							Ajouter une adresse
+							Add an address
 						</span>
 					</button>
 				</div>
@@ -662,17 +662,17 @@ export default function AddressesPage() {
 						<MapPinIcon className="w-8 h-8 text-gray-400" />
 					</div>
 					<h3 className="text-lg font-semibold text-gray-900">
-						Aucune adresse enregistrée
+						No address registered
 					</h3>
 					<p className="mx-auto mt-2 mb-8 max-w-sm text-gray-500">
-						Ajoutez votre première adresse pour faciliter vos futures commandes.
+						Add your first address to make your future orders easier.
 					</p>
 					<Button
 						onClick={handleOpenAdd}
 						className="flex gap-2 items-center text-white bg-black rounded-full hover:bg-gray-800"
 					>
 						<PlusIcon className="w-4 h-4" />
-						Ajouter une adresse
+						Add an address
 					</Button>
 				</div>
 			)}
@@ -684,11 +684,11 @@ export default function AddressesPage() {
 						<span className="text-xs font-bold text-gray-600">?</span>
 					</div>
 					<div className="text-sm text-gray-600">
-						<p className="font-medium text-gray-900">Astuce</p>
+						<p className="font-medium text-gray-900">Tip</p>
 						<p>
-							Votre première adresse est automatiquement utilisée comme adresse
-							par défaut lors du checkout. Vous pouvez changer d&apos;adresse au
-							moment de finaliser votre commande.
+							Your first address is automatically used as the default address
+							during checkout. You can change the address when finalizing your
+							order.
 						</p>
 					</div>
 				</div>

@@ -3,6 +3,7 @@
 import { Cart } from "@/components/icons/cart.icon";
 import { sdk } from "@/lib/api/sdk";
 import { paths } from "@/lib/routes/paths-en";
+import { getMediaUrl } from "@/shared/utils/media-url";
 import { CART_ITEMS_CART } from "@/shared/utils/query-keys";
 import { useRegionStore } from "@/stores/useRegion";
 import {
@@ -124,14 +125,18 @@ const CartDropdown = (cart: any) => {
 											<div className="overflow-hidden rounded-lg border border-gray-300 size-24">
 												{" "}
 												<Image
-													src={item.thumbnail + "?view=1" || ""}
+													src={getMediaUrl(item.thumbnail) || ""}
 													alt={item.product_title || ""}
 													width={96}
 													height={96}
 													className="object-fill rounded-lg"
+													unoptimized
 												/>
 											</div>
-											<div className="flex flex-col justify-between w-full text-[1.5rem]!">
+											<div
+												className="flex flex-col justify-between w-full text-[1.5rem]! truncate"
+												title={`${item.product_title} - ${item.variant_title}`}
+											>
 												<div className="flex justify-between items-center">
 													<p className="truncate line-clamp-1 text-[1.5rem]!">
 														{item.product_title} - {item.variant_title}
@@ -141,6 +146,11 @@ const CartDropdown = (cart: any) => {
 															item.unit_price,
 															regions?.currency_code === "xof" ? "FCFA" : "$",
 														)}
+													</p>
+												</div>
+												<div>
+													<p className="text-gray-500 text-[1.3rem]!">
+														Taille: {item.variant_title}
 													</p>
 												</div>
 												<div className="flex justify-between items-center">

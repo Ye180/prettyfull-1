@@ -1,6 +1,6 @@
 # Étape 6 : Modules Métier (Products, Categories, Orders)
 
-## Vue d'ensemble
+## Overview
 
 Cette étape implémente les modules métier principaux de l'application e-commerce avec CRUD complet, pagination, projections i18n et gestion atomique des transactions.
 
@@ -35,11 +35,11 @@ Les données sont transformées pour ne retourner que la langue demandée :
 
 ```json
 {
-  "name": "Nom du produit en français",
-  "description": "Description en français",
-  "category": {
-    "name": "Nom de catégorie en français"
-  }
+	"name": "Nom du produit en français",
+	"description": "Description en français",
+	"category": {
+		"name": "Nom de catégorie en français"
+	}
 }
 ```
 
@@ -111,16 +111,16 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<OrderDocument>
 
 ```typescript
 try {
-  session.startTransaction();
+	session.startTransaction();
 
-  // Opérations atomiques...
+	// Opérations atomiques...
 
-  await session.commitTransaction();
+	await session.commitTransaction();
 } catch (error) {
-  await session.abortTransaction(); // Rollback automatique
-  throw error;
+	await session.abortTransaction(); // Rollback automatique
+	throw error;
 } finally {
-  session.endSession();
+	session.endSession();
 }
 ```
 
@@ -152,10 +152,10 @@ async findUserOrders(userId: string, page: number, limit: number): Promise<Pagin
 
 ```json
 {
-  "name": {
-    "fr": "Smartphone Premium",
-    "en": "Premium Smartphone"
-  }
+	"name": {
+		"fr": "Smartphone Premium",
+		"en": "Premium Smartphone"
+	}
 }
 ```
 
@@ -163,7 +163,7 @@ async findUserOrders(userId: string, page: number, limit: number): Promise<Pagin
 
 ```json
 {
-  "name": "Smartphone Premium"
+	"name": "Smartphone Premium"
 }
 ```
 
@@ -178,12 +178,12 @@ async findUserOrders(userId: string, page: number, limit: number): Promise<Pagin
 
 ```typescript
 if (i18nContext.currency === "USD") {
-  const xofToUsdRate = 0.0016; // À récupérer d'un service externe
-  aggregationPipeline.push({
-    $addFields: {
-      "price.amount": { $multiply: ["$price.amount", xofToUsdRate] },
-    },
-  });
+	const xofToUsdRate = 0.0016; // À récupérer d'un service externe
+	aggregationPipeline.push({
+		$addFields: {
+			"price.amount": { $multiply: ["$price.amount", xofToUsdRate] },
+		},
+	});
 }
 ```
 
@@ -230,8 +230,8 @@ if (i18nContext.currency === "USD") {
 ```typescript
 const skip = (page - 1) * limit;
 const [products, total] = await Promise.all([
-  this.productModel.find().skip(skip).limit(limit).exec(),
-  this.productModel.countDocuments().exec(),
+	this.productModel.find().skip(skip).limit(limit).exec(),
+	this.productModel.countDocuments().exec(),
 ]);
 ```
 

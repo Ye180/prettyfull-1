@@ -9,9 +9,6 @@ export const sdk = new Medusa({
     type: "jwt",
   },
   publishableKey: MEDUSA_PUBLISHABLE_KEY!,
-  globalHeaders: {
-    "Access-Control-Allow-Origin": "*",
-  },
 })
 
 export const sdkStore = new Medusa({
@@ -20,8 +17,5 @@ export const sdkStore = new Medusa({
     type: "session",
   },
   publishableKey: MEDUSA_PUBLISHABLE_KEY!,
-  globalHeaders: {
-    "Access-Control-Allow-Origin": "*",
-  },
 })
 

@@ -1,5 +1,6 @@
 import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
 import { LoadingPrettyfull } from "@/shared/components/molecules/core/loading-prettyfull";
+import { getMediaUrl } from "@prettyfull/utils";
 import { Button } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -139,12 +140,12 @@ const Hero = ({ video, firstSection }: HeroProps) => {
 
 	const firstCategory = useMemo(() => category?.[0], [category]);
 
-	const desktopUrl = firstCategory?.product_category_image?.[0]?.url
-		? `${firstCategory.product_category_image[0].url}?view=1`
-		: undefined;
-	const mobileUrl = firstCategory?.product_category_image?.[1]?.url
-		? `${firstCategory.product_category_image[1].url}?view=1`
-		: undefined;
+	const desktopUrl = getMediaUrl(
+		firstCategory?.product_category_image?.[0]?.url,
+	);
+	const mobileUrl = getMediaUrl(
+		firstCategory?.product_category_image?.[1]?.url,
+	);
 
 	const handleHeroClick = useCallback(() => {
 		if (firstCategory?.handle) {

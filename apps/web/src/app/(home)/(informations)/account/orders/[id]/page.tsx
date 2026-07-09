@@ -1,6 +1,8 @@
 "use client";
 
+import { cancelOrder } from "@/features/account/actions/cancel-order";
 import { useGetOrderById } from "@/features/account/api/get-order-by-id";
+import { useQueryClient } from "@tanstack/react-query";
 import { sdk } from "@/lib/api/sdk";
 import { useRegionStore } from "@/stores/useRegion";
 import { Button, Skeleton } from "@prettyfull/ui";
@@ -152,6 +154,7 @@ type OrderStatus =
 	| "processing"
 	| "shipped"
 	| "delivered"
+	| "refunded"
 	| "cancelled";
 
 const statusConfig: Record<
@@ -181,6 +184,12 @@ const statusConfig: Record<
 		color: "bg-emerald-50 text-emerald-700 border-emerald-200",
 		dot: "bg-emerald-500",
 		step: 3,
+	},
+	refunded: {
+		label: "Remboursé",
+		color: "bg-purple-50 text-purple-700 border-purple-200",
+		dot: "bg-purple-500",
+		step: -1,
 	},
 	cancelled: {
 		label: "Annulé",
@@ -229,10 +238,10 @@ const mapPaymentStatus = (status: string): string => {
 // ─── Timeline Component ───────────────────────────────────────────────────────
 
 const timelineSteps = [
-	{ label: "Commande confirmée", icon: CheckCircleIcon },
-	{ label: "En préparation", icon: PackageIcon },
-	{ label: "Expédié", icon: TruckIcon },
-	{ label: "Livré", icon: CheckCircleIcon },
+	{ label: "Order confirmed", icon: CheckCircleIcon },
+	{ label: "Preparing", icon: PackageIcon },
+	{ label: "Shipped", icon: TruckIcon },
+	{ label: "Delivered", icon: CheckCircleIcon },
 ];
 
 const OrderTimeline = ({ currentStep }: { currentStep: number }) => {
@@ -295,6 +304,10 @@ export default function OrderDetailPage() {
 	const [isAuthChecking, setIsAuthChecking] = useState(true);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [copied, setCopied] = useState(false);
+	const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+	const [isCancelling, setIsCancelling] = useState(false);
+	const [cancelError, setCancelError] = useState<string | null>(null);
+	const queryClient = useQueryClient();
 
 	const region = useRegionStore((state: any) => state.region);
 	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
@@ -315,11 +328,24 @@ export default function OrderDetailPage() {
 		setTimeout(() => setCopied(false), 2000);
 	};
 
+	const handleCancelOrder = async () => {
+		setIsCancelling(true);
+		setCancelError(null);
+		const result = await cancelOrder(orderId);
+		if (result.success) {
+			queryClient.invalidateQueries({ queryKey: ["customer-order-detail", orderId] });
+			setShowCancelConfirm(false);
+		} else {
+			setCancelError(result.error || "Une erreur est survenue");
+		}
+		setIsCancelling(false);
+	};
+
 	// ── Loading State ─────────────────────────────────────────────────────────
 
 	if (isAuthChecking || isLoading) {
 		return (
-			<div className="space-y-8">
+		<div className="space-y-8">
 				<Skeleton className="w-40 h-8" />
 				<Skeleton className="w-full h-16" />
 				<div className="flex gap-4">
@@ -353,14 +379,14 @@ export default function OrderDetailPage() {
 						<PackageIcon className="w-8 h-8 text-red-400" />
 					</div>
 					<h3 className="text-[1.5rem] font-semibold text-gray-900 tracking-wide">
-						Commande introuvable
+						Order not found
 					</h3>
 					<p className="mx-auto mt-2 mb-6 max-w-sm text-gray-500">
-						Impossible de récupérer les détails de cette commande.
+						Unable to retrieve details for this order.
 					</p>
 					<Link href="/account/orders">
 						<Button className="px-8 text-white bg-black rounded-full hover:bg-gray-800">
-							Voir mes commandes
+							See My Orders
 						</Button>
 					</Link>
 				</div>
@@ -374,8 +400,16 @@ export default function OrderDetailPage() {
 	const fulfillmentStatus = mapFulfillmentStatus(
 		orderData.fulfillment_status || "pending",
 	);
-	const status = statusConfig[fulfillmentStatus];
-	const paymentLabel = mapPaymentStatus(orderData.payment_status);
+	const paymentStatus = orderData.payment_status || "";
+	const isRefunded =
+		paymentStatus === "refunded" || paymentStatus === "partially_refunded";
+	const isCancellable =
+		fulfillmentStatus === "processing" &&
+		!isRefunded &&
+		paymentStatus !== "canceled";
+	const effectiveStatus: OrderStatus = isRefunded ? "refunded" : fulfillmentStatus;
+	const status = statusConfig[effectiveStatus];
+	const paymentLabel = mapPaymentStatus(paymentStatus);
 
 	const formattedDate = new Date(orderData.created_at).toLocaleDateString(
 		"fr-FR",
@@ -411,6 +445,33 @@ export default function OrderDetailPage() {
 
 	return (
 		<div className="space-y-8">
+			{showCancelConfirm && (
+				<div className="flex fixed inset-0 z-50 justify-center items-center backdrop-blur-sm bg-black/40">
+					<div className="p-6 mx-4 space-y-4 w-full max-w-sm bg-white rounded-2xl shadow-xl">
+						<h3 className="text-lg font-semibold text-gray-900">Cancel this order?</h3>
+						<p className="text-sm text-gray-500">This action is irreversible. Once cancelled, the order cannot be reactivated.</p>
+						{cancelError && (
+							<p className="px-3 py-2 text-sm text-red-600 bg-red-50 rounded-lg">{cancelError}</p>
+						)}
+						<div className="flex gap-3 justify-end pt-2">
+							<button
+								onClick={() => setShowCancelConfirm(false)}
+								disabled={isCancelling}
+								className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50"
+							>
+								Keep order
+							</button>
+							<button
+								onClick={handleCancelOrder}
+								disabled={isCancelling}
+								className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50"
+							>
+								{isCancelling ? "Cancelling..." : "Yes, cancel"}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 			{/* ── Back Button + Title ────────────────────────────────────────── */}
 			<div className="space-y-4">
 				<button
@@ -418,14 +479,14 @@ export default function OrderDetailPage() {
 					className="flex gap-2 items-center text-sm text-gray-500 transition-colors hover:text-black"
 				>
 					<ArrowLeftIcon className="w-4 h-4" />
-					Retour aux commandes
+					Back to orders
 				</button>
 
 				<div className="flex flex-col gap-4 justify-between sm:flex-row sm:items-center">
 					<div className="space-y-1">
 						<div className="flex gap-3 items-center">
 							<h1 className="text-3xl! font-bold tracking-tight text-gray-900">
-								Commande #{orderData.display_id}
+								Order #{orderData.display_id}
 							</h1>
 							<span
 								className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${status.color}`}
@@ -438,24 +499,47 @@ export default function OrderDetailPage() {
 						</div>
 						<div className="flex gap-2 items-center text-sm text-gray-500">
 							<ClockIcon className="w-4 h-4" />
-							<span>Passée le {formattedDateTime}</span>
+							<span>Placed on {formattedDateTime}</span>
 						</div>
 					</div>
 
-					<button
-						onClick={handleCopyOrderId}
-						className="flex gap-2 items-center self-start px-4 py-2 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg border border-gray-200 transition-all hover:bg-gray-100"
-					>
-						<CopyIcon className="w-3.5 h-3.5" />
-						{copied ? "Copié !" : "Copier l'ID"}
-					</button>
+					<div className="flex gap-2">
+						<button
+							onClick={handleCopyOrderId}
+							className="flex gap-2 items-center self-start px-4 py-2 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg border border-gray-200 transition-all hover:bg-gray-100"
+						>
+							<CopyIcon className="w-3.5 h-3.5" />
+							{copied ? "Copied!" : "Copy ID"}
+						</button>
+						{isCancellable && (
+							<button
+								onClick={() => { setShowCancelConfirm(true); setCancelError(null); }}
+								className="flex gap-2 items-center self-start px-4 py-2 text-xs font-medium text-red-600 bg-red-50 rounded-lg border border-red-200 transition-all hover:bg-red-100"
+							>
+								<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+								Cancel order
+							</button>
+						)}
+					</div>
 				</div>
 			</div>
 
 			{/* ── Timeline ───────────────────────────────────────────────────── */}
-			{fulfillmentStatus !== "cancelled" && (
+			{fulfillmentStatus !== "cancelled" && !isRefunded && (
 				<div className="p-6 bg-white rounded-xl border border-gray-200 max-md:overflow-x-auto max-md:px-4">
 					<OrderTimeline currentStep={status.step} />
+				</div>
+			)}
+
+			{isRefunded && (
+				<div className="flex gap-3 items-center p-4 bg-purple-50 rounded-xl border border-purple-200">
+					<div className="flex justify-center items-center w-10 h-10 bg-purple-100 rounded-full shrink-0">
+						<svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+					</div>
+					<div>
+						<p className="font-semibold text-purple-800">Order refunded</p>
+						<p className="text-sm text-purple-600">This order has been refunded.</p>
+					</div>
 				</div>
 			)}
 
@@ -477,9 +561,9 @@ export default function OrderDetailPage() {
 						</svg>
 					</div>
 					<div>
-						<p className="font-semibold text-red-800">Commande annulée</p>
+						<p className="font-semibold text-red-800">Order cancelled</p>
 						<p className="text-sm text-red-600">
-							Cette commande a été annulée.
+							This order has been cancelled.
 						</p>
 					</div>
 				</div>
@@ -491,7 +575,7 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center mb-2">
 						<PackageIcon className="w-4 h-4 text-gray-400" />
 						<p className="text-xs font-medium tracking-wider text-gray-500 uppercase">
-							Commande
+							Order
 						</p>
 					</div>
 					<p className="text-[1.5rem] font-bold text-gray-900">
@@ -515,7 +599,7 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center mb-2">
 						<CreditCardIcon className="w-4 h-4 text-gray-400" />
 						<p className="text-xs font-medium tracking-wider text-gray-500 uppercase">
-							Paiement
+							Payment
 						</p>
 					</div>
 					<p className="text-[1.5rem] font-bold text-gray-900">
@@ -558,6 +642,7 @@ export default function OrderDetailPage() {
 										width={80}
 										height={96}
 										className="object-fill object-top"
+										unoptimized
 									/>
 								</div>
 							)}
@@ -572,7 +657,7 @@ export default function OrderDetailPage() {
 									</p>
 								)}
 								<p className="mt-1 text-sm text-gray-400">
-									Qté: {item.quantity}
+									Qty: {item.quantity}
 								</p>
 							</div>
 
@@ -598,7 +683,7 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center p-6 border-b border-gray-100">
 						<MapPinIcon className="w-8 h-8 text-gray-400" />
 						<h2 className="text-[2.2rem]! font-semibold  text-gray-900 tracking-wide">
-							Adresse de livraison
+							Delivery address
 						</h2>
 					</div>
 					<div className="p-6">
@@ -622,7 +707,7 @@ export default function OrderDetailPage() {
 								)}
 							</div>
 						) : (
-							<p className="text-sm text-gray-400">Aucune adresse renseignée</p>
+							<p className="text-sm text-gray-400">No address provided</p>
 						)}
 					</div>
 				</div>
@@ -632,12 +717,12 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center p-6 border-b border-gray-100">
 						<CreditCardIcon className="w-8 h-8 text-gray-400" />
 						<h2 className="text-[2.2rem]!  font-semibold text-gray-900 tracking-wide">
-							Récapitulatif
+							Recapitulative
 						</h2>
 					</div>
 					<div className="p-6 space-y-4">
 						<div className="flex justify-between text-sm text-gray-600">
-							<span>Sous-total</span>
+							<span>Subtotal</span>
 							<span>{formatCurrency_FR(subtotal, currency)}</span>
 						</div>
 
@@ -645,11 +730,11 @@ export default function OrderDetailPage() {
 							<div className="flex justify-between text-sm text-gray-600">
 								<span className="flex items-center gap-1.5">
 									<TruckIcon className="w-6 h-6" />
-									Livraison
+									Delivery
 								</span>
 								<span>
 									{shippingTotal === 0
-										? "Gratuite"
+										? "Free"
 										: formatCurrency_FR(shippingTotal, currency)}
 								</span>
 							</div>
@@ -657,10 +742,10 @@ export default function OrderDetailPage() {
 
 						{!shippingMethods.length && (
 							<div className="flex justify-between text-sm text-gray-600">
-								<span>Livraison</span>
+								<span>Delivery</span>
 								<span>
 									{shippingTotal === 0
-										? "Gratuite"
+										? "Free"
 										: formatCurrency_FR(shippingTotal, currency)}
 								</span>
 							</div>
@@ -673,7 +758,7 @@ export default function OrderDetailPage() {
 
 						{discountTotal > 0 && (
 							<div className="flex justify-between text-sm text-green-600">
-								<span>Réduction</span>
+								<span>Discount</span>
 								<span>-{formatCurrency_FR(discountTotal, currency)}</span>
 							</div>
 						)}
@@ -692,7 +777,7 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center p-6 border-b border-gray-100">
 						<TruckIcon className="w-8 h-8 text-gray-400" />
 						<h2 className="text-[2.2rem]!  font-semibold text-gray-900 tracking-wide">
-							Méthode de livraison
+							Delivery method
 						</h2>
 					</div>
 					<div className="p-6">
@@ -705,7 +790,7 @@ export default function OrderDetailPage() {
 								</div>
 								<p className="font-medium text-gray-900">
 									{method.amount === 0
-										? "Gratuit"
+										? "Free"
 										: formatCurrency_FR(method.amount ?? 0, currency)}
 								</p>
 							</div>
@@ -721,12 +806,12 @@ export default function OrderDetailPage() {
 						variant="outline"
 						className="w-full rounded-full border-gray-300 hover:bg-black"
 					>
-						Voir toutes mes commandes
+						View all Orders
 					</Button>
 				</Link>
 				<Link href="/" className="flex-1">
 					<Button className="w-full text-white bg-black rounded-full hover:bg-gray-800">
-						Continuer mes achats
+						Continue shopping
 					</Button>
 				</Link>
 			</div>

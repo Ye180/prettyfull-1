@@ -60,15 +60,16 @@ export function ProductGalleryNew({
 								"shrink-0 w-18 h-25 cursor-pointer border rounded overflow-hidden transition-all",
 								activeImage === index
 									? "border-black"
-									: "border-transparent hover:border-gray-300"
+									: "border-transparent hover:border-gray-300",
 							)}
 						>
 							<Image
-								src={image + "?view=1"}
+								src={image}
 								alt={`${title} - vue ${index + 1}`}
 								width={64}
 								height={90}
 								className="object-cover w-full h-full"
+								unoptimized
 							/>
 						</div>
 					))}
@@ -81,12 +82,13 @@ export function ProductGalleryNew({
 				>
 					<div className="relative">
 						<Image
-							src={images[activeImage] + "?view=1" || "/placeholder.png"}
+							src={images[activeImage] || "/placeholder.png"}
 							alt={title}
 							width={480}
 							height={640}
 							className="object-cover rounded"
 							priority
+							unoptimized
 						/>
 						{promotion && (
 							<span className="absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white bg-red-600 rounded">
@@ -101,7 +103,7 @@ export function ProductGalleryNew({
 					{images.map((image, index) => (
 						<div key={index} className="relative shrink-0">
 							<Image
-								src={image + "?view=1"}
+								src={image}
 								alt={`${title} - vue ${index + 1}`}
 								width={280}
 								height={400}
@@ -110,6 +112,7 @@ export function ProductGalleryNew({
 									setActiveImage(index);
 									setIsZoomed(true);
 								}}
+								unoptimized
 							/>
 							{index === 0 && promotion && (
 								<span className="absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white bg-red-600 rounded">
@@ -143,12 +146,13 @@ export function ProductGalleryNew({
 							onClick={(e) => e.stopPropagation()}
 						>
 							<Image
-								src={images[activeImage] + "?view=1" || "/placeholder.png"}
+								src={images[activeImage] || "/placeholder.png"}
 								alt={title}
 								width={600}
 								height={900}
 								className="object-contain max-h-[80vh] w-auto mx-auto rounded-lg transition-all"
 								priority
+								unoptimized
 							/>
 
 							{images.length > 1 && (
@@ -156,7 +160,7 @@ export function ProductGalleryNew({
 									<button
 										onClick={() =>
 											setActiveImage((prev) =>
-												prev > 0 ? prev - 1 : images.length - 1
+												prev > 0 ? prev - 1 : images.length - 1,
 											)
 										}
 										className="hidden absolute left-2 top-1/2 text-5xl text-white -translate-y-1/2 sm:block hover:text-gray-300"
@@ -166,7 +170,7 @@ export function ProductGalleryNew({
 									<button
 										onClick={() =>
 											setActiveImage((prev) =>
-												prev < images.length - 1 ? prev + 1 : 0
+												prev < images.length - 1 ? prev + 1 : 0,
 											)
 										}
 										className="hidden absolute right-2 top-1/2 text-5xl text-white -translate-y-1/2 sm:block hover:text-gray-300"
@@ -187,14 +191,15 @@ export function ProductGalleryNew({
 										"relative w-16 h-20 rounded overflow-hidden cursor-pointer border-2 transition-all shrink-0",
 										activeImage === index
 											? "border-white scale-105"
-											: "border-transparent opacity-70 hover:opacity-100"
+											: "border-transparent opacity-70 hover:opacity-100",
 									)}
 								>
 									<Image
-										src={image + "?view=1"}
+										src={image}
 										alt={`${title} miniature ${index + 1}`}
 										fill
 										className="object-cover"
+										unoptimized
 									/>
 								</div>
 							))}

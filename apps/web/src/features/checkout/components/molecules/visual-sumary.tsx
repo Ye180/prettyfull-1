@@ -39,6 +39,7 @@ const VisualSummary = ({
 						width={100}
 						height={100}
 						className="object-top w-40 rounded h-58"
+					unoptimized
 					/>
 				</div>
 

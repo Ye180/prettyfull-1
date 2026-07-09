@@ -51,7 +51,7 @@ const OrderConfirmationView = () => {
 			.catch((err) => {
 				console.error("Failed to retrieve order:", err);
 				setError(
-					"Impossible de récupérer les détails de la commande. Veuillez vérifier votre compte."
+					"Unable to retrieve order details. Please check your account.",
 				);
 			})
 			.finally(() => {
@@ -63,7 +63,7 @@ const OrderConfirmationView = () => {
 		return (
 			<Container maxWidth="100vw" className="px-4 py-20 text-center">
 				<div className="flex flex-col items-center space-y-4">
-					<div className="w-12 h-12 rounded-full border-4 border-gray-200 border-t-black animate-spin" />
+					<div className="w-12 h-12 rounded-full border-4 border-gray-200 animate-spin border-t-black" />
 					<p className="text-gray-500">Chargement de votre commande...</p>
 				</div>
 			</Container>
@@ -112,11 +112,8 @@ const OrderConfirmationView = () => {
 	});
 
 	return (
-		<Container
-			maxWidth="100vw"
-			className="px-4 py-12 pb-20 lg:px-80"
-		>
-			<div className="mx-auto max-w-3xl space-y-10">
+		<Container maxWidth="100vw" className="px-4 py-12 pb-20 lg:px-80">
+			<div className="mx-auto space-y-10 max-w-3xl">
 				{/* Success Header */}
 				<div className="flex flex-col items-center space-y-4 text-center">
 					<div className="flex justify-center items-center w-20 h-20 bg-green-100 rounded-full">
@@ -197,9 +194,7 @@ const OrderConfirmationView = () => {
 								{order.shipping_address.postal_code}{" "}
 								{order.shipping_address.city}
 							</p>
-							<p>
-								{order.shipping_address.country_code?.toUpperCase()}
-							</p>
+							<p>{order.shipping_address.country_code?.toUpperCase()}</p>
 							{order.shipping_address.phone && (
 								<p className="mt-1">Tel: {order.shipping_address.phone}</p>
 							)}
@@ -212,20 +207,18 @@ const OrderConfirmationView = () => {
 					<h2 className="text-lg font-semibold text-gray-900">
 						Articles commandés ({order.items?.length || 0})
 					</h2>
-					<div className="divide-y divide-gray-200 rounded-lg border border-gray-200">
+					<div className="rounded-lg border border-gray-200 divide-y divide-gray-200">
 						{order.items?.map((item: any) => (
-							<div
-								key={item.id}
-								className="flex gap-4 items-center p-4"
-							>
+							<div key={item.id} className="flex gap-4 items-center p-4">
 								{item.thumbnail && (
-									<div className="overflow-hidden w-20 h-20 rounded-lg border border-gray-200 shrink-0">
+									<div className="overflow-hidden w-16 h-24 rounded-lg border border-gray-200 shrink-0">
 										<Image
-											src={item.thumbnail}
+											src={item.thumbnail + "?view=1"}
 											alt={item.product_title || "Product"}
-											width={80}
-											height={80}
+											width={64}
+											height={96}
 											className="object-cover w-full h-full"
+											unoptimized
 										/>
 									</div>
 								)}
@@ -238,10 +231,7 @@ const OrderConfirmationView = () => {
 									</p>
 								</div>
 								<p className="font-medium text-gray-900 whitespace-nowrap">
-									{formatCurrency_FR(
-										item.unit_price * item.quantity,
-										currency
-									)}
+									{formatCurrency_FR(item.unit_price * item.quantity, currency)}
 								</p>
 							</div>
 						))}
@@ -251,7 +241,7 @@ const OrderConfirmationView = () => {
 				{/* Totals */}
 				<div className="p-6 space-y-3 bg-gray-50 rounded-lg border border-gray-200">
 					<div className="flex justify-between text-sm text-gray-600">
-						<span>Sous-total</span>
+						<span>Subtotal</span>
 						<span>{formatCurrency_FR(order.subtotal, currency)}</span>
 					</div>
 					<div className="flex justify-between text-sm text-gray-600">
@@ -274,13 +264,13 @@ const OrderConfirmationView = () => {
 						href="/"
 						className="px-8 py-3 w-full text-center text-white bg-black rounded-md sm:w-auto hover:bg-gray-800"
 					>
-						Continuer mes achats
+						Continue shopping
 					</Link>
 					<Link
 						href="/account/orders"
 						className="px-8 py-3 w-full text-center text-black rounded-md border border-black sm:w-auto hover:bg-gray-50"
 					>
-						Voir mes commandes
+						Voir my Orders
 					</Link>
 				</div>
 			</div>
