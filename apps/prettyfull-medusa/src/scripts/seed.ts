@@ -5,9 +5,9 @@ import {
   ProductStatus,
 } from "@medusajs/framework/utils";
 import {
+  WorkflowResponse,
   createWorkflow,
   transform,
-  WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk";
 import {
   createApiKeysWorkflow,
@@ -62,7 +62,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL);
   const storeModuleService = container.resolve(Modules.STORE);
 
-  const countries = ["gb", "de", "dk", "se", "fr", "es", "it"];
+  const countries = ["ci","us", "gb", "de", "dk", "se", "fr", "es", "it"];
 
   logger.info("Seeding store data...");
   const [store] = await storeModuleService.listStores();
@@ -92,10 +92,13 @@ export default async function seedDemoData({ container }: ExecArgs) {
       supported_currencies: [
         {
           currency_code: "eur",
-          is_default: true,
         },
         {
           currency_code: "usd",
+           is_default: true,
+        },
+        {
+          currency_code: "xof",
         },
       ],
     },
@@ -123,7 +126,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
       input: {
         regions: [
           {
-            name: "Europe",
+            name: "America",
             currency_code: "eur",
             countries,
             payment_providers: ["pp_system_default"],
@@ -219,11 +222,11 @@ export default async function seedDemoData({ container }: ExecArgs) {
   }
 
   const fulfillmentSet = await fulfillmentModuleService.createFulfillmentSets({
-    name: "European Warehouse delivery",
+    name: "American Warehouse delivery",
     type: "shipping",
     service_zones: [
       {
-        name: "Europe",
+        name: "America",
         geo_zones: [
           {
             country_code: "gb",
