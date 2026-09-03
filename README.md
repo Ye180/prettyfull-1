@@ -1,188 +1,93 @@
-b# PrettyFull - Turborepo Monorepo
+# PrettyFull — Turborepo Monorepo
 
-Application web complète avec architecture micro-frontend utilisant Turborepo pour la gestion des packages partagés.
+Monorepo e-commerce : storefront Next.js, back-office, API Hono, et packages partagés.
 
-## 🏗️ Architecture
+## Architecture
 
 ### Apps
 
-- **`web`**: Application frontend Next.js principale
-- **`backend`**: API backend NestJS (serveur sur port 7777)
-- **`admin`**: Interface d'administration (port 3001)
+| App | Stack | Port dev | Rôle |
+| --- | --- | --- | --- |
+| `web` | Next.js 16 (App Router) | 3000 | Storefront client |
+| `admin` | Next.js 16 | 3001 | Back-office (catalogue, commandes) |
+| `backend` | Hono + Drizzle + Postgres | 7777 | API REST |
+| `docs` | Storybook 9 | 6006 | Documentation des composants `ui` |
 
-### Packages Partagés
+### Packages
 
-- **`@repo/ui`**: Composants React réutilisables avec prefix CSS `ui:` (ex: `ui:bg-red-600`)
-- **`@repo/eslint-config`**: Configurations ESLint partagées (base, next, react)
-- **`@repo/store`**: État global et logique métier partagée (Zustand)
-- **`@repo/typescript-config`**: Configurations TypeScript partagées (base, nestjs, nextjs)
+| Package | Contenu |
+| --- | --- |
+| `@prettyfull/ui` | Composants React partagés (Tailwind v4, Radix, prefix CSS `ui:`) |
+| `@prettyfull/store` | État global Zustand (panier) |
+| `@prettyfull/utils` | Helpers (`cn`, `formatCurrency_FR`, `getMediaUrl`, constantes) |
+| `@prettyfull/tailwind-config` | Styles et config Tailwind partagés |
+| `@prettyfull/typescript-config` | tsconfigs : `base.json`, `nextjs.json`, `node.json` |
+| `@prettyfull/eslint-config` | Presets ESLint : `base`, `next-js`, `node`, `react-internal` |
 
-## 🚀 Démarrage Rapide
-
-### Installation
+## Démarrage
 
 ```bash
 pnpm install
-```
 
-### Développement
+# Infra locale (Postgres + Redis)
+docker compose up -d
 
-```bash
-# Démarrer tous les services
+# Variables d'env
+cp apps/backend/.env.example apps/backend/.env
+cp apps/admin/.env.example apps/admin/.env.local
+
+# Schéma de base
+pnpm --filter backend db:push
+
+# Tout démarrer
 pnpm dev
 
-# Applications spécifiques
-pnpm dev --filter=web       # Frontend uniquement
-pnpm dev --filter=backend   # Backend uniquement
-pnpm dev --filter=admin     # Admin uniquement
+# Une app en particulier
+pnpm dev --filter=web
+pnpm dev --filter=admin
+pnpm dev --filter=backend
 ```
 
-**Accès local :**
+**Accès local :** web `:3000` · admin `:3001` · API `:7777` · Storybook `:6006`
 
-- Web: `http://localhost:3000`
-- Backend API: `http://localhost:7777`
-- Admin: `http://localhost:3001`
-
-### Build & Production
+## Commandes
 
 ```bash
-# Build tout le projet
-pnpm build
+pnpm build                    # build de tout le graphe
+pnpm build --filter=web       # build ciblé (+ ses dépendances)
+pnpm lint
+pnpm check-types
+pnpm format                   # prettier sur **/*.{ts,tsx,md}
+pnpm clean
 
-# Build spécifique
-pnpm build --filter=web
-pnpm build --filter=backend
-pnpm build --filter=admin
+# Base de données (Drizzle, depuis apps/backend)
+pnpm --filter backend db:generate   # génère une migration depuis le schéma
+pnpm --filter backend db:migrate    # applique les migrations
+pnpm --filter backend db:push       # pousse le schéma sans migration (dev)
+pnpm --filter backend db:studio     # UI Drizzle Studio
 ```
 
-## 📦 Utilisation des Packages
-
-### UI Components
+## Utilisation des packages
 
 ```tsx
 import { Button } from "@prettyfull/ui";
-
-<Button variant="destructive" size="lg">
-	Mon bouton
-</Button>;
-```
-
-_Note: Les styles utilisent le prefix `ui:` pour éviter les conflits CSS_
-
-**Variantes disponibles :**
-
-- `variant`: `default`, `destructive`, `outline`, `secondary`, `ghost`, `link`
-- `size`: `default`, `sm`, `lg`
-
-### Store (État Global)
-
-```tsx
 import { useCartStore } from "@prettyfull/store";
-
-const { items, addItem } = useCartStore();
+import { cn, formatCurrency_FR } from "@prettyfull/utils";
 ```
 
-### Configurations
+> Les styles de `@prettyfull/ui` utilisent le prefix `ui:` pour éviter les collisions
+> (`ui:bg-red-600`). Passer par les variantes existantes plutôt que de redéfinir du style.
+>
+> Toujours importer via l'alias de workspace (`@prettyfull/store`), jamais en relatif
+> à travers les dossiers (`../../packages/store/src/...`).
 
-- **ESLint**: Automatiquement héritée dans chaque app
-- **TypeScript**: Configurations partagées via `@prettyfull/typescript-config`
-  - `base.json`: Configuration de base
-  - `nestjs.json`: Pour le backend
-  - `nextjs.json`: Pour les apps Next.js
+## Déploiement
 
-## 🐳 Déploiement
+GitHub Actions (`.github/workflows/deploy.yml`) sur push vers `dev-v2` :
+détection des apps modifiées via `dorny/paths-filter`, puis build/push de l'image
+Docker et déploiement SSH — un job par app, en matrice.
 
-Le projet utilise Docker et GitHub Actions pour le déploiement automatique :
+Chaque app déployable doit fournir son propre `apps/<app>/Dockerfile`.
 
-- **Déclencheur**: Push sur la branche `develop`
-- **Détection intelligente**: Seules les apps modifiées sont redéployées (à revoir)
-- **Jobs séparés**: Un job indépendant par application
-- **Ports de production**: Web (3000), Backend (3002), Admin (3001)
-
-### Dockerfiles
-
-```
-dockerfiles/
-├── web.Dockerfile      # Next.js app
-├── backend.Dockerfile  # NestJS API
-└── admin.Dockerfile    # Admin interface
-```
-
-## 🛠️ Commandes Utiles
-
-```bash
-# Développement ciblé
-pnpm dev --filter=web --filter=backend  # Web + Backend uniquement
-
-# Build avec cache
-pnpm build --cache-dir=.turbo
-
-# Nettoyage
-pnpm clean
-
-# Tests
-pnpm test --filter=backend
-pnpm test --filter=web
-
-# Linting
-pnpm lint --filter=web
-```
-
-## 📁 Structure du Projet
-
-```
-prettyfull/
-├── apps/
-│   ├── web/          # App Next.js principale (e-commerce)
-│   ├── backend/      # API NestJS avec MongoDB
-│   └── admin/        # Interface d'administration
-├── packages/
-│   ├── ui/           # Composants + styles (prefix ui:)
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   └── styles.css
-│   ├── store/        # État global (Zustand)
-│   │   └── use-cart-store.ts
-│   ├── eslint-config/
-│   │   ├── base.js
-│   │   ├── next.js
-│   │   └── react-internal.js
-│   └── typescript-config/
-│       ├── base.json
-│       ├── nestjs.json
-│       └── nextjs.json
-├── dockerfiles/      # Configurations Docker
-└── .github/workflows/ # CI/CD GitHub Actions
-```
-
-## 🔧 Configuration Technique
-
-- **Turborepo**: Cache intelligent et builds parallèles
-- **Docker**: Containerisation pour production
-- **GitHub Actions**: CI/CD automatique avec détection de changements
-- **MongoDB**: Base de données (backend)
-- **Tailwind CSS**: Système de design cohérent
-- **Class Variance Authority**: Gestion des variantes de composants
-
-## 📋 Modules Backend
-
-```
-backend/src/modules/
-├── auth/         # Authentification JWT
-├── users/        # Gestion des utilisateurs
-├── products/     # Catalogue produits
-└── orders/       # Gestion des commandes
-```
-
-**Architecture CQRS** avec séparation commands/queries/schemas/services.
-
-## 🎯 Features Web App
-
-- **Authentification**: Système de login/register
-- **E-commerce**: Panier, commandes, paiements
-- **Interface moderne**: Tailwind CSS + composants UI
-- **État global**: Gestion du panier avec Zustand
-
----
-
-**Tip**: Utilisez `pnpm dev --filter=<app>` pour développer efficacement sur une seule partie du projet.
+**Secrets requis :** `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `SERVER_HOST`,
+`SERVER_USERNAME`, `SSH_PRIVATE_KEY`.

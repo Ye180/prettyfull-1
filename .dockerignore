@@ -11,9 +11,6 @@ dist
 
 .turbo
 
-# Assure-toi que ceci n'est PAS ignoré ou ajoute l'exception :
-!apps/prettyfull-medusa/.medusa
-
 # Environment files
 .env
 .env.local
