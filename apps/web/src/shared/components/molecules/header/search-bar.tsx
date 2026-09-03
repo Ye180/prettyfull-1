@@ -1,9 +1,8 @@
 "use client";
 
 import { useGetCategory } from "@/features/homepage/api/medusa/get-category";
-import { sdk } from "@/lib/api/sdk";
+import { products as allProducts } from "@/lib/fake-data";
 import { PAGES_PATHS, PRODUCT_PATHS } from "@/lib/routes/paths-en";
-import { useRegionStore } from "@/stores/useRegion";
 import { cn } from "@prettyfull/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
@@ -32,8 +31,6 @@ const useDebouncedValue = <T,>(value: T, delay = 250): T => {
 const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 	const t = useTranslations("HomePage.header");
 	const router = useRouter();
-	const region = useRegionStore((state) => state.region);
-	const regionId = region?.id;
 
 	const [query, setQuery] = useState("");
 	const [isOpen, setIsOpen] = useState(false);
@@ -53,17 +50,12 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 	}, [categories, debouncedQuery, hasQuery]);
 
 	const { data: products, isFetching } = useQuery({
-		queryKey: ["search-products", debouncedQuery, regionId],
+		queryKey: ["search-products", debouncedQuery],
 		queryFn: async () => {
-			const response = await sdk.store.product.list({
-				q: debouncedQuery,
-				region_id: regionId,
-				fields: "id,title,handle,thumbnail,*images",
-				limit: 12,
-			} as any);
-			return response.products || [];
+			const q = debouncedQuery.toLowerCase();
+			return allProducts.filter((p) => p.title.toLowerCase().includes(q)).slice(0, 12);
 		},
-		enabled: hasQuery && !!regionId,
+		enabled: hasQuery,
 		staleTime: 30_000,
 	});
 
@@ -177,9 +169,7 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 												<ul className="grid grid-cols-2 w-full">
 													{col.items.map((product: any, idx: number) => {
 														const thumb =
-															`${product.thumbnail}?view=1` ||
-															`${product.images?.[0]?.url}?view=1` ||
-															"";
+															product.thumbnail || product.images?.[0]?.url || "";
 														return (
 															<li key={product.id}>
 																<Link

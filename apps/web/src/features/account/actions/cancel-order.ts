@@ -1,34 +1,14 @@
 "use server";
 
+import { getOrderById } from "@/lib/fake-data";
+
 export async function cancelOrder(
 	orderId: string,
 ): Promise<{ success: boolean; error?: string }> {
-	const adminToken = process.env.MEDUSA_ADMIN_TOKEN;
-	const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL;
-
-	if (!adminToken) {
-		return { success: false, error: "Service unavailable (admin token missing)" };
+	const order = getOrderById(orderId);
+	if (!order) {
+		return { success: false, error: "Order not found" };
 	}
-
-	try {
-		const res = await fetch(`${backendUrl}/admin/orders/${orderId}/cancel`, {
-			method: "POST",
-			headers: {
-				"x-medusa-access-token": adminToken,
-				"Content-Type": "application/json",
-			},
-		});
-
-		if (!res.ok) {
-			const data = await res.json().catch(() => ({}));
-			return {
-				success: false,
-				error: (data as any).message || "Cancellation failed",
-			};
-		}
-
-		return { success: true };
-	} catch (err: any) {
-		return { success: false, error: err.message };
-	}
+	order.status = "canceled";
+	return { success: true };
 }

@@ -1,14 +1,12 @@
 "use client";
 
 import { useActionEvent } from "@/hooks/use-action-event";
-import { sdk } from "@/lib/api/sdk";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@prettyfull/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useForm } from "react-hook-form";
-import { useCartStore } from "../../../../../../../packages/store/src/use-cart-store";
 import Flex from "../../../../../../../packages/ui/src/layouts/helpers/flex";
 import { loginSchema, type LoginFormData } from "../../schemas/login.schema";
 
@@ -29,38 +27,11 @@ export function LoginForm() {
 	});
 
 	const { startLoading, endLoading, loading } = useActionEvent();
-	const { currentCartId } = useCartStore(); // 5. Obtenir l'ID du panier invité
 
 	const onSubmit = async (data: LoginFormData) => {
 		startLoading();
-
-		try {
-			const loginResponse = await sdk.auth.login("customer", "emailpass", {
-				email: data.email,
-				password: data.password,
-			});
-
-			if (!loginResponse) {
-				alert("Erreur lors de la connexion");
-				endLoading();
-				return;
-			}
-
-			if (typeof loginResponse !== "string") {
-				alert(
-					"Authentication requires more actions, which isn't supported by this flow.",
-				);
-				endLoading();
-				return;
-			}
-
-			// Succès - rediriger
-			endLoading();
-			callbackUrl ? router.push(callbackUrl) : router.push("/");
-		} catch (e: any) {
-			alert(`Erreur lors de la connexion: ${e.message || e}`);
-			endLoading();
-		}
+		endLoading();
+		callbackUrl ? router.push(callbackUrl) : router.push("/");
 	};
 
 	return (

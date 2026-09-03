@@ -1,6 +1,5 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
 import { Button } from "@prettyfull/ui";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
 import { useState } from "react";
@@ -46,38 +45,11 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 		setIsLoading(true);
 		setError(null);
 		try {
-			// First, verify the cart has a shipping address
-			const { cart: currentCart } = await sdk.store.cart.retrieve(cartId, {
-				fields: "+shipping_address",
-			});
-
-			if (!currentCart.shipping_address) {
-				throw new Error(
-					"Aucune adresse de livraison trouvée. Veuillez compléter l'étape d'adresse.",
-				);
-			}
-
-			// Set shipping method on cart via Medusa API
-			const updatedCart = await setShippingMethod.mutateAsync({
+			await setShippingMethod.mutateAsync({
 				cartId,
 				shippingOptionId: selectedOptionId,
 			});
 
-			// Verify shipping method was added successfully
-			const { cart: cartWithShipping } = await sdk.store.cart.retrieve(cartId, {
-				fields: "+shipping_methods",
-			});
-
-			if (
-				!cartWithShipping.shipping_methods ||
-				cartWithShipping.shipping_methods.length === 0
-			) {
-				throw new Error(
-					"La méthode de livraison n'a pas pu être ajoutée. Veuillez réessayer.",
-				);
-			}
-
-			// Save to store
 			setSelectedShippingOptionId(selectedOptionId);
 
 			onComplete?.(selectedOptionId);

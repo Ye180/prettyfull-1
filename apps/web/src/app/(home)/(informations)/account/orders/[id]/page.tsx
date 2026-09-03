@@ -3,14 +3,13 @@
 import { cancelOrder } from "@/features/account/actions/cancel-order";
 import { useGetOrderById } from "@/features/account/api/get-order-by-id";
 import { useQueryClient } from "@tanstack/react-query";
-import { sdk } from "@/lib/api/sdk";
 import { useRegionStore } from "@/stores/useRegion";
 import { Button, Skeleton } from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -301,8 +300,6 @@ export default function OrderDetailPage() {
 	const router = useRouter();
 	const orderId = params.id as string;
 
-	const [isAuthChecking, setIsAuthChecking] = useState(true);
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [copied, setCopied] = useState(false);
 	const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 	const [isCancelling, setIsCancelling] = useState(false);
@@ -311,14 +308,6 @@ export default function OrderDetailPage() {
 
 	const region = useRegionStore((state: any) => state.region);
 	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
-
-	useEffect(() => {
-		sdk.store.customer
-			.retrieve()
-			.then(() => setIsAuthenticated(true))
-			.catch(() => router.push("/login"))
-			.finally(() => setIsAuthChecking(false));
-	}, [router]);
 
 	const { data: order, isLoading, error } = useGetOrderById(orderId);
 
@@ -343,7 +332,7 @@ export default function OrderDetailPage() {
 
 	// ── Loading State ─────────────────────────────────────────────────────────
 
-	if (isAuthChecking || isLoading) {
+	if (isLoading) {
 		return (
 		<div className="space-y-8">
 				<Skeleton className="w-40 h-8" />
@@ -359,8 +348,6 @@ export default function OrderDetailPage() {
 			</div>
 		);
 	}
-
-	if (!isAuthenticated) return null;
 
 	// ── Error State ───────────────────────────────────────────────────────────
 
@@ -397,12 +384,9 @@ export default function OrderDetailPage() {
 	// ── Data Preparation ──────────────────────────────────────────────────────
 
 	const orderData = order as any;
-	const fulfillmentStatus = mapFulfillmentStatus(
-		orderData.fulfillment_status || "pending",
-	);
-	const paymentStatus = orderData.payment_status || "";
-	const isRefunded =
-		paymentStatus === "refunded" || paymentStatus === "partially_refunded";
+	const fulfillmentStatus = mapFulfillmentStatus(orderData.status || "pending");
+	const paymentStatus = orderData.status === "canceled" ? "canceled" : "captured";
+	const isRefunded = false;
 	const isCancellable =
 		fulfillmentStatus === "processing" &&
 		!isRefunded &&

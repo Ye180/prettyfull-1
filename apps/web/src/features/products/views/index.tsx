@@ -1,9 +1,9 @@
 "use client";
 
-import { useAddItemToCartMedusa } from "@/features/cart/api/medusa/add-item-to-cart-medusa";
 import Reviews from "@/features/products/components/organims/reviews";
 import ProductSkeleton from "@/shared/components/organims/product-fiche-loading";
 import { useRegionStore } from "@/stores/useRegion";
+import { useCartStore } from "@prettyfull/store";
 import { toast } from "@prettyfull/ui";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -33,7 +33,7 @@ export default function ProductViews() {
 	const [selectedColor, setSelectedColor] = useState<string>("");
 	const [selectedSize, setSelectedSize] = useState<string>("");
 
-	const addItemToCartMutation = useAddItemToCartMedusa();
+	const addItem = useCartStore((state) => state.addItem);
 
 	// ===== EXTRACTION DES OPTIONS (Color, Size) =====
 	const colorOption = useMemo(() => {
@@ -311,26 +311,28 @@ export default function ProductViews() {
 			return;
 		}
 
-		const cartId = localStorage.getItem("cart_id");
-		const loadingId = toast.loading("Ajout au panier...");
+		const variantLabel: Record<string, string> = {};
+		if (colorOption) variantLabel[colorOption.title] = selectedColor;
+		if (sizeOption) variantLabel[sizeOption.title] = selectedSize;
 
-		addItemToCartMutation.mutate(
-			{ cartId: cartId || "", quantity: 1, variant_id: matchingVariant.id },
-			{
-				onSuccess: () => {
-					toast.cart("Ajouté au panier", {
-						id: loadingId,
-						description: `${product?.title} a été ajouté à votre panier.`,
-					});
-				},
-				onError: (error: any) => {
-					toast.error("Impossible d'ajouter au panier", {
-						id: loadingId,
-						description: error?.message ?? "Une erreur est survenue.",
-					});
-				},
+		addItem({
+			productId: matchingVariant.id,
+			product: {
+				id: product!.id,
+				name: product!.title,
+				image: currentImages[0] || product?.images?.[0]?.url,
 			},
-		);
+			quantity: 1,
+			selectedVariants: variantLabel,
+			unitPrice: {
+				amount: matchingVariant.calculated_price?.calculated_amount ?? 0,
+				currency: regions?.currency_code === "xof" ? "FCFA" : "USD",
+			},
+		});
+
+		toast.cart("Ajouté au panier", {
+			description: `${product?.title} a été ajouté à votre panier.`,
+		});
 	};
 
 	if (isLoading) {
@@ -378,8 +380,8 @@ export default function ProductViews() {
 						onColorChange={handleColorChange}
 						onSizeChange={handleSizeChange}
 						onAddToCart={handleClick}
-						disabled={!selectedSize || addItemToCartMutation.isPending}
-						isLoading={addItemToCartMutation.isPending}
+						disabled={!selectedSize}
+						isLoading={false}
 						collectionColorVariants={collectionColorVariants}
 						currency={regions?.currency_code === "xof" ? "FCFA" : "$"}
 					/>

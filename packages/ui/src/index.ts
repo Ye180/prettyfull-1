@@ -4,9 +4,6 @@ export * from "./button";
 export * from "./card";
 
 export * from "./components/product";
-export * from "./components/products-/product-options";
-export * from "./components/products-/products-galery";
-export * from "./components/products-/products-infos";
 export * from "./grid-card-product";
 export * from "./input";
 export * from "./input-select";

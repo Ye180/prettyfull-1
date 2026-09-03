@@ -1,32 +1,29 @@
 "use client";
 
 import { Cart } from "@/components/icons/cart.icon";
-import { sdk } from "@/lib/api/sdk";
 import { paths } from "@/lib/routes/paths-en";
-import { getMediaUrl } from "@/shared/utils/media-url";
-import { CART_ITEMS_CART } from "@/shared/utils/query-keys";
 import { useRegionStore } from "@/stores/useRegion";
+import { useCartStore, type CartItem } from "@prettyfull/store";
 import {
 	Popover,
 	PopoverButton,
 	PopoverPanel,
 	Transition,
 } from "@headlessui/react";
-import { StoreCartLineItem } from "@medusajs/types";
 import { formatCurrency_FR } from "@prettyfull/utils";
-import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
 
-const CartDropdown = (cart: any) => {
+const CartDropdown = ({ cart }: { cart: CartItem[] }) => {
 	const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
 
 	const router = useRouter();
 
 	const regions = useRegionStore((state) => state.region);
+	const removeItem = useCartStore((state) => state.removeItem);
 
 	const open = () => setCartDropdownOpen(true);
 	const close = () => setCartDropdownOpen(false);
@@ -39,20 +36,8 @@ const CartDropdown = (cart: any) => {
 		open();
 	};
 
-	const queryClient = useQueryClient();
-
-	const handleClickRemoveItem = (itemId: string) => {
-		const cartId = localStorage.getItem("cart_id");
-		sdk.store.cart
-			.deleteLineItem(cartId as string, itemId)
-			.then(({ parent: cart }) => {
-				// Utiliser le panier mis à jour
-
-				// Invalider et refetch les données du panier
-				queryClient.invalidateQueries({
-					queryKey: [CART_ITEMS_CART, cartId as string],
-				});
-			});
+	const handleClickRemoveItem = (productId: string) => {
+		removeItem(productId);
 	};
 
 	return (
@@ -61,13 +46,9 @@ const CartDropdown = (cart: any) => {
 				<PopoverButton className="focus:outline-none">
 					<Link href={paths.cart} className="flex">
 						<Cart />
-						{cart?.cart?.length > 0 && (
+						{cart.length > 0 && (
 							<p className="absolute flex items-center justify-center text-[0.8rem] border bottom-1 -right-1 text-center content-center w-6 h-6 lg:w-[1.8rem] lg:h-[1.8rem] text-xs text-white bg-red-500 rounded-full lg:text-[1rem] font-semibold lg:border-2 lg:p-2 border-white">
-								{cart.cart.reduce(
-									(total: number, item: StoreCartLineItem) =>
-										total + item.quantity,
-									0,
-								)}
+								{cart.reduce((total, item) => total + item.quantity, 0)}
 							</p>
 						)}
 					</Link>
@@ -92,7 +73,7 @@ const CartDropdown = (cart: any) => {
 								Panier
 							</h3>
 
-							{cart?.cart?.length === 0 && (
+							{cart.length === 0 && (
 								<div className="flex flex-col justify-center items-center py-8">
 									<svg
 										className="mb-4 w-16 h-16 text-gray-300"
@@ -119,14 +100,17 @@ const CartDropdown = (cart: any) => {
 							{/* Exemple d'article dans le panier */}
 
 							<div className="space-y-12">
-								{cart?.cart?.map((item: StoreCartLineItem, index: number) => {
+								{cart.map((item) => {
+									const variantLabel = Object.values(
+										item.selectedVariants || {},
+									).join(" / ");
 									return (
-										<div className="flex gap-x-8 mb-12" key={index}>
+										<div className="flex gap-x-8 mb-12" key={item.productId}>
 											<div className="overflow-hidden rounded-lg border border-gray-300 size-24">
 												{" "}
 												<Image
-													src={getMediaUrl(item.thumbnail) || ""}
-													alt={item.product_title || ""}
+													src={item.product.image || "/assets/product_1.jpg"}
+													alt={item.product.name || ""}
 													width={96}
 													height={96}
 													className="object-fill rounded-lg"
@@ -135,31 +119,34 @@ const CartDropdown = (cart: any) => {
 											</div>
 											<div
 												className="flex flex-col justify-between w-full text-[1.5rem]! truncate"
-												title={`${item.product_title} - ${item.variant_title}`}
+												title={`${item.product.name} - ${variantLabel}`}
 											>
 												<div className="flex justify-between items-center">
 													<p className="truncate line-clamp-1 text-[1.5rem]!">
-														{item.product_title} - {item.variant_title}
+														{item.product.name}
+														{variantLabel ? ` - ${variantLabel}` : ""}
 													</p>
 													<p className="font-bold whitespace-nowrap">
 														{formatCurrency_FR(
-															item.unit_price,
+															item.unitPrice?.amount ?? 0,
 															regions?.currency_code === "xof" ? "FCFA" : "$",
 														)}
 													</p>
 												</div>
-												<div>
-													<p className="text-gray-500 text-[1.3rem]!">
-														Taille: {item.variant_title}
-													</p>
-												</div>
+												{variantLabel && (
+													<div>
+														<p className="text-gray-500 text-[1.3rem]!">
+															Taille: {variantLabel}
+														</p>
+													</div>
+												)}
 												<div className="flex justify-between items-center">
 													<p>
 														Quantité: <span>{item.quantity}</span>
 													</p>
 
 													<button
-														onClick={() => handleClickRemoveItem(item.id)}
+														onClick={() => handleClickRemoveItem(item.productId)}
 													>
 														<TrashIcon className="w-8 h-8" />
 													</button>

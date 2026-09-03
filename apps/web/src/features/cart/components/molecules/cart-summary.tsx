@@ -1,12 +1,9 @@
 "use client";
 
-import { LoginModal } from "@/features/auth/components/modals/login-modal";
-import { sdk } from "@/lib/api/sdk";
 import { Button, DropdownMenuSeparator } from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 interface CartSummaryProps {
 	subtotal?: number;
@@ -25,28 +22,12 @@ const CartSummary = ({
 }: CartSummaryProps) => {
 	const t = useTranslations("CheckoutPage.summary");
 	const router = useRouter();
-	const [showLoginModal, setShowLoginModal] = useState(false);
 
-	// Vérifier si l'utilisateur est connecté avant d'aller au checkout
-	const handleCheckout = async () => {
-		try {
-			// Vérifier si l'utilisateur est authentifié
-			await sdk.store.customer.retrieve();
-			// Utilisateur connecté -> aller au checkout
-			router.push("/checkout");
-		} catch (error) {
-			// Utilisateur non connecté -> ouvrir le modal de login
-			setShowLoginModal(true);
-		}
-	};
-
-	// Après login réussi dans le modal, rediriger vers checkout
-	const handleLoginSuccess = () => {
+	const handleCheckout = () => {
 		router.push("/checkout");
 	};
 
 	return (
-		<>
 			<div>
 				<h3 className="py-8 text-[3rem]! lg:text-[3.5rem]!">{t("title")}</h3>
 				<div className="mb-6 space-y-8">
@@ -84,14 +65,6 @@ const CartSummary = ({
 					<span className="text-[1.6rem] font-semibold">Checkout</span>
 				</Button>
 			</div>
-
-			{/* Modal de login */}
-			<LoginModal
-				open={showLoginModal}
-				onOpenChange={setShowLoginModal}
-				onLoginSuccess={handleLoginSuccess}
-			/>
-		</>
 	);
 };
 

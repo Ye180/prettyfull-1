@@ -2,14 +2,14 @@
 
 import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
 import { useGetCustomerOrders } from "@/features/account/api/get-orders";
-import { sdk } from "@/lib/api/sdk";
+import { customer as fakeCustomer } from "@/lib/fake-data";
 import { useRegionStore } from "@/stores/useRegion";
 import { Button, Input, Skeleton } from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Separator } from "../../../../../../../packages/ui/src/components/ui/separator";
 import { AddressIcon } from "../../../../../../../packages/ui/src/icons/adresse.icon";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
@@ -42,6 +42,7 @@ const statusLabels: Record<string, { label: string; className: string }> = {
 		className: "bg-blue-100 text-blue-800",
 	},
 	fulfilled: { label: "Livré", className: "bg-green-100 text-green-800" },
+	delivered: { label: "Livré", className: "bg-green-100 text-green-800" },
 	shipped: { label: "Expédié", className: "bg-indigo-100 text-indigo-800" },
 	canceled: { label: "Annulé", className: "bg-red-100 text-red-800" },
 	pending: { label: "En attente", className: "bg-yellow-100 text-yellow-800" },
@@ -49,12 +50,11 @@ const statusLabels: Record<string, { label: string; className: string }> = {
 
 export default function AccountPage() {
 	const router = useRouter();
-	const [customer, setCustomer] = useState<any>(null);
-	const [isAuthChecking, setIsAuthChecking] = useState(true);
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [email, setEmail] = useState("");
-	const [phone, setPhone] = useState("");
+	const [customer] = useState(fakeCustomer);
+	const [firstName, setFirstName] = useState(fakeCustomer.first_name);
+	const [lastName, setLastName] = useState(fakeCustomer.last_name);
+	const [email] = useState(fakeCustomer.email);
+	const [phone, setPhone] = useState(fakeCustomer.phone ?? "");
 	const [isSaving, setIsSaving] = useState(false);
 	const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -66,62 +66,20 @@ export default function AccountPage() {
 	const orders = ordersData?.orders ?? [];
 	const ordersCount = ordersData?.count ?? 0;
 
-	useEffect(() => {
-		sdk.store.customer
-			.retrieve()
-			.then(({ customer }) => {
-				setCustomer(customer);
-				setFirstName(customer.first_name || "");
-				setLastName(customer.last_name || "");
-				setEmail(customer.email || "");
-				setPhone(customer.phone || "");
-			})
-			.catch(() => {
-				router.push("/login");
-			})
-			.finally(() => {
-				setIsAuthChecking(false);
-			});
-	}, [router]);
-
-	const handleSaveProfile = async (e: React.FormEvent) => {
+	const handleSaveProfile = (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsSaving(true);
 		setSaveSuccess(false);
-		try {
-			const { customer: updated } = await sdk.store.customer.update({
-				first_name: firstName,
-				last_name: lastName,
-				phone: phone || undefined,
-			});
-			setCustomer(updated);
+		setTimeout(() => {
+			setIsSaving(false);
 			setSaveSuccess(true);
 			setTimeout(() => setSaveSuccess(false), 3000);
-		} catch (err) {
-			console.error("Failed to update profile:", err);
-		} finally {
-			setIsSaving(false);
-		}
+		}, 300);
 	};
-
-	if (isAuthChecking) {
-		return (
-			<div className="pb-20 space-y-12">
-				<Skeleton className="w-60 h-10" />
-				<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-					{[1, 2, 3].map((i) => (
-						<Skeleton key={i} className="w-full h-60 rounded-md" />
-					))}
-				</div>
-			</div>
-		);
-	}
-
-	if (!customer) return null;
 
 	const lastOrder = orders[0];
 	const lastOrderStatus = lastOrder
-		? statusLabels[lastOrder.fulfillment_status] || statusLabels.pending
+		? statusLabels[lastOrder.status] || statusLabels.pending
 		: null;
 
 	const defaultAddress = customer.addresses?.[0];

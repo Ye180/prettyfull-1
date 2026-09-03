@@ -12,7 +12,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Image = NextImage as any;
 
-import { useAddItemToCartMedusa } from "../../../../../apps/web/src/features/cart/api/medusa/add-item-to-cart-medusa";
+import { useCartStore } from "@prettyfull/store";
 import { ColorSelector } from "./color-selector";
 import { SizeSelector } from "./size-selector";
 import type { NormalizedCollectionProduct } from "./types";
@@ -93,7 +93,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 		return () => mq.removeEventListener("change", handler);
 	}, []);
 
-	const addItemToCartMutation = useAddItemToCartMedusa();
+	const addItem = useCartStore((state) => state.addItem);
 
 	// --- Données dérivées ---
 	const activeColor = product?.colors[activeColorIndex];
@@ -155,42 +155,29 @@ export const CardProduct: React.FC<CardProductProps> = ({
 				return;
 			}
 
-			const cartId = localStorage.getItem("cart_id");
-
-			const loadingId = toast.loading("Ajout au panier...", {
-				description:
-					product?.collectionTitle ?? "Merci de patienter un instant.",
+			addItem({
+				productId: matchingVariant.id,
+				product: {
+					id: activeColor?.productId ?? matchingVariant.id,
+					name: product?.collectionTitle ?? activeColor?.title ?? "",
+					image: activeColor?.thumbnail,
+				},
+				quantity: 1,
+				selectedVariants: { size },
+				unitPrice: {
+					amount: matchingVariant.calculated_price?.calculated_amount ?? 0,
+					currency: currencyCode === "xof" ? "FCFA" : "USD",
+				},
 			});
 
-			addItemToCartMutation.mutate(
-				{
-					cartId: cartId || "",
-					quantity: 1,
-					variant_id: matchingVariant.id,
-				},
-				{
-					onSuccess: () => {
-						toast.cart("Ajouté au panier", {
-							id: loadingId,
-							description: product?.collectionTitle
-								? `${product.collectionTitle} a été ajouté à votre panier.`
-								: "Votre article a été ajouté à votre panier.",
-						});
-						setShowSizeSelector(false);
-					},
-					onError: (error: any) => {
-						console.error("Erreur lors de l'ajout:", error);
-						toast.error("Impossible d'ajouter au panier", {
-							id: loadingId,
-							description:
-								error?.message ??
-								"Une erreur est survenue. Merci de réessayer.",
-						});
-					},
-				},
-			);
+			toast.cart("Ajouté au panier", {
+				description: product?.collectionTitle
+					? `${product.collectionTitle} a été ajouté à votre panier.`
+					: "Votre article a été ajouté à votre panier.",
+			});
+			setShowSizeSelector(false);
 		},
-		[activeColor, product?.collectionTitle, addItemToCartMutation],
+		[activeColor, product?.collectionTitle, addItem, currencyCode],
 	);
 
 	const handleCloseSizeSelector = useCallback((e: React.MouseEvent) => {

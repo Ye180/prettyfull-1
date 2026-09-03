@@ -5,23 +5,12 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
-import { useAuth } from "@/hooks/useAuth"; // ⬅️ 1. IMPORTER LE BON HOOK D'AUTH
-import client from "@/shared/lib/client";
 import { useCartStore } from "../../../../../../../packages/store/src/use-cart-store";
-
-// Fonction pour obtenir l'URL de l'image (depuis l'intercepteur client)
-const getImageUrl = (path?: string) => {
-	if (!path) return "/assets/product_1.jpg"; // Image par défaut
-	if (path.startsWith("http")) return path;
-	const baseUrl = client.defaults.baseURL?.replace("/api/v1", "") || "";
-	return `${baseUrl}${path}`;
-};
 
 const DropdownContentCart = () => {
 	const t = useTranslations("cart");
 	const router = useRouter();
-	const { items } = useCartStore(); // ⬅️ 2. RÉCUPÉRER L'ÉTAT DE L'UTILISATEUR
-	const { isAuthenticated, isLoading } = useAuth();
+	const { items } = useCartStore();
 	const total = items.reduce(
 		(acc, item) => acc + (item.unitPrice?.amount || 0) * item.quantity,
 		0,
@@ -38,17 +27,7 @@ const DropdownContentCart = () => {
 	}, [items]); // ⬅️ 3. CRÉER LA MÊME LOGIQUE DE REDIRECTION SÉCURISÉE
 
 	const handleCheckout = () => {
-		if (isLoading) {
-			return; // Ne rien faire pendant le chargement
-		}
-
-		if (isAuthenticated) {
-			// Si connecté, aller au checkout
-			router.push("/checkout");
-		} else {
-			// Si invité, aller au login et mémoriser le checkout
-			router.push("/login?callbackUrl=/checkout");
-		} // Idéalement, fermer le dropdown ici (si la logique existe)
+		router.push("/checkout");
 	};
 	const goToCart = () => {
 		router.push("/cart");
@@ -69,20 +48,12 @@ const DropdownContentCart = () => {
 							{items.map((item) => (
 								<div key={item.product.id} className="flex gap-4">
 									<img
-										src={item.product.image || "/placeholder.jpg"}
-										alt={
-											typeof item.product.name === "string"
-												? item.product.name
-												: ((item.product.name as any)?.fr ?? "")
-										}
+										src={item.product.image || "/assets/product_1.jpg"}
+										alt={item.product.name}
 										className="object-cover w-16 h-16"
 									/>
 									<div>
-										<p className="font-semibold">
-											{typeof item.product.name === "string"
-												? item.product.name
-												: ((item.product.name as any)?.fr ?? "")}
-										</p>
+										<p className="font-semibold">{item.product.name}</p>
 										<p>
 											{item.quantity} x {item.unitPrice?.amount}{" "}
 											{item.unitPrice?.currency}
@@ -99,7 +70,7 @@ const DropdownContentCart = () => {
 						           {" "}
 						<div className="flex justify-between font-semibold">
 							              <p>{t("subtotal")}</p>             {" "}
-							<p>{subtotal} FCFA</p>           {" "}
+							<p>${subtotal}</p>           {" "}
 						</div>
 						           {" "}
 						<div className="flex flex-col gap-2 mt-4">
@@ -108,8 +79,6 @@ const DropdownContentCart = () => {
 							<Button
 								onClick={handleCheckout}
 								className="w-full"
-								isLoading={isLoading}
-								disabled={isLoading}
 							>
 								                {t("checkout")}             {" "}
 							</Button>

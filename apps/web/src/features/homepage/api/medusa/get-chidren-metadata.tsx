@@ -1,19 +1,12 @@
-import { sdk } from "@/lib/api/sdk";
-import type { StoreProductCategoryListResponse } from "@medusajs/types";
+"use client";
+
+import { categories } from "@/lib/fake-data";
 import { useQuery } from "@tanstack/react-query";
 
 export const CATEGORIES_ALL_KEY = "product-categories-all";
 
-const CATEGORY_FIELDS =
-	"name, handle, *product_category_image, *category_children, *category_children.metadata, *category_children.product_category_image";
-
 export const fetchAllProductCategories = async () => {
-	const { product_categories } =
-		await sdk.client.fetch<StoreProductCategoryListResponse>(
-			`/store/product-categories`,
-			{ query: { fields: CATEGORY_FIELDS } },
-		);
-	return product_categories;
+	return categories;
 };
 
 export const useGetCategoryByHandler = (
@@ -39,11 +32,5 @@ export const useGetCategoryByHandler = (
 			isLoading,
 			data: data ?? (isLoading ? undefined : []),
 		};
-	});
-};
-
-export const getCategoryByHandle = async (_categoryHandle: string[]) => {
-	return sdk.client.fetch("/store/product-categories", {
-		query: { fields: "*category_children, *products, *product_category_image" },
 	});
 };

@@ -1,6 +1,5 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
 import { cn } from "@prettyfull/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -37,13 +36,7 @@ export const AccountMenu = () => {
 	const pathname = usePathname();
 	const router = useRouter();
 
-	const handleLogout = async () => {
-		try {
-			await sdk.auth.logout();
-		} catch (e) {
-			// ignore
-		}
-		localStorage.removeItem("cart_id");
+	const handleLogout = () => {
 		router.push("/login");
 	};
 

@@ -1,42 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCartStore } from "@prettyfull/store";
+import { useEffect, useState } from "react";
 import { MinusIcon } from "../../../../../../../packages/ui/src/icons/minus.icon";
 import { PlusIcon } from "../../../../../../../packages/ui/src/icons/plus.icon";
-import { useUpdateQuantityLineItem } from "../../api/medusa/update-quantity-line-item";
 
 interface Props {
 	productId: string;
 	initialQuantity: number;
-	selectedVariants?: Record<string, string>;
-	cartId?: string;
 }
 
-export const QuantitySelector = ({
-	productId,
-	initialQuantity,
-	cartId,
-}: Props) => {
-	const { applyOptimistic, persist } = useUpdateQuantityLineItem();
+export const QuantitySelector = ({ productId, initialQuantity }: Props) => {
+	const updateQuantity = useCartStore((state) => state.updateQuantity);
 	const [quantity, setQuantity] = useState(initialQuantity);
 
-	// Synchroniser si la quantité serveur change (ex: réconciliation, autre onglet)
 	useEffect(() => {
 		setQuantity(initialQuantity);
 	}, [initialQuantity]);
 
-	// ⚡ On débounce uniquement l'appel réseau : les clics rapides sont regroupés
-	// en une seule requête, tandis que l'UI reste instantanée (voir handleUpdate).
-	const debouncedPersist = useDebouncedCallback((newQuantity: number) => {
-		if (!cartId) return;
-		persist({ cartId, itemId: productId, quantity: newQuantity });
-	}, 400);
-
 	const handleUpdate = (newQuantity: number) => {
-		if (newQuantity < 1 || !cartId) return;
-		setQuantity(newQuantity); // ① nombre instantané
-		applyOptimistic(cartId, productId, newQuantity); // ② total recalculé instantanément
-		debouncedPersist(newQuantity); // ③ persistance serveur regroupée
+		if (newQuantity < 1) return;
+		setQuantity(newQuantity);
+		updateQuantity(productId, newQuantity);
 	};
 
 	return (
@@ -63,37 +48,3 @@ export const QuantitySelector = ({
 		</div>
 	);
 };
-
-function useDebouncedCallback(
-	callback: (newQuantity: number) => void,
-	delay: number,
-): (newQuantity: number) => void {
-	const timeoutRef = useRef<number | null>(null);
-	const savedCb = useRef(callback);
-
-	useEffect(() => {
-		savedCb.current = callback;
-	}, [callback]);
-
-	useEffect(() => {
-		return () => {
-			if (timeoutRef.current !== null) {
-				clearTimeout(timeoutRef.current);
-				timeoutRef.current = null;
-			}
-		};
-	}, []);
-
-	return useCallback(
-		(newQuantity: number) => {
-			if (timeoutRef.current !== null) {
-				clearTimeout(timeoutRef.current);
-			}
-			timeoutRef.current = window.setTimeout(() => {
-				savedCb.current(newQuantity);
-				timeoutRef.current = null;
-			}, delay);
-		},
-		[delay],
-	);
-}

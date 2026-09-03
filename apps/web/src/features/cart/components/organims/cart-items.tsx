@@ -1,49 +1,19 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
-import { CART_ITEMS_CART } from "@/shared/utils/query-keys";
 import { useRegionStore } from "@/stores/useRegion";
-import { StoreCart } from "@medusajs/types";
-import { useQueryClient } from "@tanstack/react-query";
+import { useCartStore, type CartItem } from "@prettyfull/store";
 import Image from "next/image";
-import { useState } from "react";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
 import { formatCurrency_FR } from "../../../../../../../packages/utils/lib/format-curency";
 import { QuantitySelector } from "../molecules/quantity-selector";
 
-const CartItems = ({
-	cart,
-	isLoading,
-}: {
-	cart: StoreCart;
-	isLoading: boolean;
-}) => {
-	const cartId = localStorage.getItem("cart_id");
-
-	const queryClient = useQueryClient();
-	const [loadingId, setLoadingId] = useState<string | null>(null);
-
+const CartItems = ({ items }: { items: CartItem[] }) => {
+	const removeItem = useCartStore((state) => state.removeItem);
 	const regions = useRegionStore((state) => state.region);
 
-	const handleRemove = async (itemId: string) => {
-		try {
-			setLoadingId(itemId);
-			await sdk.store.cart.deleteLineItem(cartId as string, itemId);
-			queryClient.invalidateQueries({
-				queryKey: [CART_ITEMS_CART, cartId as string],
-			});
-		} finally {
-			setLoadingId(null);
-		}
-	};
-
-	if (isLoading) {
-		return <div className="py-8 text-center">Chargement...</div>;
-	}
-
-	if (!cart?.items || cart.items.length === 0) {
+	if (!items || items.length === 0) {
 		return (
 			<div className="py-8 text-center text-gray-500">
 				Votre panier est vide
@@ -53,22 +23,24 @@ const CartItems = ({
 
 	return (
 		<div className="space-y-12">
-			{cart.items.map((item) => {
-				const imageSrc = item.thumbnail || "/assets/product_1.jpg";
+			{items.map((item) => {
+				const imageSrc = item.product.image || "/assets/product_1.jpg";
+				const variantLabel = Object.values(item.selectedVariants || {}).join(" / ");
+				const unitPrice = item.unitPrice?.amount ?? item.product.price?.amount ?? 0;
 
 				return (
 					<div
-						key={item.id}
+						key={item.productId}
 						className="flex flex-row items-start justify-between gap-6  border-b border-gray-200 h-76!"
 					>
 						<div className="relative w-48 h-44 rounded-md md:h-58 aspect-square">
 							<Image
-								src={imageSrc + "?view=1"}
-								alt={item.product_title || "Product Image"}
+								src={imageSrc}
+								alt={item.product.name}
 								width={230}
 								height={230}
 								className="object-contain rounded-md"
-							unoptimized
+								unoptimized
 							/>
 
 							<button className="flex absolute top-4 right-4 p-2 rounded-full border transition hover:bg-gray-100 md:hidden">
@@ -76,56 +48,45 @@ const CartItems = ({
 							</button>
 						</div>
 
-						{/* 🧾 Détails produit */}
 						<div className="flex flex-col flex-1 justify-between h-58">
 							<div className="flex justify-between w-full">
-								{/* Ligne titre + prix */}
 								<div className="flex justify-between items-start w-full max-md:flex-col-reverse">
 									<h4 className="text-[1.7rem]! font-medium text-gray-900 font-manrope">
-										{item.product_title}
+										{item.product.name}
 									</h4>
 									<p className="text-lg font-semibold text-gray-800 whitespace-nowrap">
 										{formatCurrency_FR(
-											item.unit_price,
+											unitPrice,
 											regions?.currency_code === "xof" ? "FCFA" : "$",
 										)}
 									</p>
 								</div>
 
 								<button
-									onClick={() => handleRemove(item.id)}
+									onClick={() => removeItem(item.productId)}
 									className="p-2 rounded-full transition h-fit hover:bg-gray-100 md:hidden"
 								>
 									<CloseIcon size={18} />
 								</button>
 							</div>
 
-							{/* Description + variantes */}
 							<p className="mt-1 text-sm text-gray-500 uppercase whitespace-nowrap">
-								{item.variant_title || "Variante"}
+								{variantLabel || "Variante unique"}
 							</p>
 
-							{/* Bloc quantité + actions */}
 							<div className="flex flex-col gap-3 justify-between items-start mt-2 h-fit md:h-full">
 								<QuantitySelector
-									productId={item.id || ""}
+									productId={item.productId}
 									initialQuantity={item.quantity}
-									selectedVariants={{}}
-									cartId={cart.id}
-								/>{" "}
+								/>
 								<div className="hidden gap-4 items-center md:flex">
 									<button className="p-2 rounded-full border transition hover:bg-gray-100">
 										<Heart width={18} height={18} />
 									</button>
 
 									<button
-										onClick={() => handleRemove(item.id)}
-										disabled={loadingId === item.id}
-										className={`border rounded-full p-2 transition ${
-											loadingId === item.id
-												? "opacity-50 cursor-not-allowed"
-												: "hover:bg-gray-100"
-										}`}
+										onClick={() => removeItem(item.productId)}
+										className="p-2 rounded-full border transition hover:bg-gray-100"
 									>
 										<TrashIcon size={18} />
 									</button>

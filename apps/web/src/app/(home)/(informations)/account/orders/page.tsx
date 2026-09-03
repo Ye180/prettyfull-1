@@ -2,12 +2,9 @@
 
 import { useGetCustomerOrders } from "@/features/account/api/get-orders";
 import { OrderCard } from "@/features/account/components/order-card";
-import { sdk } from "@/lib/api/sdk";
 import { useRegionStore } from "@/stores/useRegion";
 import { Button, Skeleton } from "@prettyfull/ui";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { OrderIcon } from "../../../../../../../../packages/ui/src/icons/order.icon";
 
 const mapFulfillmentStatus = (
@@ -30,46 +27,17 @@ const mapFulfillmentStatus = (
 };
 
 export default function OrdersPage() {
-	const router = useRouter();
-	const [isAuthChecking, setIsAuthChecking] = useState(true);
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const region = useRegionStore((state) => state.region);
 	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
 
-	useEffect(() => {
-		sdk.store.customer
-			.retrieve()
-			.then(() => {
-				setIsAuthenticated(true);
-			})
-			.catch(() => {
-				router.push("/login");
-			})
-			.finally(() => {
-				setIsAuthChecking(false);
-			});
-	}, [router]);
-
 	const { data, isLoading, error } = useGetCustomerOrders();
 	const orders = data?.orders ?? [];
-
-	if (isAuthChecking) {
-		return (
-			<div className="space-y-8">
-				<Skeleton className="w-60 h-10" />
-				<Skeleton className="w-full h-40" />
-				<Skeleton className="w-full h-40" />
-			</div>
-		);
-	}
-
-	if (!isAuthenticated) return null;
 
 	const mappedOrders = orders.map((order: any) => ({
 		id: order.id,
 		displayId: String(order.display_id),
 		createdAt: order.created_at,
-		status: mapFulfillmentStatus(order.fulfillment_status || "pending"),
+		status: mapFulfillmentStatus(order.status || "pending"),
 		total: order.total ?? 0,
 		currency,
 		items: (order.items || []).map((item: any) => ({

@@ -1,9 +1,7 @@
 "use client";
 
 import { EyesClosed, EyesOpen } from "@/components/icons/eyes-icon";
-import { sdk } from "@/lib/api/sdk";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FetchError } from "@medusajs/js-sdk";
 import { Button, Input } from "@prettyfull/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -37,39 +35,7 @@ export function RegisterForm() {
 			return;
 		}
 		setLoading(true);
-
-		try {
-			await sdk.auth.register("customer", "emailpass", {
-				email: data.email,
-				password: data.password,
-			});
-		} catch (error) {
-			const fetchError = error as FetchError;
-
-			if (
-				fetchError.statusText !== "Unauthorized" ||
-				fetchError.message !== "Identity with email already exists"
-			) {
-				alert(`An error occurred while creating account: ${fetchError}`);
-				return;
-			}
-		}
-
-		// create customer
-		try {
-			const { customer } = await sdk.store.customer.create({
-				first_name: data.firstName,
-				last_name: data.lastName,
-				email: data.email,
-			});
-
-			setLoading(false);
-			// TODO redirect to login page
-		} catch (error) {
-			console.error(error);
-			alert("Error: " + error);
-			return;
-		}
+		router.push("/login");
 	};
 
 	return (

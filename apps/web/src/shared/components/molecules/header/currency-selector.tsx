@@ -1,6 +1,5 @@
 "use client";
 
-import { useUpdateCartRegion } from "@/features/cart/api/medusa/update-cart-region";
 import { useGetRegion } from "@/shared/api/medusa/get-region";
 import { useRegionStore } from "@/stores/useRegion";
 import {
@@ -48,7 +47,6 @@ export function CurrencySelector() {
 
 	const { data: regions, isLoading: regionsLoading } = useGetRegion();
 	const currentRegion = useRegionStore((state) => state.region);
-	const { mutate: updateCartRegion } = useUpdateCartRegion();
 
 	const [open, setOpen] = useState(false);
 	const [selectedRegion, setSelectedRegion] = useState<any>(null);
@@ -74,18 +72,8 @@ export function CurrencySelector() {
 	}, [regionsLoading, regions, currentRegion]);
 
 	const handleApply = () => {
-		// Sauvegarder la région sélectionnée dans le store (persiste automatiquement)
 		if (selectedRegion) {
 			setCurrentRegion(selectedRegion);
-
-			// Mettre à jour la région du panier pour que les prix soient recalculés
-			const cartId = localStorage.getItem("cart_id");
-			if (cartId) {
-				updateCartRegion({
-					cartId,
-					regionId: selectedRegion.id,
-				});
-			}
 		}
 		onClose();
 	};

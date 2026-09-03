@@ -1,38 +1,43 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
-import { CART_ITEMS_CART } from "@/shared/utils/query-keys";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createFakeOrder } from "@/lib/fake-data";
+import { useCartStore } from "@prettyfull/store";
+import { useMutation } from "@tanstack/react-query";
+import { useCheckoutStore } from "../stores/use-checkout-store";
 
 interface CompleteCartParams {
 	cartId: string;
 }
 
-const completeCart = async ({ cartId }: CompleteCartParams) => {
-	const result = await sdk.store.cart.complete(cartId);
-
-	// The result contains either the order or an error
-	if (result.type === "order") {
-		return result.order;
-	}
-
-	throw new Error("Failed to complete cart");
-};
-
 export const useCompleteCart = () => {
-	const queryClient = useQueryClient();
-
 	return useMutation({
-		mutationFn: completeCart,
-		onSuccess: (_, variables) => {
-			// Clear cart from cache
-			queryClient.invalidateQueries({
-				queryKey: [CART_ITEMS_CART, variables.cartId],
+		mutationFn: async (_: CompleteCartParams) => {
+			const { items, clearCart } = useCartStore.getState();
+			const { shippingAddress } = useCheckoutStore.getState();
+
+			const order = createFakeOrder({
+				email: shippingAddress?.email ?? "guest@prettyfull.shop",
+				shipping_address: {
+					first_name: shippingAddress?.first_name ?? "",
+					last_name: shippingAddress?.last_name ?? "",
+					address_1: shippingAddress?.address_1 ?? "",
+					city: shippingAddress?.city ?? "",
+					postal_code: shippingAddress?.postal_code ?? "",
+					country_code: shippingAddress?.country_code ?? "us",
+					phone: shippingAddress?.phone,
+				},
+				items: items.map((item) => ({
+					id: item.productId,
+					thumbnail: item.product.image,
+					product_title: item.product.name,
+					variant_title: Object.values(item.selectedVariants || {}).join(" / ") || "Unique",
+					unit_price: item.unitPrice?.amount ?? item.product.price?.amount ?? 0,
+					quantity: item.quantity,
+				})),
 			});
-			// Remove cart_id from localStorage after successful order
-			if (typeof window !== "undefined") {
-				localStorage.removeItem("cart_id");
-			}
+
+			clearCart();
+			return order;
 		},
 	});
 };

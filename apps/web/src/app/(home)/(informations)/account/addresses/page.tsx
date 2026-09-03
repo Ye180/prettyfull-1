@@ -1,6 +1,6 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
+import { customer as fakeCustomer } from "@/lib/fake-data";
 import {
 	Button,
 	Dialog,
@@ -9,10 +9,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 	Input,
-	Skeleton,
 } from "@prettyfull/ui";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -456,9 +454,7 @@ const DeleteConfirmModal = ({
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function AddressesPage() {
-	const router = useRouter();
-	const [isAuthChecking, setIsAuthChecking] = useState(true);
-	const [customer, setCustomer] = useState<any>(null);
+	const [addresses, setAddresses] = useState<Address[]>(fakeCustomer.addresses);
 
 	const [showFormModal, setShowFormModal] = useState(false);
 	const [editingAddress, setEditingAddress] = useState<Address | null>(null);
@@ -471,21 +467,6 @@ export default function AddressesPage() {
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-	const fetchCustomer = useCallback(async () => {
-		try {
-			const { customer } = await sdk.store.customer.retrieve();
-			setCustomer(customer);
-		} catch {
-			router.push("/login");
-		} finally {
-			setIsAuthChecking(false);
-		}
-	}, [router]);
-
-	useEffect(() => {
-		fetchCustomer();
-	}, [fetchCustomer]);
 
 	const showSuccess = (msg: string) => {
 		setSuccessMessage(msg);
@@ -506,43 +487,17 @@ export default function AddressesPage() {
 
 	const handleSave = async (data: AddressFormData) => {
 		setIsSaving(true);
-		try {
-			if (editingAddress) {
-				await sdk.store.customer.updateAddress(editingAddress.id, {
-					first_name: data.first_name,
-					last_name: data.last_name,
-					company: data.company || undefined,
-					address_1: data.address_1,
-					address_2: data.address_2 || undefined,
-					city: data.city,
-					postal_code: data.postal_code,
-					province: data.province || undefined,
-					country_code: data.country_code,
-					phone: data.phone || undefined,
-				});
-				showSuccess("Adresse mise à jour !");
-			} else {
-				await sdk.store.customer.createAddress({
-					first_name: data.first_name,
-					last_name: data.last_name,
-					company: data.company || undefined,
-					address_1: data.address_1,
-					address_2: data.address_2 || undefined,
-					city: data.city,
-					postal_code: data.postal_code,
-					province: data.province || undefined,
-					country_code: data.country_code,
-					phone: data.phone || undefined,
-				});
-				showSuccess("Adresse ajoutée !");
-			}
-			setShowFormModal(false);
-			await fetchCustomer();
-		} catch (err) {
-			console.error("Failed to save address:", err);
-		} finally {
-			setIsSaving(false);
+		if (editingAddress) {
+			setAddresses((prev) =>
+				prev.map((a) => (a.id === editingAddress.id ? { ...a, ...data } : a)),
+			);
+			showSuccess("Adresse mise à jour !");
+		} else {
+			setAddresses((prev) => [...prev, { ...data, id: `addr_${Date.now()}` }]);
+			showSuccess("Adresse ajoutée !");
 		}
+		setShowFormModal(false);
+		setIsSaving(false);
 	};
 
 	// ── Delete ────────────────────────────────────────────────────────────────
@@ -555,37 +510,12 @@ export default function AddressesPage() {
 	const handleConfirmDelete = async () => {
 		if (!deletingAddressId) return;
 		setIsDeleting(true);
-		try {
-			await sdk.store.customer.deleteAddress(deletingAddressId);
-			setShowDeleteModal(false);
-			setDeletingAddressId(null);
-			showSuccess("Adresse supprimée !");
-			await fetchCustomer();
-		} catch (err) {
-			console.error("Failed to delete address:", err);
-		} finally {
-			setIsDeleting(false);
-		}
+		setAddresses((prev) => prev.filter((a) => a.id !== deletingAddressId));
+		setShowDeleteModal(false);
+		setDeletingAddressId(null);
+		showSuccess("Adresse supprimée !");
+		setIsDeleting(false);
 	};
-
-	// ── Loading ───────────────────────────────────────────────────────────────
-
-	if (isAuthChecking) {
-		return (
-			<div className="space-y-8">
-				<Skeleton className="w-60 h-10" />
-				<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-					{[1, 2, 3].map((i) => (
-						<Skeleton key={i} className="w-full h-48 rounded-xl" />
-					))}
-				</div>
-			</div>
-		);
-	}
-
-	if (!customer) return null;
-
-	const addresses: Address[] = customer.addresses ?? [];
 
 	// ── Render ────────────────────────────────────────────────────────────────
 

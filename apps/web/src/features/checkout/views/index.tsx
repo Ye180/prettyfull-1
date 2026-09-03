@@ -1,9 +1,7 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
 import { useRegionStore } from "@/stores/useRegion";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
 import CheckoutSummary from "../components/organims/checkout-summary";
 import {
@@ -14,51 +12,13 @@ import {
 } from "../components/steps";
 import { useCheckoutStep } from "../hooks/use-checkout-step";
 
+const GUEST_CART_ID = "guest-cart";
+
 const CheckoutView = () => {
 	const router = useRouter();
 
-	const regionss = useRegionStore((state) => state.region);
-
-	sdk.store.customer
-		.retrieve()
-		.then(({ customer }) => {
-			// Ici, le client est connecté
-		})
-		.catch(() => {
-			// Ici, aucun client connecté
-			router.push("/login");
-			// par ex. rediriger vers la page de login
-		});
-
 	const { goToNextStep } = useCheckoutStep();
 	const region = useRegionStore((state) => state.region);
-
-	// Get cart ID from localStorage
-	const [cartId, setCartId] = useState<string | null>(null);
-
-	useEffect(() => {
-		if (typeof window !== "undefined") {
-			setCartId(localStorage.getItem("cart_id"));
-		}
-	}, []);
-
-	useEffect(() => {
-		if (cartId) {
-			sdk.store.fulfillment
-				.listCartOptions({
-					cart_id: cartId,
-				})
-				.then(({ shipping_options }) => {
-					// liste des options possibles
-				})
-				.catch((error) => {
-					console.error(
-						"Erreur lors de la récupération des options de livraison :",
-						error,
-					);
-				});
-		}
-	}, [cartId]);
 
 	const handleAddressComplete = () => {
 		goToNextStep();
@@ -83,14 +43,14 @@ const CheckoutView = () => {
 		>
 			{/* Left Column: Checkout Steps */}
 			<div className="flex flex-col gap-y-8 py-6 w-full bg-white sm:w-2/3">
-				<AddressStep cartId={cartId} onComplete={handleAddressComplete} />
-				<DeliveryStep cartId={cartId} onComplete={handleDeliveryComplete} />
+				<AddressStep cartId={GUEST_CART_ID} onComplete={handleAddressComplete} />
+				<DeliveryStep cartId={GUEST_CART_ID} onComplete={handleDeliveryComplete} />
 				<PaymentStep
-					cartId={cartId}
+					cartId={GUEST_CART_ID}
 					regionId={region?.id ?? null}
 					onComplete={handlePaymentComplete}
 				/>
-				<ReviewStep cartId={cartId} onPlaceOrder={handlePlaceOrder} />
+				<ReviewStep cartId={GUEST_CART_ID} onPlaceOrder={handlePlaceOrder} />
 			</div>
 
 			{/* Right Column: Order Summary */}

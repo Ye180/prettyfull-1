@@ -1,74 +1,25 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
+import { getOrderById } from "@/lib/fake-data";
 import { useRegionStore } from "@/stores/useRegion";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-
-interface OrderData {
-	id: string;
-	display_id: number;
-	email: string;
-	created_at: string;
-	shipping_address: any;
-	items: any[];
-	subtotal: number;
-	shipping_total: number;
-	tax_total: number;
-	total: number;
-	payment_status: string;
-	fulfillment_status: string;
-}
 
 const OrderConfirmationView = () => {
 	const searchParams = useSearchParams();
 	const orderId = searchParams.get("order_id");
-	const [order, setOrder] = useState<OrderData | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
 	const region = useRegionStore((state) => state.region);
 	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
 
-	useEffect(() => {
-		if (!orderId) {
-			setError("Aucun identifiant de commande trouvé.");
-			setIsLoading(false);
-			return;
-		}
-
-		sdk.store.order
-			.retrieve(orderId, {
-				fields:
-					"+items,+items.thumbnail,+items.product_title,+items.variant_title,+items.unit_price,+items.quantity,+shipping_address,+shipping_methods",
-			})
-			.then(({ order }) => {
-				setOrder(order as any);
-			})
-			.catch((err) => {
-				console.error("Failed to retrieve order:", err);
-				setError(
-					"Unable to retrieve order details. Please check your account.",
-				);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-	}, [orderId]);
-
-	if (isLoading) {
-		return (
-			<Container maxWidth="100vw" className="px-4 py-20 text-center">
-				<div className="flex flex-col items-center space-y-4">
-					<div className="w-12 h-12 rounded-full border-4 border-gray-200 animate-spin border-t-black" />
-					<p className="text-gray-500">Chargement de votre commande...</p>
-				</div>
-			</Container>
-		);
-	}
+	const order = orderId ? getOrderById(orderId) : undefined;
+	const error = !orderId
+		? "Aucun identifiant de commande trouvé."
+		: !order
+			? "Unable to retrieve order details. Please check your account."
+			: null;
 
 	if (error || !order) {
 		return (
@@ -159,11 +110,7 @@ const OrderConfirmationView = () => {
 						<div>
 							<p className="text-xs text-gray-500 uppercase">Paiement</p>
 							<p className="mt-1 font-medium text-gray-900">
-								{order.payment_status === "captured"
-									? "Payé"
-									: order.payment_status === "not_paid"
-										? "À la livraison"
-										: order.payment_status}
+								{order.status === "canceled" ? "Annulé" : "Payé"}
 							</p>
 						</div>
 						<div>
@@ -213,7 +160,7 @@ const OrderConfirmationView = () => {
 								{item.thumbnail && (
 									<div className="overflow-hidden w-16 h-24 rounded-lg border border-gray-200 shrink-0">
 										<Image
-											src={item.thumbnail + "?view=1"}
+											src={item.thumbnail}
 											alt={item.product_title || "Product"}
 											width={64}
 											height={96}

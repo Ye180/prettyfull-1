@@ -1,15 +1,15 @@
 "use client";
 
-import { useGetItemsCart } from "@/features/cart/api/medusa/get-items-cart";
 import { Category } from "@/features/homepage/api/medusa/get-category";
 import { PAGES_PATHS } from "@/lib/routes/paths-en";
 import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
 import { Logo, Skeleton } from "@prettyfull/ui";
+import { useCartStore } from "@prettyfull/store";
 import { cn } from "@prettyfull/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
 import CartDropdown from "./carte-dropdown";
 import { CurrencySelector } from "./currency-selector";
@@ -24,37 +24,10 @@ const NavBarHeaders = ({
 	secondary_category: Category[];
 }) => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-	const [cartId, setCartId] = useState<string | null>(null);
 	const pathname = usePathname();
 	const [division] = useQueryState("division");
 
-	const syncCartId = useCallback(() => {
-		const storedCartId = localStorage.getItem("cart_id");
-		setCartId(storedCartId);
-	}, []);
-
-	// Initialize cart ID from localStorage and listen for changes
-	useEffect(() => {
-		syncCartId();
-
-		// Listen for cross-tab localStorage changes
-		const handleStorage = (e: StorageEvent) => {
-			if (e.key === "cart_id") syncCartId();
-		};
-
-		// Listen for same-tab cart updates (dispatched from add-to-cart)
-		const handleCartUpdate = () => syncCartId();
-
-		window.addEventListener("storage", handleStorage);
-		window.addEventListener("cart_id_updated", handleCartUpdate);
-
-		return () => {
-			window.removeEventListener("storage", handleStorage);
-			window.removeEventListener("cart_id_updated", handleCartUpdate);
-		};
-	}, [syncCartId]);
-
-	const { data: itemsCart } = useGetItemsCart(cartId || "");
+	const items = useCartStore((state) => state.items);
 
 	return (
 		<>
@@ -123,7 +96,7 @@ const NavBarHeaders = ({
 								</Link>
 							))}
 						</div>
-						<CartDropdown cart={itemsCart?.items || []} />
+						<CartDropdown cart={items} />
 					</div>
 
 					<div className="md:hidden">
@@ -142,7 +115,7 @@ const NavBarHeaders = ({
 						onClick={() => setIsMobileMenuOpen(false)}
 						main_category={main_category}
 						secondary_category={secondary_category}
-						cartItems={itemsCart?.items || []}
+						cartItems={items}
 					/>
 				)}{" "}
 			</div>

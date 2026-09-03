@@ -1,16 +1,17 @@
-import { StoreRegion } from "@medusajs/types";
+import type { FakeRegion } from "@/lib/fake-data";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+
 type RegionState = {
-	region: StoreRegion | null;
-	setRegion: (region: StoreRegion | null) => void;
+	region: FakeRegion | null;
+	setRegion: (region: FakeRegion | null) => void;
 };
 
 export const useRegionStore = create(
 	persist<RegionState>(
 		(set) => ({
 			region: null,
-			setRegion: (region: StoreRegion | null) => set({ region }),
+			setRegion: (region: FakeRegion | null) => set({ region }),
 		}),
 		{
 			name: "region",
