@@ -52,7 +52,7 @@ const Size = ({
 	) => {
 		e?.stopPropagation();
 		// Appelle uniquement onSizeChange
-		onSizeChange && onSizeChange(size as string);
+		onSizeChange?.(size as string);
 		// L'appel à onclose a été supprimé
 	};
 

@@ -23,17 +23,15 @@ interface GridCardProductProps
 	extends
 		React.HTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof gridVariants> {
-	title?: string;
 	className?: string;
 	classGrid?: string;
 	style_everst?: string;
 	grid_card?: string;
 	action_grid?: boolean;
-	children: ReactElement<any, any> | ReactElement<any, any>[];
+	children: ReactElement | ReactElement[];
 }
 
 export const GridCardProduct = ({
-	title,
 	className,
 	classGrid,
 	children,
@@ -41,7 +39,7 @@ export const GridCardProduct = ({
 	action_grid,
 	...props
 }: GridCardProductProps) => {
-	const [styleGrid, setStyleGrid] = useState<{ style: Object; active: number }>(
+	const [styleGrid, setStyleGrid] = useState<{ style: object; active: number }>(
 		{
 			style: {
 				display: "grid",
@@ -59,7 +57,7 @@ export const GridCardProduct = ({
 		"max-md:grid-cols-3 gap-x-[8px]  max-md:grid-cols-3  max-sm:grid-cols-2";
 
 	const handleChangeStyle = useCallback(
-		(style: Object, index: number) => {
+		(style: object, index: number) => {
 			setStyleGrid({
 				...styleGrid,
 				active: index,

@@ -30,9 +30,6 @@ import { Drawer, DrawerClose, DrawerContent } from "../ui/drawer";
 
 export interface CardProductProps {
 	product: NormalizedCollectionProduct;
-	originalPrice?: number;
-	currency?: string;
-	onAddToCart?: (variantId: string, quantity: number) => void;
 	className?: string;
 	/** Code devise pour l'affichage du prix (ex: "xof" → FCFA) */
 	currencyCode?: string;
@@ -67,9 +64,6 @@ const CloseIcon: React.FC<{ className?: string }> = ({ className }) => (
 
 export const CardProduct: React.FC<CardProductProps> = ({
 	product,
-	originalPrice,
-	currency = "EUR",
-	onAddToCart,
 	className,
 	currencyCode,
 	priority = false,

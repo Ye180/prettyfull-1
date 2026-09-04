@@ -1,12 +1,8 @@
 // --- Fonctions et Icônes Utilitaires (pour la prévisualisation) ---
 
+import { cn } from "@prettyfull/utils";
 import { cva, VariantProps } from "class-variance-authority";
-import { FC, ReactNode, SVGProps } from "react";
-
-// NOTE: Dans votre projet, vous importeriez 'cn' et vos icônes.
-const cn = (...args: any[]) => args.filter(Boolean).join(" ");
-
-interface IconProps extends SVGProps<SVGSVGElement> {}
+import { FC, ReactNode } from "react";
 
 // --- Composants de Style (CVA) ---
 const navLinkVariants = cva(

@@ -17,6 +17,7 @@ Monorepo e-commerce : storefront Next.js, back-office, API Hono, et packages par
 
 | Package | Contenu |
 | --- | --- |
+| `@prettyfull/contracts` | Schémas Zod + types partagés par l'API, le back-office et le storefront |
 | `@prettyfull/ui` | Composants React partagés (Tailwind v4, Radix, prefix CSS `ui:`) |
 | `@prettyfull/store` | État global Zustand (panier) |
 | `@prettyfull/utils` | Helpers (`cn`, `formatCurrency_FR`, `getMediaUrl`, constantes) |
@@ -36,8 +37,9 @@ docker compose up -d
 cp apps/backend/.env.example apps/backend/.env
 cp apps/admin/.env.example apps/admin/.env.local
 
-# Schéma de base
-pnpm --filter backend db:push
+# Schéma de base + jeu de démonstration
+pnpm --filter backend db:migrate
+pnpm --filter backend db:seed
 
 # Tout démarrer
 pnpm dev
@@ -62,10 +64,37 @@ pnpm clean
 
 # Base de données (Drizzle, depuis apps/backend)
 pnpm --filter backend db:generate   # génère une migration depuis le schéma
-pnpm --filter backend db:migrate    # applique les migrations
+pnpm --filter backend db:migrate    # crée les extensions puis applique les migrations
+pnpm --filter backend db:seed       # jeu de données de démonstration (dev uniquement)
+pnpm --filter backend db:reset      # vide le schéma public (dev uniquement)
 pnpm --filter backend db:push       # pousse le schéma sans migration (dev)
 pnpm --filter backend db:studio     # UI Drizzle Studio
 ```
+
+### Comptes de démonstration
+
+Créés par `db:seed`, mot de passe commun `Prettyfull2026!` :
+
+| Compte | Rôle |
+| --- | --- |
+| `admin@prettyfull.shop` | Super administrateur |
+| `catalogue@prettyfull.shop` | Gestionnaire catalogue |
+| `commandes@prettyfull.shop` | Gestionnaire commandes |
+| `support@prettyfull.shop` | Support client |
+| `cliente@prettyfull.shop` | Cliente (storefront) |
+
+## API
+
+Deux surfaces distinctes, servies par `apps/backend` :
+
+| Préfixe | Accès | Consommateur |
+| --- | --- | --- |
+| `/api/store/*` | Public, session cliente facultative | `apps/web` |
+| `/api/admin/*` | JWT compte back-office + permission par route | `apps/admin` |
+| `/api/webhooks/*` | Signature du prestataire | Agrégateurs de paiement |
+
+Les jetons d'accès (15 min) transitent en `Authorization: Bearer` ; les jetons de
+rafraîchissement en cookie `httpOnly` + `SameSite=Strict`, à rotation à chaque usage.
 
 ## Utilisation des packages
 

@@ -61,7 +61,7 @@ const DrawerReview = () => {
 								</p>
 							</div>
 							<p className="pl-2 font-normal tracking-wide text-justify text-black text-[1.4rem] sm:text-[1.5rem]">
-								I love this stores shirt! It's so comfortable and easy to wear
+								I love this stores shirt! It&apos;s so comfortable and easy to wear
 								with anything. I ended up buying one in every color during their
 								sale. The quality is great too. Thank you!
 							</p>

@@ -35,7 +35,7 @@ interface InputProps
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-	({ className, size, label, variant, errorMessage, ...props }, ref) => {
+	({ className, label, variant, errorMessage, ...props }, ref) => {
 		return (
 			<div>
 				{label && (
