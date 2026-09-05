@@ -36,7 +36,7 @@ export function PaymentStep({
 
 	// Get payment providers for this region
 	const { data: paymentProviders, isLoading: providersLoading } =
-		useGetPaymentProviders(regionId);
+		useGetPaymentProviders();
 	const initPaymentSession = useInitPaymentSession();
 
 	// Card form state
@@ -108,14 +108,21 @@ export function PaymentStep({
 	};
 
 	// Helper to get friendly provider name
-	const getProviderName = (providerId: string): string => {
-		const names: Record<string, string> = {
-			pp_stripe_stripe: "Credit / Debit Card (Stripe)",
-			pp_paypal_paypal: "PayPal",
-			pp_system_default: "Pay on Delivery",
-			manual: "Manual Payment",
+	/**
+	 * Libellé du moyen de paiement.
+	 *
+	 * L'API porte déjà le nom d'affichage de chaque agrégateur, défini dans son
+	 * adaptateur : un nouveau prestataire s'affiche donc correctement sans
+	 * toucher à ce fichier. La table locale n'est qu'un repli.
+	 */
+	const getProviderName = (provider: { id: string; name?: string }): string => {
+		if (provider.name) return provider.name;
+
+		const fallback: Record<string, string> = {
+			manual: "Paiement à la livraison",
+			wave: "Wave",
 		};
-		return names[providerId] || providerId;
+		return fallback[provider.id] || provider.id;
 	};
 
 	const isStripeProvider = selectedMethod?.includes("stripe");
@@ -206,7 +213,7 @@ export function PaymentStep({
 										className="w-4 h-4 text-black border-gray-300 focus:ring-black"
 									/>
 									<span className="font-medium">
-										{getProviderName(provider.id)}
+										{getProviderName(provider)}
 									</span>
 								</label>
 							))}
@@ -301,7 +308,13 @@ export function PaymentStep({
 				<div className="text-sm text-gray-600">
 					<p>
 						Payment method:{" "}
-						{selectedMethod ? getProviderName(selectedMethod) : ""}
+						{selectedMethod
+							? getProviderName(
+									paymentProviders?.find((p: any) => p.id === selectedMethod) ?? {
+										id: selectedMethod,
+									},
+								)
+							: ""}
 					</p>
 					{isStripeProvider && cardNumber && (
 						<p>Card ending in {cardNumber.slice(-4)}</p>

@@ -1,6 +1,7 @@
 "use client";
 
-import { shippingOptions } from "@/lib/fake-data";
+import { useGetShippingOptions } from "@/features/checkout/api/get-shipping-options";
+import { useCheckoutStore } from "@/features/checkout/stores/use-checkout-store";
 import { useCartStore } from "@prettyfull/store";
 import { DropdownMenuSeparator } from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
@@ -12,12 +13,19 @@ const TAX_RATE = 0.18;
 const CheckoutSummary = ({ currency }: { currency: string }) => {
 	const t = useTranslations("CheckoutPage.summary");
 	const items = useCartStore((state) => state.items);
+	const selectedShippingOptionId = useCheckoutStore(
+		(state) => state.selectedShippingOptionId,
+	);
+	const { data: shippingOptions } = useGetShippingOptions("cart");
 
 	const subtotal = items.reduce(
 		(acc, item) => acc + (item.unitPrice?.amount ?? item.product.price?.amount ?? 0) * item.quantity,
 		0,
 	);
-	const shipping = shippingOptions[0]?.amount ?? 0;
+	// Le port affiché suit l'option réellement choisie ; tant qu'aucune ne
+	// l'est, il reste à zéro plutôt que d'annoncer un tarif arbitraire.
+	const shipping =
+		shippingOptions?.find((option) => option.id === selectedShippingOptionId)?.amount ?? 0;
 	const taxes = subtotal * TAX_RATE;
 	const total = subtotal + shipping + taxes;
 

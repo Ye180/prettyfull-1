@@ -1,6 +1,7 @@
 "use client";
 
-import { getOrderById } from "@/lib/fake-data";
+import { fetchOrderById, fetchOrderConfirmation } from "@/lib/store-api";
+import { useQuery } from "@tanstack/react-query";
 import { useRegionStore } from "@/stores/useRegion";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import Image from "next/image";
@@ -14,12 +15,35 @@ const OrderConfirmationView = () => {
 	const region = useRegionStore((state) => state.region);
 	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
 
-	const order = orderId ? getOrderById(orderId) : undefined;
+	// Le jeton accompagne une commande passée sans compte ; sinon la session
+	// cliente fait foi. La commande arrive de l'API : après un paiement
+	// externe, la cliente revient ici avant même que le webhook n'ait été
+	// traité, d'où le passage par un état de chargement.
+	const token = searchParams.get("token");
+
+	const { data: order, isLoading } = useQuery({
+		queryKey: ["order-confirmation", orderId, token],
+		queryFn: () =>
+			token
+				? fetchOrderConfirmation(orderId!, token)
+				: fetchOrderById(orderId!),
+		enabled: Boolean(orderId),
+		retry: false,
+	});
+
 	const error = !orderId
 		? "Aucun identifiant de commande trouvé."
-		: !order
-			? "Unable to retrieve order details. Please check your account."
+		: !isLoading && !order
+			? "Impossible de retrouver cette commande. Consultez votre espace client."
 			: null;
+
+	if (isLoading && orderId) {
+		return (
+			<Container maxWidth="100vw" className="px-4 py-20 text-center">
+				<p className="text-gray-600">Chargement de votre commande…</p>
+			</Container>
+		);
+	}
 
 	if (error || !order) {
 		return (

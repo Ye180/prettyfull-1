@@ -29,7 +29,7 @@ const HomeView = () => {
 	const isLoading = results.some((result) => result?.isLoading);
 
 	return (
-		<div className="  w-full *:w-full lg:*:px-40  space-y-4 lg:space-y-4 mb-20">
+		<div className="w-full lg:*:px-40  space-y-4 lg:space-y-4 mb-20">
 			<Hero video={false} />
 			<Space />
 			<NewsArrivals />

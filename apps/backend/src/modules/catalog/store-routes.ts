@@ -69,17 +69,31 @@ storeCatalogRoutes.get(
 	async (c) => c.json(await categories.getCategoryBySlug(c.req.valid("param").slug)),
 );
 
+/** Un identifiant est un UUID v4 ; tout le reste est traité comme un slug. */
+const UUID_PATTERN =
+	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Produits d'un rayon, désigné par son slug **ou** par son identifiant.
+ *
+ * Le storefront dispose tantôt de l'un, tantôt de l'autre selon d'où vient le
+ * lien ; n'accepter que le slug renverrait silencieusement une liste vide
+ * plutôt qu'une erreur, ce qui est le pire des deux mondes.
+ */
 storeCatalogRoutes.get(
 	"/categories/:slug/products",
 	validate("param", slugParam),
 	validate("query", productListQuerySchema),
-	async (c) =>
-		c.json(
+	async (c) => {
+		const { slug } = c.req.valid("param");
+
+		return c.json(
 			await products.listProducts({
 				...c.req.valid("query"),
-				categorySlug: c.req.valid("param").slug,
+				...(UUID_PATTERN.test(slug) ? { categoryId: slug } : { categorySlug: slug }),
 				status: "published",
 				includeArchived: false,
 			}),
-		),
+		);
+	},
 );

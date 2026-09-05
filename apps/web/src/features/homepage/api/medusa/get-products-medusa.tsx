@@ -1,15 +1,13 @@
 "use client";
 
-import { products } from "@/lib/fake-data";
+import { fetchProducts } from "@/lib/store-api";
 import { useQuery } from "@tanstack/react-query";
 
-export const getProductsMedusa = async () => {
-	return products;
-};
+export const getProductsMedusa = async () => fetchProducts();
 
-export const useGetProductsMedusa = () => {
-	return useQuery({
+export const useGetProductsMedusa = () =>
+	useQuery({
 		queryKey: ["list-products-medusa"],
 		queryFn: () => getProductsMedusa(),
+		staleTime: 5 * 60 * 1000,
 	});
-};

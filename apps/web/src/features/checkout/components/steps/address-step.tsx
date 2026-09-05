@@ -65,7 +65,10 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 			postCode: "",
 			city: "",
 			region: "",
-			country: "Cameroun", // Default country
+			// La boutique est basée à Abidjan : c'est le pays par défaut, et le
+			// seul dont les tarifs de port sont configurés d'origine. Les zones
+			// se complètent depuis le panel (Agrégateurs → Zones de livraison).
+			country: "Côte d'Ivoire",
 			phone: "",
 		},
 	});
@@ -87,7 +90,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 				postal_code: data.postCode,
 				city: data.city,
 				province: data.region,
-				country_code: getCountryCode(data.country || "Cameroun"),
+				country_code: getCountryCode(data.country || "Côte d'Ivoire"),
 				phone: data.phone,
 			};
 
@@ -125,7 +128,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 			"Côte d'Ivoire": "ci",
 			Sénégal: "sn",
 		};
-		return countryMap[country] || "cm";
+		return countryMap[country] || "ci";
 	};
 
 	const handleEdit = () => {
@@ -136,13 +139,13 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 
 	// Countries list - you can expand this
 	const countries = [
+		"Côte d'Ivoire",
+		"Sénégal",
 		"Cameroun",
 		"France",
 		"Belgique",
 		"Suisse",
 		"Canada",
-		"Côte d'Ivoire",
-		"Sénégal",
 	];
 
 	return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { categories } from "@/lib/fake-data";
+import { fetchCategories } from "@/lib/store-api";
 import { useQuery } from "@tanstack/react-query";
 
 export interface Category {
@@ -8,22 +8,26 @@ export interface Category {
 	name: string;
 	handle: string;
 	image?: string | { url: string };
-	metadata?: Record<string, any>;
+	metadata?: Record<string, unknown>;
 }
 
 export const getCategory = async (): Promise<Category[]> => {
-	return categories.map((cat) => ({
-		id: cat.id,
-		name: cat.name,
-		handle: cat.handle,
-		image: cat.product_category_image?.[0]?.url || (cat.metadata as any)?.image,
-		metadata: cat.metadata,
+	const categories = await fetchCategories();
+
+	return categories.map((category) => ({
+		id: category.id,
+		name: category.name,
+		handle: category.handle,
+		image:
+			category.product_category_image?.[0]?.url ??
+			(category.metadata as Record<string, string> | undefined)?.image,
+		metadata: category.metadata,
 	}));
 };
 
-export const useGetCategory = () => {
-	return useQuery({
+export const useGetCategory = () =>
+	useQuery({
 		queryKey: ["categories"],
 		queryFn: () => getCategory(),
+		staleTime: 10 * 60 * 1000,
 	});
-};

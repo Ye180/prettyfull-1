@@ -19,15 +19,11 @@ export default function ProductViews() {
 	const regions = useRegionStore((state) => state.region);
 	const { data: product, isLoading } = useGetProductsByHandleMedusa(
 		params.handle as string,
-		regions?.id as string,
 	);
 
 	// Récupérer les produits de la même collection
 	const collectionId = product?.collection?.id;
-	const { data: collectionProducts } = useGetCollectionProductsMedusa(
-		collectionId,
-		regions?.id,
-	);
+	const { data: collectionProducts } = useGetCollectionProductsMedusa(collectionId);
 
 	const [activeImage, setActiveImage] = useState<number>(0);
 	const [selectedColor, setSelectedColor] = useState<string>("");
@@ -172,6 +168,31 @@ export default function ProductViews() {
 		return colorVariants?.map((cv) => cv.label) || [];
 	}, [colorVariants]);
 
+	/** Coloris → code hexadécimal, porté par les variantes de l'API. */
+	const colorSwatches = useMemo(() => {
+		const swatches: Record<string, string | null> = {};
+
+		for (const variant of product?.variants ?? []) {
+			const label = variant.options?.find(
+				(opt: any) => opt.option_id === colorOption?.id,
+			)?.value;
+
+			if (label && !(label in swatches)) {
+				swatches[label] = (variant as any).color_hex ?? null;
+			}
+		}
+
+		return swatches;
+	}, [product, colorOption]);
+
+	// Un coloris est présélectionné : sans lui, la liste des tailles reste
+	// vide et le produit paraît indisponible.
+	useEffect(() => {
+		if (!selectedColor && availableColors.length > 0) {
+			setSelectedColor(availableColors[0]!);
+		}
+	}, [availableColors, selectedColor]);
+
 	// Créer les variantes de collection basées sur les produits de la même collection avec couleurs différentes
 	const collectionColorVariants = useMemo(() => {
 		if (!collectionProducts || collectionProducts.length <= 1 || !product) {
@@ -282,15 +303,27 @@ export default function ProductViews() {
 			return;
 		}
 
-		const matchingVariant = sizeOption
-			? product?.variants?.find(
-					(variant: any) =>
-						variant.options?.find((opt: any) => opt.option_id === sizeOption.id)
-							?.value === selectedSize,
-				)
-			: product?.variants?.find(
-					(variant: any) => variant.title === selectedSize,
-				);
+		/**
+		 * Combinaison exacte choisie : coloris **et** taille.
+		 *
+		 * Ne filtrer que sur la taille suffisait tant qu'un produit ne portait
+		 * qu'une couleur ; avec des variantes réelles, `find` renvoyait
+		 * toujours le premier coloris et la cliente recevait le mauvais
+		 * article.
+		 */
+		const matchesOption = (variant: any, optionId: string, value: string) =>
+			variant.options?.find((opt: any) => opt.option_id === optionId)?.value === value;
+
+		const matchingVariant = product?.variants?.find((variant: any) => {
+			if (colorOption && !matchesOption(variant, colorOption.id, selectedColor)) {
+				return false;
+			}
+
+			if (sizeOption) return matchesOption(variant, sizeOption.id, selectedSize);
+
+			// Produit sans grille de tailles : le titre de la variante fait foi.
+			return variant.title === selectedSize || !selectedSize;
+		});
 
 		if (!matchingVariant) {
 			toast.error("Taille non disponible", {
@@ -327,6 +360,14 @@ export default function ProductViews() {
 			unitPrice: {
 				amount: matchingVariant.calculated_price?.calculated_amount ?? 0,
 				currency: regions?.currency_code === "xof" ? "FCFA" : "USD",
+			},
+			// Triplet du point de stock : c'est lui, et non le libellé affiché,
+			// que le tunnel d'achat renvoie à l'API pour réserver la bonne
+			// déclinaison.
+			selection: {
+				productId: product!.id,
+				variantId: (matchingVariant as any).variant_id ?? null,
+				sizeId: (matchingVariant as any).size_id ?? null,
 			},
 		});
 
@@ -374,6 +415,7 @@ export default function ProductViews() {
 						productCategory={product?.collection?.title || "Collection"}
 						price={productPrice}
 						colors={availableColors}
+						colorSwatches={colorSwatches}
 						sizes={availableSizes}
 						selectedColor={selectedColor}
 						selectedSize={selectedSize}

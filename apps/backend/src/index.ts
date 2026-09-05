@@ -9,11 +9,16 @@ import { errorHandler, notFoundHandler } from "./middleware/error.js";
 import { requestContext, type AppEnv } from "./middleware/request-context.js";
 import { requireAuth, requireKind } from "./middleware/auth.js";
 import { adminAuthRoutes, storeAuthRoutes } from "./modules/auth/routes.js";
+import { storeAddressRoutes } from "./modules/auth/addresses.js";
 import { adminUsersRoutes } from "./modules/users/routes.js";
 import { adminCatalogRoutes } from "./modules/catalog/routes.js";
 import { storeCatalogRoutes } from "./modules/catalog/store-routes.js";
 import { adminInventoryRoutes } from "./modules/inventory/routes.js";
-import { adminOrdersRoutes, storeOrdersRoutes } from "./modules/orders/routes.js";
+import {
+	adminOrdersRoutes,
+	storeOrderConfirmationRoutes,
+	storeOrdersRoutes,
+} from "./modules/orders/routes.js";
 import { storeCartRoutes } from "./modules/cart/routes.js";
 import { adminIntegrationsRoutes } from "./modules/integrations/routes.js";
 import { adminSettingsRoutes } from "./modules/settings/routes.js";
@@ -22,6 +27,8 @@ import { adminDashboardRoutes } from "./modules/dashboard/routes.js";
 import { webhookRoutes } from "./modules/webhooks/routes.js";
 import { storeMiscRoutes } from "./modules/store/routes.js";
 import { startReservationSweeper } from "./tasks/reservation-sweeper.js";
+import { Scalar } from "@scalar/hono-api-reference";
+import { openApiDocument } from "./docs/openapi.js";
 
 const app = new Hono<AppEnv>();
 
@@ -49,6 +56,19 @@ app.use(
 	}),
 );
 
+/**
+ * Documentation de l'API (§5).
+ *
+ * `/docs` sert une interface de lecture, `/openapi.json` le document brut —
+ * exploitable par un générateur de client ou un outil de test.
+ */
+app.get("/openapi.json", (c) => c.json(openApiDocument));
+
+app.get(
+	"/docs",
+	Scalar({ url: "/openapi.json", pageTitle: "API PrettyFull", theme: "default" }),
+);
+
 app.get("/health", (c) =>
 	c.json({
 		status: "ok",
@@ -71,11 +91,13 @@ app.get("/health", (c) =>
 app.route("/api/webhooks", webhookRoutes);
 
 app.route("/api/store/auth", storeAuthRoutes);
+app.route("/api/store", storeOrderConfirmationRoutes);
 app.route("/api/store", storeCatalogRoutes);
 app.route("/api/store", storeCartRoutes);
 app.route("/api/store", storeCmsRoutes);
 app.route("/api/store", storeMiscRoutes);
 app.route("/api/store", storeOrdersRoutes);
+app.route("/api/store", storeAddressRoutes);
 
 app.route("/api/admin/auth", adminAuthRoutes);
 

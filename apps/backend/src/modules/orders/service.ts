@@ -14,7 +14,8 @@ import * as t from "../../db/schema/index.js";
 import type { AddressSnapshot } from "../../db/schema/orders.js";
 import { badRequest, conflict, notFound, paymentError } from "../../lib/errors.js";
 import { paginate, toSqlPagination } from "../../lib/response.js";
-import { decryptCredentials } from "../../lib/crypto.js";
+import { decryptCredentials, safeCompare } from "../../lib/crypto.js";
+import { createHmac } from "node:crypto";
 import { env } from "../../lib/env.js";
 import { getPaymentAdapter } from "../../integrations/payment/registry.js";
 import * as inventory from "../inventory/service.js";
@@ -288,7 +289,34 @@ export interface CheckoutResult {
 	paymentStatus: PaymentStatus;
 	redirectUrl: string | null;
 	transactionId: string | null;
+	/** Jeton de consultation, pour une commande passée sans compte. */
+	confirmationToken: string;
 }
+
+/**
+ * Jeton de consultation d'une commande passée en invité.
+ *
+ * Une commande sans compte doit rester consultable par son auteur — page de
+ * confirmation, retour depuis la page de paiement — mais par personne d'autre.
+ * Une signature HMAC de l'identifiant répond aux deux : impossible à deviner,
+ * et sans état à stocker ni à faire expirer.
+ */
+export const confirmationTokenFor = (orderId: string): string =>
+	createHmac("sha256", env.JWT_SECRET)
+		.update(`order-confirmation:${orderId}`)
+		.digest("hex")
+		.slice(0, 32);
+
+/**
+ * Commande accessible par jeton, sans authentification.
+ *
+ * La comparaison est à temps constant : comparer deux chaînes caractère par
+ * caractère laisserait fuiter le jeton par mesure du temps de réponse.
+ */
+export const getOrderByToken = async (id: string, token: string): Promise<Order> => {
+	if (!safeCompare(token, confirmationTokenFor(id))) throw notFound("Commande");
+	return getOrder(id);
+};
 
 /**
  * Transforme un panier en commande.
@@ -423,7 +451,7 @@ export const checkout = async (
 			phone: input.phone ?? null,
 			description: `${settings.orderNumberPrefix}-${displayId}`,
 		},
-		successUrl: `${storefront}/order-confirmation?order=${orderId}`,
+		successUrl: `${storefront}/order-confirmation?order_id=${orderId}&token=${confirmationTokenFor(orderId)}`,
 		cancelUrl: `${storefront}/checkout?order=${orderId}&status=cancelled`,
 		webhookUrl: `${env.PUBLIC_API_URL}/api/webhooks/${adapter.key}`,
 	});
@@ -463,6 +491,7 @@ export const checkout = async (
 		paymentStatus: order.paymentStatus,
 		redirectUrl: initiation.redirectUrl,
 		transactionId: transaction?.id ?? null,
+		confirmationToken: confirmationTokenFor(orderId),
 	};
 };
 

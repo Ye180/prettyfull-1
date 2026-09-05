@@ -96,6 +96,17 @@ Deux surfaces distinctes, servies par `apps/backend` :
 Les jetons d'accès (15 min) transitent en `Authorization: Bearer` ; les jetons de
 rafraîchissement en cookie `httpOnly` + `SameSite=Strict`, à rotation à chaque usage.
 
+**Documentation interactive :** `http://localhost:7777/docs` · document brut :
+`/openapi.json`.
+
+## Documentation
+
+| Document | Contenu |
+| --- | --- |
+| [`docs/modele-de-donnees.md`](docs/modele-de-donnees.md) | Les 37 tables, les invariants, la règle de cohérence produit et la mécanique du stock |
+| [`docs/guide-panel-admin.md`](docs/guide-panel-admin.md) | Guide d'utilisation du back-office, module par module |
+| `/docs` (API démarrée) | Référence OpenAPI interactive |
+
 ## Utilisation des packages
 
 ```tsx

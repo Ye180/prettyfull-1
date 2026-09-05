@@ -98,6 +98,15 @@ adminOrdersRoutes.post("/orders/:id/mark-paid", requirePermission(PERMISSIONS.or
     return c.json(await service.getOrder(id));
 });
 // --- Storefront ------------------------------------------------------------
+/**
+ * Confirmation de commande accessible sans compte.
+ *
+ * Montée **avant** le garde d'authentification : une commande passée en
+ * invité doit rester consultable par son auteur, que le jeton signé identifie
+ * à lui seul.
+ */
+export const storeOrderConfirmationRoutes = new Hono();
+storeOrderConfirmationRoutes.get("/orders/:id/confirmation", validate("param", idParam), validate("query", z.object({ token: z.string().min(16).max(64) })), async (c) => c.json(await service.getOrderByToken(c.req.valid("param").id, c.req.valid("query").token)));
 /** Historique de commandes de la cliente connectée (§2.7). */
 export const storeOrdersRoutes = new Hono();
 storeOrdersRoutes.use("*", requireAuth, requireKind("customer"));

@@ -1,2 +1,165 @@
 @import "tailwindcss";
-@import "@prettyfull/tailwind-config";
+
+/**
+ * Design tokens du back-office.
+ *
+ * Volontairement indépendants de `@prettyfull/tailwind-config`, qui cale la
+ * racine du storefront à 8,5 px pour ses maquettes en `rem` : appliqué à des
+ * tableaux de données, ce facteur rend les densités impossibles à raisonner.
+ * Le panel repose donc sur une racine standard de 16 px.
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+	--surface: #ffffff;
+	--surface-raised: #ffffff;
+	--surface-sunken: #f6f7f9;
+	--border: #e4e6ea;
+	--border-strong: #d0d4da;
+
+	--text: #16181d;
+	--text-muted: #646b76;
+	--text-subtle: #8d949e;
+
+	--accent: #171a20;
+	--accent-text: #ffffff;
+	--accent-soft: #f0f1f3;
+
+	--success: #0f7b45;
+	--success-soft: #e6f4ec;
+	--warning: #9a6300;
+	--warning-soft: #fdf3e0;
+	--danger: #b42318;
+	--danger-soft: #fdecea;
+	--info: #1c5fb0;
+	--info-soft: #e9f1fb;
+
+	--ring: #16181d;
+
+	/*
+	 * Couleurs de graphique.
+	 *
+	 * Série unique en bleu, validée contre les surfaces réelles du panel
+	 * (#ffffff clair, #191c21 sombre) : bande de luminosité, plancher de
+	 * chroma et contraste >= 3:1 passent dans les deux modes.
+	 */
+	--chart-series: #2a78d6;
+	--chart-grid: #e4e6ea;
+	--chart-positive: #006300;
+	--chart-negative: #d03b3b;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not(.light) {
+		--surface: #131519;
+		--surface-raised: #191c21;
+		--surface-sunken: #0e1013;
+		--border: #272b32;
+		--border-strong: #363b44;
+
+		--text: #edeff2;
+		--text-muted: #9aa1ac;
+		--text-subtle: #6e7681;
+
+		--accent: #edeff2;
+		--accent-text: #131519;
+		--accent-soft: #22262c;
+
+		--success: #4ac585;
+		--success-soft: #12301f;
+		--warning: #e0a334;
+		--warning-soft: #302614;
+		--danger: #f27a70;
+		--danger-soft: #351a18;
+		--info: #6ba7ec;
+		--info-soft: #14243a;
+
+		--ring: #edeff2;
+
+		/* Mêmes rôles, pas à pas recalés pour la surface sombre. */
+		--chart-series: #3987e5;
+		--chart-grid: #272b32;
+		--chart-positive: #0ca30c;
+		--chart-negative: #e66767;
+	}
+}
+
+@theme inline {
+	--color-surface: var(--surface);
+	--color-raised: var(--surface-raised);
+	--color-sunken: var(--surface-sunken);
+	--color-line: var(--border);
+	--color-line-strong: var(--border-strong);
+
+	--color-ink: var(--text);
+	--color-muted: var(--text-muted);
+	--color-subtle: var(--text-subtle);
+
+	--color-accent: var(--accent);
+	--color-accent-ink: var(--accent-text);
+	--color-accent-soft: var(--accent-soft);
+
+	--color-success: var(--success);
+	--color-success-soft: var(--success-soft);
+	--color-warning: var(--warning);
+	--color-warning-soft: var(--warning-soft);
+	--color-danger: var(--danger);
+	--color-danger-soft: var(--danger-soft);
+	--color-info: var(--info);
+	--color-info-soft: var(--info-soft);
+
+	--color-ring: var(--ring);
+
+	--font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, sans-serif;
+	--font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+@layer base {
+	* {
+		border-color: var(--border);
+	}
+
+	html {
+		-webkit-text-size-adjust: 100%;
+	}
+
+	body {
+		background: var(--surface-sunken);
+		color: var(--text);
+		font-family: var(--font-sans);
+		font-size: 14px;
+		line-height: 1.5;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	/* Les chiffres des tableaux doivent s'aligner colonne par colonne. */
+	.tabular {
+		font-variant-numeric: tabular-nums;
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--ring);
+		outline-offset: 2px;
+	}
+
+	/* Champs natifs : on neutralise le style système pour repartir de zéro. */
+	input,
+	select,
+	textarea,
+	button {
+		font: inherit;
+		color: inherit;
+	}
+}
+
+@layer utilities {
+	/* Masque la barre de défilement sans désactiver le défilement. */
+	.no-scrollbar {
+		scrollbar-width: none;
+	}
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+}

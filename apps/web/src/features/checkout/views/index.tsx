@@ -32,8 +32,15 @@ const CheckoutView = () => {
 		goToNextStep();
 	};
 
-	const handlePlaceOrder = (orderId: string) => {
-		router.push(`/order-confirmation?order_id=${orderId}`);
+	/**
+	 * Le jeton de confirmation accompagne l'identifiant : une commande passée
+	 * sans compte ne serait sinon pas consultable par son auteur.
+	 */
+	const handlePlaceOrder = (orderId: string, confirmationToken?: string) => {
+		const query = new URLSearchParams({ order_id: orderId });
+		if (confirmationToken) query.set("token", confirmationToken);
+
+		router.push(`/order-confirmation?${query.toString()}`);
 	};
 
 	return (

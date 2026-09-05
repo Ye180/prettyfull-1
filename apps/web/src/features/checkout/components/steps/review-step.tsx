@@ -1,6 +1,6 @@
 "use client";
 
-import { shippingOptions } from "@/lib/fake-data";
+import { useGetShippingOptions } from "@/features/checkout/api/get-shipping-options";
 import { useCartStore } from "@prettyfull/store";
 import { Button, Checkbox } from "@prettyfull/ui";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
@@ -14,12 +14,15 @@ const TAX_RATE = 0.18;
 
 interface ReviewStepProps {
 	cartId: string | null;
-	onPlaceOrder?: (orderId: string) => void;
+	onPlaceOrder?: (orderId: string, confirmationToken?: string) => void;
 }
 
 export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 	const { isStepCompleted, isStepActive } = useCheckoutStep();
 	const { reset: resetCheckoutStore } = useCheckoutStore();
+	const selectedShippingOptionId = useCheckoutStore(
+		(state) => state.selectedShippingOptionId,
+	);
 	const items = useCartStore((state) => state.items);
 	const [isLoading, setIsLoading] = useState(false);
 	const [termsAccepted, setTermsAccepted] = useState(false);
@@ -34,7 +37,9 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 		(acc, item) => acc + (item.unitPrice?.amount ?? item.product.price?.amount ?? 0) * item.quantity,
 		0,
 	);
-	const shipping = shippingOptions[0]?.amount ?? 0;
+	const { data: shippingOptions } = useGetShippingOptions("cart");
+	const shipping =
+		shippingOptions?.find((option) => option.id === selectedShippingOptionId)?.amount ?? 0;
 	const taxes = subtotal * TAX_RATE;
 	const total = subtotal + shipping + taxes;
 
@@ -45,12 +50,18 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 		setError(null);
 
 		try {
-			const order = await completeCart.mutateAsync({ cartId });
+			const order = await completeCart.mutateAsync();
 			resetCheckoutStore();
-			onPlaceOrder?.(order.id);
+			onPlaceOrder?.(order.orderId, order.confirmationToken);
 		} catch (err) {
-			console.error("Failed to place order:", err);
-			setError("Failed to place order. Please try again.");
+			// L'API nomme l'article épuisé et le disponible restant : afficher
+			// son message est bien plus actionnable qu'un texte générique.
+			console.error("Échec du passage en commande :", err);
+			setError(
+				err instanceof Error
+					? err.message
+					: "La commande n'a pas pu être passée. Réessayez.",
+			);
 		} finally {
 			setIsLoading(false);
 		}

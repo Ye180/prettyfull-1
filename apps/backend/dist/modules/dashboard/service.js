@@ -73,12 +73,20 @@ export const getDashboard = async (periodDays) => {
             .where(eq(t.products.status, "published")),
         // Série journalière : `generate_series` produit aussi les jours sans
         // commande, sinon le graphique afficherait des trous.
+        //
+        // Les bornes sont passées en chaînes ISO : `db.execute` transmet les
+        // paramètres bruts au pilote, qui refuse un objet `Date` — contrairement
+        // au constructeur de requêtes, qui les sérialise lui-même.
         db.execute(sql `
 			select
 				to_char(day, 'YYYY-MM-DD') as date,
 				coalesce(sum(o.total - o.refunded_total), 0)::int as revenue,
 				count(o.id)::int as orders
-			from generate_series(${periodStart}::date, ${now}::date, '1 day') as day
+			from generate_series(
+				${periodStart.toISOString()}::date,
+				${now.toISOString()}::date,
+				'1 day'
+			) as day
 			left join ${t.orders} o
 				on o.created_at::date = day
 			   and o.status in ('paid', 'preparing', 'shipped', 'delivered')
