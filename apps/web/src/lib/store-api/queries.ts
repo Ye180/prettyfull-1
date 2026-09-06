@@ -2,6 +2,7 @@ import type {
 	Address,
 	AddressInput,
 	Banner,
+	ContactMessageInput,
 	CategoryNode,
 	FeaturedEntry,
 	Order,
@@ -107,21 +108,6 @@ export const fetchCategories = async (): Promise<StoreCategory[]> => {
 	// La racine « Boutique » n'est pas un rayon vendable : elle sert de
 	// conteneur de navigation et n'a pas sa place dans une grille de rayons.
 	return flatten(tree).filter((category) => !category.category_children);
-};
-
-export const fetchFeaturedProducts = async (
-	sectionKey = "home_featured",
-): Promise<StoreProduct[]> => {
-	const entries = await storeApi.get<FeaturedEntry[]>(
-		`/api/store/featured${toQuery({ sectionKey })}`,
-	);
-
-	// Les entrées portent déjà leur cible résolue : inutile de recharger
-	// chaque produit un par un.
-	return entries
-		.filter((entry) => entry.kind === "product" && entry.target)
-		.map((entry) => entry.target as unknown as Product)
-		.map(toStoreProduct);
 };
 
 // --- Contenu ---------------------------------------------------------------
@@ -241,3 +227,14 @@ export const updateAddress = (id: string, input: Partial<AddressInput>) =>
 
 export const deleteAddress = (id: string) =>
 	storeApi.delete<{ success: boolean }>(`/api/store/addresses/${id}`);
+
+// --- Contact ---------------------------------------------------------------
+
+/**
+ * Envoi d'un message depuis le formulaire de contact.
+ *
+ * Route publique : aucune session n'est requise, et aucun renouvellement de
+ * jeton ne doit être tenté sur une éventuelle 401.
+ */
+export const sendContactMessage = (input: ContactMessageInput) =>
+	storeApi.post<{ success: boolean; id?: string }>("/api/store/contact", input, true);

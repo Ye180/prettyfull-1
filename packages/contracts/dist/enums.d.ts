@@ -65,6 +65,9 @@ export type ShippingRateKind = (typeof SHIPPING_RATE_KINDS)[number];
 /** Emplacements de bannière exposés au storefront (§2.6). */
 export declare const BANNER_PLACEMENTS: readonly ["home_hero", "home_secondary", "home_promo", "collection_top", "sidebar"];
 export type BannerPlacement = (typeof BANNER_PLACEMENTS)[number];
+/** Cycle de vie d'un message reçu via le formulaire de contact. */
+export declare const CONTACT_MESSAGE_STATUSES: readonly ["new", "read", "archived"];
+export type ContactMessageStatus = (typeof CONTACT_MESSAGE_STATUSES)[number];
 export declare const FEATURED_KINDS: readonly ["product", "category"];
 export type FeaturedKind = (typeof FEATURED_KINDS)[number];
 /** Devises supportées. XOF n'a pas de sous-unité — cf. `CURRENCY_EXPONENTS`. */
@@ -79,4 +82,19 @@ export declare const LOCALES: readonly ["fr", "en"];
 export type Locale = (typeof LOCALES)[number];
 export declare const DEFAULT_LOCALE: Locale;
 export declare const DEFAULT_CURRENCY: CurrencyCode;
+/**
+ * Points de téléversement de visuels exposés par l'API.
+ *
+ * Partagés parce que le back-office et le backend ne peuvent pas se
+ * référencer mutuellement (résolutions de modules incompatibles) : c'est le
+ * seul moyen qu'un renommage casse à la compilation plutôt qu'à l'exécution.
+ *
+ * `catalog` exige la permission `catalog.write`, `content` la permission
+ * `content.write`.
+ */
+export declare const UPLOAD_ENDPOINTS: {
+    readonly catalog: "catalogImage";
+    readonly content: "contentImage";
+};
+export type UploadEndpoint = (typeof UPLOAD_ENDPOINTS)[keyof typeof UPLOAD_ENDPOINTS];
 //# sourceMappingURL=enums.d.ts.map

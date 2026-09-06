@@ -21,7 +21,12 @@ export const slugSchema = z
 		"Slug invalide : minuscules, chiffres et tirets uniquement.",
 	);
 
-export const emailSchema = z.string().trim().toLowerCase().max(254).pipe(z.email());
+export const emailSchema = z
+	.string()
+	.trim()
+	.toLowerCase()
+	.max(254)
+	.pipe(z.email("Adresse e-mail invalide."));
 
 export const currencySchema = z.enum(CURRENCY_CODES);
 export const localeSchema = z.enum(LOCALES);

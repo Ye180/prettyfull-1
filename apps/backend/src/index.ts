@@ -26,6 +26,7 @@ import { adminCmsRoutes, storeCmsRoutes } from "./modules/cms/routes.js";
 import { adminDashboardRoutes } from "./modules/dashboard/routes.js";
 import { webhookRoutes } from "./modules/webhooks/routes.js";
 import { storeMiscRoutes } from "./modules/store/routes.js";
+import { adminUploadRoutes, uploadthingRoutes } from "./modules/uploads/routes.js";
 import { startReservationSweeper } from "./tasks/reservation-sweeper.js";
 import { Scalar } from "@scalar/hono-api-reference";
 import { openApiDocument } from "./docs/openapi.js";
@@ -90,6 +91,15 @@ app.get("/health", (c) =>
  */
 app.route("/api/webhooks", webhookRoutes);
 
+/**
+ * Téléversement des visuels.
+ *
+ * Monté hors du garde `/api/admin/*` : UploadThing pilote lui-même l'échange
+ * (négociation, callback de fin) et vérifie le jeton du back-office dans le
+ * middleware de sa propre route.
+ */
+app.route("/api/uploadthing", uploadthingRoutes);
+
 app.route("/api/store/auth", storeAuthRoutes);
 app.route("/api/store", storeOrderConfirmationRoutes);
 app.route("/api/store", storeCatalogRoutes);
@@ -110,6 +120,7 @@ app.route("/api/admin", adminOrdersRoutes);
 app.route("/api/admin", adminIntegrationsRoutes);
 app.route("/api/admin", adminCmsRoutes);
 app.route("/api/admin", adminSettingsRoutes);
+app.route("/api/admin", adminUploadRoutes);
 
 app.onError(errorHandler);
 app.notFound(notFoundHandler);

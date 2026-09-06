@@ -3,6 +3,7 @@ import {
 	ACTIVATION_STATUSES,
 	BANNER_PLACEMENTS,
 	CART_STATUSES,
+	CONTACT_MESSAGE_STATUSES,
 	CONTENT_STATUSES,
 	CURRENCY_CODES,
 	FEATURED_KINDS,
@@ -57,3 +58,7 @@ export const integrationEnvironmentEnum = pgEnum(
 export const shippingRateKindEnum = pgEnum("shipping_rate_kind", SHIPPING_RATE_KINDS);
 export const bannerPlacementEnum = pgEnum("banner_placement", BANNER_PLACEMENTS);
 export const featuredKindEnum = pgEnum("featured_kind", FEATURED_KINDS);
+export const contactMessageStatusEnum = pgEnum(
+	"contact_message_status",
+	CONTACT_MESSAGE_STATUSES,
+);

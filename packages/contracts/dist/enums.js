@@ -106,6 +106,8 @@ export const BANNER_PLACEMENTS = [
     "collection_top",
     "sidebar",
 ];
+/** Cycle de vie d'un message reçu via le formulaire de contact. */
+export const CONTACT_MESSAGE_STATUSES = ["new", "read", "archived"];
 export const FEATURED_KINDS = ["product", "category"];
 /** Devises supportées. XOF n'a pas de sous-unité — cf. `CURRENCY_EXPONENTS`. */
 export const CURRENCY_CODES = ["xof", "eur", "usd"];
@@ -121,4 +123,18 @@ export const CURRENCY_EXPONENTS = {
 export const LOCALES = ["fr", "en"];
 export const DEFAULT_LOCALE = "fr";
 export const DEFAULT_CURRENCY = "xof";
+/**
+ * Points de téléversement de visuels exposés par l'API.
+ *
+ * Partagés parce que le back-office et le backend ne peuvent pas se
+ * référencer mutuellement (résolutions de modules incompatibles) : c'est le
+ * seul moyen qu'un renommage casse à la compilation plutôt qu'à l'exécution.
+ *
+ * `catalog` exige la permission `catalog.write`, `content` la permission
+ * `content.write`.
+ */
+export const UPLOAD_ENDPOINTS = {
+    catalog: "catalogImage",
+    content: "contentImage",
+};
 //# sourceMappingURL=enums.js.map

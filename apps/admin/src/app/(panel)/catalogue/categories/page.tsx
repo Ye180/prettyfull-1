@@ -1,7 +1,7 @@
 "use client";
 
 import type { Category, CategoryNode } from "@prettyfull/contracts";
-import { PERMISSIONS } from "@prettyfull/contracts";
+import { PERMISSIONS, UPLOAD_ENDPOINTS } from "@prettyfull/contracts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ApiRequestError, api } from "@/lib/api";
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/primitives";
 import { IconEdit, IconPlus, IconTrash } from "@/components/icons";
 import { slugify } from "@/features/catalogue/product-fields";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 /** Arborescence des catégories (§2.1). */
 
@@ -309,11 +310,11 @@ const CategoriesPage = () => {
 							/>
 						</Field>
 
-						<Field label="Image" hint="Bannière affichée en tête du rayon.">
-							<Input
+						<Field label="Image" hint="Visuel affiché en tête du rayon.">
+							<ImageUpload
+								endpoint={UPLOAD_ENDPOINTS.catalog}
 								value={draft.imageUrl}
-								onChange={(event) => setDraft({ ...draft, imageUrl: event.target.value })}
-								placeholder="/category/category1.jpg"
+								onChange={(imageUrl) => setDraft({ ...draft, imageUrl })}
 							/>
 						</Field>
 

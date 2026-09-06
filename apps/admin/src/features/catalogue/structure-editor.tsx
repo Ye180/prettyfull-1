@@ -1,8 +1,9 @@
 "use client";
 
-import type { ProductKind } from "@prettyfull/contracts";
+import { UPLOAD_ENDPOINTS, type ProductKind } from "@prettyfull/contracts";
 import { Button, Card, Checkbox, Field, Input } from "@/components/ui/primitives";
 import { IconPlus, IconTrash } from "@/components/icons";
+import { ImageUpload, ImageUploadList } from "@/components/ui/image-upload";
 
 /**
  * Structure de déclinaison d'un produit, à la création (§2.2).
@@ -220,40 +221,12 @@ export const StructureEditor = ({
 				</div>
 			</Field>
 
-			<Field label="Images du produit" hint="Chemins publics ou URL complètes, une par ligne.">
-				<div className="flex flex-col gap-2">
-					{value.images.map((url, index) => (
-						<div key={index} className="flex items-center gap-2">
-							<Input
-								value={url}
-								onChange={(event) =>
-									set(
-										"images",
-										value.images.map((item, i) => (i === index ? event.target.value : item)),
-									)
-								}
-								placeholder="/home/arrivals-1.jpg"
-							/>
-							{value.images.length > 1 && (
-								<Button
-									variant="ghost"
-									onClick={() => set("images", value.images.filter((_, i) => i !== index))}
-									aria-label="Retirer l'image"
-								>
-									<IconTrash width={16} height={16} />
-								</Button>
-							)}
-						</div>
-					))}
-					<Button
-						size="sm"
-						onClick={() => set("images", [...value.images, ""])}
-						className="self-start"
-					>
-						<IconPlus width={14} height={14} />
-						Ajouter une image
-					</Button>
-				</div>
+			<Field label="Images du produit" hint="La première sert de vignette dans les listes.">
+				<ImageUploadList
+					endpoint={UPLOAD_ENDPOINTS.catalog}
+					values={value.images}
+					onChange={(images) => set("images", images)}
+				/>
 			</Field>
 
 			{value.kind === "simple" ? (
@@ -345,18 +318,18 @@ export const StructureEditor = ({
 										</div>
 									</Field>
 
-									<Field label="Photo du coloris">
-										<Input
+									<Field label="Photo du coloris" className="sm:col-span-3">
+										<ImageUpload
+											endpoint={UPLOAD_ENDPOINTS.catalog}
 											value={variant.imageUrl}
-											onChange={(event) =>
+											onChange={(imageUrl) =>
 												set(
 													"variants",
 													value.variants.map((item, i) =>
-														i === index ? { ...item, imageUrl: event.target.value } : item,
+														i === index ? { ...item, imageUrl } : item,
 													),
 												)
 											}
-											placeholder="/assets/product_1.jpg"
 										/>
 									</Field>
 								</div>

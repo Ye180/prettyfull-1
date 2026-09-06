@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { BANNER_PLACEMENTS, CONTENT_STATUSES, FEATURED_KINDS, } from "./enums.js";
-import { paginationQuerySchema, slugSchema, translationsSchema, uuidSchema, } from "./common.js";
+import { BANNER_PLACEMENTS, CONTACT_MESSAGE_STATUSES, CONTENT_STATUSES, FEATURED_KINDS, } from "./enums.js";
+import { emailSchema, paginationQuerySchema, slugSchema, translationsSchema, uuidSchema, } from "./common.js";
 // --- Bannières (§2.6) ------------------------------------------------------
 /**
  * Champs d'une bannière, sans contrôle croisé — même raison que pour les
@@ -118,5 +118,47 @@ export const bannerListQuerySchema = paginationQuerySchema.extend({
 export const staticPageListQuerySchema = paginationQuerySchema.extend({
     q: z.string().trim().max(160).optional(),
     status: z.enum(CONTENT_STATUSES).optional(),
+});
+// --- Messages de contact ---------------------------------------------------
+/**
+ * Message envoyé depuis le formulaire de contact du storefront.
+ *
+ * Volontairement minimal : demander plus qu'un nom, un e-mail et un message
+ * fait chuter le taux d'envoi, et le reste se demande dans la réponse.
+ */
+export const contactMessageInputSchema = z.object({
+    name: z.string().trim().min(2, "Votre nom est requis.").max(120),
+    email: emailSchema,
+    phone: z.string().trim().max(32).optional(),
+    subject: z.string().trim().max(160).optional(),
+    message: z
+        .string()
+        .trim()
+        .min(10, "Votre message doit faire au moins 10 caractères.")
+        .max(5_000),
+    /**
+     * Champ leurre, invisible pour un humain et rempli par les robots.
+     *
+     * Il accepte n'importe quelle valeur : le rejeter ici renverrait une erreur
+     * nommant le champ, ce qui apprendrait au robot comment passer. C'est la
+     * route qui l'écarte, en répondant un succès sans rien enregistrer.
+     */
+    website: z.string().max(200).optional(),
+});
+export const contactMessageSchema = z.object({
+    id: uuidSchema,
+    name: z.string(),
+    email: z.string(),
+    phone: z.string().nullable(),
+    subject: z.string().nullable(),
+    message: z.string(),
+    status: z.enum(CONTACT_MESSAGE_STATUSES),
+    createdAt: z.string(),
+});
+export const contactMessageListQuerySchema = paginationQuerySchema.extend({
+    status: z.enum(CONTACT_MESSAGE_STATUSES).optional(),
+});
+export const updateContactMessageSchema = z.object({
+    status: z.enum(CONTACT_MESSAGE_STATUSES),
 });
 //# sourceMappingURL=cms.js.map

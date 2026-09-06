@@ -342,4 +342,70 @@ export const deleteFeaturedEntry = async (id) => {
     if (!deleted)
         throw notFound("Mise en avant");
 };
+// --- Messages de contact ---------------------------------------------------
+const toContactMessage = (row) => ({
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    subject: row.subject,
+    message: row.message,
+    status: row.status,
+    createdAt: row.createdAt.toISOString(),
+});
+/**
+ * Enregistre un message du formulaire de contact.
+ *
+ * L'adresse IP et l'agent sont conservés : ce sont les seuls éléments
+ * permettant de repérer un envoi automatisé si le champ leurre venait à être
+ * contourné.
+ */
+export const createContactMessage = async (input, context) => {
+    const [created] = await db
+        .insert(t.contactMessages)
+        .values({
+        name: input.name,
+        email: input.email,
+        phone: input.phone ?? null,
+        subject: input.subject ?? null,
+        message: input.message,
+        ipAddress: context.ipAddress,
+        userAgent: context.userAgent?.slice(0, 500) ?? null,
+    })
+        .returning({ id: t.contactMessages.id });
+    return { id: created.id };
+};
+export const listContactMessages = async (query) => {
+    const where = query.status ? eq(t.contactMessages.status, query.status) : undefined;
+    const { limit, offset } = toSqlPagination(query);
+    const [rows, [totals]] = await Promise.all([
+        db
+            .select()
+            .from(t.contactMessages)
+            .where(where)
+            .orderBy(desc(t.contactMessages.createdAt))
+            .limit(limit)
+            .offset(offset),
+        db.select({ total: count() }).from(t.contactMessages).where(where),
+    ]);
+    return paginate(rows.map(toContactMessage), query, totals?.total ?? 0);
+};
+/** Nombre de messages non lus, pour la pastille du panel. */
+export const countNewContactMessages = async () => {
+    const [row] = await db
+        .select({ total: count() })
+        .from(t.contactMessages)
+        .where(eq(t.contactMessages.status, "new"));
+    return row?.total ?? 0;
+};
+export const updateContactMessageStatus = async (id, status) => {
+    const [updated] = await db
+        .update(t.contactMessages)
+        .set({ status, updatedAt: new Date() })
+        .where(eq(t.contactMessages.id, id))
+        .returning();
+    if (!updated)
+        throw notFound("Message");
+    return toContactMessage(updated);
+};
 //# sourceMappingURL=service.js.map

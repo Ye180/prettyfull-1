@@ -224,4 +224,55 @@ export declare const staticPageListQuerySchema: z.ZodObject<{
         archived: "archived";
     }>>;
 }, z.core.$strip>;
+/**
+ * Message envoyé depuis le formulaire de contact du storefront.
+ *
+ * Volontairement minimal : demander plus qu'un nom, un e-mail et un message
+ * fait chuter le taux d'envoi, et le reste se demande dans la réponse.
+ */
+export declare const contactMessageInputSchema: z.ZodObject<{
+    name: z.ZodString;
+    email: z.ZodPipe<z.ZodString, z.ZodEmail>;
+    phone: z.ZodOptional<z.ZodString>;
+    subject: z.ZodOptional<z.ZodString>;
+    message: z.ZodString;
+    website: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>;
+export type ContactMessageInput = z.infer<typeof contactMessageInputSchema>;
+export declare const contactMessageSchema: z.ZodObject<{
+    id: z.ZodUUID;
+    name: z.ZodString;
+    email: z.ZodString;
+    phone: z.ZodNullable<z.ZodString>;
+    subject: z.ZodNullable<z.ZodString>;
+    message: z.ZodString;
+    status: z.ZodEnum<{
+        archived: "archived";
+        new: "new";
+        read: "read";
+    }>;
+    createdAt: z.ZodString;
+}, z.core.$strip>;
+export type ContactMessage = z.infer<typeof contactMessageSchema>;
+export declare const contactMessageListQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodCoercedNumber<unknown>>;
+    limit: z.ZodDefault<z.ZodCoercedNumber<unknown>>;
+    sort: z.ZodOptional<z.ZodString>;
+    order: z.ZodDefault<z.ZodEnum<{
+        asc: "asc";
+        desc: "desc";
+    }>>;
+    status: z.ZodOptional<z.ZodEnum<{
+        archived: "archived";
+        new: "new";
+        read: "read";
+    }>>;
+}, z.core.$strip>;
+export declare const updateContactMessageSchema: z.ZodObject<{
+    status: z.ZodEnum<{
+        archived: "archived";
+        new: "new";
+        read: "read";
+    }>;
+}, z.core.$strip>;
 //# sourceMappingURL=cms.d.ts.map

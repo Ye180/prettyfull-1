@@ -14,7 +14,12 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core";
 import { categories, products } from "./catalog.js";
-import { bannerPlacementEnum, contentStatusEnum, featuredKindEnum } from "./enums.js";
+import {
+	bannerPlacementEnum,
+	contactMessageStatusEnum,
+	contentStatusEnum,
+	featuredKindEnum,
+} from "./enums.js";
 import { users } from "./users.js";
 
 /**
@@ -111,6 +116,34 @@ export const featuredEntries = pgTable(
 			sql`(${table.kind} = 'product' and ${table.productId} is not null and ${table.categoryId} is null)
 			 or (${table.kind} = 'category' and ${table.categoryId} is not null and ${table.productId} is null)`,
 		),
+	],
+);
+
+/**
+ * Messages reçus via le formulaire de contact du storefront.
+ *
+ * Stockés plutôt qu'envoyés par courriel : aucun prestataire d'envoi n'est
+ * configuré, et un message perdu vaut moins qu'un message en attente de
+ * lecture. L'adresse IP est conservée pour identifier un envoi abusif.
+ */
+export const contactMessages = pgTable(
+	"contact_messages",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		name: varchar("name", { length: 120 }).notNull(),
+		email: varchar("email", { length: 254 }).notNull(),
+		phone: varchar("phone", { length: 32 }),
+		subject: varchar("subject", { length: 160 }),
+		message: text("message").notNull(),
+		status: contactMessageStatusEnum("status").notNull().default("new"),
+		ipAddress: varchar("ip_address", { length: 64 }),
+		userAgent: varchar("user_agent", { length: 500 }),
+		createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+		updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+	},
+	(table) => [
+		index("contact_messages_status_idx").on(table.status, table.createdAt),
+		index("contact_messages_created_at_idx").on(table.createdAt),
 	],
 );
 

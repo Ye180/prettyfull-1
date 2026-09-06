@@ -8,6 +8,13 @@
       "when": 1788477189428,
       "tag": "0000_loose_rumiko_fujikawa",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788734905669,
+      "tag": "0001_boring_nextwave",
+      "breakpoints": true
     }
   ]
 }

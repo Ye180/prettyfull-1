@@ -1,6 +1,6 @@
 "use client";
 
-import type { Product } from "@prettyfull/contracts";
+import { UPLOAD_ENDPOINTS, type Product } from "@prettyfull/contracts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "@/lib/api";
@@ -16,6 +16,7 @@ import {
 	stockStatusTone,
 } from "@/components/ui/primitives";
 import { IconPlus, IconTrash } from "@/components/icons";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 /**
  * Gestion incrémentale des variantes et des tailles d'un produit existant.
@@ -38,7 +39,12 @@ export const VariantManager = ({
 	const [variantDialog, setVariantDialog] = useState(false);
 	const [sizeDialog, setSizeDialog] = useState<{ variantId: string | null } | null>(null);
 
-	const [variantDraft, setVariantDraft] = useState({ name: "", colorHex: "#111111", quantity: "0" });
+	const [variantDraft, setVariantDraft] = useState({
+		name: "",
+		colorHex: "#111111",
+		quantity: "0",
+		imageUrl: "",
+	});
 	const [sizeDraft, setSizeDraft] = useState({ label: "", quantity: "0" });
 
 	const refresh = () => {
@@ -52,11 +58,14 @@ export const VariantManager = ({
 				name: variantDraft.name.trim(),
 				colorHex: variantDraft.colorHex,
 				initialQuantity: Number(variantDraft.quantity) || 0,
+				images: variantDraft.imageUrl.trim()
+					? [{ url: variantDraft.imageUrl.trim(), position: 0 }]
+					: [],
 			}),
 		onSuccess: () => {
 			refresh();
 			setVariantDialog(false);
-			setVariantDraft({ name: "", colorHex: "#111111", quantity: "0" });
+			setVariantDraft({ name: "", colorHex: "#111111", quantity: "0", imageUrl: "" });
 			notify("Variante ajoutée.");
 		},
 		onError: (error) => notifyError(error, "Ajout impossible."),
@@ -266,6 +275,17 @@ export const VariantManager = ({
 								}
 							/>
 						</div>
+					</Field>
+
+					<Field
+						label="Photo du coloris"
+						hint="Affichée quand la cliente sélectionne ce coloris."
+					>
+						<ImageUpload
+							endpoint={UPLOAD_ENDPOINTS.catalog}
+							value={variantDraft.imageUrl}
+							onChange={(imageUrl) => setVariantDraft({ ...variantDraft, imageUrl })}
+						/>
 					</Field>
 
 					<Field label="Stock initial" hint="Vous pourrez ensuite lui ajouter des tailles.">

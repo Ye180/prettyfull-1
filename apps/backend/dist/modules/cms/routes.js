@@ -1,4 +1,4 @@
-import { BANNER_PLACEMENTS, PERMISSIONS, bannerInputSchema, bannerListQuerySchema, featuredEntryInputSchema, staticPageInputSchema, staticPageListQuerySchema, updateBannerSchema, } from "@prettyfull/contracts";
+import { BANNER_PLACEMENTS, PERMISSIONS, bannerInputSchema, bannerListQuerySchema, contactMessageInputSchema, contactMessageListQuerySchema, updateContactMessageSchema, featuredEntryInputSchema, staticPageInputSchema, staticPageListQuerySchema, updateBannerSchema, } from "@prettyfull/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { recordAudit } from "../../lib/audit.js";
@@ -97,10 +97,41 @@ adminCmsRoutes.delete("/featured/:id", requirePermission(PERMISSIONS.content.wri
     });
     return c.json({ success: true });
 });
+// --- Messages de contact ---------------------------------------------------
+adminCmsRoutes.get("/contact-messages", requirePermission(PERMISSIONS.content.read), validate("query", contactMessageListQuerySchema), async (c) => c.json(await service.listContactMessages(c.req.valid("query"))));
+adminCmsRoutes.patch("/contact-messages/:id", requirePermission(PERMISSIONS.content.write), validate("param", idParam), validate("json", updateContactMessageSchema), async (c) => {
+    const { id } = c.req.valid("param");
+    const { status } = c.req.valid("json");
+    const updated = await service.updateContactMessageStatus(id, status);
+    await recordAudit(c, {
+        action: "contact_message.status_changed",
+        resourceType: "contact_message",
+        resourceId: id,
+        changes: { status },
+    });
+    return c.json(updated);
+});
 // --- Storefront ------------------------------------------------------------
 /** Contenu public : uniquement ce qui est publié et dans sa fenêtre de diffusion. */
 export const storeCmsRoutes = new Hono();
 storeCmsRoutes.get("/banners", validate("query", z.object({ placement: z.enum(BANNER_PLACEMENTS).optional() })), async (c) => c.json(await service.listPublicBanners(c.req.valid("query").placement)));
 storeCmsRoutes.get("/pages/:slug", validate("param", slugParam), async (c) => c.json(await service.getStaticPageBySlug(c.req.valid("param").slug, { publishedOnly: true })));
 storeCmsRoutes.get("/featured", validate("query", z.object({ sectionKey: z.string().max(64).optional() })), async (c) => c.json(await service.listFeaturedEntries(c.req.valid("query").sectionKey, { resolve: true })));
+/**
+ * Réception d'un message du formulaire de contact.
+ *
+ * Publique par nature. Le champ leurre `website` filtre les robots les plus
+ * simples : rempli, l'envoi est accepté en apparence mais rien n'est
+ * enregistré — lui répondre par une erreur lui apprendrait comment passer.
+ */
+storeCmsRoutes.post("/contact", validate("json", contactMessageInputSchema), async (c) => {
+    const input = c.req.valid("json");
+    if (input.website)
+        return c.json({ success: true }, 201);
+    const created = await service.createContactMessage(input, {
+        ipAddress: c.get("clientIp"),
+        userAgent: c.get("userAgent"),
+    });
+    return c.json({ success: true, id: created.id }, 201);
+});
 //# sourceMappingURL=routes.js.map

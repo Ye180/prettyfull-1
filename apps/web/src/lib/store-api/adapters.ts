@@ -212,17 +212,33 @@ export const toStoreCategory = (
 		name: category.name,
 		handle: category.slug,
 		metadata,
-		product_category_image: category.imageUrl
-			? [
-					{
-						id: `catimg_${category.id}`,
-						url: category.imageUrl,
-						file_id: category.imageUrl.split("/").pop() ?? "",
-						type: "thumbnail",
-						category_id: category.id,
-					},
-				]
-			: undefined,
+		// Deux entrées attendues par la page d'accueil : la bannière large en
+		// premier (desktop), la vignette ensuite (mobile). Quand une seule est
+		// renseignée, elle sert aux deux plutôt que de laisser un trou.
+		product_category_image: [
+			...(category.bannerUrl
+				? [
+						{
+							id: `catbanner_${category.id}`,
+							url: category.bannerUrl,
+							file_id: category.bannerUrl.split("/").pop() ?? "",
+							type: "image" as const,
+							category_id: category.id,
+						},
+					]
+				: []),
+			...(category.imageUrl
+				? [
+						{
+							id: `catimg_${category.id}`,
+							url: category.imageUrl,
+							file_id: category.imageUrl.split("/").pop() ?? "",
+							type: "thumbnail" as const,
+							category_id: category.id,
+						},
+					]
+				: []),
+		],
 		category_children:
 			"children" in category && category.children.length > 0
 				? category.children.map((child) => toStoreCategory(child, sectionKeys))

@@ -24,8 +24,6 @@ const HomeView = () => {
 
 	const banner = results.map((result) => result?.data?.[0]);
 
-	console.log("banner", banner);
-
 	const isLoading = results.some((result) => result?.isLoading);
 
 	return (

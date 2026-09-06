@@ -1,7 +1,7 @@
 "use client";
 
 import type { Banner, Paginated, StaticPage } from "@prettyfull/contracts";
-import { BANNER_PLACEMENTS, PERMISSIONS } from "@prettyfull/contracts";
+import { BANNER_PLACEMENTS, PERMISSIONS, UPLOAD_ENDPOINTS } from "@prettyfull/contracts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "@/lib/api";
@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/primitives";
 import { IconEdit, IconPlus, IconTrash } from "@/components/icons";
 import { slugify } from "@/features/catalogue/product-fields";
+import { ContactMessages } from "@/features/contenu/contact-messages";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 /** Module « Contenu » : bannières et pages statiques (§4.7). */
 
@@ -142,8 +144,12 @@ const ContentPage = () => {
 		<>
 			<PageHeader
 				title="Contenu"
-				description="Bannières de la page d'accueil et pages statiques de la boutique."
+				description="Bannières, pages statiques et messages reçus depuis la boutique."
 			/>
+
+			<div className="mb-4">
+				<ContactMessages />
+			</div>
 
 			<Card className="mb-4">
 				<CardHeader
@@ -347,14 +353,11 @@ const ContentPage = () => {
 			>
 				{bannerDraft && (
 					<div className="flex flex-col gap-4">
-						<Field label="Image" required hint="Chemin public du storefront ou URL complète.">
-							<Input
-								autoFocus
+						<Field label="Image" required>
+							<ImageUpload
+								endpoint={UPLOAD_ENDPOINTS.content}
 								value={bannerDraft.imageUrl}
-								onChange={(event) =>
-									setBannerDraft({ ...bannerDraft, imageUrl: event.target.value })
-								}
-								placeholder="/banner/banner1.jpg"
+								onChange={(imageUrl) => setBannerDraft({ ...bannerDraft, imageUrl })}
 							/>
 						</Field>
 

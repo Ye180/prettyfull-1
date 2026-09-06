@@ -26,10 +26,15 @@ const PictureBar = ({
 		<>
 			{imageDesktop || imageMobile ? (
 				<Container maxWidth="100vw" className={cn(className)}>
+					{/*
+					 * Chaque variante retombe sur l'autre plutôt que sur une chaîne
+					 * vide : `<Image src="">` fait retélécharger la page entière au
+					 * navigateur, et Next le signale comme une erreur.
+					 */}
 					<div className="overflow-hidden relative h-full bg-center bg-no-repeat bg-cover hidden! sm:flex! ">
 						<Image
-							src={imageDesktop || ""}
-							alt="desktop image"
+							src={imageDesktop || imageMobile}
+							alt=""
 							fill
 							sizes="(min-width: 640px) 100vw, 1px"
 							className="flex object-cover overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"
@@ -38,8 +43,8 @@ const PictureBar = ({
 					</div>
 					<div className="overflow-hidden relative h-full bg-center bg-no-repeat bg-cover flex! sm:hidden!">
 						<Image
-							src={imageMobile || ""}
-							alt="phone image"
+							src={imageMobile || imageDesktop}
+							alt=""
 							fill
 							sizes="(max-width: 639px) 100vw, 1px"
 							className="flex object-cover overflow-hidden h-full bg-center bg-no-repeat bg-cover bg-black/60"

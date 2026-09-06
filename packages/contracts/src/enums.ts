@@ -147,6 +147,10 @@ export const BANNER_PLACEMENTS = [
 ] as const;
 export type BannerPlacement = (typeof BANNER_PLACEMENTS)[number];
 
+/** Cycle de vie d'un message reçu via le formulaire de contact. */
+export const CONTACT_MESSAGE_STATUSES = ["new", "read", "archived"] as const;
+export type ContactMessageStatus = (typeof CONTACT_MESSAGE_STATUSES)[number];
+
 export const FEATURED_KINDS = ["product", "category"] as const;
 export type FeaturedKind = (typeof FEATURED_KINDS)[number];
 
@@ -169,3 +173,20 @@ export type Locale = (typeof LOCALES)[number];
 
 export const DEFAULT_LOCALE: Locale = "fr";
 export const DEFAULT_CURRENCY: CurrencyCode = "xof";
+
+/**
+ * Points de téléversement de visuels exposés par l'API.
+ *
+ * Partagés parce que le back-office et le backend ne peuvent pas se
+ * référencer mutuellement (résolutions de modules incompatibles) : c'est le
+ * seul moyen qu'un renommage casse à la compilation plutôt qu'à l'exécution.
+ *
+ * `catalog` exige la permission `catalog.write`, `content` la permission
+ * `content.write`.
+ */
+export const UPLOAD_ENDPOINTS = {
+	catalog: "catalogImage",
+	content: "contentImage",
+} as const;
+
+export type UploadEndpoint = (typeof UPLOAD_ENDPOINTS)[keyof typeof UPLOAD_ENDPOINTS];
