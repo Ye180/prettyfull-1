@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetCategory } from "@/features/homepage/api/medusa/get-category";
-import { products as allProducts } from "@/lib/fake-data";
+import { fetchProducts } from "@/lib/store-api";
 import { PAGES_PATHS, PRODUCT_PATHS } from "@/lib/routes/paths-en";
 import { cn } from "@prettyfull/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -51,9 +51,11 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 
 	const { data: products, isFetching } = useQuery({
 		queryKey: ["search-products", debouncedQuery],
-		queryFn: async () => {
-			const q = debouncedQuery.toLowerCase();
-			return allProducts.filter((p) => p.title.toLowerCase().includes(q)).slice(0, 12);
+		queryFn: () => {
+			// Recherche côté serveur : plein texte insensible aux accents,
+			// adossée à l'index du catalogue plutôt qu'à un filtre en mémoire
+			// sur des données chargées d'avance.
+			return fetchProducts({ q: debouncedQuery, limit: 12 });
 		},
 		enabled: hasQuery,
 		staleTime: 30_000,

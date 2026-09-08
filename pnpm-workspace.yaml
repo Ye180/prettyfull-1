@@ -3,13 +3,20 @@ packages:
   - packages/*
 
 onlyBuiltDependencies:
-  - '@nestjs/core'
-  - '@parcel/watcher'
-  - '@scarf/scarf'
   - '@swc/core'
+  - '@parcel/watcher'
   - '@tailwindcss/oxide'
   - core-js-pure
   - esbuild
-  - msgpackr-extract
   - sharp
   - unrs-resolver
+
+# Une seule copie de React et de ses types dans tout le monorepo :
+# deux @types/react en parallèle produisent des erreurs
+# "Two different types with this name exist, but they are unrelated".
+overrides:
+  react: 19.2.8
+  react-dom: 19.2.8
+  '@types/react': 19.2.18
+  '@types/react-dom': 19.2.7
+  '@types/node': ^22.20.1

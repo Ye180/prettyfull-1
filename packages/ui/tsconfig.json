@@ -13,15 +13,6 @@
 		}
 	},
 
-	"include": [
-		"src",
-		"src/layouts",
-		"src/styles.css",
-		"../../packages/utils",
-		"../../apps/web/src/shared/components/molecules/footer.tsx",
-		"../../apps/web/src/shared/components/molecules/header.tsx",
-		"../../apps/web/src/components/layout/collection-layout.tsx",
-		"../../apps/web/src/components/layout/home-layout.tsx"
-	],
+	"include": ["src", "src/layouts", "src/styles.css", "../../packages/utils"],
 	"exclude": ["node_modules", "dist"]
 }

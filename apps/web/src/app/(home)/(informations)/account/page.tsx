@@ -2,14 +2,15 @@
 
 import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
 import { useGetCustomerOrders } from "@/features/account/api/get-orders";
-import { customer as fakeCustomer } from "@/lib/fake-data";
+import { fetchAddresses, fetchProfile, updateProfile } from "@/lib/store-api";
 import { useRegionStore } from "@/stores/useRegion";
 import { Button, Input, Skeleton } from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Separator } from "../../../../../../../packages/ui/src/components/ui/separator";
 import { AddressIcon } from "../../../../../../../packages/ui/src/icons/adresse.icon";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
@@ -50,13 +51,45 @@ const statusLabels: Record<string, { label: string; className: string }> = {
 
 export default function AccountPage() {
 	const router = useRouter();
-	const [customer] = useState(fakeCustomer);
-	const [firstName, setFirstName] = useState(fakeCustomer.first_name);
-	const [lastName, setLastName] = useState(fakeCustomer.last_name);
-	const [email] = useState(fakeCustomer.email);
-	const [phone, setPhone] = useState(fakeCustomer.phone ?? "");
+
+	const { data: profile } = useQuery({
+		queryKey: ["customer-profile"],
+		queryFn: fetchProfile,
+		retry: false,
+	});
+
+	const { data: addresses } = useQuery({
+		queryKey: ["customer-addresses"],
+		queryFn: fetchAddresses,
+		retry: false,
+	});
+
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [phone, setPhone] = useState("");
 	const [isSaving, setIsSaving] = useState(false);
 	const [saveSuccess, setSaveSuccess] = useState(false);
+	const [saveError, setSaveError] = useState<string | null>(null);
+
+	// Les champs sont initialisés à l'arrivée du profil, puis laissés à la
+	// cliente : les réécrire à chaque rafraîchissement effacerait sa saisie.
+	const [hydrated, setHydrated] = useState(false);
+
+	useEffect(() => {
+		if (!profile || hydrated) return;
+
+		setFirstName(profile.firstName);
+		setLastName(profile.lastName);
+		setPhone(profile.phone ?? "");
+		setHydrated(true);
+	}, [profile, hydrated]);
+
+	const email = profile?.email ?? "";
+	const customer = {
+		first_name: firstName,
+		email,
+		addresses: addresses ?? [],
+	};
 
 	const region = useRegionStore((state) => state.region);
 	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
@@ -66,15 +99,23 @@ export default function AccountPage() {
 	const orders = ordersData?.orders ?? [];
 	const ordersCount = ordersData?.count ?? 0;
 
-	const handleSaveProfile = (e: React.FormEvent) => {
+	const handleSaveProfile = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsSaving(true);
 		setSaveSuccess(false);
-		setTimeout(() => {
-			setIsSaving(false);
+		setSaveError(null);
+
+		try {
+			await updateProfile({ firstName, lastName, phone: phone || null });
 			setSaveSuccess(true);
 			setTimeout(() => setSaveSuccess(false), 3000);
-		}, 300);
+		} catch (error) {
+			setSaveError(
+				error instanceof Error ? error.message : "Enregistrement impossible.",
+			);
+		} finally {
+			setIsSaving(false);
+		}
 	};
 
 	const lastOrder = orders[0];
@@ -82,7 +123,8 @@ export default function AccountPage() {
 		? statusLabels[lastOrder.status] || statusLabels.pending
 		: null;
 
-	const defaultAddress = customer.addresses?.[0];
+	const defaultAddress =
+		addresses?.find((address) => address.isDefaultShipping) ?? addresses?.[0];
 
 	return (
 		<div className="pb-20 space-y-12">
@@ -195,14 +237,14 @@ export default function AccountPage() {
 						{defaultAddress ? (
 							<address className="space-y-1 text-sm not-italic text-gray-600">
 								<p className="font-medium text-gray-900">
-									{defaultAddress.first_name} {defaultAddress.last_name}
+									{defaultAddress.firstName} {defaultAddress.lastName}
 								</p>
-								<p>{defaultAddress.address_1}</p>
-								{defaultAddress.address_2 && <p>{defaultAddress.address_2}</p>}
+								<p>{defaultAddress.address1}</p>
+								{defaultAddress.address2 && <p>{defaultAddress.address2}</p>}
 								<p>
-									{defaultAddress.postal_code} {defaultAddress.city}
+									{defaultAddress.postalCode} {defaultAddress.city}
 								</p>
-								<p>{defaultAddress.country_code?.toUpperCase()}</p>
+								<p>{defaultAddress.countryCode?.toUpperCase()}</p>
 							</address>
 						) : (
 							<address className="space-y-1 text-sm not-italic text-gray-600">

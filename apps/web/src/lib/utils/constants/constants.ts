@@ -62,7 +62,7 @@ export const FOOTER_DATA = [
       {
             "title": "HELP",
             "links": [
-              { "label": "About Prettyfull", "url": "/help/about-snaely" },
+                  { "label": "À propos", "url": paths.about },
                   { "label": "Contact", "url": paths.contact },
                   { "label": "FAQ", "url": paths.faq },
                   { "label": "Terms & Conditions", "url": paths.terms },
@@ -78,7 +78,7 @@ export const FOOTER_DATA = [
                   { "label": "Customization", "url": "/about/customization" },
                   { "label": "Shop by Look", "url": "/about/shop-by-look" },
                   { "label": "Wedding", "url": "/about/wedding" },
-                  { "label": "About Snaely", "url": "/about/about-snaely" }
+                  { "label": "À propos de PrettyFull", "url": paths.about }
             ]
       }
 ];

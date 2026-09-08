@@ -1,5 +1,6 @@
 import { Category } from "@/features/homepage/api/medusa/get-category";
 import { COLLECTION_PATHS, PAGES_PATHS } from "@/lib/routes/paths-en";
+import { NAV_INFO_LINKS } from "@/lib/utils/constants/header";
 import { Logo, ScrollArea, Skeleton } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -87,6 +88,23 @@ const NavbarResponsive = ({
 					) : (
 						<Skeleton className="w-full h-9" />
 					)}
+				</div>
+
+				{/*
+				 * Pages d'information, après les rayons : on vient d'abord ici pour
+				 * acheter. Le séparateur marque le changement de nature des liens.
+				 */}
+				<div className="flex flex-col gap-y-1 border-t border-gray-100 py-4">
+					{NAV_INFO_LINKS.map((link) => (
+						<Link
+							key={link.href}
+							href={link.href}
+							onClick={close}
+							className="w-full rounded-md px-3 py-3 text-[1.4rem] font-normal text-gray-500 transition-colors hover:bg-gray-50 hover:text-black"
+						>
+							{link.label}
+						</Link>
+					))}
 				</div>
 			</ScrollArea>
 		</div>

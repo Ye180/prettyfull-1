@@ -1,6 +1,12 @@
 "use client";
 
-import { customer as fakeCustomer } from "@/lib/fake-data";
+import {
+	createAddress,
+	deleteAddress,
+	fetchAddresses,
+	updateAddress,
+} from "@/lib/store-api";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 	Button,
 	Dialog,
@@ -453,8 +459,68 @@ const DeleteConfirmModal = ({
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
+/**
+ * Traduit une adresse de l'API vers la forme snake_case utilisée par cette
+ * page. Le rendu reste inchangé ; seule la provenance des données a bougé.
+ */
+const toLocalAddress = (address: {
+	id: string;
+	firstName: string;
+	lastName: string;
+	company: string | null;
+	address1: string;
+	address2: string | null;
+	city: string;
+	postalCode: string | null;
+	province: string | null;
+	countryCode: string;
+	phone: string | null;
+	isDefaultShipping: boolean;
+	isDefaultBilling: boolean;
+}): Address => ({
+	id: address.id,
+	first_name: address.firstName,
+	last_name: address.lastName,
+	company: address.company ?? undefined,
+	address_1: address.address1,
+	address_2: address.address2 ?? undefined,
+	city: address.city,
+	postal_code: address.postalCode ?? "",
+	province: address.province ?? undefined,
+	country_code: address.countryCode,
+	phone: address.phone ?? undefined,
+	is_default_shipping: address.isDefaultShipping,
+	is_default_billing: address.isDefaultBilling,
+});
+
+const toApiAddress = (data: AddressFormData) => ({
+	firstName: data.first_name,
+	lastName: data.last_name,
+	company: data.company || null,
+	address1: data.address_1,
+	address2: data.address_2 || null,
+	city: data.city,
+	postalCode: data.postal_code || null,
+	province: data.province || null,
+	countryCode: (data.country_code || "ci").toLowerCase(),
+	phone: data.phone || null,
+	isDefaultShipping: false,
+	isDefaultBilling: false,
+});
+
 export default function AddressesPage() {
-	const [addresses, setAddresses] = useState<Address[]>(fakeCustomer.addresses);
+	const queryClient = useQueryClient();
+
+	const { data: remoteAddresses } = useQuery({
+		queryKey: ["customer-addresses"],
+		queryFn: fetchAddresses,
+		retry: false,
+	});
+
+	const addresses = (remoteAddresses ?? []).map(toLocalAddress);
+
+	const refreshAddresses = () =>
+		queryClient.invalidateQueries({ queryKey: ["customer-addresses"] });
 
 	const [showFormModal, setShowFormModal] = useState(false);
 	const [editingAddress, setEditingAddress] = useState<Address | null>(null);
@@ -487,17 +553,27 @@ export default function AddressesPage() {
 
 	const handleSave = async (data: AddressFormData) => {
 		setIsSaving(true);
-		if (editingAddress) {
-			setAddresses((prev) =>
-				prev.map((a) => (a.id === editingAddress.id ? { ...a, ...data } : a)),
+
+		try {
+			if (editingAddress) {
+				await updateAddress(editingAddress.id, toApiAddress(data));
+				showSuccess("Adresse mise à jour !");
+			} else {
+				await createAddress(toApiAddress(data));
+				showSuccess("Adresse ajoutée !");
+			}
+
+			await refreshAddresses();
+			setShowFormModal(false);
+		} catch (error) {
+			// La modale reste ouverte : la saisie n'est pas perdue et peut être
+			// corrigée à partir du message de l'API.
+			showSuccess(
+				error instanceof Error ? error.message : "Enregistrement impossible.",
 			);
-			showSuccess("Adresse mise à jour !");
-		} else {
-			setAddresses((prev) => [...prev, { ...data, id: `addr_${Date.now()}` }]);
-			showSuccess("Adresse ajoutée !");
+		} finally {
+			setIsSaving(false);
 		}
-		setShowFormModal(false);
-		setIsSaving(false);
 	};
 
 	// ── Delete ────────────────────────────────────────────────────────────────
@@ -510,11 +586,20 @@ export default function AddressesPage() {
 	const handleConfirmDelete = async () => {
 		if (!deletingAddressId) return;
 		setIsDeleting(true);
-		setAddresses((prev) => prev.filter((a) => a.id !== deletingAddressId));
-		setShowDeleteModal(false);
-		setDeletingAddressId(null);
-		showSuccess("Adresse supprimée !");
-		setIsDeleting(false);
+
+		try {
+			await deleteAddress(deletingAddressId);
+			await refreshAddresses();
+			showSuccess("Adresse supprimée !");
+		} catch (error) {
+			showSuccess(
+				error instanceof Error ? error.message : "Suppression impossible.",
+			);
+		} finally {
+			setShowDeleteModal(false);
+			setDeletingAddressId(null);
+			setIsDeleting(false);
+		}
 	};
 
 	// ── Render ────────────────────────────────────────────────────────────────

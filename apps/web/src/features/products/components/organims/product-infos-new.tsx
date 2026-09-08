@@ -16,6 +16,8 @@ interface ProductInfosNewProps {
 		pourcentage: number;
 	};
 	colors: string[];
+	/** Coloris → code hexadécimal, pour la pastille du sélecteur. */
+	colorSwatches?: Record<string, string | null>;
 	sizes: string[];
 	selectedColor: string;
 	selectedSize: string;
@@ -46,6 +48,7 @@ export function ProductInfosNew({
 	originalPrice,
 	promotion,
 	colors,
+	colorSwatches = {},
 	sizes,
 	selectedColor,
 	selectedSize,
@@ -153,14 +156,48 @@ export function ProductInfosNew({
 				)}
 			</div>
 
-			{/* Sélecteur de couleur */}
-			{/* {colors.length > 0 && (
-				<ColorSelector
-					colors={colors}
-					selectedColor={selectedColor}
-					onColorChange={onColorChange}
-				/>
-			)} */}
+			{/*
+			 * Sélecteur de coloris.
+			 *
+			 * Le libellé accompagne la pastille : la couleur seule ne suffit
+			 * pas à identifier un choix (vision déficiente, écran monochrome),
+			 * et deux teintes proches comme « Beige » et « Blanc » se
+			 * distinguent mal côte à côte.
+			 */}
+			{colors.length > 0 && (
+				<div className="flex flex-col gap-2">
+					<span className="text-sm font-medium text-gray-900">
+						Coloris{selectedColor ? ` : ${selectedColor}` : ""}
+					</span>
+					<div className="flex flex-wrap gap-3">
+						{colors.map((color) => {
+							const isSelected = selectedColor === color;
+
+							return (
+								<button
+									key={color}
+									type="button"
+									onClick={() => onColorChange(color)}
+									aria-pressed={isSelected}
+									aria-label={`Coloris ${color}`}
+									title={color}
+									className={`flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 transition-all ${
+										isSelected
+											? "border-black"
+											: "border-gray-200 hover:border-gray-400"
+									}`}
+								>
+									<span
+										className="block w-7 h-7 rounded-full border border-black/10"
+										style={{ backgroundColor: colorSwatches[color] ?? "#e5e5e5" }}
+									/>
+									<span className="text-sm text-gray-800">{color}</span>
+								</button>
+							);
+						})}
+					</div>
+				</div>
+			)}
 
 			{/* Sélecteur de taille */}
 			{sizes.length > 0 && (

@@ -2,7 +2,7 @@
 
 import { Category } from "@/features/homepage/api/medusa/get-category";
 import { PAGES_PATHS } from "@/lib/routes/paths-en";
-import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
+import { NAV_INFO_LINKS, NAV_USER_LINKS } from "@/lib/utils/constants/header";
 import { Logo, Skeleton } from "@prettyfull/ui";
 import { useCartStore } from "@prettyfull/store";
 import { cn } from "@prettyfull/utils";
@@ -66,6 +66,30 @@ const NavBarHeaders = ({
 						) : (
 							<Skeleton className="w-80 h-9" />
 						)}
+
+						{/*
+						 * Séparateur : les pages d'information ne sont pas des rayons.
+						 * Une graisse plus légère les distingue sans les reléguer.
+						 */}
+						<span className="h-5 w-px bg-gray-300" aria-hidden="true" />
+
+						{NAV_INFO_LINKS.map((link) => {
+							const isActive = pathname === link.href;
+
+							return (
+								<Link
+									key={link.href}
+									href={link.href}
+									className={cn(
+										"text-sm font-medium tracking-wide uppercase text-[#5a5a5a] transition-all hover:text-black",
+										isActive &&
+											"text-black underline decoration-[3px] underline-offset-[6px]",
+									)}
+								>
+									{link.label}
+								</Link>
+							);
+						})}
 					</div>
 				</div>
 				<div className="flex gap-2 items-center md:gap-6">

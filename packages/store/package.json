@@ -13,9 +13,10 @@
 	"devDependencies": {
 		"@prettyfull/eslint-config": "workspace:*",
 		"@prettyfull/typescript-config": "workspace:*",
-		"typescript": "^5.4.5"
+		"eslint": "^9.39.5",
+		"typescript": "^5.9.3"
 	},
 	"dependencies": {
-		"zustand": "^4.5.2"
+		"zustand": "^4.5.7"
 	}
 }

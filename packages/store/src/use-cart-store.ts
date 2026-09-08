@@ -11,6 +11,20 @@ export interface CartProduct {
   sku?: string;
 }
 
+/**
+ * Coordonnées de l'article dans le catalogue.
+ *
+ * `productId` de `CartItem` identifie la *combinaison* choisie (coloris ×
+ * taille) et sert de clé de ligne ; ce triplet-ci désigne le point de stock
+ * correspondant côté API, seul moyen de commander la bonne déclinaison.
+ * Optionnel pour rester compatible avec les paniers déjà persistés.
+ */
+export interface CartSelection {
+  productId: string;
+  variantId: string | null;
+  sizeId: string | null;
+}
+
 export interface CartItem {
   productId: string;
   product: CartProduct;
@@ -18,6 +32,7 @@ export interface CartItem {
   sku?: string;
   unitPrice?: { amount: number; currency: string };
   selectedVariants?: Record<string, string>;
+  selection?: CartSelection;
 }
 
 export interface CartState {
