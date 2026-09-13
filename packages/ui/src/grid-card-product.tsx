@@ -43,13 +43,13 @@ export const GridCardProduct = ({
 		{
 			style: {
 				display: "grid",
-				gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+				gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
 				gap: "0.5rem",
 				"& > div": {
 					// height: "60rem",
 				},
 			},
-			active: 4,
+			active: 5,
 		},
 	);
 

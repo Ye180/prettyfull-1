@@ -31,6 +31,8 @@ export * from "./components/toast/toaster";
 
 // --- Import des icônes ---
 export * from "./icons/spinner.icon"; // <-- AJOUTEZ CETTE LIGNE
+export * from "./icons/star.icon";
+export * from "./icons/filter.icon";
 
 // --- Lucide icons re-export ---
 export {

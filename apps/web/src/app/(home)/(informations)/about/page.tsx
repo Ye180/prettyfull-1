@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import AboutViews from "@/features/about/views";
 
 export const metadata: Metadata = {
-	title: "À propos — PrettyFull",
+	title: "About Us — Prettyfull",
 	description:
-		"PrettyFull réunit des pièces féminines sélectionnées une à une, livrées depuis Abidjan dans toute l'Afrique de l'Ouest.",
+		"Discover Prettyfull's timeless design perspective, sustainable luxury textures, and thoughtful everyday silhouettes.",
 };
 
 const Page = () => <AboutViews />;

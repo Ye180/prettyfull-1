@@ -4,7 +4,7 @@ import LinkedinIcon from "@/components/icons/linkedin.icon";
 import TwitterIcon from "@/components/icons/twitter.icon";
 import { BoxTypes } from "@/types/constants-type";
 import { FC } from "react";
-import { COLLECTION_PATHS, paths } from "../../routes/paths-en";
+import { paths } from "../../routes/paths-en";
 
 interface IconProps {
     className?: string;
@@ -50,45 +50,41 @@ export const BOX_DATA_SECOND: BoxTypes[] = [
 
 export const FOOTER_DATA = [
       {
-            "title": "SHOP",
-            "links": [
-                  { "label": "Woman", "url": "/shop/woman" },
-                  { "label": "Man", "url": "/shop/man" },
-                  { "label": "Divided", "url": "/shop/divided" },
-                  { "label": "Baby", "url": "/shop/baby" },
-                  { "label": "Children", "url": "/shop/children" }
-            ]
+            title: "Product",
+            links: [
+                  { label: "Accessories", url: "/collections" },
+                  { label: "Sneakers", url: "/collections" },
+                  { label: "T-Shirts & Pants", url: "/collections" },
+                  { label: "Jackets & Blazers", url: "/collections" },
+            ],
       },
       {
-            "title": "HELP",
-            "links": [
-                  { "label": "À propos", "url": paths.about },
-                  { "label": "Contact", "url": paths.contact },
-                  { "label": "FAQ", "url": paths.faq },
-                  { "label": "Terms & Conditions", "url": paths.terms },
-                  { "label": "Shipping & Return", "url": paths.shippingReturn },
-                 
-                
-            ]
+            title: "Support",
+            links: [
+                  { label: "Support Center", url: paths.faq },
+                  { label: "FAQs", url: paths.faq },
+                  { label: "Troubleshooting", url: paths.faq },
+                  { label: "Feedback", url: paths.contact },
+            ],
       },
       {
-            "title": "ABOUT",
-            "links": [
-                  { "label": "Just Arrived", "url": "/about/just-arrived" },
-                  { "label": "Customization", "url": "/about/customization" },
-                  { "label": "Shop by Look", "url": "/about/shop-by-look" },
-                  { "label": "Wedding", "url": "/about/wedding" },
-                  { "label": "À propos de PrettyFull", "url": paths.about }
-            ]
-      }
-];
-
-export const NAV_LINKS = [
-  { href: COLLECTION_PATHS.collectionDetail('women'), label: "Women" },
-  { href: COLLECTION_PATHS.collectionDetail('plus-curve'), label: "Plus+Curve" },
-  { href: COLLECTION_PATHS.collectionDetail('men'), label: "Men" },
-  { href: COLLECTION_PATHS.collectionDetail('kids'), label: "Kids" },
-  { href: COLLECTION_PATHS.collectionDetail('beauty'), label: "Beauty" },
+            title: "Company",
+            links: [
+                  { label: "About Us", url: paths.about },
+                  { label: "Careers", url: paths.about },
+                  { label: "Blog", url: paths.about },
+                  { label: "Contact", url: paths.contact },
+            ],
+      },
+      {
+            title: "Legal",
+            links: [
+                  { label: "Privacy Policy", url: paths.terms },
+                  { label: "Terms of Service", url: paths.terms },
+                  { label: "Cookie Policy", url: paths.terms },
+                  { label: "Compliance", url: paths.terms },
+            ],
+      },
 ];
 
 export const SOCIALS_DATA_FOOTER: {
@@ -101,28 +97,6 @@ export const SOCIALS_DATA_FOOTER: {
       { label: "Instagram", href: "#", icon: InstagramIcon },
       { label: "LinkedIn", href: "#", icon: LinkedinIcon },
 ]
-
-export const SUBS_CATEGORY =  [
-					
-      { href: "/new-in", label: "New in " },
-      { href: "/nova-deals", label: "Nova Deals" },
-	{ href: COLLECTION_PATHS.collectionDetail('halloween'), label: "Halloween" },
-	{ href: COLLECTION_PATHS.collectionDetail('formal-shop'), label: "Formal Shop" },
-	{ href: COLLECTION_PATHS.collectionDetail('dresses'), label: "Dresses" },
-	{ href: COLLECTION_PATHS.collectionDetail('matching-sets'), label: "Matching Sets" },
-	{ href: COLLECTION_PATHS.collectionDetail('tops'), label: "Tops" },
-	{ href: COLLECTION_PATHS.collectionDetail('jeans'), label: "Jeans" },
-					{ href: COLLECTION_PATHS.collectionDetail('jackets'), label: "Jackets" },
-					{ href: COLLECTION_PATHS.collectionDetail('sweaters'), label: "Sweaters" },
-					{ href: COLLECTION_PATHS.collectionDetail('shoes'), label: "Shoes" },
-					{ href: COLLECTION_PATHS.collectionDetail('bottoms'), label: "Bottoms" },
-					{ href: COLLECTION_PATHS.collectionDetail('jumpsuits'), label: "Jumpsuits" },
-					{ href: COLLECTION_PATHS.collectionDetail('lingerie-sleep'), label: "Lingerie & Sleep" },
-					{ href: COLLECTION_PATHS.collectionDetail('accessories'), label: "Accessories" },
-					{ href: COLLECTION_PATHS.collectionDetail('activewear'), label: "Activewear" },
-					{ href: COLLECTION_PATHS.collectionDetail('nova-luxe'), label: "Nova Luxe" },
-					{ href: COLLECTION_PATHS.collectionDetail('sale'), label: "Sale" },
-				]
 
 
 

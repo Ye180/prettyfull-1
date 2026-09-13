@@ -1,22 +1,27 @@
 "use client";
 
-import { useActionEvent } from "@/hooks/use-action-event";
+import { StoreApiError } from "@/lib/store-api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@prettyfull/ui";
+import { Button, Input, toast } from "@prettyfull/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useForm } from "react-hook-form";
 import Flex from "../../../../../../../packages/ui/src/layouts/helpers/flex";
+import { useLogin } from "../../api/login";
 import { loginSchema, type LoginFormData } from "../../schemas/login.schema";
 
-export function LoginForm() {
+interface LoginFormProps {
+	/** Called instead of the default redirect on success — used by the quick-auth modal to close itself. */
+	onSuccess?: () => void;
+	/** Renders "Create Account" as a button instead of a Link — used by the quick-auth modal to switch mode in place. */
+	onSwitchMode?: () => void;
+}
+
+export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
 	const router = useRouter();
 
 	const [callbackUrl] = useQueryState("callbackUrl");
-
-	// // Redirige si déjà authentifié (ce hook existe déjà)
-	// useAuthRedirect("/account");
 
 	const {
 		register,
@@ -26,12 +31,23 @@ export function LoginForm() {
 		resolver: zodResolver(loginSchema),
 	});
 
-	const { startLoading, endLoading, loading } = useActionEvent();
+	const loginMutation = useLogin();
 
 	const onSubmit = async (data: LoginFormData) => {
-		startLoading();
-		endLoading();
-		callbackUrl ? router.push(callbackUrl) : router.push("/");
+		try {
+			await loginMutation.mutateAsync(data);
+			if (onSuccess) {
+				onSuccess();
+			} else {
+				router.push(callbackUrl ?? "/account");
+			}
+		} catch (error) {
+			toast.error(
+				error instanceof StoreApiError
+					? error.message
+					: "Connexion impossible. Veuillez réessayer.",
+			);
+		}
 	};
 
 	return (
@@ -57,7 +73,7 @@ export function LoginForm() {
 							errorMessage={errors.password?.message}
 						/>
 					</div>
-					<Button type="submit" isLoading={loading} fullWidth>
+					<Button type="submit" isLoading={loginMutation.isPending} fullWidth>
 						Login
 					</Button>
 				</main>
@@ -89,9 +105,19 @@ export function LoginForm() {
 				>
 					<p className="font-medium text-grey">
 						Don't have an account?{" "}
-						<Link href="/create-account" className="text-black underline">
-							Create Account
-						</Link>
+						{onSwitchMode ? (
+							<button
+								type="button"
+								onClick={onSwitchMode}
+								className="text-black underline cursor-pointer"
+							>
+								Create Account
+							</button>
+						) : (
+							<Link href="/create-account" className="text-black underline">
+								Create Account
+							</Link>
+						)}
 					</p>
 				</Flex>
 			</form>

@@ -126,7 +126,8 @@ export function PaymentStep({
 	};
 
 	const isStripeProvider = selectedMethod?.includes("stripe");
-	const isSystemProvider = selectedMethod?.includes("system");
+	const isSystemProvider =
+		selectedMethod?.includes("system") || selectedMethod?.includes("manual");
 
 	const isCardFormValid =
 		isStripeProvider &&

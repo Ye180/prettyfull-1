@@ -11,16 +11,16 @@ export default function ProductSkeleton() {
 						{/* Thumbnails */}
 						<div className="hidden flex-col gap-3 sm:flex">
 							{[...Array(4)].map((_, i) => (
-								<Skeleton key={i} className="w-16 h-16 bg-gray-200 rounded" />
+								<Skeleton key={i} className="w-16 h-16 bg-gray-200 rounded-xl" />
 							))}
 						</div>
 
 						{/* Image principale */}
-						<Skeleton className="w-full sm:w-[400px] lg:w-[500px] h-[450px] sm:h-[600px] lg:h-[700px] rounded bg-gray-200" />
+						<Skeleton className="w-full sm:w-[400px] lg:w-[500px] h-[450px] sm:h-[600px] lg:h-[700px] rounded-3xl bg-gray-200" />
 					</div>
 
 					{/* Reviews desktop */}
-					<Skeleton className="hidden lg:block w-[600px] h-[200px] rounded bg-gray-200" />
+					<Skeleton className="hidden lg:block w-[600px] h-[200px] rounded-2xl bg-gray-200" />
 				</div>
 
 				{/* Colonne droite: Infos produit */}
@@ -72,8 +72,8 @@ export default function ProductSkeleton() {
 
 					{/* Boutons Add to Bag + Wishlist */}
 					<div className="flex gap-3 mt-2">
-						<Skeleton className="flex-1 h-12 bg-gray-300 rounded-md" />
-						<Skeleton className="w-12 h-12 bg-gray-200 rounded-md" />
+						<Skeleton className="flex-1 h-12 bg-gray-300 rounded-full" />
+						<Skeleton className="w-12 h-12 bg-gray-200 rounded-full" />
 					</div>
 
 					{/* Shipping info */}
@@ -101,7 +101,7 @@ export default function ProductSkeleton() {
 
 				{/* Reviews mobile */}
 				<div className="sm:hidden">
-					<Skeleton className="w-full h-[150px] rounded bg-gray-200" />
+					<Skeleton className="w-full h-[150px] rounded-3xl bg-gray-200" />
 				</div>
 			</div>
 		</Container>

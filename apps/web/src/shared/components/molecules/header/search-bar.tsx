@@ -57,6 +57,7 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 			// sur des données chargées d'avance.
 			return fetchProducts({ q: debouncedQuery, limit: 12 });
 		},
+		select: (data) => data.products,
 		enabled: hasQuery,
 		staleTime: 30_000,
 	});
@@ -96,7 +97,7 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 		<div ref={containerRef} className={cn("relative", className)}>
 			<form
 				onSubmit={handleSubmit}
-				className="flex items-center px-4 py-3 bg-white rounded-lg border border-gray-300"
+				className="flex items-center px-4 py-3 bg-white rounded-2xl border border-gray-300"
 			>
 				<Search className="w-5 h-5 text-gray-400 shrink-0" />
 				<input
@@ -181,7 +182,7 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 																	onClick={handleNavigate}
 																	className="flex gap-3 items-center py-2 group"
 																>
-																	<div className="overflow-hidden relative w-24 h-40 bg-gray-100 rounded-md shrink-0">
+																	<div className="overflow-hidden relative w-24 h-40 bg-gray-100 rounded-2xl shrink-0">
 																		{thumb && (
 																			<Image
 																				src={thumb}

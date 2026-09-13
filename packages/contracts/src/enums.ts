@@ -187,6 +187,7 @@ export const DEFAULT_CURRENCY: CurrencyCode = "xof";
 export const UPLOAD_ENDPOINTS = {
 	catalog: "catalogImage",
 	content: "contentImage",
+	reviewPhoto: "reviewPhoto",
 } as const;
 
 export type UploadEndpoint = (typeof UPLOAD_ENDPOINTS)[keyof typeof UPLOAD_ENDPOINTS];

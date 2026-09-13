@@ -272,7 +272,7 @@ export const Toaster = ({
 								<button
 									type="button"
 									onClick={() => store.dismiss(t.id)}
-									className="flex justify-center items-center w-6 h-6 rounded-md text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 shrink-0"
+									className="flex justify-center items-center w-6 h-6 rounded-md text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 shrink-0 cursor-pointer"
 									aria-label="Close notification"
 								>
 									<X className="w-4 h-4" />

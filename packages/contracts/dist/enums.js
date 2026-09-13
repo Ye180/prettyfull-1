@@ -136,5 +136,6 @@ export const DEFAULT_CURRENCY = "xof";
 export const UPLOAD_ENDPOINTS = {
     catalog: "catalogImage",
     content: "contentImage",
+    reviewPhoto: "reviewPhoto",
 };
 //# sourceMappingURL=enums.js.map

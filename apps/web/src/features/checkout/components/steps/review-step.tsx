@@ -91,7 +91,7 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 					</p>
 
 					{/* Order Items Summary */}
-					<div className="p-8 space-y-4 bg-gray-50 rounded-lg">
+					<div className="p-8 space-y-4 bg-gray-50 rounded-3xl">
 						<h3 className="flex flex-row font-medium gap-x-2 items-center text-2xl! tracking-wider">
 							Order Items ({items.length})
 						</h3>
@@ -105,14 +105,14 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 										className="flex justify-between items-center text-sm"
 									>
 										<div className="flex gap-4 items-center">
-											<div className="overflow-y-hidden w-32 rounded-md h-38">
+											<div className="overflow-y-hidden w-32 rounded-2xl h-38">
 												{item.product.image && (
 													<Image
 														src={item.product.image}
 														alt={item.product.name}
 														width={100}
 														height={100}
-														className="object-cover w-32 h-52 bg-amber-400 rounded"
+														className="object-cover w-32 h-38 rounded-2xl"
 													unoptimized
 													/>
 												)}

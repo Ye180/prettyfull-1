@@ -64,7 +64,7 @@ export default function OrdersPage() {
 			{isLoading ? (
 				<div className="grid gap-6">
 					{[1, 2].map((i) => (
-						<Skeleton key={i} className="w-full h-60 rounded-md" />
+						<Skeleton key={i} className="w-full h-60 rounded-2xl" />
 					))}
 				</div>
 			) : error ? (

@@ -35,6 +35,20 @@ const priceFor = (
 ): number => size?.priceOverride ?? variant?.priceOverride ?? product.basePrice;
 
 /**
+ * Prix barré, s'il existe : cascade variante → produit (les tailles n'ont pas
+ * de dérogation propre). `undefined` s'il ne dépasse pas le prix effectif —
+ * la carte produit n'affiche une réduction que si elle en est vraiment une.
+ */
+const compareAtPriceFor = (
+	product: Product,
+	price: number,
+	variant?: Variant | null,
+): number | undefined => {
+	const compareAt = variant?.compareAtPriceOverride ?? product.compareAtPrice ?? undefined;
+	return compareAt != null && compareAt > price ? compareAt : undefined;
+};
+
+/**
  * Déplie un produit en combinaisons achetables.
  *
  * Le storefront raisonne en « une variante = un article commandable », là où
@@ -68,6 +82,7 @@ const buildVariants = (product: Product): StoreVariant[] => {
 						thumbnail,
 						calculated_price: {
 							calculated_amount: priceFor(product, variant),
+							original_amount: compareAtPriceFor(product, priceFor(product, variant), variant),
 							currency_code: product.currency,
 						},
 						options: [{ option_id: colorOptionId, value: variant.name }],
@@ -87,6 +102,7 @@ const buildVariants = (product: Product): StoreVariant[] => {
 				thumbnail,
 				calculated_price: {
 					calculated_amount: priceFor(product, variant, size),
+					original_amount: compareAtPriceFor(product, priceFor(product, variant, size), variant),
 					currency_code: product.currency,
 				},
 				options: [
@@ -110,6 +126,7 @@ const buildVariants = (product: Product): StoreVariant[] => {
 			thumbnail: product.images[0]?.url,
 			calculated_price: {
 				calculated_amount: priceFor(product, null, size),
+				original_amount: compareAtPriceFor(product, priceFor(product, null, size)),
 				currency_code: product.currency,
 			},
 			options: [{ option_id: sizeOptionId, value: size.label }],
@@ -130,6 +147,7 @@ const buildVariants = (product: Product): StoreVariant[] => {
 			thumbnail: product.images[0]?.url,
 			calculated_price: {
 				calculated_amount: product.basePrice,
+				original_amount: compareAtPriceFor(product, product.basePrice),
 				currency_code: product.currency,
 			},
 			options: [],
@@ -406,6 +424,8 @@ export const toRawProduct = (product: Product) => {
 				...timestamps,
 				inventory_quantity: variant.inventory_quantity,
 				calculated_price: variant.calculated_price,
+				variant_id: variant.variant_id,
+				size_id: variant.size_id,
 				options: variant.options.map((option) => ({
 					id: `${option.option_id}_${option.value}`,
 					value: option.value,

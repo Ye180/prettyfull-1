@@ -1,16 +1,17 @@
 "use client";
 
 import { useCartStore } from "@prettyfull/store";
+import { cn } from "@prettyfull/utils";
 import { useEffect, useState } from "react";
-import { MinusIcon } from "../../../../../../../packages/ui/src/icons/minus.icon";
-import { PlusIcon } from "../../../../../../../packages/ui/src/icons/plus.icon";
 
 interface Props {
 	productId: string;
 	initialQuantity: number;
+	/** Squares off the pill/buttons — used by the cart drawer only. */
+	square?: boolean;
 }
 
-export const QuantitySelector = ({ productId, initialQuantity }: Props) => {
+export const QuantitySelector = ({ productId, initialQuantity, square }: Props) => {
 	const updateQuantity = useCartStore((state) => state.updateQuantity);
 	const [quantity, setQuantity] = useState(initialQuantity);
 
@@ -25,25 +26,42 @@ export const QuantitySelector = ({ productId, initialQuantity }: Props) => {
 	};
 
 	return (
-		<div className="flex items-center px-2 py-2 space-x-4 bg-gray-100 rounded-full w-fit">
+		<div
+			className={cn(
+				"flex items-center px-2 py-1 bg-[#F4F4F5] w-fit border border-gray-200",
+				square ? "rounded-none" : "rounded-full",
+			)}
+		>
 			<button
+				type="button"
 				onClick={() => handleUpdate(quantity - 1)}
 				disabled={quantity <= 1}
-				className={`w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 transition
-					${quantity <= 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-gray-200"}`}
+				aria-label="Decrease quantity"
+				className={cn(
+					"w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-white border border-gray-200 text-gray-700 font-semibold transition",
+					square ? "rounded-none" : "rounded-full",
+					quantity <= 1
+						? "opacity-40 cursor-not-allowed"
+						: "hover:bg-gray-100 cursor-pointer shadow-xs",
+				)}
 			>
-				<MinusIcon className="w-8 h-8" />
+				<span className="text-sm leading-none select-none">−</span>
 			</button>
 
-			<span className="w-12 text-lg font-medium text-center text-[1.5rem] select-none">
+			<span className="w-8 sm:w-10 font-semibold text-center select-none text-sm sm:text-base text-gray-900">
 				{quantity}
 			</span>
 
 			<button
+				type="button"
 				onClick={() => handleUpdate(quantity + 1)}
-				className="flex justify-center items-center w-10 h-10 rounded-full transition cursor-pointer bg-black hover:bg-black/80"
+				aria-label="Increase quantity"
+				className={cn(
+					"w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-black text-white font-semibold hover:bg-black/80 transition cursor-pointer shadow-xs",
+					square ? "rounded-none" : "rounded-full",
+				)}
 			>
-				<PlusIcon className="w-8 h-8" color="white" />
+				<span className="text-sm leading-none select-none">+</span>
 			</button>
 		</div>
 	);

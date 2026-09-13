@@ -13,6 +13,8 @@
 
 export interface StoreMoney {
 	calculated_amount: number;
+	/** Prix barré, si le produit/la variante est en réduction. */
+	original_amount?: number;
 	currency_code: string;
 }
 

@@ -95,6 +95,7 @@ export declare const DEFAULT_CURRENCY: CurrencyCode;
 export declare const UPLOAD_ENDPOINTS: {
     readonly catalog: "catalogImage";
     readonly content: "contentImage";
+    readonly reviewPhoto: "reviewPhoto";
 };
 export type UploadEndpoint = (typeof UPLOAD_ENDPOINTS)[keyof typeof UPLOAD_ENDPOINTS];
 //# sourceMappingURL=enums.d.ts.map

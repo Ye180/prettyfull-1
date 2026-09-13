@@ -117,7 +117,7 @@ const ContactForm = () => {
 				<button
 					type="button"
 					onClick={() => setSent(false)}
-					className="mt-10 text-[1.5rem] font-medium underline underline-offset-4 font-manrope hover:no-underline"
+					className="mt-10 text-[1.5rem] font-medium underline underline-offset-4 font-manrope hover:no-underline cursor-pointer"
 				>
 					Écrire un autre message
 				</button>
@@ -274,7 +274,7 @@ const ContactForm = () => {
 				<button
 					type="submit"
 					disabled={send.isPending}
-					className="inline-flex items-center justify-center rounded-full bg-black px-12 py-5 text-[1.5rem] font-medium text-white transition-colors hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-60 font-manrope"
+					className="inline-flex items-center justify-center rounded-full bg-black px-12 py-5 text-[1.5rem] font-medium text-white transition-colors hover:bg-neutral-800 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 font-manrope"
 				>
 					{send.isPending ? "Envoi en cours…" : "Envoyer le message"}
 				</button>

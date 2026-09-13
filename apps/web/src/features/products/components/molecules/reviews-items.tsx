@@ -1,63 +1,56 @@
-import { StarIcon } from "@/components/icons/start.icon";
-import { DropdownMenuSeparator } from "@prettyfull/ui";
+import type { Review } from "@prettyfull/contracts";
+import { StarIcon } from "@prettyfull/ui";
 
-export const ReviewsOneItems = () => {
+const formatDate = (iso: string) =>
+	new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+const Stars = ({ rating }: { rating: number }) => (
+	<div className="flex items-center gap-1">
+		{Array.from({ length: 5 }).map((_, index) => (
+			<span
+				key={index}
+				className={index < rating ? "text-[#ffce31]" : "text-gray-200"}
+			>
+				<StarIcon />
+			</span>
+		))}
+	</div>
+);
+
+const Photos = ({ photoUrls }: { photoUrls: string[] }) => {
+	if (photoUrls.length === 0) return null;
 	return (
-		<div className="space-y-8 max-md:ml-0 md:ml-24 max-sm:hidden ">
-			<div className="flex items-start justify-between ">
-				<div>
-					<div className="text-[1.4rem] font-light flex items-center gap-4">
-						<div className="w-20 h-20 rounded-full bg-amber-700 " />
-						<div>
-							<h5 className="tracking-wide">Marvin McKinney</h5>
-							<div className="flex items-center gap-1">
-								{Array.from({ length: 5 }).map((_, index) => (
-									<span key={index} className=" text-[#ffce31]">
-										<StarIcon />
-									</span>
-								))}
-							</div>
-						</div>
-					</div>
-				</div>
-				<p className="font-light tracking-wide text-gray-500">2 jours avant</p>
-			</div>
-			<p className="pl-2 font-normal tracking-wide text-justify text-black text-[1.5rem]">
-				I love this stores shirt! It's so comfortable and easy to wear with
-				anything. I ended up buying one in every color during their sale. The
-				quality is great too. Thank you!
-			</p>
-
-			<DropdownMenuSeparator />
+		<div className="flex gap-2 pl-2">
+			{photoUrls.map((url) => (
+				// eslint-disable-next-line @next/next/no-img-element
+				<img
+					key={url}
+					src={url}
+					alt="Photo de l'avis"
+					className="w-16 h-16 rounded-xl object-cover border border-gray-200"
+				/>
+			))}
 		</div>
 	);
 };
 
-export const ReviewsResponsive = () => {
+export const ReviewsOneItems = ({ review }: { review: Review }) => {
 	return (
-		<div className="flex flex-col items-center gap-4 p-4 py-8 border-gray-200 rounded-lg border-1 max-md:ml-0 md:ml-24 max-sm:w-fit">
-			<div className="space-y-4 w-[40rem]">
-				<div className="flex items-center justify-between ">
-					<h5 className="tracking-wide text-[1.6rem]">- Marvin McKinney</h5>
-					<div className="flex items-center gap-1">
-						{Array.from({ length: 5 }).map((_, index) => (
-							<span key={index} className=" text-[#ffce31]">
-								<StarIcon />
-							</span>
-						))}
+		<div className="p-6 space-y-4 rounded-2xl border border-gray-200">
+			<div className="flex justify-between items-start">
+				<div className="flex gap-4 items-center text-sm font-light">
+					<div className="w-14 h-14 bg-amber-700 rounded-full" />
+					<div>
+						<h5 className="tracking-wide">{review.authorName}</h5>
+						<Stars rating={review.rating} />
 					</div>
 				</div>
-
-				<p className=" font-normal tracking-wide  text-black text-[1.4rem]">
-					I love this stores shirt! It's so comfortable and easy to wear with
-					anything. I ended up buying one in every color during their sale. The
-					quality is great too. Thank you!
+				<p className="text-sm font-light tracking-wide text-gray-500">
+					{formatDate(review.createdAt)}
 				</p>
 			</div>
-
-			<div className="w-full text-gray-400  text-end text-[1.2rem]">
-				<p> February 15, 2025 </p>
-			</div>
+			<p className="text-base font-normal tracking-wide text-black">{review.body}</p>
+			<Photos photoUrls={review.photoUrls} />
 		</div>
 	);
 };

@@ -1,41 +1,23 @@
 import { Checkbox } from "@prettyfull/ui";
 
 const items = [
-	{
-		id: "robes",
-		label: "Robes",
-	},
-	{
-		id: "ensembles-coordonnés",
-		label: "Ensembles coordonnés",
-	},
-	{
-		id: "hauts",
-		label: "Hauts",
-	},
-	{
-		id: "jupes",
-		label: "Jupes",
-	},
-	{
-		id: "jeans",
-		label: "Jeans",
-	},
+	{ id: "robes", label: "Robes" },
+	{ id: "ensembles-coordonnés", label: "Ensembles coordonnés" },
+	{ id: "hauts", label: "Hauts" },
+	{ id: "jupes", label: "Jupes" },
+	{ id: "jeans", label: "Jeans" },
 ];
 
 const TypeClothes = () => {
 	return (
-		<>
-			{items.map((item, i) => (
-				<div key={i}>
-					<div className="flex items-start gap-4 text-balance max-md:w-fit ">
-						{" "}
-						<Checkbox className="" />
-						<span className="text-[1.5rem]">{item.label}</span>
-					</div>
-				</div>
+		<div className="space-y-3">
+			{items.map((item) => (
+				<label key={item.id} className="flex gap-3 items-center text-sm text-gray-800 cursor-pointer">
+					<Checkbox />
+					{item.label}
+				</label>
 			))}
-		</>
+		</div>
 	);
 };
 

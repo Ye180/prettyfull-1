@@ -7,6 +7,7 @@ import type {
 	FeaturedEntry,
 	Order,
 	Paginated,
+	PaginationMeta,
 	Product,
 	ShippingOption,
 	StaticPage,
@@ -14,6 +15,7 @@ import type {
 } from "@prettyfull/contracts";
 import { storeApi, toQuery } from "./client";
 import {
+	toRawProduct,
 	toStoreBanner,
 	toStoreCategory,
 	toStoreOrder,
@@ -31,18 +33,46 @@ import type { StoreCategory, StoreProduct, StoreRegion } from "./types";
 
 // --- Catalogue -------------------------------------------------------------
 
-export const fetchProducts = async (params: {
+export interface FetchProductsParams {
 	limit?: number;
 	page?: number;
+	sort?: string;
+	order?: "asc" | "desc";
 	categorySlug?: string;
+	categoryId?: string;
 	q?: string;
+	minPrice?: number;
+	maxPrice?: number;
 	isFeatured?: boolean;
-} = {}): Promise<StoreProduct[]> => {
+	tag?: string;
+	stockStatus?: string;
+}
+
+/** Liste paginée : le total/`hasNext` viennent du backend, pas recalculés côté client. */
+export const fetchProducts = async (
+	params: FetchProductsParams = {},
+): Promise<{ products: StoreProduct[]; meta: PaginationMeta }> => {
 	const response = await storeApi.get<Paginated<Product>>(
-		`/api/store/products${toQuery({ limit: 100, ...params })}`,
+		`/api/store/products${toQuery({ limit: 20, ...params })}`,
 	);
 
-	return response.data.map(toStoreProduct);
+	return { products: response.data.map(toStoreProduct), meta: response.meta };
+};
+
+/**
+ * Même requête que `fetchProducts`, mais renvoyée dans la forme « brute »
+ * attendue par `normalizeCollectionProducts`/`normalizeStandaloneProducts` de
+ * `@prettyfull/ui` (voir `toRawProduct`) — c'est ce que consomment les
+ * grilles produit (`CardProduct`/`GridCollectionLayout`), pas `StoreProduct`.
+ */
+export const fetchProductsRaw = async (
+	params: FetchProductsParams = {},
+): Promise<{ products: ReturnType<typeof toRawProduct>[]; meta: PaginationMeta }> => {
+	const response = await storeApi.get<Paginated<Product>>(
+		`/api/store/products${toQuery({ limit: 20, ...params })}`,
+	);
+
+	return { products: response.data.map(toRawProduct), meta: response.meta };
 };
 
 export const fetchProductByHandle = async (
@@ -62,9 +92,10 @@ export const fetchProductByHandle = async (
 
 export const fetchProductsByCategory = async (
 	categorySlug: string,
+	params: { limit?: number } = {},
 ): Promise<StoreProduct[]> => {
 	const response = await storeApi.get<Paginated<Product>>(
-		`/api/store/categories/${encodeURIComponent(categorySlug)}/products?limit=100`,
+		`/api/store/categories/${encodeURIComponent(categorySlug)}/products${toQuery({ limit: 100, ...params })}`,
 	);
 
 	return response.data.map(toStoreProduct);

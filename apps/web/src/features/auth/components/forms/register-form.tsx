@@ -1,23 +1,29 @@
 "use client";
 
 import { EyesClosed, EyesOpen } from "@/components/icons/eyes-icon";
+import { StoreApiError } from "@/lib/store-api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@prettyfull/ui";
+import { Button, Input, toast } from "@prettyfull/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Flex from "../../../../../../../packages/ui/src/layouts/helpers/flex";
+import { useRegister } from "../../api/register";
 import {
 	registerSchema,
 	type RegisterFormData,
 } from "../../schemas/register.schema";
 
-export function RegisterForm() {
-	const router = useRouter();
+interface RegisterFormProps {
+	/** Called instead of the default redirect on success — used by the quick-auth modal to close itself. */
+	onSuccess?: () => void;
+	/** Renders "Login" as a button instead of a Link — used by the quick-auth modal to switch mode in place. */
+	onSwitchMode?: () => void;
+}
 
-	// Redirect if already authenticated
-	// useAuthRedirect("/account");
+export function RegisterForm({ onSuccess, onSwitchMode }: RegisterFormProps = {}) {
+	const router = useRouter();
 
 	const {
 		register,
@@ -27,15 +33,25 @@ export function RegisterForm() {
 		resolver: zodResolver(registerSchema),
 	});
 
-	const [loading, setLoading] = useState(false);
+	const registerMutation = useRegister();
 	const [showPassword, setShowPassword] = useState(false);
 
 	const onSubmit = async (data: RegisterFormData) => {
-		if (!data.email || !data.password) {
-			return;
+		try {
+			await registerMutation.mutateAsync(data);
+			toast.success("Compte créé, bienvenue !");
+			if (onSuccess) {
+				onSuccess();
+			} else {
+				router.push("/account");
+			}
+		} catch (error) {
+			toast.error(
+				error instanceof StoreApiError
+					? error.message
+					: "Inscription impossible. Veuillez réessayer.",
+			);
 		}
-		setLoading(true);
-		router.push("/login");
 	};
 
 	return (
@@ -103,14 +119,24 @@ export function RegisterForm() {
 					settings={{ isColumn: true, align: "center", spacing: "gap-10" }}
 					className="mt-[5.2rem]"
 				>
-					<Button type="submit" fullWidth>
+					<Button type="submit" isLoading={registerMutation.isPending} fullWidth>
 						Create Account
 					</Button>
 					<p className="font-medium text-grey">
 						Already have an account?{" "}
-						<Link href="/login" className="text-black underline">
-							Login
-						</Link>
+						{onSwitchMode ? (
+							<button
+								type="button"
+								onClick={onSwitchMode}
+								className="text-black underline cursor-pointer"
+							>
+								Login
+							</button>
+						) : (
+							<Link href="/login" className="text-black underline">
+								Login
+							</Link>
+						)}
 					</p>
 				</Flex>
 			</form>

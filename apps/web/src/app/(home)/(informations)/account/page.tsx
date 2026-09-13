@@ -18,7 +18,7 @@ import { OrderIcon } from "../../../../../../../packages/ui/src/icons/order.icon
 
 const StatCard = ({ icon: Icon, label, value, href }: any) => (
 	<Link href={href} className="block group">
-		<div className="p-6 h-60 bg-white rounded-md border border-gray-100 transition-all duration-200">
+		<div className="p-6 h-60 bg-white rounded-2xl border border-gray-100 transition-all duration-200">
 			<div className="flex flex-col justify-between items-start">
 				<div className="">
 					<p className="font-medium text-gray-500 text-md">{label}</p>
@@ -156,7 +156,7 @@ export default function AccountPage() {
 					icon={Heart}
 					label="Wishlist"
 					value="0"
-					href="/account/wishlist"
+					href="/wishlist"
 				/>
 				<StatCard
 					icon={AddressIcon}
@@ -167,7 +167,7 @@ export default function AccountPage() {
 			</div>
 
 			<div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-				<div className="flex flex-col justify-between p-6 bg-white border border-gray-100 rounded-md!">
+				<div className="flex flex-col justify-between p-6 bg-white border border-gray-100 rounded-2xl!">
 					<div className="space-y-10">
 						<div className="flex justify-between items-center">
 							<p className=" text-gray-800 font-semibold text-xl! ">
@@ -185,7 +185,7 @@ export default function AccountPage() {
 							<Skeleton className="w-full h-24" />
 						) : lastOrder ? (
 							<div className="flex gap-4">
-								<div className="overflow-hidden w-24 h-24 bg-gray-100 rounded-lg shrink-0">
+								<div className="overflow-hidden w-24 h-24 bg-gray-100 rounded-2xl shrink-0">
 									{lastOrder.items?.[0]?.thumbnail && (
 										<Image
 											src={lastOrder.items[0].thumbnail}
@@ -227,7 +227,7 @@ export default function AccountPage() {
 					</Link>
 				</div>
 
-				<div className="flex flex-col justify-between p-6 bg-white border border-gray-100 rounded-md!">
+				<div className="flex flex-col justify-between p-6 bg-white border border-gray-100 rounded-2xl!">
 					<div className="space-y-10">
 						<div className="flex justify-between items-center mb-4">
 							<p className=" text-gray-800 font-semibold  text-xl! ">
@@ -270,7 +270,7 @@ export default function AccountPage() {
 						<p className="text-gray-500">Update your login information.</p>
 					</div>
 				</div>
-				<div className="px-8 py-12 bg-white border border-gray-100 rounded-md!">
+				<div className="px-8 py-12 bg-white border border-gray-100 rounded-2xl!">
 					<form className="space-y-10 w-full" onSubmit={handleSaveProfile}>
 						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 							<Input

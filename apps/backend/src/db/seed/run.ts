@@ -42,6 +42,7 @@ const skuBase = (slug: string): string => slug.toUpperCase().replaceAll("-", "")
  */
 const TABLES_TO_CLEAR = [
 	"audit_logs",
+	"reviews",
 	"stock_movements",
 	"stock_reservations",
 	"transactions",
@@ -605,6 +606,9 @@ const run = async (): Promise<void> => {
 
 	const { seedOrders } = await import("./orders.js");
 	await seedOrders({ adminId, customerId });
+
+	const { seedReviews } = await import("./reviews.js");
+	await seedReviews(catalog.productIdBySlug);
 
 	console.log("\nseed terminé.");
 	console.log(`  back-office : admin@prettyfull.shop / ${DEMO_PASSWORD}`);

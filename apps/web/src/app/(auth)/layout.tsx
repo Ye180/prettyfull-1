@@ -1,26 +1,14 @@
-import Image from "next/image";
-import AuthLayout from "../../../../../packages/ui/src/layouts/auth-layout";
+import HomeLayout from "@/components/layout/home-layout";
+import { PropsWithChildren } from "react";
 
-const AuthRootLayout = ({ children }: { children: React.ReactNode }) => {
+// ponytail: auth pages reuse the site's normal chrome (header/footer) instead
+// of a bespoke split-screen layout — keeps nav/logo/cart reachable and
+// matches the rest of the site with zero extra design work.
+const AuthRootLayout = ({ children }: PropsWithChildren<{}>) => {
 	return (
-		<AuthLayout
-			children={children}
-			settings={{
-				leftClassname: "sm:basis-[25%]  md:basis-0",
-				rightClassname: "hidden sm:flex",
-			}}
-			rightChildren={
-				<div>
-					<Image
-						className="object-cover object-top-right"
-						src="/home/cover-box-7.jpg"
-						fill
-						priority
-						alt="Auth Right Background"
-					/>
-				</div>
-			}
-		/>
+		<HomeLayout className="max-w-md mx-auto py-16 px-4">
+			{children}
+		</HomeLayout>
 	);
 };
 

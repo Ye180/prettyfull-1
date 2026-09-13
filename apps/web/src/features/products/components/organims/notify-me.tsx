@@ -89,12 +89,12 @@ export const NotifyMeModal = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="max-w-4xl p-0 overflow-hidden border-none rounded-lg"
+        className="max-w-4xl p-0 overflow-hidden border-none rounded-3xl"
       >
         <div className="relative max-h-[90vh] overflow-y-auto">
           <button
             onClick={onClose}
-            className="absolute z-10 p-2 bg-white rounded-full top-4 right-4"
+            className="absolute z-10 p-2 bg-white rounded-full top-4 right-4 cursor-pointer"
           >
             <CloseIcon className="w-8 h-8" />
           </button>
@@ -106,13 +106,13 @@ export const NotifyMeModal = ({
             </DialogHeader>
 
 						<div className="flex items-center gap-6">
-							<div className="relative w-24 h-24 bg-gray-100 rounded-md shrink-0">
+							<div className="relative w-24 h-24 bg-gray-100 rounded-2xl shrink-0">
 								<Image
 									src={variant.image}
 									alt={product.name}
 									layout="fill"
 									objectFit="cover"
-									className="rounded-md"
+									className="rounded-2xl"
 								/>
 							</div>
 							<div className="space-y-1">

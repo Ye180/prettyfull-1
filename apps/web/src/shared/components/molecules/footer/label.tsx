@@ -1,51 +1,29 @@
-// import { ArrowRightIcon } from "@/components/icons/arrow-linear-icon";
-import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
 import { SOCIALS_DATA_FOOTER } from "@/lib/utils/constants/constants";
 import Link from "next/link";
 
 const DescriptionFooter = () => {
 	return (
-		<div className="flex flex-col space-y-10 text-md max-lg:w-full lg:w-2/6 md:items-start">
-			<h3 className="text-[3.5rem]! font-semibold tracking-wider">
-				PRETTYFULL
-			</h3>
-			<p className="w-full font-light leading-relaxed text-white/80">
-				Prettyfull is a sustainable fashion brand that creates stylish,
-				igh-quality clothing for confident self-expression. Join us or modern
-				fashion with a classic twist.
-			</p>
-
-			{/* Newsletter */}
-			<div className="w-full max-w-sm">
-				<label htmlFor="email" className="font-semibold tracking-wider">
-					EMAIL
-				</label>
-				<div className="relative mt-2">
-					<input
-						type="email"
-						id="email"
-						className="py-2 pr-10 w-full bg-transparent border-b border-gray-600 outline-none focus:border-white focus:ring-0"
-						placeholder="Your email address"
-					/>
-					<button className="flex absolute inset-y-0 right-0 items-center pr-3 cursor-pointer">
-						<ArrowLinearIcon className="text-gray-400 transition-colors rotate-90 hover:text-white" />
-					</button>
-				</div>
-			</div>
-
-			{/* Socials */}
-			<div className="flex space-x-6 md:justify-start">
-				{SOCIALS_DATA_FOOTER.map((items, index) => (
+		<div className="flex flex-col space-y-6 text-[1.4rem] lg:col-span-1">
+			{/* Socials - circular outline buttons */}
+			<div className="flex items-center gap-3">
+				{SOCIALS_DATA_FOOTER.map((item, index) => (
 					<Link
 						key={index}
-						href={items.href}
-						aria-label={items.label}
-						className="text-gray-400 transition-colors text-md! hover:text-white"
+						href={item.href}
+						aria-label={item.label}
+						className="flex items-center justify-center w-10 h-10 rounded-full border border-white/30 text-white hover:border-white hover:bg-white hover:text-black transition-all"
 					>
-						{<items.icon />}
+						<item.icon size={16} />
 					</Link>
 				))}
 			</div>
+
+			<p className="w-full text-white/70 leading-relaxed text-[1.4rem]">
+				4567 Oak Avenue, Rivertown, CA 90210, is a charming area with friendly
+				faces.
+			</p>
+			<p className="text-white/70 text-[1.4rem]">info@prettyfull.com</p>
+			<p className="text-white/70 text-[1.4rem]">(+89) 090 800 123</p>
 		</div>
 	);
 };

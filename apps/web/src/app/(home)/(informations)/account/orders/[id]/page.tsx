@@ -356,7 +356,7 @@ export default function OrderDetailPage() {
 			<div className="space-y-6">
 				<button
 					onClick={() => router.back()}
-					className="flex gap-2 items-center text-sm text-gray-600 transition-colors hover:text-black"
+					className="flex gap-2 items-center text-sm text-gray-600 transition-colors hover:text-black cursor-pointer"
 				>
 					<ArrowLeftIcon className="w-4 h-4" />
 					Retour
@@ -441,14 +441,14 @@ export default function OrderDetailPage() {
 							<button
 								onClick={() => setShowCancelConfirm(false)}
 								disabled={isCancelling}
-								className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50"
+								className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								Keep order
 							</button>
 							<button
 								onClick={handleCancelOrder}
 								disabled={isCancelling}
-								className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50"
+								className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								{isCancelling ? "Cancelling..." : "Yes, cancel"}
 							</button>
@@ -460,7 +460,7 @@ export default function OrderDetailPage() {
 			<div className="space-y-4">
 				<button
 					onClick={() => router.back()}
-					className="flex gap-2 items-center text-sm text-gray-500 transition-colors hover:text-black"
+					className="flex gap-2 items-center text-sm text-gray-500 transition-colors hover:text-black cursor-pointer"
 				>
 					<ArrowLeftIcon className="w-4 h-4" />
 					Back to orders
@@ -490,7 +490,7 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2">
 						<button
 							onClick={handleCopyOrderId}
-							className="flex gap-2 items-center self-start px-4 py-2 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg border border-gray-200 transition-all hover:bg-gray-100"
+							className="flex gap-2 items-center self-start px-4 py-2 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg border border-gray-200 transition-all hover:bg-gray-100 cursor-pointer"
 						>
 							<CopyIcon className="w-3.5 h-3.5" />
 							{copied ? "Copied!" : "Copy ID"}
@@ -498,7 +498,7 @@ export default function OrderDetailPage() {
 						{isCancellable && (
 							<button
 								onClick={() => { setShowCancelConfirm(true); setCancelError(null); }}
-								className="flex gap-2 items-center self-start px-4 py-2 text-xs font-medium text-red-600 bg-red-50 rounded-lg border border-red-200 transition-all hover:bg-red-100"
+								className="flex gap-2 items-center self-start px-4 py-2 text-xs font-medium text-red-600 bg-red-50 rounded-lg border border-red-200 transition-all hover:bg-red-100 cursor-pointer"
 							>
 								<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
 								Cancel order
@@ -619,7 +619,7 @@ export default function OrderDetailPage() {
 							className="flex gap-4 items-center p-6 transition-colors hover:bg-gray-50/50"
 						>
 							{item.thumbnail && (
-								<div className="overflow-hidden w-20 h-24 bg-gray-100 rounded-lg border border-gray-200 shrink-0">
+								<div className="overflow-hidden w-20 h-24 bg-gray-100 rounded-2xl border border-gray-200 shrink-0">
 									<Image
 										src={item.thumbnail + "?view=1"}
 										alt={item.product_title || "Produit"}

@@ -9,13 +9,37 @@
 		},
 
 		"hero": {
-			"title": "Clothing designed to enhance every moment.",
-			"subtitle": "Discover the elegance of timeless clothing, designed to elevate your style, boost your confidence, and reveal your uniqueness. Comfortable, versatile, and crafted to make every moment unforgettable.",
+			"eyebrowLeft": "All Styles",
+			"eyebrowCenter": "Shop Everything",
+			"eyebrowRight": "Everyday Wear",
+			"title": "New Season Essentials",
+			"subtitle": "Soft silhouettes and modern staples for everyday wear.",
 			"ctaButton": "Shop Now"
+		},
+		"promoDuo": {
+			"saleTitle": "Mid-Season Sale",
+			"saleSubtitle": "Up to 40% off selected styles",
+			"saleCta": "Shop Sale",
+			"knitwearTitle": "Everyday Knitwear",
+			"knitwearSubtitle": "Lightweight layers you'll reach for daily",
+			"knitwearCta": "Explore"
+		},
+		"shopByCollection": {
+			"title": "Shop by Collection",
+			"jacket": "Jacket",
+			"tshirts": "T-Shirts",
+			"shorts": "Shorts",
+			"ctaButton": "See Collection"
 		},
 		"news": {
 			"title": "News Arrivals",
 			"viewAll": "View all"
+		},
+		"bestSelling": {
+			"title": "Explore Our Best Selling Product Collection",
+			"subtitle": "Discover and dive into our most popular and best-selling categories that everyone is talking about!",
+			"ctaButton": "Let's Shop Now",
+			"allLabel": "All Collection"
 		},
 		"containers": {
 			"paragraph1": "We are committed to providing you with a seamless and enjoyable shopping experience."
@@ -36,6 +60,41 @@
 			"woman": "Woman",
 			"men": "Men",
 			"accessory": "Accessory"
+		},
+		"howItWorks": {
+			"title": "Order in 3 steps",
+			"description": "From your screen to your door in Abidjan.",
+			"step1Title": "Browse",
+			"step1Description": "Explore the collection and pick your favorites.",
+			"step2Title": "Order",
+			"step2Description": "Checkout securely in a few clicks.",
+			"step3Title": "We ship to Abidjan",
+			"step3Description": "Your order is packed and shipped straight to your door."
+		},
+		"trust": {
+			"title": "Loved by our customers",
+			"quote": "The quality is even better than in the photos, and it arrived in Abidjan faster than I expected. I'm already planning my next order.",
+			"author": "Aïcha K.",
+			"role": "Verified customer"
+		},
+		"features": {
+			"title": "We Deliver Exceptional Customer Experiences",
+			"description": "We are committed to delivering exceptional customer experiences that exceed expectations and make every interaction memorable.",
+			"paymentTitle": "Secure payment",
+			"paymentDescription": "Your transactions are encrypted and protected.",
+			"deliveryTitle": "Delivery to Abidjan",
+			"deliveryDescription": "Fast, tracked shipping straight to your door.",
+			"returnsTitle": "Easy returns",
+			"returnsDescription": "Not the right fit? Return it hassle-free."
+		},
+		"finalCta": {
+			"title": "Let's Take Your Fashion to The Stratosphere",
+			"subtitle": "Ready to elevate your style? Let's launch your fashion into the stratosphere with bold choices and unique pieces.",
+			"ctaButton": "Get Started Now"
+		},
+		"featuredProduct": {
+			"label": "New Collection",
+			"addToCart": "Add to Cart"
 		}
 	},
 	"CollectionPage": {
@@ -44,7 +103,9 @@
 			"type_clothes": "Best Sellers",
 			"colors": "Colors",
 			"adjust": "Adjust",
-			"taille": "Size"
+			"taille": "Size",
+			"clear": "Clear",
+			"apply": "Apply"
 		}
 	},
 	"Cart": {
@@ -53,12 +114,16 @@
 		},
 		"summary": {
 			"title": " Summary",
+			"totalPrize": "Total Prize",
 			"subtotal": "Subtotal",
 			"shipping": "Shipping",
 			"taxes": "Estimate Duties And Taxes",
 			"total": "Total",
 			"checkout": "Checkout",
-			"apply": "Apply"
+			"apply": "Apply",
+			"couponsCode": "Coupons Code",
+			"couponPlaceholder": "Enter code",
+			"couponComingSoon": "Coupons coming soon"
 		}
 	},
 	"Wishlist": {

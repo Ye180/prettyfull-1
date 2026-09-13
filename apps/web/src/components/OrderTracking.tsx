@@ -111,7 +111,7 @@ export function OrderTrackingComponent({
 					</p>
 					<button
 						onClick={reconnect}
-						className="px-4 py-2 mt-2 text-white bg-red-600 rounded transition hover:bg-red-700"
+						className="px-4 py-2 mt-2 text-white bg-red-600 rounded transition hover:bg-red-700 cursor-pointer"
 					>
 						Reconnecter
 					</button>

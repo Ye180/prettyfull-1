@@ -1,35 +1,39 @@
 import { serve } from "@hono/node-server";
+import { Scalar } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
+import { bodyLimit } from "hono/body-limit";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { secureHeaders } from "hono/secure-headers";
-import { bodyLimit } from "hono/body-limit";
+import { openApiDocument } from "./docs/openapi.js";
 import { env, isProduction } from "./lib/env.js";
-import { errorHandler, notFoundHandler } from "./middleware/error.js";
-import { requestContext, type AppEnv } from "./middleware/request-context.js";
 import { requireAuth, requireKind } from "./middleware/auth.js";
-import { adminAuthRoutes, storeAuthRoutes } from "./modules/auth/routes.js";
+import { errorHandler, notFoundHandler } from "./middleware/error.js";
+import { type AppEnv, requestContext } from "./middleware/request-context.js";
 import { storeAddressRoutes } from "./modules/auth/addresses.js";
-import { adminUsersRoutes } from "./modules/users/routes.js";
+import { adminAuthRoutes, storeAuthRoutes } from "./modules/auth/routes.js";
+import { storeCartRoutes } from "./modules/cart/routes.js";
 import { adminCatalogRoutes } from "./modules/catalog/routes.js";
 import { storeCatalogRoutes } from "./modules/catalog/store-routes.js";
+import { adminCmsRoutes, storeCmsRoutes } from "./modules/cms/routes.js";
+import { adminDashboardRoutes } from "./modules/dashboard/routes.js";
+import { adminIntegrationsRoutes } from "./modules/integrations/routes.js";
 import { adminInventoryRoutes } from "./modules/inventory/routes.js";
 import {
 	adminOrdersRoutes,
 	storeOrderConfirmationRoutes,
 	storeOrdersRoutes,
 } from "./modules/orders/routes.js";
-import { storeCartRoutes } from "./modules/cart/routes.js";
-import { adminIntegrationsRoutes } from "./modules/integrations/routes.js";
+import { adminReviewRoutes, storeReviewRoutes } from "./modules/reviews/routes.js";
 import { adminSettingsRoutes } from "./modules/settings/routes.js";
-import { adminCmsRoutes, storeCmsRoutes } from "./modules/cms/routes.js";
-import { adminDashboardRoutes } from "./modules/dashboard/routes.js";
-import { webhookRoutes } from "./modules/webhooks/routes.js";
 import { storeMiscRoutes } from "./modules/store/routes.js";
-import { adminUploadRoutes, uploadthingRoutes } from "./modules/uploads/routes.js";
+import {
+	adminUploadRoutes,
+	uploadthingRoutes,
+} from "./modules/uploads/routes.js";
+import { adminUsersRoutes } from "./modules/users/routes.js";
+import { webhookRoutes } from "./modules/webhooks/routes.js";
 import { startReservationSweeper } from "./tasks/reservation-sweeper.js";
-import { Scalar } from "@scalar/hono-api-reference";
-import { openApiDocument } from "./docs/openapi.js";
 
 const app = new Hono<AppEnv>();
 
@@ -48,7 +52,7 @@ app.use("*", bodyLimit({ maxSize: 2 * 1024 * 1024 }));
 app.use(
 	"*",
 	cors({
-		origin: env.CORS_ORIGINS,
+		origin: process.env.CORS_ORIGINS?.split(","),
 		credentials: true,
 		allowHeaders: ["Content-Type", "Authorization", "X-Request-Id"],
 		allowMethods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
@@ -67,7 +71,11 @@ app.get("/openapi.json", (c) => c.json(openApiDocument));
 
 app.get(
 	"/docs",
-	Scalar({ url: "/openapi.json", pageTitle: "API PrettyFull", theme: "default" }),
+	Scalar({
+		url: "/openapi.json",
+		pageTitle: "API PrettyFull",
+		theme: "default",
+	}),
 );
 
 app.get("/health", (c) =>
@@ -106,6 +114,15 @@ app.route("/api/store", storeCatalogRoutes);
 app.route("/api/store", storeCartRoutes);
 app.route("/api/store", storeCmsRoutes);
 app.route("/api/store", storeMiscRoutes);
+/**
+ * Montées avant les routes ci-dessous : `storeOrdersRoutes` et
+ * `storeAddressRoutes` posent chacune un garde `use("*", requireAuth, ...)`
+ * sur leur propre routeur, qui — une fois aplati par `.route()` sous le même
+ * préfixe `/api/store` — devient un middleware `/api/store/*` s'appliquant à
+ * toute route montée après lui, avis compris. Les monter avant évite que les
+ * routes publiques héritent d'un garde qui ne les concerne pas.
+ */
+app.route("/api/store", storeReviewRoutes);
 app.route("/api/store", storeOrdersRoutes);
 app.route("/api/store", storeAddressRoutes);
 
@@ -119,6 +136,7 @@ app.route("/api/admin", adminInventoryRoutes);
 app.route("/api/admin", adminOrdersRoutes);
 app.route("/api/admin", adminIntegrationsRoutes);
 app.route("/api/admin", adminCmsRoutes);
+app.route("/api/admin", adminReviewRoutes);
 app.route("/api/admin", adminSettingsRoutes);
 app.route("/api/admin", adminUploadRoutes);
 
