@@ -44,11 +44,13 @@ function buildNormalizedColor(product: RawProduct): NormalizedColorVariant {
   // Label de la couleur extrait du titre
   const label = extractColorLabelFromTitle(product.title);
 
-  // Récupérer les tailles depuis les options ou les variants
+  // Récupérer les tailles depuis l'option dédiée uniquement — sans option
+  // "Size"/"Taille", un produit n'a pas de déclinaison de taille. Retomber
+  // sur le titre des variants était une erreur : pour un produit sans
+  // variante, ce titre EST le nom du produit lui-même (cf. `buildVariants`
+  // côté storefront), qui se retrouvait alors affiché comme une "taille".
   const sizeOption = getSizeOption(product);
-  const sizes = sizeOption
-    ? sizeOption.values.map((v) => v.value)
-    : product.variants.map((v) => v.title);
+  const sizes = sizeOption ? sizeOption.values.map((v) => v.value) : [];
 
   // Mapper les variants avec leur taille
   const variants: NormalizedVariant[] = product.variants.map((variant) => {
@@ -76,9 +78,10 @@ function buildNormalizedColor(product: RawProduct): NormalizedColorVariant {
   // Trier les images par rank
   const sortedImages = [...(product.images ?? [])].sort((a, b) => a.rank - b.rank);
 
-  // Thumbnail principal
-  const thumbnail =
-    product.thumbnail || sortedImages[0]?.url || "/placeholder-product.png";
+  // Thumbnail principal — laissé vide si le produit n'a réellement aucun
+  // visuel : CardProduct affiche alors son propre repli plutôt qu'une image
+  // cassée pointant vers un fichier qui n'existe pas.
+  const thumbnail = product.thumbnail || sortedImages[0]?.url || "";
 
   return {
     colorCode,

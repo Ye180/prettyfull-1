@@ -5,6 +5,7 @@
 // =============================================================================
 
 import { cn, formatCurrency_FR, getMediaUrl } from "@prettyfull/utils";
+import { ImageOff } from "lucide-react";
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -190,8 +191,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 		);
 	}
 
-	const thumbnailSrc =
-		getMediaUrl(activeColor.thumbnail) ?? "/images/placeholder.png";
+	const thumbnailSrc = getMediaUrl(activeColor.thumbnail);
 
 	return (
 		<article className={cn("pb-4 space-y-3 w-full group", className)}>
@@ -201,27 +201,37 @@ export const CardProduct: React.FC<CardProductProps> = ({
 				onClick={handleNavigate}
 			>
 				<div className="relative w-full aspect-3/4">
-					{isImageLoading && (
-						<div className="flex absolute inset-0 z-10 justify-center items-center bg-gray-100">
-							<div className="w-8 h-8 rounded-full border-2 border-gray-300 animate-spin border-t-black" />
+					{thumbnailSrc ? (
+						<>
+							{isImageLoading && (
+								<div className="flex absolute inset-0 z-10 justify-center items-center bg-gray-100">
+									<div className="w-8 h-8 rounded-full border-2 border-gray-300 animate-spin border-t-black" />
+								</div>
+							)}
+
+							<Image
+								src={thumbnailSrc}
+								alt={`${product.collectionTitle} - ${activeColor.label}`}
+								width={600}
+								height={800}
+								sizes="(max-width: 639px) 50vw, (max-width: 1024px) 33vw, 25vw"
+								className={cn(
+									"object-cover transition-opacity duration-300",
+									isImageLoading ? "opacity-0" : "opacity-100",
+								)}
+								onLoad={() => setIsImageLoading(false)}
+								onError={() => setIsImageLoading(false)}
+								unoptimized
+								priority={priority}
+							/>
+						</>
+					) : (
+						// Visuel manquant : un repli neutre plutôt qu'une image cassée —
+						// la carte reste affichée, avec sa couleur, son prix et ses tailles.
+						<div className="flex absolute inset-0 justify-center items-center bg-gray-100">
+							<ImageOff className="w-10 h-10 text-gray-300" strokeWidth={1.25} />
 						</div>
 					)}
-
-					<Image
-						src={thumbnailSrc}
-						alt={`${product.collectionTitle} - ${activeColor.label}`}
-						width={600}
-						height={800}
-						sizes="(max-width: 639px) 50vw, (max-width: 1024px) 33vw, 25vw"
-						className={cn(
-							"object-cover transition-opacity duration-300",
-							isImageLoading ? "opacity-0" : "opacity-100",
-						)}
-						onLoad={() => setIsImageLoading(false)}
-						onError={() => setIsImageLoading(false)}
-						unoptimized
-						priority={priority}
-					/>
 
 					{/* Boutons d'action desktop (hover) */}
 					<div className="flex absolute right-0 left-0 bottom-4 gap-3 justify-between items-center px-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-md:hidden">
@@ -321,10 +331,16 @@ export const CardProduct: React.FC<CardProductProps> = ({
 			{/* ===== Infos produit ===== */}
 			<div className="space-y-2">
 				<div className="flex justify-between items-start text-[#000]">
-					<h3 className="tracking-[0.03em] text-2xl! max-md:text-[1.8rem]! truncate line-clamp-1">
+					{/*
+					 * `min-w-0` est indispensable : sans lui, un enfant flex ne
+					 * rétrécit jamais sous sa largeur intrinsèque, et `truncate`
+					 * n'a plus rien à couper — le titre déborde alors sous la
+					 * ligne de couleurs au lieu d'être tronqué proprement.
+					 */}
+					<h3 className="min-w-0 flex-1 tracking-[0.03em] text-2xl! max-md:text-[1.8rem]! truncate">
 						{activeColor?.title}
 					</h3>
-					<h3 className="tracking-[0.03em] text-2xl! max-md:text-[1.8rem]! whitespace-nowrap!">
+					<h3 className="shrink-0 tracking-[0.03em] text-2xl! max-md:text-[1.8rem]! whitespace-nowrap!">
 						{formatCurrency_FR(activeColor?.price, currencySymbol)}
 					</h3>
 				</div>
@@ -335,6 +351,17 @@ export const CardProduct: React.FC<CardProductProps> = ({
 					onChange={handleSelectColor}
 					hidden={product.isStandalone}
 				/>
+
+				{availableSizes.length > 0 && (
+					<SizeSelector
+						sizes={availableSizes}
+						unavailableSizes={unavailableSizes}
+						selectedSize={selectedSize}
+						onChange={handleSelectSize}
+						onClick={(e, size) => handleAddToCart(e, size)}
+						compact
+					/>
+				)}
 			</div>
 		</article>
 	);

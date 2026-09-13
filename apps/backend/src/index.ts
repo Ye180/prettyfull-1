@@ -50,7 +50,19 @@ app.use(
 	cors({
 		origin: env.CORS_ORIGINS,
 		credentials: true,
-		allowHeaders: ["Content-Type", "Authorization", "X-Request-Id"],
+		allowHeaders: [
+			"Content-Type",
+			"Authorization",
+			"X-Request-Id",
+			// Requis par le client UploadThing.
+			"X-Uploadthing-Package",
+			"X-Uploadthing-Version",
+			// Propagation de trace ajoutée automatiquement par Next.js aux
+			// requêtes fetch (W3C Trace Context et B3).
+			"traceparent",
+			"tracestate",
+			"b3",
+		],
 		allowMethods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
 		exposeHeaders: ["X-Request-Id"],
 		maxAge: 86_400,

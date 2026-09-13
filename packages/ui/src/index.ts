@@ -41,6 +41,7 @@ export {
     ChevronUp,
     Globe,
     Heart,
+    ImageOff,
     Menu,
     Minus,
     Plus,

@@ -5,6 +5,7 @@ import {
 	Button,
 	CardProduct,
 	GridCardProduct,
+	ImageOff,
 	normalizeCollectionProducts,
 	RawCollectionProduct,
 } from "@prettyfull/ui";
@@ -90,17 +91,23 @@ const CategoryImage = ({
 	imageUrl,
 	dealLabel,
 }: {
-	imageUrl: string;
+	imageUrl?: string;
 	dealLabel: string;
 }) => (
 	<div className={IMAGE_CONTAINER_CLASS}>
-		<Image
-			src={imageUrl}
-			alt="Collection image"
-			fill
-			sizes="(max-width: 768px) 100vw, 50vw"
-			className="object-cover h-full"
-		/>
+		{imageUrl ? (
+			<Image
+				src={imageUrl}
+				alt="Collection image"
+				fill
+				sizes="(max-width: 768px) 100vw, 50vw"
+				className="object-cover h-full"
+			/>
+		) : (
+			<div className="flex absolute inset-0 justify-center items-center w-full h-full bg-gray-100">
+				<ImageOff className="w-12 h-12 text-gray-300" strokeWidth={1.25} />
+			</div>
+		)}
 		<div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-t from-black/40 to-black/0" />
 		<div className="flex static z-20 justify-between items-center p-8 pb-16 w-full">
 			<h4 className="text-[16px] text-white">{dealLabel}</h4>
@@ -140,62 +147,60 @@ const ModeCollection = ({ fourth }: ModeCollectionProps) => {
 	const title = fourth?.title || t("title");
 	const description = fourth?.description || t("subtitle");
 	const ctaLabel = t("ctaButton");
-	const imageUrl =
-		getMediaUrl(firstCategory?.product_category_image?.[0]?.url) ?? "";
+	const imageUrl = getMediaUrl(firstCategory?.product_category_image?.[0]?.url);
 
+	// La section reste affichée même sans bannière catégorie configurée — ses
+	// vrais produits n'ont aucune raison de disparaître pour ça. Seule
+	// l'image retombe sur un repli neutre (cf. CategoryImage).
 	return (
-		<>
-			{(firstCategory?.product_category_image?.length ?? 0) > 0 && (
-				<Container
-					maxWidth="100vw"
-					className="flex gap-x-12 justify-between items-start px-4 lg:px-40 max-md:flex-col h-fit max-md:space-y-12"
-				>
-					<SectionHeader
-						title={title}
-						description={description}
-						ctaLabel={ctaLabel}
-						variant="mobile"
-						isLoading={isLoading}
-					/>
+		<Container
+			maxWidth="100vw"
+			className="flex gap-x-12 justify-between items-start px-4 lg:px-40 max-md:flex-col h-fit max-md:space-y-12"
+		>
+			<SectionHeader
+				title={title}
+				description={description}
+				ctaLabel={ctaLabel}
+				variant="mobile"
+				isLoading={isLoading}
+			/>
 
-					{isLoading || !firstCategory ? (
-						<LoadingPrettyfull className="w-full md:w-1/2 h-160 md:h-[90vh]" />
-					) : (
-						<CategoryImage imageUrl={imageUrl} dealLabel={t("deal")} />
-					)}
-					<div className="overflow-hidden space-y-12 w-full md:w-1/2 h-fit">
-						<SectionHeader
-							title={title}
-							description={description}
-							ctaLabel={ctaLabel}
-							variant="desktop"
-							isLoading={isLoading}
-						/>
-						{loadingProductsSameCollection ? (
-							<div className="grid grid-cols-2 gap-4">
-								{Array.from({ length: 2 }, (_, i) => (
-									<div key={i} className="space-y-3 animate-pulse">
-										<div className="w-full bg-gray-200 rounded-lg h-200" />
-										<div className="w-3/4 h-6 bg-gray-200 rounded" />
-										<div className="w-1/3 h-6 bg-gray-300 rounded" />
-									</div>
-								))}
-							</div>
-						) : (
-							<GridCardProduct classGrid="grid grid-cols-2">
-								{normalizedProducts.map((product) => (
-									<CardProduct
-										key={product.collectionId}
-										product={product}
-										currencyCode={currencyCode}
-									/>
-								))}
-							</GridCardProduct>
-						)}
-					</div>
-				</Container>
+			{isLoading ? (
+				<LoadingPrettyfull className="w-full md:w-1/2 h-160 md:h-[90vh]" />
+			) : (
+				<CategoryImage imageUrl={imageUrl} dealLabel={t("deal")} />
 			)}
-		</>
+			<div className="overflow-hidden space-y-12 w-full md:w-1/2 h-fit">
+				<SectionHeader
+					title={title}
+					description={description}
+					ctaLabel={ctaLabel}
+					variant="desktop"
+					isLoading={isLoading}
+				/>
+				{loadingProductsSameCollection ? (
+					<div className="grid grid-cols-2 gap-4">
+						{Array.from({ length: 2 }, (_, i) => (
+							<div key={i} className="space-y-3 animate-pulse">
+								<div className="w-full bg-gray-200 rounded-lg h-200" />
+								<div className="w-3/4 h-6 bg-gray-200 rounded" />
+								<div className="w-1/3 h-6 bg-gray-300 rounded" />
+							</div>
+						))}
+					</div>
+				) : (
+					<GridCardProduct classGrid="grid grid-cols-2">
+						{normalizedProducts.map((product) => (
+							<CardProduct
+								key={product.collectionId}
+								product={product}
+								currencyCode={currencyCode}
+							/>
+						))}
+					</GridCardProduct>
+				)}
+			</div>
+		</Container>
 	);
 };
 

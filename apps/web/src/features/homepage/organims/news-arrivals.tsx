@@ -1,7 +1,7 @@
 import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
 import { LoadingPrettyfull } from "@/shared/components/molecules/core/loading-prettyfull";
 import Title from "@/shared/components/molecules/core/title";
-import { Button } from "@prettyfull/ui";
+import { Button, ImageOff } from "@prettyfull/ui";
 import { cn, getMediaUrl } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -24,19 +24,25 @@ const CategoryCard = ({
 	className,
 }: {
 	name: string;
-	imageUrl: string;
+	imageUrl?: string;
 	priority: boolean;
 	className?: string;
 }) => (
 	<Box className={cn(BOX_CLASS, className)}>
-		<Image
-			src={imageUrl}
-			alt={name}
-			fill
-			sizes="(max-width: 640px) 85vw, 33vw"
-			className="object-cover w-full h-full"
-			priority={priority}
-		/>
+		{imageUrl ? (
+			<Image
+				src={imageUrl}
+				alt={name}
+				fill
+				sizes="(max-width: 640px) 85vw, 33vw"
+				className="object-cover w-full h-full"
+				priority={priority}
+			/>
+		) : (
+			<div className="flex absolute inset-0 justify-center items-center w-full h-full bg-gray-100">
+				<ImageOff className="w-10 h-10 text-gray-300" strokeWidth={1.25} />
+			</div>
+		)}
 		<div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/70 to-black/0" />
 		<div className="flex justify-between items-center pb-16 w-full p-8 static z-20 hover:[&>button]:bg-black hover:[&>button>*]:text-white">
 			<h4 className=" text-[2.5rem]! md:text-[3rem]! whitespace-nowrap truncate leading-snug text-white">
@@ -92,9 +98,7 @@ const NewsArrivals = () => {
 								<CategoryCard
 									key={category.id ?? category.handle ?? index}
 									name={category.name || ""}
-									imageUrl={
-										getMediaUrl(category.product_category_image?.[0]?.url) || ""
-									}
+									imageUrl={getMediaUrl(category.product_category_image?.[0]?.url)}
 									priority={index === 0}
 								/>
 							))}
