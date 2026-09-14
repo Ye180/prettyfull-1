@@ -1,9 +1,13 @@
 "use client";
 
 import { AuthModal, type AuthMode } from "@/features/auth/components";
+import { useLogout } from "@/features/auth/api/logout";
 import { COLLECTION_PATHS, paths } from "@/lib/routes/paths-en";
+import { fetchProfile } from "@/lib/store-api";
 import { useCartStore } from "@prettyfull/store";
+import { LogOut, User } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -26,6 +30,14 @@ const NavBarHeaders = ({
 	const [authMode, setAuthMode] = useState<AuthMode | null>(null);
 	const pathname = usePathname();
 	const items = useCartStore((state) => state.items);
+
+	// Session restaurée en mémoire au chargement (voir `SessionBootstrap`) —
+	// même clé de cache que la page /account, alimentée par la connexion.
+	const { data: profile } = useQuery({
+		queryKey: ["customer-profile"],
+		queryFn: fetchProfile,
+	});
+	const { mutate: logout } = useLogout();
 
 	const openAuth = (mode: AuthMode) => {
 		setIsMobileMenuOpen(false);
@@ -106,18 +118,39 @@ const NavBarHeaders = ({
 					<CartDrawer />
 
 					<div className="flex items-center space-x-4 max-sm:hidden">
-						<button
-							onClick={() => openAuth("login")}
-							className="text-[#111111] hover:text-black transition-colors cursor-pointer"
-						>
-							Connexion
-						</button>
-						<button
-							onClick={() => openAuth("register")}
-							className="text-[#111111] hover:text-black transition-colors cursor-pointer"
-						>
-							S'inscrire
-						</button>
+						{profile ? (
+							<>
+								<Link
+									href={paths.account}
+									className="flex items-center gap-1.5 text-[#111111] hover:text-black transition-colors"
+								>
+									<User className="w-[20px] h-[20px]" />
+									{profile.firstName}
+								</Link>
+								<button
+									onClick={() => logout()}
+									className="flex items-center gap-1.5 text-[#111111] hover:text-black transition-colors cursor-pointer"
+								>
+									<LogOut className="w-[20px] h-[20px]" />
+									Déconnexion
+								</button>
+							</>
+						) : (
+							<>
+								<button
+									onClick={() => openAuth("login")}
+									className="text-[#111111] hover:text-black transition-colors cursor-pointer"
+								>
+									Connexion
+								</button>
+								<button
+									onClick={() => openAuth("register")}
+									className="text-[#111111] hover:text-black transition-colors cursor-pointer"
+								>
+									S'inscrire
+								</button>
+							</>
+						)}
 					</div>
 				</div>
 			</div>
@@ -130,6 +163,8 @@ const NavBarHeaders = ({
 					secondary_category={secondary_category}
 					cartItems={items}
 					onOpenAuth={openAuth}
+					profile={profile}
+					onLogout={() => logout()}
 				/>
 			)}
 

@@ -351,7 +351,6 @@ export const CardProduct: React.FC<CardProductProps> = ({
 					colors={product.colors}
 					activeIndex={activeColorIndex}
 					onChange={handleSelectColor}
-					hidden={product.isStandalone}
 				/>
 
 				{availableSizes.length > 0 && (

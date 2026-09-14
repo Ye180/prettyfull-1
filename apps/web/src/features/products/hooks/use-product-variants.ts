@@ -17,15 +17,6 @@ interface ColorVariantGroup {
 	images: string[];
 }
 
-export interface CollectionColorVariant {
-	id: string;
-	handle: string;
-	title: string;
-	color: string | null;
-	image: string;
-	isActive: boolean;
-}
-
 const findOption = (
 	options: StoreProductOption[] | undefined,
 	...titles: string[]
@@ -38,10 +29,7 @@ const optionValue = (
 ): string | undefined =>
 	optionId ? variant.options?.find((opt) => opt.option_id === optionId)?.value : undefined;
 
-export function useProductVariants(
-	product: StoreProduct | null | undefined,
-	collectionProducts: StoreProduct[] | undefined,
-) {
+export function useProductVariants(product: StoreProduct | null | undefined) {
 	const [activeImage, setActiveImage] = useState(0);
 	const [selectedColor, setSelectedColor] = useState("");
 	const [selectedSize, setSelectedSize] = useState("");
@@ -137,35 +125,6 @@ export function useProductVariants(
 		return swatches;
 	}, [product, colorOption]);
 
-	/** Variantes de couleur de la même collection (autres coloris du produit). */
-	const collectionColorVariants = useMemo((): CollectionColorVariant[] => {
-		if (!collectionProducts || collectionProducts.length <= 1 || !product) return [];
-
-		const productsWithColors = collectionProducts.map((p) => {
-			const colorOpt = findOption(p.options, "color", "couleur");
-			const firstVariant = p.variants[0];
-			const colorValue =
-				colorOpt && firstVariant ? optionValue(firstVariant, colorOpt.id) : undefined;
-
-			return {
-				id: p.id,
-				handle: p.handle,
-				title: p.title,
-				color: p.variants[0]?.color_hex ?? colorValue ?? null,
-				image: p.thumbnail || p.images?.[0]?.url || "",
-				isActive: p.id === product.id,
-			};
-		});
-
-		const uniqueColors = new Map<string, CollectionColorVariant>();
-		productsWithColors.forEach((p) => {
-			const colorKey = p.color || p.id;
-			if (!uniqueColors.has(colorKey)) uniqueColors.set(colorKey, p);
-		});
-
-		return Array.from(uniqueColors.values());
-	}, [collectionProducts, product]);
-
 	/** Prix le plus bas toutes déclinaisons confondues. */
 	const productPrice = useMemo(() => {
 		const prices = (product?.variants ?? [])
@@ -211,7 +170,6 @@ export function useProductVariants(
 		currentImages,
 		availableColors,
 		colorSwatches,
-		collectionColorVariants,
 		productPrice,
 		handleColorChange,
 		handleSizeChange,

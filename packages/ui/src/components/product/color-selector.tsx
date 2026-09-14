@@ -39,7 +39,7 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 		<div className="flex flex-wrap gap-2 items-center px-1">
 			{visibleColors.map((color, index) => (
 				<button
-					key={color.productId}
+					key={`${color.productId}-${color.label}`}
 					type="button"
 					onClick={() => onChange(index)}
 					className={cn(

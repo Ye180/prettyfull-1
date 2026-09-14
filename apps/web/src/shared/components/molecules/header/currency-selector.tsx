@@ -1,7 +1,6 @@
 "use client";
 
 import { useGetRegion } from "@/shared/api/medusa/get-region";
-import { useRouter } from "next/navigation";
 import { useRegionStore } from "@/stores/useRegion";
 import {
 	Button,
@@ -12,20 +11,13 @@ import {
 	Wallet,
 } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
-import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 
-// Types pour les devises et langues
+// Types pour les devises
 type Currency = {
 	code: string;
 	symbol: string;
 	name: string;
-};
-
-type Language = {
-	code: "en" | "fr";
-	name: string;
-	flag: string;
 };
 
 // Données statiques
@@ -34,17 +26,7 @@ const CURRENCIES: Currency[] = [
 	{ code: "XOF", symbol: "CFA", name: "Franc CFA" },
 ];
 
-// ponytail: only en/fr — matches routing.ts's `locales`, no point listing a
-// language with no translation file behind it.
-const LANGUAGES: Language[] = [
-	{ code: "fr", name: "Français", flag: "🇫🇷" },
-	{ code: "en", name: "English", flag: "🇬🇧" },
-];
-
 export function CurrencySelector() {
-	const router = useRouter();
-	const locale = useLocale();
-
 	const setCurrentRegion = useRegionStore((state) => state.setRegion);
 
 	const { data: regions, isLoading: regionsLoading } = useGetRegion();
@@ -52,7 +34,6 @@ export function CurrencySelector() {
 
 	const [open, setOpen] = useState(false);
 	const [selectedRegion, setSelectedRegion] = useState<any>(null);
-	const [selectedLocale, setSelectedLocale] = useState(locale);
 
 	const onClose = () => setOpen(false);
 
@@ -78,12 +59,6 @@ export function CurrencySelector() {
 		if (selectedRegion) {
 			setCurrentRegion(selectedRegion);
 		}
-		if (selectedLocale !== locale) {
-			// ponytail: no middleware to negotiate locale (see i18n/request.ts) —
-			// write the cookie it reads directly, then refresh the server render.
-			document.cookie = `NEXT_LOCALE=${selectedLocale}; path=/; max-age=31536000`;
-			router.refresh();
-		}
 		onClose();
 	};
 
@@ -94,13 +69,9 @@ export function CurrencySelector() {
 				onClick={() => setOpen(true)}
 				className="flex gap-2 items-center px-3 py-2 bg-white rounded-xl border border-gray-200 transition-all duration-200 cursor-pointer group hover:bg-gray-50 hover:border-gray-300"
 			>
-				<Globe className="text-gray-500 size-4 group-hover:text-gray-700" />
+				<Globe className="text-gray-500 w-[20px] h-[20px] group-hover:text-gray-700" />
 				<span className="text-[1.2rem] lg:text-[1.4rem] font-medium text-gray-700">
 					{selectedRegion?.currency_code?.toUpperCase()}
-				</span>
-				<span className="text-gray-300">/</span>
-				<span className="text-[1.2rem] lg:text-[1.4rem] font-medium text-gray-700">
-					{locale.toUpperCase()}
 				</span>
 				<ChevronDown className="size-4 text-gray-400 group-hover:text-gray-600 transition-transform group-hover:translate-y-0.5" />
 			</button>
@@ -110,7 +81,7 @@ export function CurrencySelector() {
 				open={open}
 				onClose={onClose}
 				title="Préférences"
-				description="Choisissez votre langue et devise"
+				description="Choisissez votre devise"
 				// close={true}
 				className="!w-[95vw] lg:!w-[40vw] p-0 overflow-hidden"
 				titleClassName="text-[1.8rem]! lg:text-[2.2rem]! font-bold"
@@ -169,43 +140,6 @@ export function CurrencySelector() {
 										</div>
 									</div>
 									{selectedRegion === region.currency_code && (
-										<Check className="size-5" />
-									)}
-								</button>
-							))}
-						</div>
-					</div>
-
-					{/* Divider */}
-					<div className="h-px bg-gray-200" />
-
-					{/* Section Langue */}
-					<div className="space-y-3">
-						<div className="flex gap-2 items-center">
-							<Globe className="text-gray-600 size-5" />
-							<h3 className="text-[2rem]! tracking-wider font-semibold! text-gray-800">
-								Langue
-							</h3>
-						</div>
-						<div className="grid grid-cols-2 gap-3">
-							{LANGUAGES.map((language) => (
-								<button
-									key={language.code}
-									onClick={() => setSelectedLocale(language.code)}
-									className={cn(
-										"flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-200 cursor-pointer",
-										selectedLocale === language.code
-											? "border-black bg-black text-white"
-											: "border-gray-200 bg-white hover:border-gray-400 hover:bg-gray-50",
-									)}
-								>
-									<div className="flex gap-3 items-center">
-										<span className="text-[1.6rem]">{language.flag}</span>
-										<p className="text-[1.2rem] font-semibold">
-											{language.name}
-										</p>
-									</div>
-									{selectedLocale === language.code && (
 										<Check className="size-5" />
 									)}
 								</button>

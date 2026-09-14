@@ -87,7 +87,7 @@ export function ProductGalleryNew({
 							src={images[activeImage] || "/placeholder.png"}
 							alt={title}
 							fill
-							sizes="(max-width: 768px) 100vw, 46rem"
+							sizes="(max-width: 768px) 100vw, 55rem"
 							className="object-cover"
 							priority
 							unoptimized

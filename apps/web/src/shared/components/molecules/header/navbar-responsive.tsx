@@ -2,7 +2,8 @@ import type { AuthMode } from "@/features/auth/components";
 import { Category } from "@/features/homepage/api/medusa/get-category";
 import { COLLECTION_PATHS, paths } from "@/lib/routes/paths-en";
 import { NAV_INFO_LINKS } from "@/lib/utils/constants/header";
-import { Logo, ScrollArea, Skeleton } from "@prettyfull/ui";
+import type { User as UserProfile } from "@prettyfull/contracts";
+import { Logo, LogOut, ScrollArea, Skeleton, User } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { createPortal } from "react-dom";
@@ -17,6 +18,8 @@ const NavbarResponsive = ({
 	secondary_category,
 	cartItems,
 	onOpenAuth,
+	profile,
+	onLogout,
 }: {
 	close: () => void;
 	onClick: () => void;
@@ -24,6 +27,8 @@ const NavbarResponsive = ({
 	secondary_category?: Category[];
 	cartItems?: any[];
 	onOpenAuth: (mode: AuthMode) => void;
+	profile?: UserProfile;
+	onLogout: () => void;
 }) => {
 	const t = useTranslations("headerResponsive");
 	return createPortal(
@@ -112,18 +117,43 @@ const NavbarResponsive = ({
 					{/* Auth entry points — the only ones on mobile, since the header's
 					 * Login/Sign Up buttons are hidden below the sm breakpoint. */}
 					<div className="flex gap-3 border-t border-gray-100 py-4">
-						<button
-							onClick={() => onOpenAuth("login")}
-							className="flex-1 rounded-full border border-gray-200 px-3 py-3 text-[1.4rem] font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-black cursor-pointer"
-						>
-							Connexion
-						</button>
-						<button
-							onClick={() => onOpenAuth("register")}
-							className="flex-1 rounded-full bg-black px-3 py-3 text-[1.4rem] font-medium text-white transition-colors hover:bg-gray-800 cursor-pointer"
-						>
-							S'inscrire
-						</button>
+						{profile ? (
+							<>
+								<Link
+									href={paths.account}
+									onClick={close}
+									className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-gray-200 px-3 py-3 text-[1.4rem] font-medium text-gray-700 text-center transition-colors hover:bg-gray-50 hover:text-black"
+								>
+									<User className="w-[20px] h-[20px]" />
+									{profile.firstName}
+								</Link>
+								<button
+									onClick={() => {
+										onLogout();
+										close();
+									}}
+									className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-black px-3 py-3 text-[1.4rem] font-medium text-white transition-colors hover:bg-gray-800 cursor-pointer"
+								>
+									<LogOut className="w-[20px] h-[20px]" />
+									Déconnexion
+								</button>
+							</>
+						) : (
+							<>
+								<button
+									onClick={() => onOpenAuth("login")}
+									className="flex-1 rounded-full border border-gray-200 px-3 py-3 text-[1.4rem] font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-black cursor-pointer"
+								>
+									Connexion
+								</button>
+								<button
+									onClick={() => onOpenAuth("register")}
+									className="flex-1 rounded-full bg-black px-3 py-3 text-[1.4rem] font-medium text-white transition-colors hover:bg-gray-800 cursor-pointer"
+								>
+									S'inscrire
+								</button>
+							</>
+						)}
 					</div>
 
 					{/*

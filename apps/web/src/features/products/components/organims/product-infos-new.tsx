@@ -7,7 +7,6 @@ import { Button } from "../../../../../../../packages/ui/src/button";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
 import { MinusIcon } from "../../../../../../../packages/ui/src/icons/minus.icon";
 import { PlusIcon } from "../../../../../../../packages/ui/src/icons/plus.icon";
-import { CollectionVariants } from "./collection-variants";
 
 /**
  * Guide des tailles — pas de champ backend Bust/Length/Sleeve par produit,
@@ -51,7 +50,6 @@ interface ProductInfosNewProps {
 	details?: string[];
 	shippingInfo?: string;
 	returnPolicy?: string;
-	collectionColorVariants: any[];
 	currency?: string;
 }
 
@@ -68,7 +66,6 @@ export function ProductInfosNew({
 	selectedSize,
 	onColorChange,
 	onSizeChange,
-	collectionColorVariants,
 	onAddToCart,
 	onAddToWishlist,
 	isWishlisted = false,
@@ -226,10 +223,6 @@ export function ProductInfosNew({
 					selectedSize={selectedSize}
 					onChange={onSizeChange}
 				/>
-			)}
-
-			{collectionColorVariants.length > 1 && (
-				<CollectionVariants variants={collectionColorVariants} />
 			)}
 
 			{/* Info retour */}

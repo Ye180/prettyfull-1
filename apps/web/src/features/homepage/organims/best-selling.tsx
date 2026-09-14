@@ -14,6 +14,24 @@ import { useMemo, useState } from "react";
 
 const ALL_LABEL = "Toute la collection";
 
+/**
+ * Nombre de coloris distincts d'un produit brut.
+ *
+ * `product.variants` porte une entrée par combinaison coloris × taille (cf.
+ * `buildVariants` côté storefront) — en compter la longueur surcomptait donc
+ * les coloris (un pull en 2 couleurs × 3 tailles affichait "6 coloris").
+ */
+const countDistinctColors = (product: {
+	variants: { options: { option_id: string; value: string }[] }[];
+}): number => {
+	const colors = new Set(
+		product.variants
+			.map((variant) => variant.options.find((opt) => opt.option_id.startsWith("opt_color"))?.value)
+			.filter((value): value is string => Boolean(value)),
+	);
+	return colors.size;
+};
+
 export const BestSellingSection = () => {
 	const [activeCategory, setActiveCategory] = useState(ALL_LABEL);
 	const { data: rawProducts, isLoading } = useGetBestSellingProducts();
@@ -34,7 +52,7 @@ export const BestSellingSection = () => {
 				price: product.variants[0]?.calculated_price?.calculated_amount ?? 0,
 				compareAtPrice: product.variants[0]?.calculated_price?.original_amount,
 				image: getMediaUrl(product.thumbnail) || "/assets/product_2.jpg",
-				variantCount: product.variants.length,
+				variantCount: countDistinctColors(product),
 			})),
 		[rawProducts],
 	);

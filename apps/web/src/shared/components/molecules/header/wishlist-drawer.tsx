@@ -33,7 +33,7 @@ const WishlistDrawer = () => {
 				className="relative flex focus:outline-none cursor-pointer hover:opacity-70 transition-opacity"
 				aria-label="Voir ma liste de souhaits"
 			>
-				<Heart className="w-6 h-6 text-[#262626]" />
+				<Heart className="w-[20px] h-[20px] text-[#262626]" />
 				{items.length > 0 && (
 					<p className="absolute flex items-center justify-center text-[0.8rem] border bottom-1 -right-1 text-center content-center w-6 h-6 lg:w-[1.8rem] lg:h-[1.8rem] text-xs text-white bg-red-500 rounded-full lg:text-[1rem] font-semibold lg:border-2 lg:p-2 border-white">
 						{items.length}

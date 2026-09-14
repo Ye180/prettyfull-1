@@ -32,7 +32,7 @@ const CartDrawer = () => {
 				className="relative flex focus:outline-none cursor-pointer hover:opacity-70 transition-opacity"
 				aria-label="Voir le panier"
 			>
-				<Cart />
+				<Cart className="w-[20px] h-[20px]" />
 				{itemCount > 0 && (
 					<p className="absolute flex items-center justify-center text-[0.8rem] border bottom-1 -right-1 text-center content-center w-6 h-6 lg:w-[1.8rem] lg:h-[1.8rem] text-xs text-white bg-red-500 rounded-full lg:text-[1rem] font-semibold lg:border-2 lg:p-2 border-white">
 						{itemCount}

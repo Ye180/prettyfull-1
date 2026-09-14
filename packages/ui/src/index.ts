@@ -44,6 +44,7 @@ export {
     Globe,
     Heart,
     ImageOff,
+    LogOut,
     Menu,
     Minus,
     Plus,

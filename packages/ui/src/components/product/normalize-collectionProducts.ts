@@ -8,6 +8,7 @@ import type {
   NormalizedVariant,
   RawCollectionProduct,
   RawProduct,
+  RawVariant,
 } from "./types";
 
 /**
@@ -33,6 +34,45 @@ function getSizeOption(product: RawProduct) {
   );
 }
 
+/** Valeur de l'option "Color"/"Couleur" portée par une variante, si elle existe. */
+function getVariantColorValue(variant: RawVariant): string | undefined {
+  return variant.options.find(
+    (opt) =>
+      opt.option.title.toLowerCase() === "color" ||
+      opt.option.title.toLowerCase() === "couleur"
+  )?.value;
+}
+
+/** Valeur de l'option "Size"/"Taille" portée par une variante, si elle existe. */
+function getVariantSizeValue(variant: RawVariant): string | undefined {
+  return variant.options.find(
+    (opt) =>
+      opt.option.title.toLowerCase() === "size" ||
+      opt.option.title.toLowerCase() === "taille"
+  )?.value;
+}
+
+function buildVariantEntry(variant: RawVariant): NormalizedVariant {
+  const purchasable =
+    !variant.manage_inventory ||
+    variant.allow_backorder ||
+    (variant.inventory_quantity ?? 1) > 0;
+
+  return {
+    id: variant.id,
+    title: variant.title,
+    sku: variant.sku,
+    size: getVariantSizeValue(variant) || variant.title,
+    purchasable,
+    calculated_price: {
+      calculated_amount: variant.calculated_price?.calculated_amount ?? 0,
+      original_amount: variant.calculated_price?.original_amount,
+    },
+    variantId: variant.variant_id ?? null,
+    sizeId: variant.size_id ?? null,
+  };
+}
+
 /**
  * Construit un objet NormalizedColorVariant à partir d'un produit brut.
  * Chaque produit enfant représente une couleur différente.
@@ -53,30 +93,7 @@ function buildNormalizedColor(product: RawProduct): NormalizedColorVariant {
   const sizes = sizeOption ? sizeOption.values.map((v) => v.value) : [];
 
   // Mapper les variants avec leur taille
-  const variants: NormalizedVariant[] = product.variants.map((variant) => {
-    const sizeOpt = variant.options.find(
-      (opt) =>
-        opt.option.title.toLowerCase() === "size" ||
-        opt.option.title.toLowerCase() === "taille"
-    );
-    const purchasable =
-      !variant.manage_inventory ||
-      variant.allow_backorder ||
-      (variant.inventory_quantity ?? 1) > 0;
-    return {
-      id: variant.id,
-      title: variant.title,
-      sku: variant.sku,
-      size: sizeOpt?.value || variant.title,
-      purchasable,
-      calculated_price: {
-        calculated_amount: variant.calculated_price?.calculated_amount ?? 0,
-        original_amount: variant.calculated_price?.original_amount,
-      },
-      variantId: variant.variant_id ?? null,
-      sizeId: variant.size_id ?? null,
-    };
-  });
+  const variants: NormalizedVariant[] = product.variants.map(buildVariantEntry);
 
   // Trier les images par rank
   const sortedImages = [...(product.images ?? [])].sort((a, b) => a.rank - b.rank);
@@ -150,9 +167,92 @@ export interface StandaloneProductInput {
 }
 
 /**
+ * Regroupe les variantes d'un même produit brut par couleur, pour un seul
+ * groupe (`variants`) partageant la même option "Color"/"Couleur".
+ *
+ * Contrairement à `buildNormalizedColor` — pensé pour le cas "collection"
+ * où chaque couleur EST un produit à part —, ici les couleurs vivent toutes
+ * dans `product.variants` d'un seul et même produit (modèle du backend :
+ * un produit standalone porte directement ses déclinaisons de couleur).
+ */
+function buildStandaloneColorGroup(
+  product: RawProduct,
+  label: string,
+  groupVariants: RawVariant[]
+): NormalizedColorVariant {
+  const sortedImages = [...(product.images ?? [])].sort((a, b) => a.rank - b.rank);
+
+  // Vignette : celle de la première variante de ce groupe qui en a une,
+  // sinon le visuel du produit.
+  const variantWithThumbnail = groupVariants.find((v) => v.thumbnail);
+  const thumbnail =
+    variantWithThumbnail?.thumbnail || product.thumbnail || sortedImages[0]?.url || "";
+
+  const sizes = Array.from(
+    new Set(
+      groupVariants
+        .map(getVariantSizeValue)
+        .filter((size): size is string => Boolean(size))
+    )
+  );
+
+  const colorCode = groupVariants.find((v) => v.hs_code)?.hs_code || "#CCCCCC";
+
+  return {
+    colorCode,
+    label,
+    productId: product.id,
+    handle: product.handle,
+    thumbnail,
+    images: sortedImages.map((img) => img.url),
+    sizes,
+    variants: groupVariants.map(buildVariantEntry),
+    title: product.title,
+    price: groupVariants[0]?.calculated_price?.calculated_amount ?? 0,
+    compareAtPrice: groupVariants[0]?.calculated_price?.original_amount,
+  };
+}
+
+/**
+ * Regroupe les variantes d'un produit standalone par couleur réelle
+ * (option "Color"/"Couleur"), une entrée `NormalizedColorVariant` par
+ * couleur — c'est ce qui alimente les pastilles de `ColorSelector` sur les
+ * cartes produit (grille collections, "Tu peux aussi aimer"...).
+ *
+ * Sans option couleur sur le produit (cas fréquent : bijoux, pièce unique),
+ * on retombe sur un seul groupe couvrant toutes les variantes.
+ */
+function buildStandaloneColorGroups(product: RawProduct): NormalizedColorVariant[] {
+  const hasColorOption = product.options.some(
+    (opt) =>
+      opt.title.toLowerCase() === "color" || opt.title.toLowerCase() === "couleur"
+  );
+
+  if (!hasColorOption || product.variants.length === 0) {
+    return [buildNormalizedColor(product)];
+  }
+
+  const groups = new Map<string, RawVariant[]>();
+  for (const variant of product.variants) {
+    const colorValue = getVariantColorValue(variant) ?? product.title;
+    const group = groups.get(colorValue);
+    if (group) {
+      group.push(variant);
+    } else {
+      groups.set(colorValue, [variant]);
+    }
+  }
+
+  return Array.from(groups.entries()).map(([label, groupVariants]) =>
+    buildStandaloneColorGroup(product, label, groupVariants)
+  );
+}
+
+/**
  * Normalise un produit standalone (sans collection) en structure compatible CardProduct.
- * Le produit est traité comme ayant une seule "couleur" (lui-même).
- * 
+ * Ses couleurs réelles (variantes du produit) deviennent chacune une entrée
+ * `colors[]`, exactement comme pour une collection classique.
+ *
  * @param input - Données du produit standalone avec sa catégorie
  * @returns Structure normalisée avec isStandalone = true
  */
@@ -161,15 +261,12 @@ export function normalizeStandaloneProduct(
 ): NormalizedCollectionProduct {
   const { product, category } = input;
 
-  // Le produit standalone devient sa propre "couleur"
-  const color = buildNormalizedColor(product);
-
   return {
     // On utilise l'ID du produit comme "collectionId" pour l'unicité
     collectionId: `standalone_${product.id}`,
     collectionTitle: product.title,
     collectionHandle: product.handle,
-    colors: [color],
+    colors: buildStandaloneColorGroups(product),
     // Marqueurs spécifiques aux produits standalone
     isStandalone: true,
     categoryId: category.id,
