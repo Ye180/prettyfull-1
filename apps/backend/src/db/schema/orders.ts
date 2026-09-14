@@ -22,7 +22,7 @@ import {
 import { inventoryItems } from "./inventory.js";
 import { users } from "./users.js";
 
-/** Adresse figée dans une commande — copie, jamais référence. */
+/** Adresse figée dans une commande - copie, jamais référence. */
 export interface AddressSnapshot {
 	firstName: string;
 	lastName: string;
@@ -175,7 +175,7 @@ export const orders = pgTable(
  * Ligne de commande : instantané complet du §2.4.
  *
  * Les libellés, le SKU, la vignette et le prix unitaire sont copiés à
- * l'achat. Les clés étrangères passent à NULL si le catalogue évolue — la
+ * l'achat. Les clés étrangères passent à NULL si le catalogue évolue - la
  * commande reste lisible même après suppression du produit.
  */
 export const orderItems = pgTable(

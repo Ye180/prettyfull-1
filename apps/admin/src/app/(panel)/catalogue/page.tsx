@@ -8,12 +8,21 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, toQueryString } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { CONTENT_STATUS_LABELS, STOCK_STATUS_LABELS, formatMoney } from "@/lib/format";
+import {
+	CONTENT_STATUS_LABELS,
+	STOCK_STATUS_LABELS,
+	formatMoney,
+} from "@/lib/format";
 import { useDebounced, useListQuery } from "@/lib/use-list-query";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/layout/page-header";
 import { FilterBar, FilterSelect } from "@/components/ui/filters";
-import { DataTable, Pagination, Thumb, type Column } from "@/components/ui/table";
+import {
+	DataTable,
+	Pagination,
+	Thumb,
+	type Column,
+} from "@/components/ui/table";
 import {
 	Badge,
 	Button,
@@ -25,7 +34,7 @@ import {
 import { IconDownload, IconPlus, IconUpload } from "@/components/icons";
 import { ImportDialog } from "@/features/catalogue/import-dialog";
 
-/** Module « Catalogue » — liste des produits (§4.2). */
+/** Module « Catalogue » - liste des produits (§4.2). */
 
 const STATUS_OPTIONS = [
 	{ value: "draft", label: "Brouillon" },
@@ -59,7 +68,9 @@ const ProductsPage = () => {
 	const { data, isLoading } = useQuery({
 		queryKey: ["products", params],
 		queryFn: () =>
-			api.get<Paginated<Product>>(`/api/admin/products${toQueryString(params)}`),
+			api.get<Paginated<Product>>(
+				`/api/admin/products${toQueryString(params)}`,
+			),
 	});
 
 	/**
@@ -72,7 +83,9 @@ const ProductsPage = () => {
 	const exportCsv = useMutation({
 		mutationFn: () => api.get<string>("/api/admin/products/export"),
 		onSuccess: (csv) => {
-			const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+			const url = URL.createObjectURL(
+				new Blob([csv], { type: "text/csv;charset=utf-8" }),
+			);
 			const link = document.createElement("a");
 			link.href = url;
 			link.download = `produits-${new Date().toISOString().slice(0, 10)}.csv`;
@@ -162,7 +175,10 @@ const ProductsPage = () => {
 						</Link>
 
 						{can(PERMISSIONS.catalog.read) && (
-							<Button onClick={() => exportCsv.mutate()} loading={exportCsv.isPending}>
+							<Button
+								onClick={() => exportCsv.mutate()}
+								loading={exportCsv.isPending}
+							>
 								<IconDownload width={16} height={16} />
 								Exporter
 							</Button>
@@ -176,7 +192,10 @@ const ProductsPage = () => {
 						)}
 
 						{can(PERMISSIONS.catalog.write) && (
-							<Button variant="primary" onClick={() => router.push("/catalogue/nouveau")}>
+							<Button
+								variant="primary"
+								onClick={() => router.push("/catalogue/nouveau")}
+							>
 								<IconPlus width={16} height={16} />
 								Nouveau produit
 							</Button>
@@ -224,7 +243,11 @@ const ProductsPage = () => {
 					onRowClick={(product) => router.push(`/catalogue/${product.id}`)}
 					empty={
 						<EmptyState
-							title={list.isFiltered ? "Aucun produit ne correspond" : "Aucun produit"}
+							title={
+								list.isFiltered
+									? "Aucun produit ne correspond"
+									: "Aucun produit"
+							}
 							description={
 								list.isFiltered
 									? "Modifiez ou réinitialisez les filtres."

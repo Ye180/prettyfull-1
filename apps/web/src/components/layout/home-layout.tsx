@@ -16,7 +16,7 @@ const HomeLayout = ({
 		isLoading: loadingParentsCategoryMedusa,
 	} = useGetParentsCategoryMedusa();
 	// ponytail: footer is `position: fixed` behind the page (real sticky-reveal
-	// effect, not a scroll-in animation) — the content column needs bottom
+	// effect, not a scroll-in animation) - the content column needs bottom
 	// padding matching its live height so the footer only shows once scrolled
 	// past, instead of sitting hidden under the content permanently.
 	const [footerHeight, setFooterHeight] = useState(0);
@@ -24,7 +24,7 @@ const HomeLayout = ({
 	return (
 		<div className="overflow-x-hidden">
 			{/* ponytail: padding-bottom must live on THIS transparent wrapper, not
-			 * the white one below — a background-color paints across its own
+			 * the white one below - a background-color paints across its own
 			 * padding box, so the reveal gap was being hidden by its own bg-white. */}
 			<div className="relative z-10" style={{ paddingBottom: footerHeight }}>
 				<div className="flex flex-col min-h-screen bg-white">

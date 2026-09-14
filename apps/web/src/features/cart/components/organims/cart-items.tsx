@@ -13,11 +13,16 @@ interface CartItemsProps {
 	items: CartItem[];
 	selectedIds?: Set<string>;
 	onToggleItem?: (productId: string) => void;
-	/** Squares off rows/thumbnails/badges — used by the cart drawer only. */
+	/** Squares off rows/thumbnails/badges - used by the cart drawer only. */
 	square?: boolean;
 }
 
-const CartItems = ({ items, selectedIds, onToggleItem, square }: CartItemsProps) => {
+const CartItems = ({
+	items,
+	selectedIds,
+	onToggleItem,
+	square,
+}: CartItemsProps) => {
 	const removeItem = useCartStore((state) => state.removeItem);
 	const regions = useRegionStore((state) => state.region);
 	const currency = regions?.currency_code === "xof" ? "FCFA" : "$";
@@ -63,14 +68,19 @@ const CartItems = ({ items, selectedIds, onToggleItem, square }: CartItemsProps)
 			{items.map((item) => {
 				const imageSrc = item.product.image || "/assets/product5.webp";
 				const variantEntries = Object.entries(item.selectedVariants || {});
-				const colorEntry = variantEntries.find(([key]) => /color|couleur/i.test(key));
-				const sizeEntry = variantEntries.find(([key]) => /size|taille/i.test(key));
-				
+				const colorEntry = variantEntries.find(([key]) =>
+					/color|couleur/i.test(key),
+				);
+				const sizeEntry = variantEntries.find(([key]) =>
+					/size|taille/i.test(key),
+				);
+
 				// fallback color & size if not present in variant
 				const colorName = colorEntry ? colorEntry[1] : "Maroon";
 				const sizeName = sizeEntry ? sizeEntry[1] : "M";
-				
-				const unitPrice = item.unitPrice?.amount ?? item.product.price?.amount ?? 250;
+
+				const unitPrice =
+					item.unitPrice?.amount ?? item.product.price?.amount ?? 250;
 				const itemTotal = unitPrice * item.quantity;
 
 				return (
@@ -81,7 +91,10 @@ const CartItems = ({ items, selectedIds, onToggleItem, square }: CartItemsProps)
 						{onToggleItem && (
 							<div className="pt-2 sm:pt-4">
 								<Checkbox
-									className={cn("cursor-pointer", square ? "rounded-none" : "rounded")}
+									className={cn(
+										"cursor-pointer",
+										square ? "rounded-none" : "rounded",
+									)}
 									checked={selectedIds?.has(item.productId) ?? false}
 									onCheckedChange={() => onToggleItem(item.productId)}
 									aria-label={`Sélectionner ${item.product.name}`}
@@ -125,18 +138,22 @@ const CartItems = ({ items, selectedIds, onToggleItem, square }: CartItemsProps)
 											)}
 										>
 											<span
-												className={cn("w-2.5 h-2.5 inline-block", square ? "rounded-none" : "rounded-full")}
+												className={cn(
+													"w-2.5 h-2.5 inline-block",
+													square ? "rounded-none" : "rounded-full",
+												)}
 												style={{
-													backgroundColor:
-														colorName.toLowerCase().includes("maroon")
-															? "#800000"
-															: colorName.toLowerCase().includes("olive")
+													backgroundColor: colorName
+														.toLowerCase()
+														.includes("maroon")
+														? "#800000"
+														: colorName.toLowerCase().includes("olive")
 															? "#556B2F"
 															: colorName.toLowerCase().includes("black")
-															? "#111827"
-															: colorName.toLowerCase().includes("burgundy")
-															? "#800020"
-															: "#6B7280",
+																? "#111827"
+																: colorName.toLowerCase().includes("burgundy")
+																	? "#800020"
+																	: "#6B7280",
 												}}
 											/>
 											{colorName}

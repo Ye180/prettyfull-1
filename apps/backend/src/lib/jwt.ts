@@ -8,7 +8,7 @@ import { unauthorized } from "./errors.js";
  *
  * Les rôles et permissions sont inlinés dans la charge utile : l'autorisation
  * d'une requête ne coûte alors aucune lecture en base. La contrepartie est
- * qu'un changement de droits ne prend effet qu'au renouvellement du jeton —
+ * qu'un changement de droits ne prend effet qu'au renouvellement du jeton -
  * d'où une durée de vie courte (15 min par défaut) compensée par le
  * rafraîchissement automatique.
  */
@@ -28,8 +28,8 @@ export const signAccessToken = async (
 };
 
 /**
- * Vérifie un jeton d'accès. Toute erreur — signature invalide, jeton expiré,
- * charge utile mal formée — remonte en 401 sans distinction : un attaquant ne
+ * Vérifie un jeton d'accès. Toute erreur - signature invalide, jeton expiré,
+ * charge utile mal formée - remonte en 401 sans distinction : un attaquant ne
  * doit pas pouvoir déduire pourquoi son jeton est rejeté.
  */
 export const verifyAccessToken = async (token: string): Promise<JwtPayload> => {

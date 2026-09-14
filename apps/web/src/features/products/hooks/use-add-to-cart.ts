@@ -7,7 +7,7 @@ import { toast } from "@prettyfull/ui";
 /**
  * Ajout au panier depuis la fiche produit : appariement de la déclinaison
  * choisie, contrôle de stock, puis écriture dans le panier partagé
- * (`@prettyfull/store`) — le même que celui que lit `/cart` et que
+ * (`@prettyfull/store`) - le même que celui que lit `/cart` et que
  * `CardProduct` alimente déjà, pour que « ajouter au panier » depuis la fiche
  * produit se retrouve réellement dans le panier affiché.
  */
@@ -27,7 +27,10 @@ export function useAddToCart(
 		options;
 
 	const handleAddToCart = (quantity: number = 1) => {
-		if (!selectedSize) {
+		// Une taille n'est exigée que si ce produit en propose réellement une
+		// (`sizeOption`) - sans grille de tailles, rien ne permettrait jamais
+		// de la choisir et l'ajout au panier resterait bloqué à tort.
+		if (sizeOption && !selectedSize) {
 			toast.error("Sélectionnez une taille", {
 				description: "Veuillez choisir une taille avant d'ajouter au panier.",
 			});

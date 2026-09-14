@@ -8,7 +8,7 @@ import type { SortField } from "./use-collection-filters";
 interface CollectionProductsParams {
 	/** Rayon ciblé ; absent (ou vide) = tout le catalogue (page `/collections`). */
 	categorySlug?: string;
-	/** Palier croissant plutôt que page accumulée — même logique que `useProductReviews`. */
+	/** Palier croissant plutôt que page accumulée - même logique que `useProductReviews`. */
 	limit: number;
 	sort: SortField;
 	order: "asc" | "desc";

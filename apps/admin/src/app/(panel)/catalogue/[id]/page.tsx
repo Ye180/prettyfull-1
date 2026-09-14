@@ -1,7 +1,7 @@
 "use client";
 
 import type { Category, Paginated, Product } from "@prettyfull/contracts";
-import { PERMISSIONS } from "@prettyfull/contracts";
+import { PERMISSIONS, UPLOAD_ENDPOINTS } from "@prettyfull/contracts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/layout/page-header";
 import { ConfirmDialog } from "@/components/ui/dialog";
 import { Thumb } from "@/components/ui/table";
+import { ImageUploadList } from "@/components/ui/image-upload";
 import {
 	Badge,
 	Button,
@@ -30,7 +31,6 @@ import {
 	type ProductFieldsState,
 } from "@/features/catalogue/product-fields";
 import { VariantManager } from "@/features/catalogue/variant-manager";
-import { ImagesEditor } from "@/features/catalogue/images-editor";
 
 /**
  * Édition d'un produit.
@@ -47,6 +47,7 @@ const ProductEditPage = () => {
 	const { notify, notifyError } = useToast();
 
 	const [fields, setFields] = useState<ProductFieldsState | null>(null);
+	const [imageUrls, setImageUrls] = useState<string[] | null>(null);
 	const [errors, setErrors] = useState<Record<string, string[]>>({});
 	const [confirmArchive, setConfirmArchive] = useState(false);
 
@@ -66,10 +67,22 @@ const ProductEditPage = () => {
 	// saisie en cours.
 	useEffect(() => {
 		if (product && !fields) setFields(productToFields(product));
-	}, [product, fields]);
+		if (product && imageUrls === null) {
+			setImageUrls(
+				[...product.images].sort((a, b) => a.position - b.position).map((image) => image.url),
+			);
+		}
+	}, [product, fields, imageUrls]);
 
 	const save = useMutation({
-		mutationFn: () => api.patch<Product>(`/api/admin/products/${id}`, toProductPayload(fields!)),
+		mutationFn: () =>
+			api.patch<Product>(`/api/admin/products/${id}`, {
+				...toProductPayload(fields!),
+				images: imageUrls!
+					.map((url) => url.trim())
+					.filter(Boolean)
+					.map((url, position) => ({ url, position })),
+			}),
 		onSuccess: (updated) => {
 			void queryClient.invalidateQueries({ queryKey: ["product", id] });
 			void queryClient.invalidateQueries({ queryKey: ["products"] });
@@ -103,7 +116,7 @@ const ProductEditPage = () => {
 		onError: (caught) => notifyError(caught, "Archivage impossible."),
 	});
 
-	if (isLoading || !product || !fields) {
+	if (isLoading || !product || !fields || imageUrls === null) {
 		return error ? (
 			<Card>
 				<ErrorState
@@ -183,7 +196,20 @@ const ProductEditPage = () => {
 					</div>
 				</Card>
 
-				<ImagesEditor product={product} disabled={!writable} />
+				<Card>
+					<CardHeader
+						title="Galerie du produit"
+						description="La première image sert de vignette dans les listes. Enregistrée avec le reste du formulaire, via le bouton « Enregistrer » ci-dessus."
+					/>
+					<div className="p-4">
+						<ImageUploadList
+							endpoint={UPLOAD_ENDPOINTS.catalog}
+							values={imageUrls}
+							onChange={setImageUrls}
+							disabled={!writable}
+						/>
+					</div>
+				</Card>
 
 				<VariantManager product={product} disabled={!writable} />
 
@@ -252,7 +278,7 @@ const ProductEditPage = () => {
 				<Card>
 					<CardHeader title="Aperçu" />
 					<div className="flex items-center gap-4 p-4">
-						<Thumb src={product.images[0]?.url} alt={product.name} />
+						<Thumb src={imageUrls[0]} alt={product.name} />
 						<div className="min-w-0">
 							<p className="truncate font-medium text-ink">{product.name}</p>
 							<p className="text-[13px] text-muted">

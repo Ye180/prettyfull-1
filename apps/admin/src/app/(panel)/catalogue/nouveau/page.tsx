@@ -27,14 +27,17 @@ const NewProductPage = () => {
 	const queryClient = useQueryClient();
 	const { notify, notifyError } = useToast();
 
-	const [fields, setFields] = useState<ProductFieldsState>(emptyProductFields());
+	const [fields, setFields] =
+		useState<ProductFieldsState>(emptyProductFields());
 	const [structure, setStructure] = useState<StructureState>(emptyStructure());
 	const [errors, setErrors] = useState<Record<string, string[]>>({});
 
 	const { data: categories } = useQuery({
 		queryKey: ["categories", "flat"],
 		queryFn: () =>
-			api.get<Paginated<Category>>("/api/admin/categories?limit=100&status=active"),
+			api.get<Paginated<Category>>(
+				"/api/admin/categories?limit=100&status=active",
+			),
 	});
 
 	const create = useMutation({
@@ -99,7 +102,7 @@ const NewProductPage = () => {
 				<Card>
 					<CardHeader
 						title="Déclinaisons et stock"
-						description="Un produit est soit simple, soit à variantes — jamais les deux."
+						description="Un produit est soit simple, soit à variantes - jamais les deux."
 					/>
 					<div className="p-4">
 						<StructureEditor value={structure} onChange={setStructure} />

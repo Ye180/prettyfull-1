@@ -36,7 +36,7 @@ const priceFor = (
 
 /**
  * Prix barré, s'il existe : cascade variante → produit (les tailles n'ont pas
- * de dérogation propre). `undefined` s'il ne dépasse pas le prix effectif —
+ * de dérogation propre). `undefined` s'il ne dépasse pas le prix effectif -
  * la carte produit n'affiche une réduction que si elle en est vraiment une.
  */
 const compareAtPriceFor = (
@@ -68,7 +68,10 @@ const buildVariants = (product: Product): StoreVariant[] => {
 
 	if (product.variants.length > 0) {
 		return product.variants.flatMap((variant): StoreVariant[] => {
-			const thumbnail = variant.images[0]?.url ?? product.images[0]?.url;
+			const images = (variant.images.length > 0 ? variant.images : product.images).map(
+				(image) => ({ id: image.id, url: image.url }),
+			);
+			const thumbnail = images[0]?.url;
 
 			if (variant.sizes.length === 0) {
 				return [
@@ -80,6 +83,7 @@ const buildVariants = (product: Product): StoreVariant[] => {
 						title: variant.name,
 						sku: variant.sku ?? "",
 						thumbnail,
+						images,
 						calculated_price: {
 							calculated_amount: priceFor(product, variant),
 							original_amount: compareAtPriceFor(product, priceFor(product, variant), variant),
@@ -100,6 +104,7 @@ const buildVariants = (product: Product): StoreVariant[] => {
 				title: `${variant.name} / ${size.label}`,
 				sku: size.sku ?? variant.sku ?? "",
 				thumbnail,
+				images,
 				calculated_price: {
 					calculated_amount: priceFor(product, variant, size),
 					original_amount: compareAtPriceFor(product, priceFor(product, variant, size), variant),
@@ -116,6 +121,7 @@ const buildVariants = (product: Product): StoreVariant[] => {
 	}
 
 	if (product.sizes.length > 0) {
+		const images = product.images.map((image) => ({ id: image.id, url: image.url }));
 		return product.sizes.map((size) => ({
 			...base,
 			id: size.id,
@@ -123,7 +129,8 @@ const buildVariants = (product: Product): StoreVariant[] => {
 			size_id: size.id,
 			title: size.label,
 			sku: size.sku ?? product.sku ?? "",
-			thumbnail: product.images[0]?.url,
+			thumbnail: images[0]?.url,
+			images,
 			calculated_price: {
 				calculated_amount: priceFor(product, null, size),
 				original_amount: compareAtPriceFor(product, priceFor(product, null, size)),
@@ -136,6 +143,7 @@ const buildVariants = (product: Product): StoreVariant[] => {
 
 	// Produit sans déclinaison : une combinaison unique, pour que le
 	// storefront ait toujours quelque chose à mettre au panier.
+	const images = product.images.map((image) => ({ id: image.id, url: image.url }));
 	return [
 		{
 			...base,
@@ -144,7 +152,8 @@ const buildVariants = (product: Product): StoreVariant[] => {
 			size_id: null,
 			title: product.name,
 			sku: product.sku ?? "",
-			thumbnail: product.images[0]?.url,
+			thumbnail: images[0]?.url,
+			images,
 			calculated_price: {
 				calculated_amount: product.basePrice,
 				original_amount: compareAtPriceFor(product, product.basePrice),

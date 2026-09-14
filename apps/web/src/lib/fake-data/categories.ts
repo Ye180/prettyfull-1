@@ -1,7 +1,7 @@
 import type { FakeCategory } from "./types";
 
 // Placeholder catalog for "PrettyFull" (women's fashion). Reuses images
-// already shipped in /public — swap for real client photos once she starts
+// already shipped in /public - swap for real client photos once she starts
 // posting her own catalog.
 export const categories: FakeCategory[] = [
 	{
@@ -139,7 +139,7 @@ export const categories: FakeCategory[] = [
 ];
 
 // Synthetic "page" category: the site's nav/home-page building blocks key off
-// a parent category with children (Medusa's tree model) — this wrapper lets
+// a parent category with children (Medusa's tree model) - this wrapper lets
 // the existing homepage/nav logic keep working unchanged against fake data.
 categories.push({
 	id: "cat_boutique",

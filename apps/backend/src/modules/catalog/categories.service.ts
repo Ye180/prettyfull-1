@@ -18,7 +18,7 @@ import { paginate, toSqlPagination } from "../../lib/response.js";
  * La hiérarchie est portée par un chemin matérialisé (`path`) plutôt que par
  * une CTE récursive : lire un sous-arbre devient un simple `LIKE 'racine/%'`,
  * indexé. Le coût se déplace sur le déplacement d'une catégorie, qui doit
- * réécrire le chemin de tous ses descendants — opération rare.
+ * réécrire le chemin de tous ses descendants - opération rare.
  */
 
 /** Profondeur maximale, garde-fou contre les arbres accidentellement infinis. */
@@ -222,7 +222,7 @@ export const createCategory = async (input: CreateCategoryInput): Promise<Catego
  * Réécrit le chemin d'une catégorie et de tous ses descendants.
  *
  * Le remplacement porte sur le préfixe : `ancien/x` devient `nouveau/x`. La
- * profondeur se relit directement du nouveau chemin — c'est son nombre de
+ * profondeur se relit directement du nouveau chemin - c'est son nombre de
  * séparateurs, la racine en comptant zéro. Une seule instruction, donc
  * atomique : aucun état intermédiaire incohérent n'est observable.
  */

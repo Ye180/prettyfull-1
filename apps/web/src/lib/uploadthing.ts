@@ -11,7 +11,7 @@ import { storeApi } from "./store-api/client";
  * Miroir de `apps/admin/src/lib/uploadthing.ts` : le routeur de fichiers vit
  * dans l'API Hono, que le storefront ne peut pas importer (résolutions de
  * modules incompatibles), donc on redéclare ici sa *forme* en réutilisant les
- * noms d'endpoints des contrats — un renommage côté API casse alors à la
+ * noms d'endpoints des contrats - un renommage côté API casse alors à la
  * compilation plutôt qu'à l'exécution.
  *
  * Contrairement au panel, aucun en-tête d'authentification n'est nécessaire :

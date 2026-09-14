@@ -1,20 +1,23 @@
 "use client";
 
+import { ArrowRightIcon } from "@/components/icons/arrow-icon";
+import { useGetCategory } from "@/features/homepage/api/medusa/get-category";
+import PhotoOverlayBanner from "@/shared/components/organims/photo-overlay-banner";
+import ProductCardSkeleton from "@/shared/components/organims/product-loading";
+import { useRegionStore } from "@/stores/useRegion";
+import { CardProduct, GridCardProduct } from "@prettyfull/ui";
+import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRightIcon } from "@/components/icons/arrow-icon";
-import SidebarFilter, { FilterState } from "../organims/sidebar-filter";
-import GridCollectionLayout from "../organims/grid-layout";
-import PhotoOverlayBanner from "@/shared/components/organims/photo-overlay-banner";
-import { useGetCategory } from "@/features/homepage/api/medusa/get-category";
 import { useCollectionFilters } from "../hooks/use-collection-filters";
 import { useCollectionProducts } from "../hooks/use-collection-products";
+import SidebarFilter, { FilterState } from "../organims/sidebar-filter";
 
-const PAGE_SIZE = 24;
+// 7 lignes de la grille dense (5 colonnes en desktop) avant le bouton "See More".
+const PAGE_SIZE = 35;
 
 const INITIAL_FILTERS: FilterState = {
 	categories: [],
@@ -34,12 +37,15 @@ export const ShopAllView = () => {
 	const tPromoDuo = useTranslations("HomePage.promoDuo");
 
 	const { q, sort, order, setSearch, setSort } = useCollectionFilters();
+	const currencyCode = useRegionStore((state) => state.region?.currency_code);
 	const [searchDraft, setSearchDraft] = useState(q);
 	const [limit, setLimit] = useState(PAGE_SIZE);
 	const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [selectedSize, setSelectedSize] = useState("M");
-	const [categorySlug, setCategorySlug] = useState(searchParams.get("category") ?? "");
+	const [categorySlug, setCategorySlug] = useState(
+		searchParams.get("category") ?? "",
+	);
 
 	// Un lien du header ("Men" / "Ladies" / "New Collection") pointe vers
 	// `/collections?category=...` : on suit la navigation plutôt que de figer
@@ -85,10 +91,13 @@ export const ShopAllView = () => {
 		return true;
 	});
 
-	const selectedSort = sort === "basePrice" && order === "asc" ? "Prix croissant" : "Prix décroissant";
+	const selectedSort =
+		sort === "basePrice" && order === "asc"
+			? "Prix croissant"
+			: "Prix décroissant";
 
 	return (
-		<main className="w-full bg-white pb-16">
+		<main className="pb-16 w-full bg-white">
 			{/* 1. Hero: New Season Essentials */}
 			<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
 				<div className="relative w-full min-h-[480px] lg:min-h-[520px] rounded-[2.6rem] overflow-hidden bg-[#888]">
@@ -100,7 +109,7 @@ export const ShopAllView = () => {
 						sizes="(max-width: 1400px) 100vw, 1400px"
 						className="object-cover object-center"
 					/>
-					<div className="absolute inset-0 bg-black/25 pointer-events-none" />
+					<div className="absolute inset-0 pointer-events-none bg-black/25" />
 
 					{/* Labels top */}
 					<div className="absolute inset-x-0 top-8 flex justify-between px-8 text-[1.4rem] font-medium text-white/90 sm:px-12 z-10">
@@ -122,7 +131,14 @@ export const ShopAllView = () => {
 							className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black text-[1.4rem] font-semibold rounded-full whitespace-nowrap hover:bg-neutral-100 transition-all self-start shadow"
 						>
 							<span>{tHero("ctaButton")}</span>
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+							>
 								<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
 								<line x1="3" y1="6" x2="21" y2="6" />
 								<path d="M16 10a4 4 0 0 1-8 0" />
@@ -134,7 +150,7 @@ export const ShopAllView = () => {
 
 			{/* 2. Dual Promotion Cards */}
 			<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 					{/* Mid-Season Sale */}
 					<div className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group">
 						<Image
@@ -145,15 +161,26 @@ export const ShopAllView = () => {
 							className="object-cover transition-transform duration-500 group-hover:scale-105"
 						/>
 						<div className="absolute inset-0 bg-black/35" />
-						<div className="relative z-10 flex flex-col justify-end h-full p-8 text-white space-y-2">
-							<h3 className="text-3xl font-bold text-white">{tPromoDuo("saleTitle")}</h3>
-							<p className="text-[1.4rem] text-white/85">Up to 40% off selected styles</p>
+						<div className="flex relative z-10 flex-col justify-end p-8 space-y-2 h-full text-white">
+							<h3 className="text-3xl font-bold text-white">
+								{tPromoDuo("saleTitle")}
+							</h3>
+							<p className="text-[1.4rem] text-white/85">
+								Up to 40% off selected styles
+							</p>
 							<a
 								href="#catalog-grid"
 								className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black text-[1.3rem] font-medium rounded-full self-start hover:bg-white/90 transition-all mt-2"
 							>
 								<span>{tPromoDuo("saleCta")}</span>
-								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+								<svg
+									width="14"
+									height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2.2"
+								>
 									<line x1="7" y1="17" x2="17" y2="7" />
 									<polyline points="7 7 17 7 17 17" />
 								</svg>
@@ -164,22 +191,33 @@ export const ShopAllView = () => {
 					{/* Everyday Knitwear */}
 					<div className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group">
 						<Image
-							src="/home/cover-box-3.jpg"
+							src="/home/cover-box.jpg"
 							alt="Everyday Knitwear"
 							fill
 							sizes="(max-width: 768px) 100vw, 50vw"
 							className="object-cover transition-transform duration-500 group-hover:scale-105"
 						/>
 						<div className="absolute inset-0 bg-black/35" />
-						<div className="relative z-10 flex flex-col justify-end h-full p-8 text-white space-y-2">
-							<h3 className="text-3xl font-bold text-white">Everyday Knitwear</h3>
-							<p className="text-[1.4rem] text-white/85">Lightweight layers you'll reach for daily</p>
+						<div className="flex relative z-10 flex-col justify-end p-8 space-y-2 h-full text-white">
+							<h3 className="text-3xl font-bold text-white">
+								Everyday Knitwear
+							</h3>
+							<p className="text-[1.4rem] text-white/85">
+								Lightweight layers you'll reach for daily
+							</p>
 							<a
 								href="#catalog-grid"
 								className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black text-[1.3rem] font-medium rounded-full self-start hover:bg-white/90 transition-all mt-2"
 							>
 								<span>Explore</span>
-								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+								<svg
+									width="14"
+									height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2.2"
+								>
 									<line x1="7" y1="17" x2="17" y2="7" />
 									<polyline points="7 7 17 7 17 17" />
 								</svg>
@@ -191,31 +229,45 @@ export const ShopAllView = () => {
 
 			{/* 3. Shop by Collection */}
 			<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-				<div className="flex items-center justify-between pb-8">
+				<div className="flex justify-between items-center pb-8">
 					<h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#080808]">
 						Shop by Collection
 					</h2>
 					<div className="flex items-center space-x-3">
 						<button
 							aria-label="Previous"
-							className="w-10 h-10 rounded-full border border-gray-300 hover:border-black flex items-center justify-center transition-colors cursor-pointer"
+							className="flex justify-center items-center w-10 h-10 rounded-full border border-gray-300 transition-colors cursor-pointer hover:border-black"
 						>
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+							>
 								<path d="M19 12H5M12 19l-7-7 7-7" />
 							</svg>
 						</button>
 						<button
 							aria-label="Next"
-							className="w-10 h-10 rounded-full bg-black text-white hover:bg-neutral-800 flex items-center justify-center transition-colors shadow cursor-pointer"
+							className="flex justify-center items-center w-10 h-10 text-white bg-black rounded-full shadow transition-colors cursor-pointer hover:bg-neutral-800"
 						>
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+							>
 								<path d="M5 12h14M12 5l7 7-7 7" />
 							</svg>
 						</button>
 					</div>
 				</div>
 
-				<div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+				<div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
 					{/* Jacket */}
 					<div className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group">
 						<Image
@@ -226,14 +278,21 @@ export const ShopAllView = () => {
 							className="object-cover transition-transform duration-500 group-hover:scale-105"
 						/>
 						<div className="absolute inset-0 bg-black/25" />
-						<div className="relative z-10 flex flex-col justify-end h-full p-6 text-white space-y-2">
+						<div className="flex relative z-10 flex-col justify-end p-6 space-y-2 h-full text-white">
 							<h3 className="text-2xl font-bold text-white">Jacket</h3>
 							<Link
 								href="/collections"
 								className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-[1.2rem] font-medium rounded-full self-start hover:bg-white/90 transition-all"
 							>
 								<span>See Collection</span>
-								<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+								<svg
+									width="13"
+									height="13"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+								>
 									<line x1="7" y1="17" x2="17" y2="7" />
 									<polyline points="7 7 17 7 17 17" />
 								</svg>
@@ -251,14 +310,21 @@ export const ShopAllView = () => {
 							className="object-cover transition-transform duration-500 group-hover:scale-105"
 						/>
 						<div className="absolute inset-0 bg-black/25" />
-						<div className="relative z-10 flex flex-col justify-end h-full p-6 text-white space-y-2">
+						<div className="flex relative z-10 flex-col justify-end p-6 space-y-2 h-full text-white">
 							<h3 className="text-2xl font-bold text-white">T-Shirts</h3>
 							<Link
 								href="/collections"
 								className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-[1.2rem] font-medium rounded-full self-start hover:bg-white/90 transition-all"
 							>
 								<span>See Collection</span>
-								<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+								<svg
+									width="13"
+									height="13"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+								>
 									<line x1="7" y1="17" x2="17" y2="7" />
 									<polyline points="7 7 17 7 17 17" />
 								</svg>
@@ -276,14 +342,21 @@ export const ShopAllView = () => {
 							className="object-cover transition-transform duration-500 group-hover:scale-105"
 						/>
 						<div className="absolute inset-0 bg-black/25" />
-						<div className="relative z-10 flex flex-col justify-end h-full p-6 text-white space-y-2">
+						<div className="flex relative z-10 flex-col justify-end p-6 space-y-2 h-full text-white">
 							<h3 className="text-2xl font-bold text-white">Shorts</h3>
 							<Link
 								href="/collections"
 								className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-[1.2rem] font-medium rounded-full self-start hover:bg-white/90 transition-all"
 							>
 								<span>See Collection</span>
-								<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+								<svg
+									width="13"
+									height="13"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+								>
 									<line x1="7" y1="17" x2="17" y2="7" />
 									<polyline points="7 7 17 7 17 17" />
 								</svg>
@@ -294,8 +367,11 @@ export const ShopAllView = () => {
 			</section>
 
 			{/* 4. Toolbar & Search Bar */}
-			<section id="catalog-grid" className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-				<div className="flex flex-wrap items-center gap-4 justify-between border-b border-neutral-200 pb-6">
+			<section
+				id="catalog-grid"
+				className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6"
+			>
+				<div className="flex flex-wrap gap-4 justify-between items-center pb-6 border-b border-neutral-200">
 					{/* Filter toggle + search : un seul contrôle visuel */}
 					<div className="flex items-stretch flex-1 min-w-[240px] max-w-lg">
 						<button
@@ -307,7 +383,14 @@ export const ShopAllView = () => {
 							} cursor-pointer`}
 							aria-label="Toggle filter sidebar"
 						>
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+							>
 								<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
 							</svg>
 							<span>Filter</span>
@@ -338,7 +421,7 @@ export const ShopAllView = () => {
 					</div>
 
 					{/* Quick dropdown filters */}
-					<div className="flex items-center gap-3 flex-wrap">
+					<div className="flex flex-wrap gap-3 items-center">
 						{/* Category dropdown */}
 						<select
 							value={categorySlug}
@@ -370,7 +453,8 @@ export const ShopAllView = () => {
 						<select
 							value={selectedSort}
 							onChange={(e) => {
-								if (e.target.value === "Prix croissant") setSort("basePrice", "asc");
+								if (e.target.value === "Prix croissant")
+									setSort("basePrice", "asc");
 								else setSort("basePrice", "desc");
 							}}
 							className="px-4 py-2.5 rounded-full border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-black"
@@ -384,7 +468,7 @@ export const ShopAllView = () => {
 
 			{/* 5. Main Catalog Layout (Sidebar + Product Grid) */}
 			<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-				<div className="flex items-start gap-10">
+				<div className="flex gap-10 items-start">
 					{/* Collapsible Sidebar Filter */}
 					<AnimatePresence>
 						{sidebarOpen && (
@@ -408,20 +492,28 @@ export const ShopAllView = () => {
 					{/* Product Grid */}
 					<div className="flex-1">
 						{!isLoading && displayedProducts.length === 0 ? (
-							<div className="flex flex-col items-center text-center py-24">
-								<div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-6">
-									<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-gray-400">
+							<div className="flex flex-col items-center py-24 text-center">
+								<div className="flex justify-center items-center mb-6 w-16 h-16 bg-gray-100 rounded-full">
+									<svg
+										width="28"
+										height="28"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="1.8"
+										className="text-gray-400"
+									>
 										<circle cx="11" cy="11" r="7" />
 										<line x1="21" y1="21" x2="16.65" y2="16.65" />
 									</svg>
 								</div>
-								<span className="text-xs uppercase tracking-widest font-semibold text-gray-400">
+								<span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
 									Aucun résultat
 								</span>
-								<h2 className="mt-3 text-2xl sm:text-3xl font-bold text-gray-900">
+								<h2 className="mt-3 text-2xl font-bold text-gray-900 sm:text-3xl">
 									Aucun produit ne correspond à votre recherche
 								</h2>
-								<p className="mt-2 text-gray-500 max-w-md">
+								<p className="mt-2 max-w-md text-gray-500">
 									Essayez d&apos;ajuster vos filtres ou votre recherche.
 								</p>
 								<button
@@ -434,11 +526,26 @@ export const ShopAllView = () => {
 									className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-black text-white font-semibold rounded-full hover:bg-neutral-800 transition shadow-lg group text-sm sm:text-base cursor-pointer"
 								>
 									<span>Réinitialiser les filtres</span>
-									<ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1 text-white" />
+									<ArrowRightIcon className="w-4 h-4 text-white transition-transform group-hover:translate-x-1" />
 								</button>
 							</div>
 						) : (
-							<GridCollectionLayout products={displayedProducts} loading={isLoading} />
+							<GridCardProduct action_grid hideSort className="max-sm:gap-y-8">
+								<>
+									{isLoading
+										? Array.from({ length: PAGE_SIZE }).map((_, index) => (
+												<ProductCardSkeleton key={index} />
+											))
+										: displayedProducts.map((product, index) => (
+												<CardProduct
+													key={product.collectionId}
+													product={product}
+													currencyCode={currencyCode}
+													priority={index < 4}
+												/>
+											))}
+								</>
+							</GridCardProduct>
 						)}
 
 						{/* Load More Button */}
@@ -446,9 +553,9 @@ export const ShopAllView = () => {
 							<div className="flex justify-center pt-8">
 								<button
 									onClick={() => setLimit((prev) => prev + PAGE_SIZE)}
-									className="px-10 py-3 rounded-full border border-neutral-300 hover:border-black text-[1.4rem] font-medium transition-all cursor-pointer"
+									className="inline-flex items-center px-10 py-3 text-sm font-medium text-white bg-black rounded-full transition-colors hover:bg-neutral-800 cursor-pointer"
 								>
-									Load More...
+									See More
 								</button>
 							</div>
 						)}

@@ -1,9 +1,15 @@
 "use client";
 
 import { UPLOAD_ENDPOINTS, type ProductKind } from "@prettyfull/contracts";
-import { Button, Card, Checkbox, Field, Input } from "@/components/ui/primitives";
+import {
+	Button,
+	Card,
+	Checkbox,
+	Field,
+	Input,
+} from "@/components/ui/primitives";
 import { IconPlus, IconTrash } from "@/components/icons";
-import { ImageUpload, ImageUploadList } from "@/components/ui/image-upload";
+import { ImageUploadList } from "@/components/ui/image-upload";
 
 /**
  * Structure de déclinaison d'un produit, à la création (§2.2).
@@ -25,7 +31,7 @@ export interface SizeDraft {
 export interface VariantDraft {
 	name: string;
 	colorHex: string;
-	imageUrl: string;
+	imageUrls: string[];
 	sizes: SizeDraft[];
 	/** Utilisé uniquement quand la variante n'a aucune taille. */
 	quantity: string;
@@ -53,7 +59,7 @@ const newSize = (): SizeDraft => ({ label: "", quantity: "0" });
 const newVariant = (): VariantDraft => ({
 	name: "",
 	colorHex: "#111111",
-	imageUrl: "",
+	imageUrls: [],
 	sizes: [],
 	quantity: "0",
 });
@@ -74,9 +80,10 @@ export const toStructurePayload = (state: StructureState) => {
 				name: variant.name.trim(),
 				colorHex: variant.colorHex || null,
 				position,
-				images: variant.imageUrl.trim()
-					? [{ url: variant.imageUrl.trim(), position: 0 }]
-					: [],
+				images: variant.imageUrls
+					.map((url) => url.trim())
+					.filter(Boolean)
+					.map((url, imagePosition) => ({ url, position: imagePosition })),
 				sizes: variant.sizes
 					.filter((size) => size.label.trim())
 					.map((size, sizePosition) => ({
@@ -105,7 +112,9 @@ export const toStructurePayload = (state: StructureState) => {
 		images,
 		variants: [],
 		sizes,
-		...(sizes.length === 0 ? { initialQuantity: Number(state.quantity) || 0 } : {}),
+		...(sizes.length === 0
+			? { initialQuantity: Number(state.quantity) || 0 }
+			: {}),
 	};
 };
 
@@ -140,7 +149,9 @@ const SizeRows = ({
 						onChange={(event) =>
 							onChange(
 								sizes.map((item, i) =>
-									i === index ? { ...item, quantity: event.target.value } : item,
+									i === index
+										? { ...item, quantity: event.target.value }
+										: item,
 								),
 							)
 						}
@@ -157,7 +168,11 @@ const SizeRows = ({
 			</div>
 		))}
 
-		<Button size="sm" onClick={() => onChange([...sizes, newSize()])} className="self-start">
+		<Button
+			size="sm"
+			onClick={() => onChange([...sizes, newSize()])}
+			className="self-start"
+		>
 			<IconPlus width={14} height={14} />
 			Ajouter une taille
 		</Button>
@@ -171,8 +186,10 @@ export const StructureEditor = ({
 	value: StructureState;
 	onChange: (next: StructureState) => void;
 }) => {
-	const set = <K extends keyof StructureState>(key: K, next: StructureState[K]) =>
-		onChange({ ...value, [key]: next });
+	const set = <K extends keyof StructureState>(
+		key: K,
+		next: StructureState[K],
+	) => onChange({ ...value, [key]: next });
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -186,12 +203,14 @@ export const StructureEditor = ({
 							{
 								kind: "simple" as const,
 								title: "Produit simple",
-								detail: "Tailles portées par le produit, ou aucune déclinaison.",
+								detail:
+									"Tailles portées par le produit, ou aucune déclinaison.",
 							},
 							{
 								kind: "variant" as const,
 								title: "Produit à variantes",
-								detail: "Un coloris par variante, avec ses photos et ses tailles.",
+								detail:
+									"Un coloris par variante, avec ses photos et ses tailles.",
 							},
 						] satisfies { kind: ProductKind; title: string; detail: string }[]
 					).map((option) => (
@@ -221,7 +240,10 @@ export const StructureEditor = ({
 				</div>
 			</Field>
 
-			<Field label="Images du produit" hint="La première sert de vignette dans les listes.">
+			<Field
+				label="Images du produit"
+				hint="La première sert de vignette dans les listes."
+			>
 				<ImageUploadList
 					endpoint={UPLOAD_ENDPOINTS.catalog}
 					values={value.images}
@@ -233,9 +255,12 @@ export const StructureEditor = ({
 				<div className="flex flex-col gap-4">
 					<Field
 						label="Tailles"
-						hint="Laissez vide si le produit n'a aucune déclinaison — le stock sera alors porté par le produit."
+						hint="Laissez vide si le produit n'a aucune déclinaison - le stock sera alors porté par le produit."
 					>
-						<SizeRows sizes={value.sizes} onChange={(next) => set("sizes", next)} />
+						<SizeRows
+							sizes={value.sizes}
+							onChange={(next) => set("sizes", next)}
+						/>
 					</Field>
 
 					{value.sizes.length === 0 && (
@@ -256,14 +281,17 @@ export const StructureEditor = ({
 								<div className="mb-3 flex items-start justify-between gap-3">
 									<p className="text-[13px] font-medium text-ink">
 										Variante {index + 1}
-										{variant.name && ` — ${variant.name}`}
+										{variant.name && ` - ${variant.name}`}
 									</p>
 									{value.variants.length > 1 && (
 										<Button
 											variant="ghost"
 											size="sm"
 											onClick={() =>
-												set("variants", value.variants.filter((_, i) => i !== index))
+												set(
+													"variants",
+													value.variants.filter((_, i) => i !== index),
+												)
 											}
 										>
 											<IconTrash width={15} height={15} />
@@ -280,7 +308,9 @@ export const StructureEditor = ({
 												set(
 													"variants",
 													value.variants.map((item, i) =>
-														i === index ? { ...item, name: event.target.value } : item,
+														i === index
+															? { ...item, name: event.target.value }
+															: item,
 													),
 												)
 											}
@@ -297,7 +327,9 @@ export const StructureEditor = ({
 													set(
 														"variants",
 														value.variants.map((item, i) =>
-															i === index ? { ...item, colorHex: event.target.value } : item,
+															i === index
+																? { ...item, colorHex: event.target.value }
+																: item,
 														),
 													)
 												}
@@ -310,7 +342,9 @@ export const StructureEditor = ({
 													set(
 														"variants",
 														value.variants.map((item, i) =>
-															i === index ? { ...item, colorHex: event.target.value } : item,
+															i === index
+																? { ...item, colorHex: event.target.value }
+																: item,
 														),
 													)
 												}
@@ -318,15 +352,15 @@ export const StructureEditor = ({
 										</div>
 									</Field>
 
-									<Field label="Photo du coloris" className="sm:col-span-3">
-										<ImageUpload
+									<Field label="Photos du coloris" className="sm:col-span-3">
+										<ImageUploadList
 											endpoint={UPLOAD_ENDPOINTS.catalog}
-											value={variant.imageUrl}
-											onChange={(imageUrl) =>
+											values={variant.imageUrls}
+											onChange={(imageUrls) =>
 												set(
 													"variants",
 													value.variants.map((item, i) =>
-														i === index ? { ...item, imageUrl } : item,
+														i === index ? { ...item, imageUrls } : item,
 													),
 												)
 											}
@@ -343,7 +377,10 @@ export const StructureEditor = ({
 												"variants",
 												value.variants.map((item, i) =>
 													i === index
-														? { ...item, sizes: event.target.checked ? [newSize()] : [] }
+														? {
+																...item,
+																sizes: event.target.checked ? [newSize()] : [],
+															}
 														: item,
 												),
 											)
@@ -373,7 +410,9 @@ export const StructureEditor = ({
 													set(
 														"variants",
 														value.variants.map((item, i) =>
-															i === index ? { ...item, quantity: event.target.value } : item,
+															i === index
+																? { ...item, quantity: event.target.value }
+																: item,
 														),
 													)
 												}

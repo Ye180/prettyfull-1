@@ -109,7 +109,7 @@ export const BANNER_PLACEMENTS = [
 /** Cycle de vie d'un message reçu via le formulaire de contact. */
 export const CONTACT_MESSAGE_STATUSES = ["new", "read", "archived"];
 export const FEATURED_KINDS = ["product", "category"];
-/** Devises supportées. XOF n'a pas de sous-unité — cf. `CURRENCY_EXPONENTS`. */
+/** Devises supportées. XOF n'a pas de sous-unité - cf. `CURRENCY_EXPONENTS`. */
 export const CURRENCY_CODES = ["xof", "eur", "usd"];
 /**
  * Nombre de décimales par devise. Tous les montants sont stockés en entiers,

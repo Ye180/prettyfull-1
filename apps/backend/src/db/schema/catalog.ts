@@ -77,7 +77,7 @@ export const categories = pgTable(
  * produit détruirait son stock et son historique de mouvements. Le
  * changement de régime passe par la duplication.
  *
- * `deletedAt` implémente l'archivage logique demandé au §2.1 — aucune
+ * `deletedAt` implémente l'archivage logique demandé au §2.1 - aucune
  * suppression physique n'est exposée par l'API.
  */
 export const products = pgTable(
@@ -238,7 +238,7 @@ export const sizes = pgTable(
 		}),
 		label: varchar("label", { length: 32 }).notNull(),
 		sku: varchar("sku", { length: 64 }),
-		/** Prix propre à la taille — rare, prévu en option par le §2.2. */
+		/** Prix propre à la taille - rare, prévu en option par le §2.2. */
 		priceOverride: integer("price_override"),
 		position: integer("position").notNull().default(0),
 		status: activationStatusEnum("status").notNull().default("active"),

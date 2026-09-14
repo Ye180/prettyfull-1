@@ -1,4 +1,4 @@
-# PrettyFull — Turborepo Monorepo
+# PrettyFull - Turborepo Monorepo
 
 Monorepo e-commerce : storefront Next.js, back-office, API Hono, et packages partagés.
 
@@ -6,24 +6,24 @@ Monorepo e-commerce : storefront Next.js, back-office, API Hono, et packages par
 
 ### Apps
 
-| App | Stack | Port dev | Rôle |
-| --- | --- | --- | --- |
-| `web` | Next.js 16 (App Router) | 3000 | Storefront client |
-| `admin` | Next.js 16 | 3001 | Back-office (catalogue, commandes) |
-| `backend` | Hono + Drizzle + Postgres | 7777 | API REST |
-| `docs` | Storybook 9 | 6006 | Documentation des composants `ui` |
+| App       | Stack                     | Port dev | Rôle                               |
+| --------- | ------------------------- | -------- | ---------------------------------- |
+| `web`     | Next.js 16 (App Router)   | 3000     | Storefront client                  |
+| `admin`   | Next.js 16                | 3001     | Back-office (catalogue, commandes) |
+| `backend` | Hono + Drizzle + Postgres | 7777     | API REST                           |
+| `docs`    | Storybook 9               | 6006     | Documentation des composants `ui`  |
 
 ### Packages
 
-| Package | Contenu |
-| --- | --- |
-| `@prettyfull/contracts` | Schémas Zod + types partagés par l'API, le back-office et le storefront |
-| `@prettyfull/ui` | Composants React partagés (Tailwind v4, Radix, prefix CSS `ui:`) |
-| `@prettyfull/store` | État global Zustand (panier) |
-| `@prettyfull/utils` | Helpers (`cn`, `formatCurrency_FR`, `getMediaUrl`, constantes) |
-| `@prettyfull/tailwind-config` | Styles et config Tailwind partagés |
-| `@prettyfull/typescript-config` | tsconfigs : `base.json`, `nextjs.json`, `node.json` |
-| `@prettyfull/eslint-config` | Presets ESLint : `base`, `next-js`, `node`, `react-internal` |
+| Package                         | Contenu                                                                 |
+| ------------------------------- | ----------------------------------------------------------------------- |
+| `@prettyfull/contracts`         | Schémas Zod + types partagés par l'API, le back-office et le storefront |
+| `@prettyfull/ui`                | Composants React partagés (Tailwind v4, Radix, prefix CSS `ui:`)        |
+| `@prettyfull/store`             | État global Zustand (panier)                                            |
+| `@prettyfull/utils`             | Helpers (`cn`, `formatCurrency_FR`, `getMediaUrl`, constantes)          |
+| `@prettyfull/tailwind-config`   | Styles et config Tailwind partagés                                      |
+| `@prettyfull/typescript-config` | tsconfigs : `base.json`, `nextjs.json`, `node.json`                     |
+| `@prettyfull/eslint-config`     | Presets ESLint : `base`, `next-js`, `node`, `react-internal`            |
 
 ## Démarrage
 
@@ -75,23 +75,23 @@ pnpm --filter backend db:studio     # UI Drizzle Studio
 
 Créés par `db:seed`, mot de passe commun `Prettyfull2026!` :
 
-| Compte | Rôle |
-| --- | --- |
-| `admin@prettyfull.shop` | Super administrateur |
+| Compte                      | Rôle                   |
+| --------------------------- | ---------------------- |
+| `admin@prettyfull.shop`     | Super administrateur   |
 | `catalogue@prettyfull.shop` | Gestionnaire catalogue |
 | `commandes@prettyfull.shop` | Gestionnaire commandes |
-| `support@prettyfull.shop` | Support client |
-| `cliente@prettyfull.shop` | Cliente (storefront) |
+| `support@prettyfull.shop`   | Support client         |
+| `cliente@prettyfull.shop`   | Cliente (storefront)   |
 
 ## API
 
 Deux surfaces distinctes, servies par `apps/backend` :
 
-| Préfixe | Accès | Consommateur |
-| --- | --- | --- |
-| `/api/store/*` | Public, session cliente facultative | `apps/web` |
-| `/api/admin/*` | JWT compte back-office + permission par route | `apps/admin` |
-| `/api/webhooks/*` | Signature du prestataire | Agrégateurs de paiement |
+| Préfixe           | Accès                                         | Consommateur            |
+| ----------------- | --------------------------------------------- | ----------------------- |
+| `/api/store/*`    | Public, session cliente facultative           | `apps/web`              |
+| `/api/admin/*`    | JWT compte back-office + permission par route | `apps/admin`            |
+| `/api/webhooks/*` | Signature du prestataire                      | Agrégateurs de paiement |
 
 Les jetons d'accès (15 min) transitent en `Authorization: Bearer` ; les jetons de
 rafraîchissement en cookie `httpOnly` + `SameSite=Strict`, à rotation à chaque usage.
@@ -101,11 +101,11 @@ rafraîchissement en cookie `httpOnly` + `SameSite=Strict`, à rotation à chaqu
 
 ## Documentation
 
-| Document | Contenu |
-| --- | --- |
+| Document                                                 | Contenu                                                                               |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | [`docs/modele-de-donnees.md`](docs/modele-de-donnees.md) | Les 37 tables, les invariants, la règle de cohérence produit et la mécanique du stock |
-| [`docs/guide-panel-admin.md`](docs/guide-panel-admin.md) | Guide d'utilisation du back-office, module par module |
-| `/docs` (API démarrée) | Référence OpenAPI interactive |
+| [`docs/guide-panel-admin.md`](docs/guide-panel-admin.md) | Guide d'utilisation du back-office, module par module                                 |
+| `/docs` (API démarrée)                                   | Référence OpenAPI interactive                                                         |
 
 ## Utilisation des packages
 
@@ -125,7 +125,7 @@ import { cn, formatCurrency_FR } from "@prettyfull/utils";
 
 GitHub Actions (`.github/workflows/deploy.yml`) sur push vers `dev-v2` :
 détection des apps modifiées via `dorny/paths-filter`, puis build/push de l'image
-Docker et déploiement SSH — un job par app, en matrice.
+Docker et déploiement SSH - un job par app, en matrice.
 
 Chaque app déployable doit fournir son propre `apps/<app>/Dockerfile`.
 

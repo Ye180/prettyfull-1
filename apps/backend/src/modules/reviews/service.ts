@@ -67,7 +67,7 @@ export const listReviews = async (query: {
 	return paginate(rows.map(toReview), query, totals?.total ?? 0);
 };
 
-/** Moyenne et nombre d'avis publiés — calculés à la volée, pas de colonne dénormalisée. */
+/** Moyenne et nombre d'avis publiés - calculés à la volée, pas de colonne dénormalisée. */
 export const getReviewSummary = async (productId: string): Promise<ReviewSummary> => {
 	const [row] = await db
 		.select({

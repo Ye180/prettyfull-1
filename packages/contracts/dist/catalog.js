@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ACTIVATION_STATUSES, CONTENT_STATUSES, PRODUCT_KINDS, STOCK_STATUSES, } from "./enums.js";
-import { currencySchema, moneySchema, quantitySchema, slugSchema, translationsSchema, uuidSchema, paginationQuerySchema, } from "./common.js";
+import { currencySchema, moneySchema, partialForUpdate, quantitySchema, slugSchema, translationsSchema, uuidSchema, paginationQuerySchema, } from "./common.js";
 // --- Catégories ------------------------------------------------------------
 export const categoryBaseSchema = z.object({
     name: z.string().trim().min(1).max(160),
@@ -17,7 +17,7 @@ export const categoryBaseSchema = z.object({
     translations: translationsSchema,
 });
 export const createCategorySchema = categoryBaseSchema;
-export const updateCategorySchema = categoryBaseSchema.partial();
+export const updateCategorySchema = partialForUpdate(categoryBaseSchema);
 export const categorySchema = categoryBaseSchema.extend({
     id: uuidSchema,
     depth: z.number().int(),
@@ -38,7 +38,7 @@ export const reorderCategoriesSchema = z.object({
 });
 // --- Tailles ---------------------------------------------------------------
 /**
- * Une taille est rattachée soit à une variante, soit directement au produit —
+ * Une taille est rattachée soit à une variante, soit directement au produit -
  * jamais aux deux. Le rattachement est déduit du contexte de la route, il
  * n'est donc pas exprimé ici.
  */
@@ -53,6 +53,7 @@ export const sizeInputSchema = z.object({
     initialQuantity: quantitySchema.optional(),
     lowStockThreshold: z.number().int().min(0).nullish(),
 });
+export const updateSizeSchema = partialForUpdate(sizeInputSchema);
 export const sizeSchema = sizeInputSchema.omit({ initialQuantity: true }).extend({
     id: uuidSchema,
     productId: uuidSchema.nullable(),
@@ -88,6 +89,7 @@ export const variantInputSchema = z.object({
     initialQuantity: quantitySchema.optional(),
     lowStockThreshold: z.number().int().min(0).nullish(),
 });
+export const updateVariantSchema = partialForUpdate(variantInputSchema);
 export const variantSchema = variantInputSchema
     .omit({ initialQuantity: true, sizes: true, images: true })
     .extend({
@@ -176,7 +178,7 @@ export const createProductSchema = enforceProductModel(productCoreSchema.extend(
  * `kind` est absent de la mise à jour : basculer un produit d'un régime à
  * l'autre détruirait son stock et son historique. On duplique le produit.
  */
-export const updateProductSchema = productCoreSchema.partial();
+export const updateProductSchema = partialForUpdate(productCoreSchema);
 export const duplicateProductSchema = z.object({
     name: z.string().trim().min(1).max(255).optional(),
     slug: slugSchema.optional(),

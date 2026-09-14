@@ -109,7 +109,7 @@ export const getDashboard = async (periodDays: number): Promise<Dashboard> => {
 		// commande, sinon le graphique afficherait des trous.
 		//
 		// Les bornes sont passées en chaînes ISO : `db.execute` transmet les
-		// paramètres bruts au pilote, qui refuse un objet `Date` — contrairement
+		// paramètres bruts au pilote, qui refuse un objet `Date` - contrairement
 		// au constructeur de requêtes, qui les sérialise lui-même.
 		db.execute<{ date: string; revenue: number; orders: number }>(sql`
 			select

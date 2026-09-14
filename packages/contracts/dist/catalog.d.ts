@@ -101,7 +101,7 @@ export declare const reorderCategoriesSchema: z.ZodObject<{
     }, z.core.$strip>>;
 }, z.core.$strip>;
 /**
- * Une taille est rattachée soit à une variante, soit directement au produit —
+ * Une taille est rattachée soit à une variante, soit directement au produit -
  * jamais aux deux. Le rattachement est déduit du contexte de la route, il
  * n'est donc pas exprimé ici.
  */
@@ -119,6 +119,20 @@ export declare const sizeInputSchema: z.ZodObject<{
     lowStockThreshold: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 }, z.core.$strip>;
 export type SizeInput = z.infer<typeof sizeInputSchema>;
+export declare const updateSizeSchema: z.ZodObject<{
+    id: z.ZodOptional<z.ZodOptional<z.ZodUUID>>;
+    label: z.ZodOptional<z.ZodString>;
+    sku: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
+    priceOverride: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
+    position: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
+    status: z.ZodOptional<z.ZodDefault<z.ZodEnum<{
+        active: "active";
+        inactive: "inactive";
+    }>>>;
+    initialQuantity: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    lowStockThreshold: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
+}, z.core.$strip>;
+export type UpdateSizeInput = z.infer<typeof updateSizeSchema>;
 export declare const sizeSchema: z.ZodObject<{
     status: z.ZodDefault<z.ZodEnum<{
         active: "active";
@@ -183,12 +197,47 @@ export declare const variantInputSchema: z.ZodObject<{
     lowStockThreshold: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 }, z.core.$strip>;
 export type VariantInput = z.infer<typeof variantInputSchema>;
+export declare const updateVariantSchema: z.ZodObject<{
+    id: z.ZodOptional<z.ZodOptional<z.ZodUUID>>;
+    name: z.ZodOptional<z.ZodString>;
+    colorHex: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
+    sku: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
+    priceOverride: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
+    compareAtPriceOverride: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
+    status: z.ZodOptional<z.ZodDefault<z.ZodEnum<{
+        active: "active";
+        inactive: "inactive";
+    }>>>;
+    position: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
+    images: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodObject<{
+        id: z.ZodOptional<z.ZodUUID>;
+        url: z.ZodString;
+        alt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        position: z.ZodDefault<z.ZodNumber>;
+    }, z.core.$strip>>>>;
+    sizes: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodObject<{
+        id: z.ZodOptional<z.ZodUUID>;
+        label: z.ZodString;
+        sku: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        priceOverride: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        position: z.ZodDefault<z.ZodNumber>;
+        status: z.ZodDefault<z.ZodEnum<{
+            active: "active";
+            inactive: "inactive";
+        }>>;
+        initialQuantity: z.ZodOptional<z.ZodNumber>;
+        lowStockThreshold: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    }, z.core.$strip>>>>;
+    initialQuantity: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    lowStockThreshold: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
+}, z.core.$strip>;
+export type UpdateVariantInput = z.infer<typeof updateVariantSchema>;
 export declare const variantSchema: z.ZodObject<{
+    name: z.ZodString;
     status: z.ZodDefault<z.ZodEnum<{
         active: "active";
         inactive: "inactive";
     }>>;
-    name: z.ZodString;
     position: z.ZodDefault<z.ZodNumber>;
     sku: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     priceOverride: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
@@ -421,11 +470,11 @@ export declare const productSchema: z.ZodObject<{
         id: z.ZodUUID;
     }, z.core.$strip>>;
     variants: z.ZodArray<z.ZodObject<{
+        name: z.ZodString;
         status: z.ZodDefault<z.ZodEnum<{
             active: "active";
             inactive: "inactive";
         }>>;
-        name: z.ZodString;
         position: z.ZodDefault<z.ZodNumber>;
         sku: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         priceOverride: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
@@ -491,9 +540,9 @@ export declare const productSchema: z.ZodObject<{
         }>;
     }, z.core.$strip>>;
     categories: z.ZodArray<z.ZodObject<{
-        id: z.ZodUUID;
         slug: z.ZodString;
         name: z.ZodString;
+        id: z.ZodUUID;
     }, z.core.$strip>>;
     quantity: z.ZodNumber;
     availableQuantity: z.ZodNumber;

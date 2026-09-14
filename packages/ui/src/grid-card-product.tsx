@@ -28,6 +28,8 @@ interface GridCardProductProps
 	style_everst?: string;
 	grid_card?: string;
 	action_grid?: boolean;
+	/** Masque le sélecteur de tri décoratif, pour ne garder que les icônes de densité. */
+	hideSort?: boolean;
 	children: ReactElement | ReactElement[];
 }
 
@@ -37,6 +39,7 @@ export const GridCardProduct = ({
 	children,
 	grid_card,
 	action_grid,
+	hideSort,
 	...props
 }: GridCardProductProps) => {
 	const [styleGrid, setStyleGrid] = useState<{ style: object; active: number }>(
@@ -92,7 +95,7 @@ export const GridCardProduct = ({
 		>
 			{action_grid && (
 				<div className="gap-4 py-1 space-x-5 text-black max-md:hidden md:flex md:justify-end md:items-center">
-					<ToPull />
+					{!hideSort && <ToPull />}
 					<span className="flex gap-4 justify-center items-center">
 						{StyleBar.map((styles, index) => (
 							<GridBar

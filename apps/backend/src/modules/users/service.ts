@@ -212,7 +212,7 @@ export const createStaff = async (input: {
  * Met à jour un compte back-office.
  *
  * `actingUserId` protège l'administrateur contre lui-même : il ne peut ni se
- * désactiver, ni se retirer ses propres rôles — un back-office sans
+ * désactiver, ni se retirer ses propres rôles - un back-office sans
  * super-administrateur joignable serait irrécupérable sans intervention en base.
  */
 export const updateStaff = async (

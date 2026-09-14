@@ -12,9 +12,9 @@ import { useLogin } from "../../api/login";
 import { loginSchema, type LoginFormData } from "../../schemas/login.schema";
 
 interface LoginFormProps {
-	/** Called instead of the default redirect on success — used by the quick-auth modal to close itself. */
+	/** Called instead of the default redirect on success - used by the quick-auth modal to close itself. */
 	onSuccess?: () => void;
-	/** Renders "Create Account" as a button instead of a Link — used by the quick-auth modal to switch mode in place. */
+	/** Renders "Create Account" as a button instead of a Link - used by the quick-auth modal to switch mode in place. */
 	onSwitchMode?: () => void;
 }
 
@@ -57,7 +57,8 @@ export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
 					<div className="mb-16">
 						<h3>Bon retour sur PrettyFull</h3>
 						<p className="text-neutral-500">
-							Connectez-vous à votre compte pour découvrir les dernières tendances mode
+							Connectez-vous à votre compte pour découvrir les dernières
+							tendances mode
 						</p>
 					</div>
 					<div className="space-y-8">

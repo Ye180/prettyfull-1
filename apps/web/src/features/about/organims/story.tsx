@@ -4,7 +4,7 @@ import { STORY } from "../data";
 /**
  * Récit de la marque.
  *
- * Deux colonnes au-delà de 1024 px, empilées en dessous — l'image passe alors
+ * Deux colonnes au-delà de 1024 px, empilées en dessous - l'image passe alors
  * en premier, parce qu'un mur de texte en ouverture d'écran mobile fait fuir.
  */
 const Story = () => (

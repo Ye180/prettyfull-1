@@ -31,7 +31,7 @@ const NavBarHeaders = ({
 	const pathname = usePathname();
 	const items = useCartStore((state) => state.items);
 
-	// Session restaurée en mémoire au chargement (voir `SessionBootstrap`) —
+	// Session restaurée en mémoire au chargement (voir `SessionBootstrap`) -
 	// même clé de cache que la page /account, alimentée par la connexion.
 	const { data: profile } = useQuery({
 		queryKey: ["customer-profile"],
@@ -45,7 +45,7 @@ const NavBarHeaders = ({
 	};
 
 	// ponytail: categories come straight from the backend (however many there
-	// are) instead of a hardcoded Men/Ladies/New Collection list — "Home" is
+	// are) instead of a hardcoded Men/Ladies/New Collection list - "Home" is
 	// pinned first so the nav always offers a way back regardless of category count.
 	const navLinks = [
 		{ label: "Accueil", href: paths.home },
@@ -58,7 +58,7 @@ const NavBarHeaders = ({
 	return (
 		<>
 			<div className="grid grid-cols-[1fr_auto_1fr] items-center h-20 w-full">
-				{/* Navigation Links — Left */}
+				{/* Navigation Links - Left */}
 				<nav className="flex items-center flex-wrap gap-x-8 gap-y-1 text-[1.4rem] font-medium max-md:hidden">
 					{navLinks.map((link) => {
 						const isActive = pathname === link.href;
@@ -100,16 +100,23 @@ const NavBarHeaders = ({
 					</button>
 				</div>
 
-				{/* Brand Logo — Center */}
+				{/* Brand Logo - Center */}
 				<Link
 					href="/"
 					className="justify-self-center flex items-center justify-center p-2 hover:opacity-80 transition-opacity"
 					aria-label="Prettyfull Accueil"
 				>
-					<Image src="/assets/logo.png" alt="Prettyfull" width={140} height={32} className="h-6 w-auto sm:h-7" priority />
+					<Image
+						src="/assets/logo.png"
+						alt="Prettyfull"
+						width={140}
+						height={32}
+						className="h-6 w-auto sm:h-7"
+						priority
+					/>
 				</Link>
 
-				{/* Actions — Right */}
+				{/* Actions - Right */}
 				<div className="flex items-center justify-end space-x-6 text-[1.4rem] font-medium">
 					<div className="max-md:hidden">
 						<CurrencySelector />

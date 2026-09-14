@@ -117,7 +117,7 @@ export const renderInvoice = async (order: Order): Promise<string> => {
 		</section>
 		<section>
 			<h2>Livraison</h2>
-			<div>${escape(order.shippingMethod?.name ?? "—")}</div>
+			<div>${escape(order.shippingMethod?.name ?? "-")}</div>
 			${order.trackingNumber ? `<div class="muted">Suivi ${escape(order.trackingNumber)}</div>` : ""}
 			${order.carrier ? `<div class="muted">${escape(order.carrier)}</div>` : ""}
 		</section>

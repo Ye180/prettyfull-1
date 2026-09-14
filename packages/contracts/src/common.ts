@@ -9,6 +9,26 @@ import {
 export const uuidSchema = z.uuid();
 
 /**
+ * Rend un schéma objet partiel pour une mise à jour, sans le piège de
+ * `.partial()` seul : Zod applique quand même un `.default()` à une clé
+ * absente, ce qui fait qu'un PATCH omettant un champ écrase silencieusement
+ * sa valeur en base par ce défaut (`images` vide, `status` remis à
+ * `"draft"`…). On retire donc les défauts avant de rendre les champs
+ * optionnels, pour qu'une clé absente du corps de la requête reste
+ * réellement absente après validation.
+ */
+export const partialForUpdate = <Shape extends z.ZodRawShape>(schema: z.ZodObject<Shape>) => {
+	const withoutDefaults = Object.fromEntries(
+		Object.entries(schema.shape).map(([key, value]) => [
+			key,
+			value instanceof z.ZodDefault ? value.removeDefault() : value,
+		]),
+	) as Shape;
+
+	return z.object(withoutDefaults).partial();
+};
+
+/**
  * Slug URL : minuscules, chiffres et tirets simples, sans tiret en bordure.
  * Utilisé pour les produits, catégories et pages statiques (§2.1 SEO).
  */
@@ -45,7 +65,7 @@ export const quantitySchema = z.number().int().min(0).max(1_000_000);
 
 /**
  * Champ traduit : `{ en: { name: "…" } }`. Le français est la langue pivot et
- * vit dans les colonnes elles-mêmes, donc chaque locale est facultative —
+ * vit dans les colonnes elles-mêmes, donc chaque locale est facultative -
  * d'où `partialRecord` plutôt que `record`, qui les exigerait toutes.
  */
 export const translationsSchema = z

@@ -7,11 +7,15 @@ import { useEffect, useState } from "react";
 interface Props {
 	productId: string;
 	initialQuantity: number;
-	/** Squares off the pill/buttons — used by the cart drawer only. */
+	/** Squares off the pill/buttons - used by the cart drawer only. */
 	square?: boolean;
 }
 
-export const QuantitySelector = ({ productId, initialQuantity, square }: Props) => {
+export const QuantitySelector = ({
+	productId,
+	initialQuantity,
+	square,
+}: Props) => {
 	const updateQuantity = useCartStore((state) => state.updateQuantity);
 	const [quantity, setQuantity] = useState(initialQuantity);
 

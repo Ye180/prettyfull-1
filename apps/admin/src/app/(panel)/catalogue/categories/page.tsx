@@ -56,7 +56,7 @@ const flatten = (
 	depth = 0,
 ): { value: string; label: string }[] =>
 	nodes.flatMap((node) => [
-		{ value: node.id, label: `${"— ".repeat(depth)}${node.name}` },
+		{ value: node.id, label: `${"- ".repeat(depth)}${node.name}` },
 		...flatten(node.children, depth + 1),
 	]);
 
@@ -78,8 +78,12 @@ const CategoryRow = ({
 	<>
 		<li className="flex items-center gap-3 border-b border-line px-4 py-2.5 last:border-0">
 			<span style={{ paddingLeft: depth * 20 }} className="min-w-0 flex-1">
-				<span className="block truncate text-[13px] font-medium text-ink">{node.name}</span>
-				<span className="block truncate text-[12px] text-subtle">/{node.slug}</span>
+				<span className="block truncate text-[13px] font-medium text-ink">
+					{node.name}
+				</span>
+				<span className="block truncate text-[12px] text-subtle">
+					/{node.slug}
+				</span>
 			</span>
 
 			{node.isFeatured && <Badge tone="info">Mise en avant</Badge>}
@@ -89,13 +93,28 @@ const CategoryRow = ({
 
 			{writable && (
 				<>
-					<Button size="sm" variant="ghost" onClick={() => onAddChild(node.id)} aria-label="Ajouter une sous-catégorie">
+					<Button
+						size="sm"
+						variant="ghost"
+						onClick={() => onAddChild(node.id)}
+						aria-label="Ajouter une sous-catégorie"
+					>
 						<IconPlus width={15} height={15} />
 					</Button>
-					<Button size="sm" variant="ghost" onClick={() => onEdit(node)} aria-label="Modifier">
+					<Button
+						size="sm"
+						variant="ghost"
+						onClick={() => onEdit(node)}
+						aria-label="Modifier"
+					>
 						<IconEdit width={15} height={15} />
 					</Button>
-					<Button size="sm" variant="ghost" onClick={() => onDelete(node)} aria-label="Archiver">
+					<Button
+						size="sm"
+						variant="ghost"
+						onClick={() => onDelete(node)}
+						aria-label="Archiver"
+					>
 						<IconTrash width={15} height={15} />
 					</Button>
 				</>
@@ -160,7 +179,8 @@ const CategoriesPage = () => {
 			setErrors({});
 		},
 		onError: (error) => {
-			if (error instanceof ApiRequestError && error.details) setErrors(error.details);
+			if (error instanceof ApiRequestError && error.details)
+				setErrors(error.details);
 			notifyError(error, "Enregistrement impossible.");
 		},
 	});
@@ -209,7 +229,11 @@ const CategoriesPage = () => {
 						description="Créez un premier rayon pour organiser le catalogue."
 						action={
 							writable && (
-								<Button size="sm" variant="primary" onClick={() => setDraft(emptyDraft())}>
+								<Button
+									size="sm"
+									variant="primary"
+									onClick={() => setDraft(emptyDraft())}
+								>
 									Nouvelle catégorie
 								</Button>
 							)
@@ -289,14 +313,18 @@ const CategoriesPage = () => {
 						<Field label="Slug" required error={errors.slug?.[0]}>
 							<Input
 								value={draft.slug}
-								onChange={(event) => setDraft({ ...draft, slug: slugify(event.target.value) })}
+								onChange={(event) =>
+									setDraft({ ...draft, slug: slugify(event.target.value) })
+								}
 							/>
 						</Field>
 
 						<Field label="Nom (anglais)">
 							<Input
 								value={draft.nameEn}
-								onChange={(event) => setDraft({ ...draft, nameEn: event.target.value })}
+								onChange={(event) =>
+									setDraft({ ...draft, nameEn: event.target.value })
+								}
 								placeholder="Dresses"
 							/>
 						</Field>
@@ -304,8 +332,12 @@ const CategoriesPage = () => {
 						<Field label="Catégorie parente" error={errors.parentId?.[0]}>
 							<Select
 								value={draft.parentId}
-								onChange={(event) => setDraft({ ...draft, parentId: event.target.value })}
-								options={parentOptions.filter((option) => option.value !== draft.id)}
+								onChange={(event) =>
+									setDraft({ ...draft, parentId: event.target.value })
+								}
+								options={parentOptions.filter(
+									(option) => option.value !== draft.id,
+								)}
 								placeholder="Aucune (racine)"
 							/>
 						</Field>
@@ -322,7 +354,9 @@ const CategoriesPage = () => {
 							<Textarea
 								rows={3}
 								value={draft.description}
-								onChange={(event) => setDraft({ ...draft, description: event.target.value })}
+								onChange={(event) =>
+									setDraft({ ...draft, description: event.target.value })
+								}
 							/>
 						</Field>
 
@@ -330,7 +364,10 @@ const CategoriesPage = () => {
 							<Select
 								value={draft.status}
 								onChange={(event) =>
-									setDraft({ ...draft, status: event.target.value as "active" | "inactive" })
+									setDraft({
+										...draft,
+										status: event.target.value as "active" | "inactive",
+									})
 								}
 								options={[
 									{ value: "active", label: "Active" },
@@ -342,7 +379,9 @@ const CategoriesPage = () => {
 						<Checkbox
 							label="Mettre en avant sur la page d'accueil"
 							checked={draft.isFeatured}
-							onChange={(event) => setDraft({ ...draft, isFeatured: event.target.checked })}
+							onChange={(event) =>
+								setDraft({ ...draft, isFeatured: event.target.checked })
+							}
 						/>
 					</div>
 				)}

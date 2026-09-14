@@ -9,7 +9,7 @@ import { Button, Field, Input } from "@/components/ui/primitives";
 /**
  * Connexion au back-office.
  *
- * Le message d'échec reste volontairement générique — l'API ne distingue pas
+ * Le message d'échec reste volontairement générique - l'API ne distingue pas
  * un compte inexistant d'un mot de passe erroné, pour ne pas permettre
  * d'énumérer les adresses valides.
  */
@@ -90,7 +90,10 @@ const LoginPage = () => {
 					</Field>
 
 					{error && (
-						<p role="alert" className="rounded-md bg-danger-soft px-3 py-2 text-[13px] text-danger">
+						<p
+							role="alert"
+							className="rounded-md bg-danger-soft px-3 py-2 text-[13px] text-danger"
+						>
 							{error}
 						</p>
 					)}

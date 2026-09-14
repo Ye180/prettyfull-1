@@ -6,8 +6,8 @@ import type { StoreAddress } from "./types";
 /**
  * Pont entre le panier local et le panier serveur.
  *
- * Le storefront garde son panier Zustand pour l'interaction — ajout, badge,
- * tiroir — parce qu'il doit rester instantané et fonctionner hors connexion.
+ * Le storefront garde son panier Zustand pour l'interaction - ajout, badge,
+ * tiroir - parce qu'il doit rester instantané et fonctionner hors connexion.
  * Le panier serveur, lui, n'entre en jeu qu'au moment du paiement : c'est là
  * que le stock est vérifié et réservé, sous verrou.
  *
@@ -34,7 +34,7 @@ export interface CheckoutResult {
  * Le panier serveur est d'abord vidé : sans cela, deux passages successifs
  * dans le tunnel additionneraient les quantités.
  *
- * Les lignes sans `selection` sont ignorées — elles proviennent d'un panier
+ * Les lignes sans `selection` sont ignorées - elles proviennent d'un panier
  * persisté avant cette version et ne peuvent pas être rattachées à un point de
  * stock. Le décompte renvoyé permet d'en avertir la cliente.
  */

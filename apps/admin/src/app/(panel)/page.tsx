@@ -38,7 +38,7 @@ const PERIODS = [
  *
  * La variation porte une couleur *et* un signe : sur un écran monochrome ou en
  * vision déficiente, la couleur seule ne dirait rien. Le chiffre principal
- * garde les chiffres proportionnels — `tabular-nums` desserre les grands
+ * garde les chiffres proportionnels - `tabular-nums` desserre les grands
  * nombres et n'a d'intérêt qu'en colonne.
  */
 const StatTile = ({
@@ -55,12 +55,15 @@ const StatTile = ({
 	comparison?: string;
 	upIsGood?: boolean;
 }) => {
-	const good = change === null || change === undefined ? null : change >= 0 === upIsGood;
+	const good =
+		change === null || change === undefined ? null : change >= 0 === upIsGood;
 
 	return (
 		<Card className="p-4">
 			<p className="text-[12px] text-muted">{label}</p>
-			<p className="mt-1 text-2xl font-semibold tracking-tight text-ink">{value}</p>
+			<p className="mt-1 text-2xl font-semibold tracking-tight text-ink">
+				{value}
+			</p>
 
 			{change !== undefined && (
 				<p className="mt-1.5 flex items-center gap-1.5 text-[12px]">
@@ -98,7 +101,9 @@ const DashboardPage = () => {
 				<PageHeader title="Tableau de bord" />
 				<Card>
 					<ErrorState
-						message={error instanceof Error ? error.message : "Chargement impossible."}
+						message={
+							error instanceof Error ? error.message : "Chargement impossible."
+						}
 						retry={() => void refetch()}
 					/>
 				</Card>
@@ -168,7 +173,10 @@ const DashboardPage = () => {
 							label="CA aujourd'hui"
 							value={formatMoney(data.revenueToday, data.currency)}
 						/>
-						<StatTile label="Commandes à traiter" value={formatNumber(data.pendingOrders)} />
+						<StatTile
+							label="Commandes à traiter"
+							value={formatNumber(data.pendingOrders)}
+						/>
 						<StatTile
 							label="Ruptures de stock"
 							value={formatNumber(data.outOfStockCount)}
@@ -182,7 +190,10 @@ const DashboardPage = () => {
 							description="Commandes payées uniquement. Survolez un jour pour le détail."
 						/>
 						<div className="p-4">
-							<RevenueChart series={data.revenueSeries} currency={data.currency} />
+							<RevenueChart
+								series={data.revenueSeries}
+								currency={data.currency}
+							/>
 						</div>
 					</Card>
 
@@ -266,7 +277,11 @@ const DashboardPage = () => {
 													</span>
 												)}
 											</span>
-											<Badge tone={alert.availableQuantity <= 0 ? "danger" : "warning"}>
+											<Badge
+												tone={
+													alert.availableQuantity <= 0 ? "danger" : "warning"
+												}
+											>
 												{alert.availableQuantity <= 0
 													? "Rupture"
 													: `${alert.availableQuantity} restant(s)`}
@@ -286,7 +301,10 @@ const DashboardPage = () => {
 							/>
 							<ul className="divide-y divide-[var(--border)]">
 								{data.topProducts.map((product) => (
-									<li key={product.productId} className="flex items-center gap-3 px-4 py-2.5">
+									<li
+										key={product.productId}
+										className="flex items-center gap-3 px-4 py-2.5"
+									>
 										<Thumb src={product.thumbnail} alt={product.name} />
 										<span className="min-w-0 flex-1 truncate text-[13px] text-ink">
 											{product.name}
@@ -305,7 +323,8 @@ const DashboardPage = () => {
 
 					{data.recentOrders[0] && (
 						<p className="mt-4 text-center text-[12px] text-subtle">
-							Dernière commande {formatRelative(data.recentOrders[0].createdAt)}.
+							Dernière commande {formatRelative(data.recentOrders[0].createdAt)}
+							.
 						</p>
 					)}
 				</>

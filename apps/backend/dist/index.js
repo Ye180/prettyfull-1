@@ -14,7 +14,11 @@ import { adminUsersRoutes } from "./modules/users/routes.js";
 import { adminCatalogRoutes } from "./modules/catalog/routes.js";
 import { storeCatalogRoutes } from "./modules/catalog/store-routes.js";
 import { adminInventoryRoutes } from "./modules/inventory/routes.js";
-import { adminOrdersRoutes, storeOrderConfirmationRoutes, storeOrdersRoutes, } from "./modules/orders/routes.js";
+import {
+	adminOrdersRoutes,
+	storeOrderConfirmationRoutes,
+	storeOrdersRoutes,
+} from "./modules/orders/routes.js";
 import { storeCartRoutes } from "./modules/cart/routes.js";
 import { adminIntegrationsRoutes } from "./modules/integrations/routes.js";
 import { adminSettingsRoutes } from "./modules/settings/routes.js";
@@ -36,27 +40,39 @@ app.use("*", bodyLimit({ maxSize: 2 * 1024 * 1024 }));
  * `credentials: true` est indispensable : les jetons de rafraîchissement
  * circulent en cookie `httpOnly`, jamais dans le corps des réponses.
  */
-app.use("*", cors({
-    origin: env.CORS_ORIGINS,
-    credentials: true,
-    allowHeaders: ["Content-Type", "Authorization", "X-Request-Id"],
-    allowMethods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
-    exposeHeaders: ["X-Request-Id"],
-    maxAge: 86_400,
-}));
+app.use(
+	"*",
+	cors({
+		origin: env.CORS_ORIGINS,
+		credentials: true,
+		allowHeaders: ["Content-Type", "Authorization", "X-Request-Id"],
+		allowMethods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+		exposeHeaders: ["X-Request-Id"],
+		maxAge: 86_400,
+	}),
+);
 /**
  * Documentation de l'API (§5).
  *
- * `/docs` sert une interface de lecture, `/openapi.json` le document brut —
+ * `/docs` sert une interface de lecture, `/openapi.json` le document brut -
  * exploitable par un générateur de client ou un outil de test.
  */
 app.get("/openapi.json", (c) => c.json(openApiDocument));
-app.get("/docs", Scalar({ url: "/openapi.json", pageTitle: "API PrettyFull", theme: "default" }));
-app.get("/health", (c) => c.json({
-    status: "ok",
-    environment: env.NODE_ENV,
-    timestamp: new Date().toISOString(),
-}));
+app.get(
+	"/docs",
+	Scalar({
+		url: "/openapi.json",
+		pageTitle: "API PrettyFull",
+		theme: "default",
+	}),
+);
+app.get("/health", (c) =>
+	c.json({
+		status: "ok",
+		environment: env.NODE_ENV,
+		timestamp: new Date().toISOString(),
+	}),
+);
 /**
  * Trois surfaces d'API distinctes.
  *
@@ -90,11 +106,11 @@ app.route("/api/admin", adminSettingsRoutes);
 app.onError(errorHandler);
 app.notFound(notFoundHandler);
 serve({ fetch: app.fetch, port: env.PORT }, ({ port }) => {
-    console.log(`API PrettyFull à l'écoute sur http://localhost:${port}`);
-    if (!isProduction) {
-        console.log(`  origines CORS autorisées : ${env.CORS_ORIGINS.join(", ")}`);
-    }
-    startReservationSweeper();
+	console.log(`API PrettyFull à l'écoute sur http://localhost:${port}`);
+	if (!isProduction) {
+		console.log(`  origines CORS autorisées : ${env.CORS_ORIGINS.join(", ")}`);
+	}
+	startReservationSweeper();
 });
 export default app;
 //# sourceMappingURL=index.js.map

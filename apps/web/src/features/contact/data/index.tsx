@@ -53,7 +53,7 @@ export const SHORTCUTS = [
 	},
 	{
 		title: "Questions fréquentes",
-		description: "Tailles, paiement, échanges — les réponses courantes.",
+		description: "Tailles, paiement, échanges - les réponses courantes.",
 		href: "/faq",
 		cta: "Voir la FAQ",
 	},

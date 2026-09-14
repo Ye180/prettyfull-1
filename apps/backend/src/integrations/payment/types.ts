@@ -5,7 +5,7 @@ import type { CurrencyCode, IntegrationEnvironment } from "@prettyfull/contracts
  *
  * C'est le contrat qui rend le système extensible « sans refonte » : ajouter
  * un prestataire consiste à écrire un objet conforme à `PaymentAdapter` et à
- * l'enregistrer dans le registre. Le cœur — panier, commandes, stock — ne
+ * l'enregistrer dans le registre. Le cœur - panier, commandes, stock - ne
  * connaît que cette interface et n'est jamais modifié.
  *
  * L'adaptateur est **sans état** : toute sa configuration lui est passée à
@@ -69,7 +69,7 @@ export interface WebhookRequest {
 }
 
 export interface WebhookVerdict {
-	/** `false` : signature invalide — l'événement est journalisé mais jamais appliqué. */
+	/** `false` : signature invalide - l'événement est journalisé mais jamais appliqué. */
 	valid: boolean;
 	/** Identifiant de l'événement chez le prestataire, clé d'idempotence. */
 	externalId: string;

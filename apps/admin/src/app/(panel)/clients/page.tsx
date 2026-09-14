@@ -21,7 +21,8 @@ const CustomersPage = () => {
 
 	const { data, isLoading } = useQuery({
 		queryKey: ["customers", params],
-		queryFn: () => api.get<Paginated<User>>(`/api/admin/customers${toQueryString(params)}`),
+		queryFn: () =>
+			api.get<Paginated<User>>(`/api/admin/customers${toQueryString(params)}`),
 	});
 
 	const columns: Column<User>[] = [
@@ -41,7 +42,7 @@ const CustomersPage = () => {
 			key: "phone",
 			header: "Téléphone",
 			hideOnMobile: true,
-			cell: (user) => <span className="text-muted">{user.phone ?? "—"}</span>,
+			cell: (user) => <span className="text-muted">{user.phone ?? "-"}</span>,
 		},
 		{
 			key: "status",
@@ -74,7 +75,10 @@ const CustomersPage = () => {
 
 	return (
 		<>
-			<PageHeader title="Clients" description="Comptes clients de la boutique." />
+			<PageHeader
+				title="Clients"
+				description="Comptes clients de la boutique."
+			/>
 
 			<Card>
 				<FilterBar
@@ -105,7 +109,11 @@ const CustomersPage = () => {
 					onRowClick={(user) => router.push(`/clients/${user.id}`)}
 					empty={
 						<EmptyState
-							title={list.isFiltered ? "Aucune cliente ne correspond" : "Aucune cliente"}
+							title={
+								list.isFiltered
+									? "Aucune cliente ne correspond"
+									: "Aucune cliente"
+							}
 							description={
 								list.isFiltered
 									? "Modifiez ou réinitialisez les filtres."

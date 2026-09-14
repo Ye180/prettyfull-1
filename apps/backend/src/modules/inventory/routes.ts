@@ -45,7 +45,7 @@ adminInventoryRoutes.get(
  * Ajustement manuel (§2.3).
  *
  * Le motif est exigé par le schéma : il n'existe aucun chemin d'écriture
- * permettant de modifier un stock sans en donner la raison — c'est le
+ * permettant de modifier un stock sans en donner la raison - c'est le
  * critère d'acceptation « historisé avec motif et auteur » (§7).
  */
 adminInventoryRoutes.post(

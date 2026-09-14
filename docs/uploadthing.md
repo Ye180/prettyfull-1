@@ -38,15 +38,15 @@ une fois pour toutes.
 
 ## 2. Vue d'ensemble des pièces
 
-| Fichier | Rôle |
-| --- | --- |
-| `apps/backend/src/modules/uploads/router.ts` | Définit les *endpoints* de téléversement (un par usage : catalogue, contenu...), leurs limites, et l'autorisation. |
-| `apps/backend/src/modules/uploads/routes.ts` | Monte le routeur UploadThing sur `/api/uploadthing`, expose `/api/admin/uploads/status` et `DELETE /api/admin/uploads/:key`. |
-| `apps/backend/src/index.ts` | CORS — **voir la section pièges**, c'est le point qui casse le plus souvent. |
-| `apps/backend/src/lib/env.ts` | `UPLOADTHING_TOKEN`, facultative pour que le projet tourne en local sans compte de stockage. |
-| `apps/admin/src/lib/uploadthing.ts` | Génère le hook client `useUploadThing` côté front. |
-| `apps/admin/src/components/ui/image-upload.tsx` | Composants réutilisables `ImageUpload` (un fichier) / `ImageUploadList` (plusieurs), avec glisser-déposer natif. |
-| `apps/admin/next.config.ts` | Autorise `next/image` à afficher les URL `*.ufs.sh`. |
+| Fichier                                         | Rôle                                                                                                                         |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `apps/backend/src/modules/uploads/router.ts`    | Définit les _endpoints_ de téléversement (un par usage : catalogue, contenu...), leurs limites, et l'autorisation.           |
+| `apps/backend/src/modules/uploads/routes.ts`    | Monte le routeur UploadThing sur `/api/uploadthing`, expose `/api/admin/uploads/status` et `DELETE /api/admin/uploads/:key`. |
+| `apps/backend/src/index.ts`                     | CORS - **voir la section pièges**, c'est le point qui casse le plus souvent.                                                 |
+| `apps/backend/src/lib/env.ts`                   | `UPLOADTHING_TOKEN`, facultative pour que le projet tourne en local sans compte de stockage.                                 |
+| `apps/admin/src/lib/uploadthing.ts`             | Génère le hook client `useUploadThing` côté front.                                                                           |
+| `apps/admin/src/components/ui/image-upload.tsx` | Composants réutilisables `ImageUpload` (un fichier) / `ImageUploadList` (plusieurs), avec glisser-déposer natif.             |
+| `apps/admin/next.config.ts`                     | Autorise `next/image` à afficher les URL `*.ufs.sh`.                                                                         |
 
 ## 3. Installation
 
@@ -70,7 +70,7 @@ UPLOADTHING_TOKEN=
 
 Le token se récupère sur le dashboard [uploadthing.com](https://uploadthing.com)
 (API Keys → Secret Key), après création d'une "app". C'est une chaîne base64
-qui encode `{ apiKey, appId, regions }` — ne la commitez jamais, elle donne un
+qui encode `{ apiKey, appId, regions }` - ne la commitez jamais, elle donne un
 accès complet au bucket.
 
 **Rendez-la facultative** plutôt que de faire planter le boot si elle manque :
@@ -80,12 +80,12 @@ explicite (voir §7).
 ```ts
 // lib/env.ts
 const schema = z.object({
-  // ...
-  UPLOADTHING_TOKEN: z.string().optional(),
+	// ...
+	UPLOADTHING_TOKEN: z.string().optional(),
 });
 ```
 
-## 5. Backend — définir les endpoints (le `FileRouter`)
+## 5. Backend - définir les endpoints (le `FileRouter`)
 
 ```ts
 // modules/uploads/router.ts
@@ -95,33 +95,33 @@ import { UploadThingError } from "uploadthing/server";
 const f = createUploadthing();
 
 const IMAGE_LIMITS = {
-  image: { maxFileSize: "8MB", maxFileCount: 10 },
+	image: { maxFileSize: "8MB", maxFileCount: 10 },
 } as const;
 
 /**
- * L'authentification se fait ICI, côté serveur — jamais côté client.
+ * L'authentification se fait ICI, côté serveur - jamais côté client.
  * Le fichier part directement du navigateur vers UploadThing après cette
  * validation : c'est le seul point où l'on peut refuser un téléversement.
  */
 const requireAuth = async (request: Request, permission: string) => {
-  const token = extractBearerToken(request.headers.get("authorization"));
-  if (!token) throw new UploadThingError("Authentification requise.");
+	const token = extractBearerToken(request.headers.get("authorization"));
+	if (!token) throw new UploadThingError("Authentification requise.");
 
-  const auth = await verifyAccessToken(token); // votre propre vérif JWT/session
-  if (!auth.permissions.includes(permission)) {
-    throw new UploadThingError(`Permission requise : ${permission}.`);
-  }
-  return { userId: auth.sub }; // disponible dans `metadata` du callback
+	const auth = await verifyAccessToken(token); // votre propre vérif JWT/session
+	if (!auth.permissions.includes(permission)) {
+		throw new UploadThingError(`Permission requise : ${permission}.`);
+	}
+	return { userId: auth.sub }; // disponible dans `metadata` du callback
 };
 
 export const uploadRouter = {
-  productImage: f(IMAGE_LIMITS)
-    .middleware(({ req }) => requireAuth(req, "catalog.write"))
-    .onUploadComplete(({ metadata, file }) => {
-      // Ce que retourne cette fonction est renvoyé au client dans
-      // `file.serverData` — c'est ce que le formulaire enregistre ensuite.
-      return { url: file.ufsUrl, key: file.key, name: file.name };
-    }),
+	productImage: f(IMAGE_LIMITS)
+		.middleware(({ req }) => requireAuth(req, "catalog.write"))
+		.onUploadComplete(({ metadata, file }) => {
+			// Ce que retourne cette fonction est renvoyé au client dans
+			// `file.serverData` - c'est ce que le formulaire enregistre ensuite.
+			return { url: file.ufsUrl, key: file.key, name: file.name };
+		}),
 } satisfies FileRouter;
 
 export type AppFileRouter = typeof uploadRouter;
@@ -129,18 +129,18 @@ export type AppFileRouter = typeof uploadRouter;
 
 Points importants :
 
-- **Un endpoint par usage**, pas un seul générique — chacun a sa propre
+- **Un endpoint par usage**, pas un seul générique - chacun a sa propre
   permission et ses propres limites (une bannière éditoriale et une photo
   produit n'ont pas les mêmes règles).
 - `middleware()` lève une `UploadThingError` (jamais une erreur générique) :
   c'est la seule forme de message que le client UploadThing sait afficher à
   l'utilisateur.
 - Le nom des clés de `uploadRouter` (ici `productImage`) devient le `slug`
-  interrogé par le client — gardez-le synchronisé entre back et front (une
+  interrogé par le client - gardez-le synchronisé entre back et front (une
   constante partagée dans un package commun évite le risque de faute de
   frappe silencieuse, cf. `UPLOAD_ENDPOINTS` dans ce projet).
 
-## 6. Backend — monter les routes
+## 6. Backend - monter les routes
 
 ```ts
 // modules/uploads/routes.ts
@@ -151,18 +151,21 @@ const isConfigured = Boolean(env.UPLOADTHING_TOKEN);
 export const uploadthingRoutes = new Hono();
 
 if (isConfigured) {
-  const handlers = createRouteHandler({
-    router: uploadRouter,
-    config: { token: env.UPLOADTHING_TOKEN, isDev: env.NODE_ENV === "development" },
-  });
+	const handlers = createRouteHandler({
+		router: uploadRouter,
+		config: {
+			token: env.UPLOADTHING_TOKEN,
+			isDev: env.NODE_ENV === "development",
+		},
+	});
 
-  // UploadThing gère lui-même GET (introspection) et POST (négociation +
-  // callback) sur ce chemin — on lui passe la requête brute.
-  uploadthingRoutes.all("/", (c) => handlers(c.req.raw));
+	// UploadThing gère lui-même GET (introspection) et POST (négociation +
+	// callback) sur ce chemin - on lui passe la requête brute.
+	uploadthingRoutes.all("/", (c) => handlers(c.req.raw));
 } else {
-  uploadthingRoutes.all("/", (c) =>
-    c.json({ error: { code: "UPLOAD_NOT_CONFIGURED" } }, 503),
-  );
+	uploadthingRoutes.all("/", (c) =>
+		c.json({ error: { code: "UPLOAD_NOT_CONFIGURED" } }, 503),
+	);
 }
 
 // Endpoint que le front interroge pour savoir s'il doit afficher la zone de
@@ -170,20 +173,26 @@ if (isConfigured) {
 adminRoutes.get("/uploads/status", (c) => c.json({ configured: isConfigured }));
 
 // Supprimer un fichier ne libère rien côté stockage sans cet appel explicite.
-adminRoutes.delete("/uploads/:key", requirePermission("catalog.write"), async (c) => {
-  await new UTApi({ token: env.UPLOADTHING_TOKEN }).deleteFiles(c.req.param("key"));
-  return c.json({ success: true });
-});
+adminRoutes.delete(
+	"/uploads/:key",
+	requirePermission("catalog.write"),
+	async (c) => {
+		await new UTApi({ token: env.UPLOADTHING_TOKEN }).deleteFiles(
+			c.req.param("key"),
+		);
+		return c.json({ success: true });
+	},
+);
 ```
 
 ```ts
-// index.ts — montage
+// index.ts - montage
 // Hors du garde d'auth global : UploadThing vérifie lui-même le jeton dans
 // le middleware de SA route (§5), et gère sa propre négociation GET/POST.
 app.route("/api/uploadthing", uploadthingRoutes);
 ```
 
-## 7. Frontend — le hook client
+## 7. Frontend - le hook client
 
 ```ts
 // lib/uploadthing.ts
@@ -197,26 +206,26 @@ import type { FileRouter } from "uploadthing/types";
 type AppFileRouter = Record<"productImage", FileRouter[string]>;
 
 export const { useUploadThing } = generateReactHelpers<AppFileRouter>({
-  url: `${API_BASE_URL}/api/uploadthing`,
+	url: `${API_BASE_URL}/api/uploadthing`,
 });
 
 // Le jeton est évalué à l'APPEL, pas au montage du composant : un jeton
 // d'accès qui tourne (refresh JWT) serait périmé si on le figeait ici.
 export const uploadHeaders = (): HeadersInit => {
-  const token = getAccessToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
+	const token = getAccessToken();
+	return token ? { Authorization: `Bearer ${token}` } : {};
 };
 ```
 
 ```tsx
 // Composant, principe général
 const { startUpload, isUploading } = useUploadThing("productImage", {
-  headers: uploadHeaders,
-  onClientUploadComplete: (files) => {
-    const url = files?.[0]?.serverData?.url;
-    // ... enregistrer `url` dans votre formulaire
-  },
-  onUploadError: (error) => notifyError(error),
+	headers: uploadHeaders,
+	onClientUploadComplete: (files) => {
+		const url = files?.[0]?.serverData?.url;
+		// ... enregistrer `url` dans votre formulaire
+	},
+	onUploadError: (error) => notifyError(error),
 });
 
 // Glisser-déposer natif, sans librairie : un <div> avec onDragOver /
@@ -227,7 +236,7 @@ const { startUpload, isUploading } = useUploadThing("productImage", {
 // si `configured: false`, prévisualisation).
 ```
 
-## 8. Next.js — afficher les images distantes
+## 8. Next.js - afficher les images distantes
 
 ```ts
 // next.config.ts
@@ -241,7 +250,7 @@ images: {
 
 Nécessaire uniquement si vous utilisez `next/image`. Ce projet préfère un
 `<img>` brut pour les visuels administrés (URL saisies/téléversées, donc
-inconnues à la compilation) — dans ce cas cette config sert surtout à ne pas
+inconnues à la compilation) - dans ce cas cette config sert surtout à ne pas
 être piégé si vous migrez vers `next/image` plus tard.
 
 ## 9. Pièges rencontrés (à ne pas refaire)
@@ -258,11 +267,11 @@ visible.
 lui-même des en-têtes de propagation de trace (`traceparent`, `b3`) à tout
 `fetch`. Si votre middleware CORS backend a une liste `allowHeaders` figée qui
 ne les contient pas, le préflight répond 204 (il "réussit") mais **sans
-autoriser ces en-têtes** — le navigateur bloque alors la vraie requête et ne
+autoriser ces en-têtes** - le navigateur bloque alors la vraie requête et ne
 l'envoie même jamais sur le réseau. Le backend ne voit donc que des `OPTIONS`
 en boucle, jamais le `POST`.
 
-**Fix** — élargir la liste d'en-têtes autorisés :
+**Fix** - élargir la liste d'en-têtes autorisés :
 
 ```ts
 cors({
@@ -303,13 +312,13 @@ partout : le backend répond `503 UPLOAD_NOT_CONFIGURED` plutôt que de planter
 au démarrage, et le front interroge `GET /uploads/status` pour savoir s'il
 affiche la zone de dépôt ou un champ de secours (URL manuelle, upload
 désactivé). Ne pas sauter cette étape en pensant "de toute façon on aura
-toujours un token" — c'est le genre de chose qui casse un onboarding six mois
+toujours un token" - c'est le genre de chose qui casse un onboarding six mois
 plus tard.
 
 ### Suppression de fichier
 
 Retirer une image d'un formulaire (côté client) ne supprime rien côté
-stockage — le quota se remplit sinon de fichiers orphelins. D'où la route
+stockage - le quota se remplit sinon de fichiers orphelins. D'où la route
 `DELETE /uploads/:key` explicite, appelée quand l'utilisateur retire vraiment
 un visuel (pas juste en le remplaçant dans un champ texte).
 
@@ -324,7 +333,7 @@ un visuel (pas juste en le remplaçant dans un champ texte).
 4. Copier `routes.ts` (§6) : adapter `requirePermission`/l'auth à votre
    système.
 5. Monter `/api/uploadthing` **avant** votre garde d'auth global, **avec**
-   votre middleware CORS déjà en place — et vérifier `allowHeaders` (§9) tout
+   votre middleware CORS déjà en place - et vérifier `allowHeaders` (§9) tout
    de suite, avant de perdre du temps à déboguer.
 6. Copier `lib/uploadthing.ts` + le composant de dépôt (§7).
 7. Si `next/image` : ajouter les `remotePatterns` (§8).

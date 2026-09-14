@@ -8,7 +8,7 @@ import type {
 } from "../types.js";
 
 /**
- * Wave — paiement mobile (XOF).
+ * Wave - paiement mobile (XOF).
  *
  * Écrit sur la forme documentée de l'API Business v1 « Checkout Sessions ».
  * ⚠️ À valider contre le compte marchand réel avant la mise en production :
@@ -35,7 +35,7 @@ const readCredential = (config: ProviderRuntimeConfig, key: string): string => {
 
 /**
  * Wave attend un montant en unité principale, sous forme de chaîne.
- * Le XOF n'ayant pas de sous-unité, la conversion est neutre — elle reste
+ * Le XOF n'ayant pas de sous-unité, la conversion est neutre - elle reste
  * nécessaire si la boutique encaisse un jour en EUR.
  */
 const formatAmount = (amount: number, currency: CurrencyCode): string =>

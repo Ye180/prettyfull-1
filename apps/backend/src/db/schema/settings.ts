@@ -27,7 +27,7 @@ export const settings = pgTable("settings", {
 });
 
 /**
- * Taux de taxe (§4.9). Exprimé en points de base — 1 850 = 18,50 % — pour
+ * Taux de taxe (§4.9). Exprimé en points de base - 1 850 = 18,50 % - pour
  * rester en arithmétique entière et éviter les dérives d'arrondi sur les
  * totaux de commande.
  */

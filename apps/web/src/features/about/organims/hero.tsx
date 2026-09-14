@@ -5,7 +5,7 @@ import { HERO } from "../data";
  * Ouverture de la page.
  *
  * Le titre est posé sur l'image plutôt qu'en dessous : c'est ce qui donne son
- * ton éditorial à la page. Le dégradé — et non un voile uniforme — préserve la
+ * ton éditorial à la page. Le dégradé - et non un voile uniforme - préserve la
  * lisibilité du texte sans éteindre la photo.
  */
 const Hero = () => (

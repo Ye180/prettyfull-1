@@ -18,7 +18,7 @@ import { IconTrash, IconUpload } from "@/components/icons";
  * ces derniers embarquent leur propre feuille de styles, qui jurerait avec le
  * reste du panel et ignorerait le thème sombre.
  *
- * Le champ d'URL manuelle reste disponible en repli — le stockage peut ne pas
+ * Le champ d'URL manuelle reste disponible en repli - le stockage peut ne pas
  * être configuré, et certaines images vivent déjà dans `apps/web/public`.
  */
 
@@ -26,7 +26,8 @@ import { IconTrash, IconUpload } from "@/components/icons";
 export const useUploadAvailable = () => {
 	const { data } = useQuery({
 		queryKey: ["uploads", "status"],
-		queryFn: () => api.get<{ configured: boolean }>("/api/admin/uploads/status"),
+		queryFn: () =>
+			api.get<{ configured: boolean }>("/api/admin/uploads/status"),
 		staleTime: 5 * 60 * 1000,
 	});
 
@@ -214,7 +215,9 @@ export const ImageUploadList = ({
 	const { startUpload, isUploading } = useUploadThing(endpoint, {
 		headers: uploadHeaders,
 		onClientUploadComplete: (files) => {
-			const urls = (files ?? []).map((file) => file.serverData?.url ?? file.ufsUrl);
+			const urls = (files ?? []).map(
+				(file) => file.serverData?.url ?? file.ufsUrl,
+			);
 			if (urls.length === 0) return;
 
 			onChange([...values.filter(Boolean), ...urls]);
@@ -254,7 +257,11 @@ export const ImageUploadList = ({
 						value={url}
 						disabled={disabled}
 						onChange={(event) =>
-							onChange(values.map((item, i) => (i === index ? event.target.value : item)))
+							onChange(
+								values.map((item, i) =>
+									i === index ? event.target.value : item,
+								),
+							)
 						}
 						placeholder="/home/arrivals-1.jpg"
 						aria-label={`Visuel ${index + 1}`}
@@ -310,7 +317,11 @@ export const ImageUploadList = ({
 							)}
 						</div>
 					) : (
-						<Button size="sm" onClick={() => onChange([...values, ""])} className="self-start">
+						<Button
+							size="sm"
+							onClick={() => onChange([...values, ""])}
+							className="self-start"
+						>
 							Ajouter une URL
 						</Button>
 					)}

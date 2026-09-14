@@ -18,7 +18,7 @@ const ALL_LABEL = "Toute la collection";
  * Nombre de coloris distincts d'un produit brut.
  *
  * `product.variants` porte une entrée par combinaison coloris × taille (cf.
- * `buildVariants` côté storefront) — en compter la longueur surcomptait donc
+ * `buildVariants` côté storefront) - en compter la longueur surcomptait donc
  * les coloris (un pull en 2 couleurs × 3 tailles affichait "6 coloris").
  */
 const countDistinctColors = (product: {
@@ -26,7 +26,11 @@ const countDistinctColors = (product: {
 }): number => {
 	const colors = new Set(
 		product.variants
-			.map((variant) => variant.options.find((opt) => opt.option_id.startsWith("opt_color"))?.value)
+			.map(
+				(variant) =>
+					variant.options.find((opt) => opt.option_id.startsWith("opt_color"))
+						?.value,
+			)
 			.filter((value): value is string => Boolean(value)),
 	);
 	return colors.size;
@@ -58,11 +62,14 @@ export const BestSellingSection = () => {
 	);
 
 	const categoryTabs = useMemo(
-		() => [ALL_LABEL, ...((categories ?? []).map((c) => c.name))],
+		() => [ALL_LABEL, ...(categories ?? []).map((c) => c.name)],
 		[categories],
 	);
 
-	const toggleWishlist = (product: (typeof products)[number], e: React.MouseEvent) => {
+	const toggleWishlist = (
+		product: (typeof products)[number],
+		e: React.MouseEvent,
+	) => {
 		e.preventDefault();
 		e.stopPropagation();
 		toggleWishlistItem({
@@ -77,9 +84,13 @@ export const BestSellingSection = () => {
 	};
 
 	const filteredProducts =
-		activeCategory === ALL_LABEL ? products : products.filter((p) => p.category === activeCategory);
+		activeCategory === ALL_LABEL
+			? products
+			: products.filter((p) => p.category === activeCategory);
 
-	const productsToDisplay = (filteredProducts.length > 0 ? filteredProducts : products).slice(0, 6);
+	const productsToDisplay = (
+		filteredProducts.length > 0 ? filteredProducts : products
+	).slice(0, 6);
 
 	return (
 		<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -93,14 +104,22 @@ export const BestSellingSection = () => {
 
 				<div className="flex flex-col sm:flex-row sm:items-center gap-4 max-w-md">
 					<p className="text-[1.4rem] text-[#666666] leading-relaxed">
-						Découvrez et plongez dans nos catégories les plus populaires dont tout le monde parle !
+						Découvrez et plongez dans nos catégories les plus populaires dont
+						tout le monde parle !
 					</p>
 					<Link
 						href="/collections"
 						className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white text-[1.4rem] font-medium rounded-full whitespace-nowrap hover:bg-[#222] transition-all self-start shadow"
 					>
 						<span>Achetez maintenant</span>
-						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+						<svg
+							width="16"
+							height="16"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2"
+						>
 							<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
 							<line x1="3" y1="6" x2="21" y2="6" />
 							<path d="M16 10a4 4 0 0 1-8 0" />
@@ -140,7 +159,9 @@ export const BestSellingSection = () => {
 							</div>
 						))
 					: productsToDisplay.map((product) => {
-							const isFav = wishlistItems.some((i) => i.productId === product.id);
+							const isFav = wishlistItems.some(
+								(i) => i.productId === product.id,
+							);
 							return (
 								<Link
 									key={product.id}
@@ -172,11 +193,15 @@ export const BestSellingSection = () => {
 												<span className="text-[1.6rem] font-bold text-[#080808]">
 													{formatCurrency_FR(product.price, currencySymbol)}
 												</span>
-												{product.compareAtPrice != null && product.compareAtPrice > product.price && (
-													<span className="text-[1.4rem] text-[#999999] line-through">
-														{formatCurrency_FR(product.compareAtPrice, currencySymbol)}
-													</span>
-												)}
+												{product.compareAtPrice != null &&
+													product.compareAtPrice > product.price && (
+														<span className="text-[1.4rem] text-[#999999] line-through">
+															{formatCurrency_FR(
+																product.compareAtPrice,
+																currencySymbol,
+															)}
+														</span>
+													)}
 											</div>
 										</div>
 

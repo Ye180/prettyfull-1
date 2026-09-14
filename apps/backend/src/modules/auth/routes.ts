@@ -23,7 +23,7 @@ import * as service from "./service.js";
 /**
  * Routes d'authentification.
  *
- * Deux montages distincts — back-office et storefront — partagent le même
+ * Deux montages distincts - back-office et storefront - partagent le même
  * service mais pas la même portée de cookie ni le même type de compte
  * attendu. Un jeton du panel n'ouvre donc jamais de session cliente, et
  * réciproquement.

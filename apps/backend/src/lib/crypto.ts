@@ -81,7 +81,7 @@ export const decryptCredentials = (
 	return result;
 };
 
-/** Empreinte SHA-256 en hexadécimal — utilisée pour stocker les refresh tokens. */
+/** Empreinte SHA-256 en hexadécimal - utilisée pour stocker les refresh tokens. */
 export const sha256 = (value: string): string =>
 	createHash("sha256").update(value).digest("hex");
 

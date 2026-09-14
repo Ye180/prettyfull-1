@@ -9,6 +9,8 @@ import {
 	sizeInputSchema,
 	updateCategorySchema,
 	updateProductSchema,
+	updateSizeSchema,
+	updateVariantSchema,
 	variantInputSchema,
 } from "@prettyfull/contracts";
 import { Hono } from "hono";
@@ -302,7 +304,7 @@ adminCatalogRoutes.patch(
 	"/products/:id/variants/:variantId",
 	requirePermission(PERMISSIONS.catalog.write),
 	validate("param", variantParam),
-	validate("json", variantInputSchema.partial()),
+	validate("json", updateVariantSchema),
 	async (c) => {
 		const { id, variantId } = c.req.valid("param");
 		const updated = await variants.updateVariant(id, variantId, c.req.valid("json"));
@@ -362,7 +364,7 @@ adminCatalogRoutes.patch(
 	"/products/:id/sizes/:sizeId",
 	requirePermission(PERMISSIONS.catalog.write),
 	validate("param", sizeParam),
-	validate("json", sizeInputSchema.partial()),
+	validate("json", updateSizeSchema),
 	async (c) => {
 		const { id, sizeId } = c.req.valid("param");
 		const updated = await variants.updateSize(id, sizeId, c.req.valid("json"));

@@ -4,7 +4,7 @@ export interface FaqItem {
 	category: string;
 }
 
-// ponytail: static hand-authored content, categories inferred from titles — not backend-driven
+// ponytail: static hand-authored content, categories inferred from titles - not backend-driven
 export const DataRule: FaqItem[] = [
 	{
 		title: "ARTICLES EN PRÉCOMMANDE / ACHAT GROUPÉ",

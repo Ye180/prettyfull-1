@@ -4,8 +4,8 @@ import type { PaymentAdapter } from "../types.js";
 /**
  * Prestataire fictif, réservé aux environnements de test.
  *
- * Il permet de dérouler tout le parcours — redirection, webhook, confirmation
- * de paiement, décrémentation du stock — sans compte marchand. Il refuse de
+ * Il permet de dérouler tout le parcours - redirection, webhook, confirmation
+ * de paiement, décrémentation du stock - sans compte marchand. Il refuse de
  * fonctionner en `live` : un paiement fictif accepté en production serait une
  * commande encaissée pour rien.
  *

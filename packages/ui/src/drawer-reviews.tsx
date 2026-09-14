@@ -17,7 +17,7 @@ import { StarIcon } from "./icons/star.icon";
  *
  * Reste purement présentatif : les appels réseau (téléversement des photos,
  * envoi de l'avis) sont préparés par `use-review-form.ts` côté `apps/web` et
- * passés ici en props — ce paquet ne dépend jamais d'une app en particulier.
+ * passés ici en props - ce paquet ne dépend jamais d'une app en particulier.
  */
 
 export interface ReviewFormValues {
@@ -66,8 +66,10 @@ const DrawerReview = ({
 	const [sent, setSent] = useState(false);
 	const [open, setOpen] = useState(false);
 
-	const set = <K extends keyof ReviewFormValues>(key: K, value: ReviewFormValues[K]) =>
-		setForm((current) => ({ ...current, [key]: value }));
+	const set = <K extends keyof ReviewFormValues>(
+		key: K,
+		value: ReviewFormValues[K],
+	) => setForm((current) => ({ ...current, [key]: value }));
 
 	const handleFiles = async (files: FileList | null) => {
 		if (!files || files.length === 0) return;
@@ -79,13 +81,20 @@ const DrawerReview = ({
 	};
 
 	const canSubmit =
-		form.rating > 0 && form.authorName.trim() && form.authorEmail.trim() && form.body.trim();
+		form.rating > 0 &&
+		form.authorName.trim() &&
+		form.authorEmail.trim() &&
+		form.body.trim();
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
 		if (!canSubmit) return;
 
-		await onSubmit({ ...form, authorName: form.authorName.trim(), body: form.body.trim() });
+		await onSubmit({
+			...form,
+			authorName: form.authorName.trim(),
+			body: form.body.trim(),
+		});
 		setForm(EMPTY_FORM);
 		setSent(true);
 	};
@@ -110,10 +119,15 @@ const DrawerReview = ({
 				</Button>
 			</DrawerTrigger>
 
-			<DrawerContent title="Écrire un avis" className={cn("p-5 border-none outline-none", className)}>
+			<DrawerContent
+				title="Écrire un avis"
+				className={cn("p-5 border-none outline-none", className)}
+			>
 				<DrawerClose
 					className="absolute z-30 p-2 text-2xl bg-white rounded-full cursor-pointer right-4 top-4"
-					onClick={(event: React.MouseEvent<HTMLButtonElement>) => event.stopPropagation()}
+					onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
+						event.stopPropagation()
+					}
 				>
 					<CloseIcon className="w-10 h-10" />
 				</DrawerClose>
@@ -121,18 +135,27 @@ const DrawerReview = ({
 				<div className="w-full max-w-lg px-4 py-8 mx-auto overflow-y-auto">
 					{sent ? (
 						<div className="py-8 text-center space-y-4">
-							<p className="text-[1.8rem] font-medium">Merci pour votre avis !</p>
-							<p className="text-[1.4rem] text-gray-500">
-								Il sera visible sur la fiche produit dès sa validation par notre équipe.
+							<p className="text-[1.8rem] font-medium">
+								Merci pour votre avis !
 							</p>
-							<Button type="button" variant="outline" onClick={() => setSent(false)}>
+							<p className="text-[1.4rem] text-gray-500">
+								Il sera visible sur la fiche produit dès sa validation par notre
+								équipe.
+							</p>
+							<Button
+								type="button"
+								variant="outline"
+								onClick={() => setSent(false)}
+							>
 								Écrire un autre avis
 							</Button>
 						</div>
 					) : (
 						<form onSubmit={handleSubmit} className="space-y-6">
 							<div>
-								<span className="mb-2 block text-[1.4rem] font-medium">Note</span>
+								<span className="mb-2 block text-[1.4rem] font-medium">
+									Note
+								</span>
 								<div className="flex gap-1">
 									{[1, 2, 3, 4, 5].map((value) => (
 										<button
@@ -145,7 +168,9 @@ const DrawerReview = ({
 											<StarIcon
 												className={cn(
 													"w-6 h-6",
-													value <= form.rating ? "text-[#ffce31]" : "text-gray-200",
+													value <= form.rating
+														? "text-[#ffce31]"
+														: "text-gray-200",
 												)}
 											/>
 										</button>

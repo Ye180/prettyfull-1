@@ -7,13 +7,19 @@ import { api } from "@/lib/api";
 import { formatMoney } from "@/lib/format";
 import { useToast } from "@/components/ui/toast";
 import { Dialog } from "@/components/ui/dialog";
-import { Button, Checkbox, Field, Input, Textarea } from "@/components/ui/primitives";
+import {
+	Button,
+	Checkbox,
+	Field,
+	Input,
+	Textarea,
+} from "@/components/ui/primitives";
 
 /**
  * Remboursement total ou partiel (§2.4).
  *
- * Deux modes : par lignes — le cas courant d'un retour, qui permet de remettre
- * les articles en stock — ou par montant libre, pour un geste commercial qui
+ * Deux modes : par lignes - le cas courant d'un retour, qui permet de remettre
+ * les articles en stock - ou par montant libre, pour un geste commercial qui
  * ne correspond à aucun article rendu.
  */
 export const RefundDialog = ({
@@ -66,7 +72,9 @@ export const RefundDialog = ({
 
 	const canSubmit =
 		reason.trim().length > 0 &&
-		(mode === "items" ? selectedTotal > 0 : Number(amount) > 0 && Number(amount) <= refundable);
+		(mode === "items"
+			? selectedTotal > 0
+			: Number(amount) > 0 && Number(amount) <= refundable);
 
 	return (
 		<Dialog
@@ -96,12 +104,10 @@ export const RefundDialog = ({
 		>
 			<div className="flex flex-col gap-4">
 				<div className="grid grid-cols-2 gap-2">
-					{(
-						[
-							{ key: "items" as const, label: "Par articles" },
-							{ key: "amount" as const, label: "Montant libre" },
-						]
-					).map((option) => (
+					{[
+						{ key: "items" as const, label: "Par articles" },
+						{ key: "amount" as const, label: "Montant libre" },
+					].map((option) => (
 						<button
 							key={option.key}
 							type="button"
@@ -128,15 +134,21 @@ export const RefundDialog = ({
 									className="flex items-center gap-3 rounded-md border border-line bg-sunken px-3 py-2"
 								>
 									<div className="min-w-0 flex-1">
-										<p className="truncate text-[13px] text-ink">{item.productName}</p>
+										<p className="truncate text-[13px] text-ink">
+											{item.productName}
+										</p>
 										<p className="truncate text-[12px] text-subtle">
-											{[item.variantName, item.sizeLabel].filter(Boolean).join(" · ")} ·{" "}
-											{formatMoney(item.unitPrice, order.currency)}
+											{[item.variantName, item.sizeLabel]
+												.filter(Boolean)
+												.join(" · ")}{" "}
+											· {formatMoney(item.unitPrice, order.currency)}
 										</p>
 									</div>
 
 									{remaining === 0 ? (
-										<span className="text-[12px] text-subtle">Déjà remboursé</span>
+										<span className="text-[12px] text-subtle">
+											Déjà remboursé
+										</span>
 									) : (
 										<Input
 											inputMode="numeric"
@@ -179,7 +191,11 @@ export const RefundDialog = ({
 					</Field>
 				)}
 
-				<Field label="Motif" required hint="Conservé dans l'historique de la commande.">
+				<Field
+					label="Motif"
+					required
+					hint="Conservé dans l'historique de la commande."
+				>
 					<Textarea
 						rows={2}
 						value={reason}

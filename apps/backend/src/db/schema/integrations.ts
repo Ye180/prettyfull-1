@@ -26,7 +26,7 @@ import { orders } from "./orders.js";
  *
  * La ligne ne décrit que la *configuration* : le comportement vit dans
  * l'adaptateur enregistré sous la même `key` dans le registre. Ajouter un
- * prestataire, c'est écrire un adaptateur et insérer une ligne ici — aucun
+ * prestataire, c'est écrire un adaptateur et insérer une ligne ici - aucun
  * code du cœur ne change, et l'activation se fait depuis le panel (§7).
  *
  * `credentials` est chiffré au repos par l'application ; l'API ne le renvoie
@@ -121,7 +121,7 @@ export const shippingRates = pgTable(
 
 /**
  * Journal des transactions (§2.5). Trace chaque tentative de paiement ou de
- * remboursement, avec la requête et la réponse brutes du prestataire — c'est
+ * remboursement, avec la requête et la réponse brutes du prestataire - c'est
  * le seul support de preuve lors d'un litige.
  */
 export const transactions = pgTable(

@@ -31,7 +31,8 @@ type ButtonSize = "sm" | "md";
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
 	primary: "bg-accent text-accent-ink hover:opacity-90 border-transparent",
 	secondary: "bg-raised text-ink border-line-strong hover:bg-accent-soft",
-	ghost: "bg-transparent text-muted border-transparent hover:bg-accent-soft hover:text-ink",
+	ghost:
+		"bg-transparent text-muted border-transparent hover:bg-accent-soft hover:text-ink",
 	danger: "bg-danger text-white border-transparent hover:opacity-90",
 };
 
@@ -93,7 +94,10 @@ export const Textarea = ({
 	className,
 	...props
 }: TextareaHTMLAttributes<HTMLTextAreaElement>) => (
-	<textarea className={cn(FIELD_BASE, "py-2 min-h-20 resize-y", className)} {...props} />
+	<textarea
+		className={cn(FIELD_BASE, "py-2 min-h-20 resize-y", className)}
+		{...props}
+	/>
 );
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
@@ -108,7 +112,10 @@ export const Select = ({
 	className,
 	...props
 }: SelectProps) => (
-	<select className={cn(FIELD_BASE, "h-9 pr-8 cursor-pointer", className)} {...props}>
+	<select
+		className={cn(FIELD_BASE, "h-9 pr-8 cursor-pointer", className)}
+		{...props}
+	>
 		{placeholder && <option value="">{placeholder}</option>}
 		{options.map((option) => (
 			<option key={option.value} value={option.value}>
@@ -134,7 +141,7 @@ interface FieldProps {
  *
  * Quand l'enfant est un champ de ce module, un identifiant lui est généré et
  * le libellé y est rattaché : sans cette liaison, le libellé n'est qu'un texte
- * décoratif — un lecteur d'écran annonce un champ anonyme, et cliquer dessus
+ * décoratif - un lecteur d'écran annonce un champ anonyme, et cliquer dessus
  * ne donne pas le focus.
  *
  * La liaison est **restreinte aux vrais contrôles** : plusieurs appels
@@ -161,7 +168,8 @@ export const Field = ({
 		: null;
 
 	const isControl = child !== null && LABELABLE.has(child.type);
-	const fieldId = htmlFor ?? child?.props.id ?? (isControl ? generatedId : undefined);
+	const fieldId =
+		htmlFor ?? child?.props.id ?? (isControl ? generatedId : undefined);
 
 	const control =
 		isControl && child && !child.props.id && !htmlFor
@@ -189,7 +197,9 @@ export const Checkbox = ({
 	className,
 	...props
 }: InputHTMLAttributes<HTMLInputElement> & { label: string }) => (
-	<label className={cn("inline-flex items-center gap-2 cursor-pointer", className)}>
+	<label
+		className={cn("inline-flex items-center gap-2 cursor-pointer", className)}
+	>
 		<input
 			type="checkbox"
 			className="size-4 rounded border-line-strong accent-[var(--accent)]"
@@ -208,7 +218,9 @@ export const Card = ({
 	className?: string;
 	children: ReactNode;
 }) => (
-	<div className={cn("rounded-lg border border-line bg-raised", className)}>{children}</div>
+	<div className={cn("rounded-lg border border-line bg-raised", className)}>
+		{children}
+	</div>
 );
 
 export const CardHeader = ({
@@ -223,7 +235,9 @@ export const CardHeader = ({
 	<div className="flex items-start justify-between gap-4 border-b border-line px-4 py-3">
 		<div className="min-w-0">
 			<h2 className="font-semibold text-ink">{title}</h2>
-			{description && <p className="mt-0.5 text-[13px] text-muted">{description}</p>}
+			{description && (
+				<p className="mt-0.5 text-[13px] text-muted">{description}</p>
+			)}
 		</div>
 		{action}
 	</div>
@@ -265,16 +279,25 @@ export const Badge = ({
 export const orderStatusTone = (status: string): BadgeTone => {
 	if (status === "delivered" || status === "paid") return "success";
 	if (status === "pending_payment" || status === "preparing") return "warning";
-	if (status === "cancelled" || status === "refunded" || status === "disputed") return "danger";
+	if (status === "cancelled" || status === "refunded" || status === "disputed")
+		return "danger";
 	if (status === "shipped") return "info";
 	return "neutral";
 };
 
 export const stockStatusTone = (status: string): BadgeTone =>
-	status === "in_stock" ? "success" : status === "low_stock" ? "warning" : "danger";
+	status === "in_stock"
+		? "success"
+		: status === "low_stock"
+			? "warning"
+			: "danger";
 
 export const contentStatusTone = (status: string): BadgeTone =>
-	status === "published" ? "success" : status === "archived" ? "neutral" : "warning";
+	status === "published"
+		? "success"
+		: status === "archived"
+			? "neutral"
+			: "warning";
 
 // --- États de page ---------------------------------------------------------
 
@@ -289,7 +312,9 @@ export const EmptyState = ({
 }) => (
 	<div className="flex flex-col items-center justify-center gap-2 px-6 py-14 text-center">
 		<p className="font-medium text-ink">{title}</p>
-		{description && <p className="max-w-sm text-[13px] text-muted">{description}</p>}
+		{description && (
+			<p className="max-w-sm text-[13px] text-muted">{description}</p>
+		)}
 		{action && <div className="mt-2">{action}</div>}
 	</div>
 );
@@ -302,7 +327,13 @@ export const Spinner = ({ label }: { label?: string }) => (
 );
 
 /** Bloc d'erreur générique, affiché quand une requête échoue. */
-export const ErrorState = ({ message, retry }: { message: string; retry?: () => void }) => (
+export const ErrorState = ({
+	message,
+	retry,
+}: {
+	message: string;
+	retry?: () => void;
+}) => (
 	<div className="flex flex-col items-center justify-center gap-3 px-6 py-14 text-center">
 		<p className="text-[13px] text-danger">{message}</p>
 		{retry && (

@@ -27,7 +27,7 @@ export interface AppEnv {
  *
  * Derrière un proxy (Vercel, Nginx), `x-forwarded-for` contient la chaîne
  * complète : la première entrée est l'appelant d'origine. En l'absence de
- * proxy, on retombe sur l'adresse de la connexion — sans quoi le journal
+ * proxy, on retombe sur l'adresse de la connexion - sans quoi le journal
  * d'audit du §5 n'aurait aucune IP en déploiement direct.
  */
 const resolveClientIp = (c: Context<AppEnv>): string | null => {

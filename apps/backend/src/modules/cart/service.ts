@@ -483,7 +483,7 @@ export const resolveShippingAmount = async (
 
 	return {
 		amount: free ? 0 : rate.amount,
-		name: free ? `${rate.name} — offerte` : rate.name,
+		name: free ? `${rate.name} - offerte` : rate.name,
 		providerKey: rate.providerKey,
 	};
 };

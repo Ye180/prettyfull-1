@@ -35,7 +35,9 @@ const VisualSummary = ({
 				</p>
 			</div>
 
-			<div className="flex flex-row justify-between space-y-4 w-full lg:flex-col">
+			{/* `sm:` ici pour la même raison qu'en vue checkout (cf. views/index.tsx) :
+			 * c'est le préfixe qui bascule réellement vers ~1024px sur ce projet. */}
+			<div className="flex flex-row justify-between space-y-4 w-full sm:flex-col">
 				<div className="space-y-2 text-[1.5rem]">
 					<h5 className="font-semibold text-[2.2rem]! tracking-wider whitespace-nowrap">
 						{item.name}
@@ -53,7 +55,7 @@ const VisualSummary = ({
 						</p>
 						<button
 							onClick={() => handleRemove(item.id)}
-							className="hidden p-2 rounded-full cursor-pointer lg:block hover:bg-gray-100"
+							className="hidden p-2 rounded-full cursor-pointer sm:block hover:bg-gray-100"
 						>
 							<CloseIcon size={15} className="text-gray-400" />
 						</button>
@@ -61,7 +63,7 @@ const VisualSummary = ({
 				</div>
 				<button
 					onClick={() => handleRemove(item.id)}
-					className="block p-2 h-fit rounded-full cursor-pointer lg:hidden hover:bg-gray-100"
+					className="block p-2 h-fit rounded-full cursor-pointer sm:hidden hover:bg-gray-100"
 				>
 					<CloseIcon size={15} className="text-gray-400" />
 				</button>

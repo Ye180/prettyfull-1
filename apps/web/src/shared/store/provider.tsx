@@ -7,38 +7,38 @@ import { buildProvidersTree } from "../lib/provider-tree";
 import { queryConfig } from "../lib/react-query";
 
 export const queryClient = new QueryClient({
-  defaultOptions: queryConfig,
+	defaultOptions: queryConfig,
 });
 
 const ProviderTree = buildProvidersTree([
-  [QueryClientProvider, { client: queryClient }],
-  [NuqsAdapter, {}],
+	[QueryClientProvider, { client: queryClient }],
+	[NuqsAdapter, {}],
 ]);
 
 /**
  * Le jeton d'accès vit en mémoire (voir `lib/store-api/client.ts`) : il
  * disparaît à chaque rechargement de page. Le cookie de rafraîchissement,
- * lui, survit — cet effet le consomme une fois au montage pour rouvrir la
+ * lui, survit - cet effet le consomme une fois au montage pour rouvrir la
  * session silencieusement, sinon toute navigation en dur déconnecterait la
  * cliente.
  */
 const SessionBootstrap = () => {
-  useEffect(() => {
-    storeApi.refreshSession().then((restored) => {
-      if (restored) {
-        queryClient.invalidateQueries({ queryKey: ["customer-profile"] });
-      }
-    });
-  }, []);
+	useEffect(() => {
+		storeApi.refreshSession().then((restored) => {
+			if (restored) {
+				queryClient.invalidateQueries({ queryKey: ["customer-profile"] });
+			}
+		});
+	}, []);
 
-  return null;
+	return null;
 };
 
 export const Provider = ({ children }: PropsWithChildren) => {
-  return (
-    <ProviderTree>
-      <SessionBootstrap />
-      {children}
-    </ProviderTree>
-  );
+	return (
+		<ProviderTree>
+			<SessionBootstrap />
+			{children}
+		</ProviderTree>
+	);
 };

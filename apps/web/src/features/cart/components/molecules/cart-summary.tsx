@@ -13,7 +13,7 @@ interface CartSummaryProps {
 	shipping?: number;
 	total?: number;
 	currency?: string;
-	/** Squares off the summary block/inputs/buttons — cart drawer only. */
+	/** Squares off the summary block/inputs/buttons - cart drawer only. */
 	square?: boolean;
 }
 
@@ -33,7 +33,10 @@ const CartSummary = ({
 	// 5% discount matching mockup ($42.50 on $850)
 	const discountAmount = discountApplied ? subtotal * 0.05 : 0;
 	const taxAmount = subtotal > 0 ? subtotal * 0.05 : 0;
-	const finalTotal = Math.max(0, subtotal - discountAmount + taxAmount + shipping);
+	const finalTotal = Math.max(
+		0,
+		subtotal - discountAmount + taxAmount + shipping,
+	);
 
 	const handleApplyCoupon = () => {
 		if (couponCode.trim().toUpperCase() === "BOOOM55") {
@@ -104,7 +107,10 @@ const CartSummary = ({
 			<div className="w-full h-px bg-gray-200/80 my-6" />
 
 			<div className="mb-6">
-				<label htmlFor="coupon-input" className="block mb-2 text-sm font-medium text-gray-700">
+				<label
+					htmlFor="coupon-input"
+					className="block mb-2 text-sm font-medium text-gray-700"
+				>
 					{t("couponsCode")}
 				</label>
 				<div className="flex gap-2.5">

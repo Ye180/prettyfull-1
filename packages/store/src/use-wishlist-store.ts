@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type { CartProduct } from "./use-cart-store";
 
-// ponytail: mirrors use-cart-store.ts's shape/persist pattern exactly —
+// ponytail: mirrors use-cart-store.ts's shape/persist pattern exactly -
 // no reason to invent a different convention for a sibling feature.
 
 export interface WishlistItem {

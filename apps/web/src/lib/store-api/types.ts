@@ -28,7 +28,7 @@ export interface StoreVariantOptionValue {
  *
  * Attention : c'est une **combinaison** couleur × taille, pas la variante au
  * sens du catalogue. Un produit à 2 coloris et 3 tailles produit ici 6
- * entrées, chacune adressant un point de stock unique — c'est ce que le
+ * entrées, chacune adressant un point de stock unique - c'est ce que le
  * sélecteur du storefront attend.
  */
 export interface StoreVariant {
@@ -36,6 +36,8 @@ export interface StoreVariant {
 	title: string;
 	sku: string;
 	thumbnail?: string;
+	/** Galerie complète du coloris (§ catalogue) - le sélecteur en affiche plus que la seule vignette. */
+	images: StoreImage[];
 	calculated_price: StoreMoney;
 	options: StoreVariantOptionValue[];
 	manage_inventory: boolean;

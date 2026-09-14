@@ -50,19 +50,35 @@ export const SidebarFilter = ({
 		"Polyester Blend",
 	];
 
-	const toggleArrayItem = (key: "categories" | "sizes" | "fits" | "materials", item: string) => {
+	const toggleArrayItem = (
+		key: "categories" | "sizes" | "fits" | "materials",
+		item: string,
+	) => {
 		const current = filters[key];
 		const exists = current.includes(item);
-		const updated = exists ? current.filter((x) => x !== item) : [...current, item];
+		const updated = exists
+			? current.filter((x) => x !== item)
+			: [...current, item];
 		onChange({ ...filters, [key]: updated });
 	};
 
 	return (
-		<aside className={`w-full max-w-[280px] bg-white space-y-8 pr-6 border-r border-neutral-100 ${className}`}>
+		<aside
+			className={`w-full max-w-[280px] bg-white space-y-8 pr-6 border-r border-neutral-100 ${className}`}
+		>
 			{/* Top Header */}
 			<div className="flex items-center justify-between pb-4 border-b border-neutral-100">
 				<div className="flex items-center gap-2">
-					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+					<svg
+						width="18"
+						height="18"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
 						<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
 					</svg>
 					<h3 className="text-[1.8rem] font-bold text-black">Filtres</h3>
@@ -101,7 +117,9 @@ export const SidebarFilter = ({
 
 			{/* Size */}
 			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">{t("taille")}</h4>
+				<h4 className="text-[1.5rem] font-semibold text-black">
+					{t("taille")}
+				</h4>
 				<div className="space-y-2.5">
 					{sizeOptions.map((size) => {
 						const isChecked = filters.sizes.includes(size);
@@ -133,7 +151,9 @@ export const SidebarFilter = ({
 							type="text"
 							placeholder="Minimum"
 							value={filters.minPrice}
-							onChange={(e) => onChange({ ...filters, minPrice: e.target.value })}
+							onChange={(e) =>
+								onChange({ ...filters, minPrice: e.target.value })
+							}
 							className="w-full text-[1.4rem] bg-transparent outline-none placeholder:text-neutral-400"
 						/>
 					</div>
@@ -143,7 +163,9 @@ export const SidebarFilter = ({
 							type="text"
 							placeholder="Maximum"
 							value={filters.maxPrice}
-							onChange={(e) => onChange({ ...filters, maxPrice: e.target.value })}
+							onChange={(e) =>
+								onChange({ ...filters, maxPrice: e.target.value })
+							}
 							className="w-full text-[1.4rem] bg-transparent outline-none placeholder:text-neutral-400"
 						/>
 					</div>
@@ -152,7 +174,9 @@ export const SidebarFilter = ({
 
 			{/* Color */}
 			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">{t("colors")}</h4>
+				<h4 className="text-[1.5rem] font-semibold text-black">
+					{t("colors")}
+				</h4>
 				<div className="flex items-center gap-2 flex-wrap">
 					<div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-neutral-200 text-[1.3rem]">
 						<span className="w-3.5 h-3.5 rounded-full bg-[#A3E635]" />
@@ -161,7 +185,7 @@ export const SidebarFilter = ({
 							onClick={() => onChange({ ...filters, color: "" })}
 							className="text-neutral-400 hover:text-black ml-1 text-sm cursor-pointer"
 						>
-							—
+							-
 						</button>
 					</div>
 					<button
@@ -223,14 +247,18 @@ export const SidebarFilter = ({
 
 			{/* Availability */}
 			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">Disponibilité</h4>
+				<h4 className="text-[1.5rem] font-semibold text-black">
+					Disponibilité
+				</h4>
 				<div className="space-y-2.5">
 					<label className="flex items-center gap-3 cursor-pointer text-[1.4rem] text-neutral-800 hover:text-black select-none">
 						<input
 							type="radio"
 							name="availability"
 							checked={filters.availability === "in_stock"}
-							onChange={() => onChange({ ...filters, availability: "in_stock" })}
+							onChange={() =>
+								onChange({ ...filters, availability: "in_stock" })
+							}
 							className="w-4 h-4 accent-black"
 						/>
 						<span>En stock</span>

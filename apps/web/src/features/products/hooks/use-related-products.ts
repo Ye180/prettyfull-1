@@ -9,7 +9,7 @@ import { storeApi, toQuery, toRawProduct } from "@/lib/store-api";
  * Produits « à découvrir aussi » : autres articles du même rayon.
  *
  * Passe par `toRawProduct` (forme brute attendue par `CardProduct`), pas par
- * `fetchProductsByCategory`/`toStoreProduct` — cette dernière est une forme
+ * `fetchProductsByCategory`/`toStoreProduct` - cette dernière est une forme
  * d'affichage plus pauvre, déjà documentée comme telle dans `adapters.ts`.
  * Même chemin que `get-sample-products.tsx`, qui alimente la grille de rayon.
  */

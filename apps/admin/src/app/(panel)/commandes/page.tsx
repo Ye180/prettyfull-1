@@ -15,9 +15,15 @@ import { useDebounced, useListQuery } from "@/lib/use-list-query";
 import { PageHeader } from "@/components/layout/page-header";
 import { FilterBar, FilterSelect } from "@/components/ui/filters";
 import { DataTable, Pagination, type Column } from "@/components/ui/table";
-import { Badge, Button, Card, EmptyState, orderStatusTone } from "@/components/ui/primitives";
+import {
+	Badge,
+	Button,
+	Card,
+	EmptyState,
+	orderStatusTone,
+} from "@/components/ui/primitives";
 
-/** Module « Commandes » — liste filtrable (§4.4). */
+/** Module « Commandes » - liste filtrable (§4.4). */
 const OrdersPage = () => {
 	const router = useRouter();
 	const list = useListQuery({ q: "", status: "", paymentStatus: "" });
@@ -27,7 +33,8 @@ const OrdersPage = () => {
 
 	const { data, isLoading } = useQuery({
 		queryKey: ["orders", params],
-		queryFn: () => api.get<Paginated<Order>>(`/api/admin/orders${toQueryString(params)}`),
+		queryFn: () =>
+			api.get<Paginated<Order>>(`/api/admin/orders${toQueryString(params)}`),
 	});
 
 	const columns: Column<Order>[] = [
@@ -165,7 +172,11 @@ const OrdersPage = () => {
 					onRowClick={(order) => router.push(`/commandes/${order.id}`)}
 					empty={
 						<EmptyState
-							title={list.isFiltered ? "Aucune commande ne correspond" : "Aucune commande"}
+							title={
+								list.isFiltered
+									? "Aucune commande ne correspond"
+									: "Aucune commande"
+							}
 							description={
 								list.isFiltered
 									? "Modifiez ou réinitialisez les filtres."

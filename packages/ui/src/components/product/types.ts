@@ -112,7 +112,7 @@ export interface RawVariant {
   options: RawVariantOption[];
   /** Quantité en stock (gérée par Medusa inventory) */
   inventory_quantity?: number;
-  /** Triplet du point de stock réel — distinct de `id`, qui adresse la combinaison couleur × taille. */
+  /** Triplet du point de stock réel - distinct de `id`, qui adresse la combinaison couleur × taille. */
   variant_id?: string | null;
   size_id?: string | null;
   /** Present when pricing context is requested (region_id, currency_code) */

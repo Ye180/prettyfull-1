@@ -3,10 +3,16 @@
 import type { Category, CurrencyCode, Product } from "@prettyfull/contracts";
 import { CURRENCY_CODES } from "@prettyfull/contracts";
 import { moneyToInput, parseMoney } from "@/lib/format";
-import { Checkbox, Field, Input, Select, Textarea } from "@/components/ui/primitives";
+import {
+	Checkbox,
+	Field,
+	Input,
+	Select,
+	Textarea,
+} from "@/components/ui/primitives";
 
 /**
- * Champs scalaires d'un produit — partagés par la création et l'édition.
+ * Champs scalaires d'un produit - partagés par la création et l'édition.
  *
  * L'état est porté par la page appelante : le formulaire de création doit
  * l'assembler avec la structure des variantes avant l'envoi, celui d'édition
@@ -33,7 +39,9 @@ export interface ProductFieldsState {
 	nameEn: string;
 }
 
-export const emptyProductFields = (currency: CurrencyCode = "xof"): ProductFieldsState => ({
+export const emptyProductFields = (
+	currency: CurrencyCode = "xof",
+): ProductFieldsState => ({
 	name: "",
 	slug: "",
 	shortDescription: "",
@@ -87,7 +95,9 @@ export const toProductPayload = (fields: ProductFieldsState) => ({
 	lowStockThreshold: Number(fields.lowStockThreshold) || 0,
 	categoryIds: fields.categoryIds,
 	// Le français vit dans les colonnes ; seule la traduction est stockée à part.
-	translations: fields.nameEn.trim() ? { en: { name: fields.nameEn.trim() } } : undefined,
+	translations: fields.nameEn.trim()
+		? { en: { name: fields.nameEn.trim() } }
+		: undefined,
 });
 
 export const ProductFields = ({
@@ -111,7 +121,13 @@ export const ProductFields = ({
 	return (
 		<div className="flex flex-col gap-6">
 			<div className="grid gap-4 sm:grid-cols-2">
-				<Field label="Nom" htmlFor="name" required error={error("name")} className="sm:col-span-2">
+				<Field
+					label="Nom"
+					htmlFor="name"
+					required
+					error={error("name")}
+					className="sm:col-span-2"
+				>
 					<Input
 						id="name"
 						value={value.name}
@@ -121,7 +137,10 @@ export const ProductFields = ({
 							onChange({
 								...value,
 								name,
-								slug: value.slug === slugify(value.name) || !value.slug ? slugify(name) : value.slug,
+								slug:
+									value.slug === slugify(value.name) || !value.slug
+										? slugify(name)
+										: value.slug,
 							});
 						}}
 						placeholder="Robe Cocktail Satinée"
@@ -143,7 +162,12 @@ export const ProductFields = ({
 					/>
 				</Field>
 
-				<Field label="SKU" htmlFor="sku" error={error("sku")} hint="Référence interne, facultative.">
+				<Field
+					label="SKU"
+					htmlFor="sku"
+					error={error("sku")}
+					hint="Référence interne, facultative."
+				>
 					<Input
 						id="sku"
 						value={value.sku}
@@ -151,7 +175,11 @@ export const ProductFields = ({
 					/>
 				</Field>
 
-				<Field label="Nom (anglais)" htmlFor="nameEn" hint="Utilisé par la version /en du site.">
+				<Field
+					label="Nom (anglais)"
+					htmlFor="nameEn"
+					hint="Utilisé par la version /en du site."
+				>
 					<Input
 						id="nameEn"
 						value={value.nameEn}
@@ -189,7 +217,11 @@ export const ProductFields = ({
 					/>
 				</Field>
 
-				<Field label="Description longue" htmlFor="longDescription" className="sm:col-span-2">
+				<Field
+					label="Description longue"
+					htmlFor="longDescription"
+					className="sm:col-span-2"
+				>
 					<Textarea
 						id="longDescription"
 						rows={5}
@@ -200,7 +232,12 @@ export const ProductFields = ({
 			</div>
 
 			<div className="grid gap-4 sm:grid-cols-3">
-				<Field label="Prix de base" htmlFor="basePrice" required error={error("basePrice")}>
+				<Field
+					label="Prix de base"
+					htmlFor="basePrice"
+					required
+					error={error("basePrice")}
+				>
 					<Input
 						id="basePrice"
 						inputMode="decimal"
@@ -228,7 +265,9 @@ export const ProductFields = ({
 					<Select
 						id="currency"
 						value={value.currency}
-						onChange={(event) => set("currency", event.target.value as CurrencyCode)}
+						onChange={(event) =>
+							set("currency", event.target.value as CurrencyCode)
+						}
 						options={CURRENCY_CODES.map((code) => ({
 							value: code,
 							label: code.toUpperCase(),
@@ -236,7 +275,11 @@ export const ProductFields = ({
 					/>
 				</Field>
 
-				<Field label="Poids (g)" htmlFor="weightGrams" hint="Sert au calcul des frais de port.">
+				<Field
+					label="Poids (g)"
+					htmlFor="weightGrams"
+					hint="Sert au calcul des frais de port."
+				>
 					<Input
 						id="weightGrams"
 						inputMode="numeric"
@@ -259,7 +302,11 @@ export const ProductFields = ({
 					/>
 				</Field>
 
-				<Field label="Étiquettes" htmlFor="tags" hint="Séparées par des virgules.">
+				<Field
+					label="Étiquettes"
+					htmlFor="tags"
+					hint="Séparées par des virgules."
+				>
 					<Input
 						id="tags"
 						value={value.tags}
@@ -300,7 +347,11 @@ export const ProductFields = ({
 			/>
 
 			<div className="grid gap-4 sm:grid-cols-2">
-				<Field label="Méta-titre" htmlFor="metaTitle" hint="Titre affiché dans les résultats de recherche.">
+				<Field
+					label="Méta-titre"
+					htmlFor="metaTitle"
+					hint="Titre affiché dans les résultats de recherche."
+				>
 					<Input
 						id="metaTitle"
 						value={value.metaTitle}

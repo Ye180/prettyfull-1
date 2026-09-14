@@ -9,7 +9,7 @@ import { createProduct, updateProduct } from "./products.service.js";
  *
  * Le format est volontairement « une ligne par point de stock » : c'est la
  * granularité que manipule un gestionnaire de catalogue dans un tableur, et
- * elle permet d'exprimer les deux régimes du §2.2 dans un même fichier —
+ * elle permet d'exprimer les deux régimes du §2.2 dans un même fichier -
  * la colonne `variante` reste vide pour un produit simple.
  */
 
@@ -177,7 +177,7 @@ interface GroupedRow {
  * Les lignes sont regroupées par `slug` : un produit à variantes s'étale sur
  * plusieurs lignes, reconstituées en une seule création. Un produit déjà
  * présent voit ses champs mis à jour, sans que sa structure de variantes ni
- * son stock soient écrasés — remplacer une déclinaison en masse détruirait
+ * son stock soient écrasés - remplacer une déclinaison en masse détruirait
  * l'historique de stock, ce qui n'est jamais ce qu'un import cherche à faire.
  */
 export const importProductsCsv = async (

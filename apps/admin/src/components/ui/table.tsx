@@ -20,7 +20,7 @@ export interface Column<T> {
 	header: string;
 	/** Rendu de la cellule. Reçoit la ligne entière, pas une valeur extraite. */
 	cell: (row: T) => ReactNode;
-	/** Aligne à droite — pour les montants et les quantités. */
+	/** Aligne à droite - pour les montants et les quantités. */
 	align?: "left" | "right";
 	/** Masque la colonne sous 768 px, pour garder les listes lisibles au mobile. */
 	hideOnMobile?: boolean;
@@ -181,7 +181,12 @@ export const Thumb = ({ src, alt }: { src?: string | null; alt: string }) => {
 				 * liste d'hôtes que l'administrateur ne peut pas maintenir.
 				 */
 				// eslint-disable-next-line @next/next/no-img-element
-				<img src={url} alt={alt} className="size-full object-cover" loading="lazy" />
+				<img
+					src={url}
+					alt={alt}
+					className="size-full object-cover"
+					loading="lazy"
+				/>
 			) : null}
 		</div>
 	);

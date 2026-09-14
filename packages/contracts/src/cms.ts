@@ -16,7 +16,7 @@ import {
 // --- Bannières (§2.6) ------------------------------------------------------
 
 /**
- * Champs d'une bannière, sans contrôle croisé — même raison que pour les
+ * Champs d'une bannière, sans contrôle croisé - même raison que pour les
  * tarifs de livraison : Zod refuse `.partial()` sur un objet raffiné.
  */
 export const bannerBaseSchema = z

@@ -7,12 +7,15 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
 import SidebarFilter, { FilterState } from "../organims/sidebar-filter";
-import GridCollectionLayout from "../organims/grid-layout";
 import PhotoOverlayBanner from "@/shared/components/organims/photo-overlay-banner";
+import ProductCardSkeleton from "@/shared/components/organims/product-loading";
+import { useRegionStore } from "@/stores/useRegion";
+import { CardProduct, GridCardProduct } from "@prettyfull/ui";
 import { useCollectionFilters } from "../hooks/use-collection-filters";
 import { useCollectionProducts } from "../hooks/use-collection-products";
 
-const PAGE_SIZE = 24;
+// 7 lignes de la grille dense (5 colonnes en desktop) avant le bouton "See More".
+const PAGE_SIZE = 35;
 
 const INITIAL_FILTERS: FilterState = {
 	categories: [],
@@ -30,6 +33,7 @@ export const CollectionViews = () => {
 	const slug = (params.slug as string) || "";
 
 	const { q, sort, order, setSearch, setSort } = useCollectionFilters();
+	const currencyCode = useRegionStore((state) => state.region?.currency_code);
 	const [searchDraft, setSearchDraft] = useState(q);
 	const [limit, setLimit] = useState(PAGE_SIZE);
 	const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
@@ -229,16 +233,31 @@ export const CollectionViews = () => {
 								</button>
 							</div>
 						) : (
-							<GridCollectionLayout products={products} loading={isLoading} />
+							<GridCardProduct action_grid hideSort className="max-sm:gap-y-8">
+								<>
+									{isLoading
+										? Array.from({ length: PAGE_SIZE }).map((_, index) => (
+												<ProductCardSkeleton key={index} />
+											))
+										: products.map((product, index) => (
+												<CardProduct
+													key={product.collectionId}
+													product={product}
+													currencyCode={currencyCode}
+													priority={index < 4}
+												/>
+											))}
+								</>
+							</GridCardProduct>
 						)}
 
 						{hasMore && (
 							<div className="flex justify-center pt-8">
 								<button
 									onClick={() => setLimit((prev) => prev + PAGE_SIZE)}
-									className="px-10 py-3 rounded-full border border-neutral-300 hover:border-black text-[1.4rem] font-medium transition-all cursor-pointer"
+									className="inline-flex items-center px-10 py-3 text-sm font-medium text-white bg-black rounded-full transition-colors hover:bg-neutral-800 cursor-pointer"
 								>
-									Load More...
+									See More
 								</button>
 							</div>
 						)}

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
  * État partagé des écrans de liste : filtres + pagination.
  *
  * Les neuf modules affichent tous une liste filtrable et paginée ; centraliser
- * ici évite d'en réécrire la mécanique — et surtout la règle facile à oublier :
+ * ici évite d'en réécrire la mécanique - et surtout la règle facile à oublier :
  * **modifier un filtre ramène à la page 1**, sans quoi on se retrouve sur une
  * page 7 vide après avoir restreint la recherche.
  */
@@ -60,7 +60,7 @@ export const useListQuery = <F extends Record<string, unknown>>(
 /**
  * Retarde une valeur pour éviter une requête par frappe.
  *
- * Le minuteur est posé dans un effet — un `useMemo` ne nettoie rien, et
+ * Le minuteur est posé dans un effet - un `useMemo` ne nettoie rien, et
  * chaque frappe laisserait derrière elle un minuteur orphelin qui finirait
  * par écraser la valeur courante.
  */

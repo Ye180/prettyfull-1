@@ -112,7 +112,7 @@ export const ImportDialog = ({
 
 				{fileName && (
 					<p className="text-[13px] text-muted">
-						{fileName} — {csv.split("\n").length - 1} ligne(s)
+						{fileName} - {csv.split("\n").length - 1} ligne(s)
 					</p>
 				)}
 
@@ -125,7 +125,9 @@ export const ImportDialog = ({
 							<li>{report.created} produit(s) à créer</li>
 							<li>{report.updated} produit(s) à mettre à jour</li>
 							{report.skipped > 0 && (
-								<li className="text-danger">{report.skipped} ligne(s) ignorée(s)</li>
+								<li className="text-danger">
+									{report.skipped} ligne(s) ignorée(s)
+								</li>
 							)}
 						</ul>
 

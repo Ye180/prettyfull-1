@@ -154,7 +154,7 @@ export type ContactMessageStatus = (typeof CONTACT_MESSAGE_STATUSES)[number];
 export const FEATURED_KINDS = ["product", "category"] as const;
 export type FeaturedKind = (typeof FEATURED_KINDS)[number];
 
-/** Devises supportées. XOF n'a pas de sous-unité — cf. `CURRENCY_EXPONENTS`. */
+/** Devises supportées. XOF n'a pas de sous-unité - cf. `CURRENCY_EXPONENTS`. */
 export const CURRENCY_CODES = ["xof", "eur", "usd"] as const;
 export type CurrencyCode = (typeof CURRENCY_CODES)[number];
 

@@ -19,10 +19,10 @@ interface CartContentProps {
 	 * height. Falls back to a stacked single column on narrow phones.
 	 */
 	layout?: "page" | "drawer";
-	/** Extra content rendered under the item list — only used by the "page" layout. */
+	/** Extra content rendered under the item list - only used by the "page" layout. */
 	itemsFooter?: ReactNode;
 	/**
-	 * Page-level row selection (checkboxes) — UI-only, not part of the cart
+	 * Page-level row selection (checkboxes) - UI-only, not part of the cart
 	 * store. Omit both props to render rows without checkboxes (drawer).
 	 */
 	selectedIds?: Set<string>;
@@ -42,7 +42,7 @@ const CartContent = ({
 	const isPage = layout === "page";
 	const isDrawer = layout === "drawer";
 	// ponytail: squared corners are scoped to the drawer via this flag instead
-	// of a global CSS override — keeps /cart page's rounded styling untouched.
+	// of a global CSS override - keeps /cart page's rounded styling untouched.
 	const square = isDrawer;
 
 	return (
@@ -57,7 +57,8 @@ const CartContent = ({
 				className={cn(
 					"bg-white",
 					isPage && "md:col-span-8",
-					isDrawer && "sm:col-span-7 sm:h-full sm:min-h-0 sm:overflow-y-auto sm:pr-2",
+					isDrawer &&
+						"sm:col-span-7 sm:h-full sm:min-h-0 sm:overflow-y-auto sm:pr-2",
 				)}
 			>
 				<div className="divide-y divide-gray-100">

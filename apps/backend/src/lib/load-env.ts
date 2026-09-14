@@ -13,7 +13,7 @@ const loadEnvFile = (): void => {
 	const path = resolve(process.cwd(), ".env");
 	if (!existsSync(path)) return;
 
-	// Ajouté dans Node 20.12 — on reste tolérant sur les runtimes plus anciens.
+	// Ajouté dans Node 20.12 - on reste tolérant sur les runtimes plus anciens.
 	if (typeof process.loadEnvFile !== "function") return;
 
 	try {

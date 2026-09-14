@@ -8,6 +8,7 @@ import {
 import {
 	currencySchema,
 	moneySchema,
+	partialForUpdate,
 	quantitySchema,
 	slugSchema,
 	translationsSchema,
@@ -33,7 +34,7 @@ export const categoryBaseSchema = z.object({
 });
 
 export const createCategorySchema = categoryBaseSchema;
-export const updateCategorySchema = categoryBaseSchema.partial();
+export const updateCategorySchema = partialForUpdate(categoryBaseSchema);
 
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
@@ -68,7 +69,7 @@ export const reorderCategoriesSchema = z.object({
 // --- Tailles ---------------------------------------------------------------
 
 /**
- * Une taille est rattachée soit à une variante, soit directement au produit —
+ * Une taille est rattachée soit à une variante, soit directement au produit -
  * jamais aux deux. Le rattachement est déduit du contexte de la route, il
  * n'est donc pas exprimé ici.
  */
@@ -85,6 +86,9 @@ export const sizeInputSchema = z.object({
 });
 
 export type SizeInput = z.infer<typeof sizeInputSchema>;
+
+export const updateSizeSchema = partialForUpdate(sizeInputSchema);
+export type UpdateSizeInput = z.infer<typeof updateSizeSchema>;
 
 export const sizeSchema = sizeInputSchema.omit({ initialQuantity: true }).extend({
 	id: uuidSchema,
@@ -131,6 +135,9 @@ export const variantInputSchema = z.object({
 });
 
 export type VariantInput = z.infer<typeof variantInputSchema>;
+
+export const updateVariantSchema = partialForUpdate(variantInputSchema);
+export type UpdateVariantInput = z.infer<typeof updateVariantSchema>;
 
 export const variantSchema = variantInputSchema
 	.omit({ initialQuantity: true, sizes: true, images: true })
@@ -244,7 +251,7 @@ export type CreateProductInput = z.infer<typeof createProductSchema>;
  * `kind` est absent de la mise à jour : basculer un produit d'un régime à
  * l'autre détruirait son stock et son historique. On duplique le produit.
  */
-export const updateProductSchema = productCoreSchema.partial();
+export const updateProductSchema = partialForUpdate(productCoreSchema);
 
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 

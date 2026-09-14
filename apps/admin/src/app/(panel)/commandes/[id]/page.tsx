@@ -48,7 +48,12 @@ const OrderDetailPage = () => {
 	const [confirmCancel, setConfirmCancel] = useState(false);
 	const [tracking, setTracking] = useState<string | null>(null);
 
-	const { data: order, isLoading, error, refetch } = useQuery({
+	const {
+		data: order,
+		isLoading,
+		error,
+		refetch,
+	} = useQuery({
 		queryKey: ["order", id],
 		queryFn: () => api.get<Order>(`/api/admin/orders/${id}`),
 	});
@@ -66,7 +71,8 @@ const OrderDetailPage = () => {
 			void queryClient.invalidateQueries({ queryKey: ["inventory"] });
 			notify(`Commande passée en « ${ORDER_STATUS_LABELS[updated.status]} ».`);
 		},
-		onError: (caught) => notifyError(caught, "Changement de statut impossible."),
+		onError: (caught) =>
+			notifyError(caught, "Changement de statut impossible."),
 	});
 
 	const markPaid = useMutation({
@@ -119,7 +125,9 @@ const OrderDetailPage = () => {
 		return error ? (
 			<Card>
 				<ErrorState
-					message={error instanceof Error ? error.message : "Commande introuvable."}
+					message={
+						error instanceof Error ? error.message : "Commande introuvable."
+					}
 					retry={() => void refetch()}
 				/>
 			</Card>
@@ -148,13 +156,20 @@ const OrderDetailPage = () => {
 							{ORDER_STATUS_LABELS[order.status]}
 						</Badge>
 
-						<Button onClick={() => openInvoice.mutate()} loading={openInvoice.isPending}>
+						<Button
+							onClick={() => openInvoice.mutate()}
+							loading={openInvoice.isPending}
+						>
 							<IconDownload width={16} height={16} />
 							Facture
 						</Button>
 
 						{writable && order.paymentStatus === "pending" && (
-							<Button variant="primary" onClick={() => markPaid.mutate()} loading={markPaid.isPending}>
+							<Button
+								variant="primary"
+								onClick={() => markPaid.mutate()}
+								loading={markPaid.isPending}
+							>
 								Marquer payée
 							</Button>
 						)}
@@ -165,7 +180,9 @@ const OrderDetailPage = () => {
 									key={status}
 									variant="primary"
 									onClick={() => changeStatus.mutate(status)}
-									loading={changeStatus.isPending && changeStatus.variables === status}
+									loading={
+										changeStatus.isPending && changeStatus.variables === status
+									}
 								>
 									{ORDER_STATUS_LABELS[status]}
 								</Button>
@@ -179,11 +196,12 @@ const OrderDetailPage = () => {
 								</Button>
 							)}
 
-						{writable && ORDER_STATUS_TRANSITIONS[order.status].includes("cancelled") && (
-							<Button variant="danger" onClick={() => setConfirmCancel(true)}>
-								Annuler
-							</Button>
-						)}
+						{writable &&
+							ORDER_STATUS_TRANSITIONS[order.status].includes("cancelled") && (
+								<Button variant="danger" onClick={() => setConfirmCancel(true)}>
+									Annuler
+								</Button>
+							)}
 					</>
 				}
 			/>
@@ -204,7 +222,9 @@ const OrderDetailPage = () => {
 											{item.productName}
 										</p>
 										<p className="truncate text-[12px] text-subtle">
-											{[item.variantName, item.sizeLabel].filter(Boolean).join(" · ")}
+											{[item.variantName, item.sizeLabel]
+												.filter(Boolean)
+												.join(" · ")}
 											{item.sku && ` · ${item.sku}`}
 										</p>
 										{item.refundedQuantity > 0 && (
@@ -214,7 +234,8 @@ const OrderDetailPage = () => {
 										)}
 									</div>
 									<span className="shrink-0 text-[13px] text-muted tabular">
-										{formatMoney(item.unitPrice, order.currency)} × {item.quantity}
+										{formatMoney(item.unitPrice, order.currency)} ×{" "}
+										{item.quantity}
 									</span>
 									<span className="w-24 shrink-0 text-right text-[13px] font-medium text-ink tabular">
 										{formatMoney(item.lineTotal, order.currency)}
@@ -226,7 +247,9 @@ const OrderDetailPage = () => {
 						<div className="space-y-1.5 border-t border-line px-4 py-3 text-[13px]">
 							<div className="flex justify-between text-muted">
 								<span>Sous-total</span>
-								<span className="tabular">{formatMoney(order.subtotal, order.currency)}</span>
+								<span className="tabular">
+									{formatMoney(order.subtotal, order.currency)}
+								</span>
 							</div>
 							<div className="flex justify-between text-muted">
 								<span>{order.shippingMethod?.name ?? "Livraison"}</span>
@@ -237,12 +260,16 @@ const OrderDetailPage = () => {
 							{order.taxTotal > 0 && (
 								<div className="flex justify-between text-muted">
 									<span>Taxes</span>
-									<span className="tabular">{formatMoney(order.taxTotal, order.currency)}</span>
+									<span className="tabular">
+										{formatMoney(order.taxTotal, order.currency)}
+									</span>
 								</div>
 							)}
 							<div className="flex justify-between border-t border-line pt-1.5 font-semibold text-ink">
 								<span>Total</span>
-								<span className="tabular">{formatMoney(order.total, order.currency)}</span>
+								<span className="tabular">
+									{formatMoney(order.total, order.currency)}
+								</span>
 							</div>
 							{order.refundedTotal > 0 && (
 								<div className="flex justify-between text-danger">
@@ -256,10 +283,16 @@ const OrderDetailPage = () => {
 					</Card>
 
 					<Card>
-						<CardHeader title="Historique" description="Chaque changement de statut, daté et signé." />
+						<CardHeader
+							title="Historique"
+							description="Chaque changement de statut, daté et signé."
+						/>
 						<ul className="divide-y divide-[var(--border)]">
 							{(order.statusHistory ?? []).map((entry) => (
-								<li key={entry.id} className="flex items-start gap-3 px-4 py-2.5">
+								<li
+									key={entry.id}
+									className="flex items-start gap-3 px-4 py-2.5"
+								>
 									<span className="w-36 shrink-0 text-[12px] text-subtle tabular">
 										{formatDateTime(entry.createdAt)}
 									</span>
@@ -270,11 +303,15 @@ const OrderDetailPage = () => {
 												: ORDER_STATUS_LABELS[entry.toStatus]}
 										</span>
 										{entry.comment && (
-											<span className="block text-[12px] text-muted">{entry.comment}</span>
+											<span className="block text-[12px] text-muted">
+												{entry.comment}
+											</span>
 										)}
 									</span>
 									{entry.userName && (
-										<span className="shrink-0 text-[12px] text-subtle">{entry.userName}</span>
+										<span className="shrink-0 text-[12px] text-subtle">
+											{entry.userName}
+										</span>
 									)}
 								</li>
 							))}
@@ -295,7 +332,9 @@ const OrderDetailPage = () => {
 										</span>
 										<span className="flex-1 text-ink">
 											{transaction.providerKey} ·{" "}
-											{transaction.kind === "refund" ? "Remboursement" : "Paiement"}
+											{transaction.kind === "refund"
+												? "Remboursement"
+												: "Paiement"}
 										</span>
 										<Badge
 											tone={
@@ -341,7 +380,7 @@ const OrderDetailPage = () => {
 							<p>{address.countryCode?.toUpperCase()}</p>
 
 							<div className="border-t border-line pt-2">
-								<p className="text-ink">{order.shippingMethod?.name ?? "—"}</p>
+								<p className="text-ink">{order.shippingMethod?.name ?? "-"}</p>
 								<Badge tone="neutral" className="mt-1">
 									{PAYMENT_STATUS_LABELS[order.paymentStatus]}
 								</Badge>
@@ -379,7 +418,11 @@ const OrderDetailPage = () => {
 				</div>
 			</div>
 
-			<RefundDialog order={order} open={refundOpen} onClose={() => setRefundOpen(false)} />
+			<RefundDialog
+				order={order}
+				open={refundOpen}
+				onClose={() => setRefundOpen(false)}
+			/>
 
 			<ConfirmDialog
 				open={confirmCancel}

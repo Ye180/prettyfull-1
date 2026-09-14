@@ -49,7 +49,7 @@ export const PERMISSIONS = {
         read: "audit.read",
     },
 };
-/** Toutes les permissions à plat — sert au seed de la table `permissions`. */
+/** Toutes les permissions à plat - sert au seed de la table `permissions`. */
 export const ALL_PERMISSIONS = Object.values(PERMISSIONS).flatMap((module) => Object.values(module));
 /**
  * Permissions attachées à chaque rôle système.

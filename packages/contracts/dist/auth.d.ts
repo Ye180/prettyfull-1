@@ -149,14 +149,14 @@ export declare const createStaffSchema: z.ZodObject<{
 }, z.core.$strip>;
 export declare const updateStaffSchema: z.ZodObject<{
     email: z.ZodOptional<z.ZodPipe<z.ZodString, z.ZodEmail>>;
-    firstName: z.ZodOptional<z.ZodString>;
-    lastName: z.ZodOptional<z.ZodString>;
-    phone: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
     status: z.ZodOptional<z.ZodDefault<z.ZodEnum<{
         active: "active";
         inactive: "inactive";
         suspended: "suspended";
     }>>>;
+    phone: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
+    firstName: z.ZodOptional<z.ZodString>;
+    lastName: z.ZodOptional<z.ZodString>;
     roles: z.ZodOptional<z.ZodArray<z.ZodEnum<{
         super_admin: "super_admin";
         catalog_manager: "catalog_manager";

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 		default: "Prettyfull",
 		template: "%s | Prettyfull",
 	},
-	description: "Prettyfull — mode et accessoires en ligne.",
+	description: "Prettyfull - mode et accessoires en ligne.",
 };
 
 export default async function RootLayout({

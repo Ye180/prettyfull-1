@@ -84,7 +84,7 @@ function buildNormalizedColor(product: RawProduct): NormalizedColorVariant {
   // Label de la couleur extrait du titre
   const label = extractColorLabelFromTitle(product.title);
 
-  // Récupérer les tailles depuis l'option dédiée uniquement — sans option
+  // Récupérer les tailles depuis l'option dédiée uniquement - sans option
   // "Size"/"Taille", un produit n'a pas de déclinaison de taille. Retomber
   // sur le titre des variants était une erreur : pour un produit sans
   // variante, ce titre EST le nom du produit lui-même (cf. `buildVariants`
@@ -98,7 +98,7 @@ function buildNormalizedColor(product: RawProduct): NormalizedColorVariant {
   // Trier les images par rank
   const sortedImages = [...(product.images ?? [])].sort((a, b) => a.rank - b.rank);
 
-  // Thumbnail principal — laissé vide si le produit n'a réellement aucun
+  // Thumbnail principal - laissé vide si le produit n'a réellement aucun
   // visuel : CardProduct affiche alors son propre repli plutôt qu'une image
   // cassée pointant vers un fichier qui n'existe pas.
   const thumbnail = product.thumbnail || sortedImages[0]?.url || "";
@@ -170,8 +170,8 @@ export interface StandaloneProductInput {
  * Regroupe les variantes d'un même produit brut par couleur, pour un seul
  * groupe (`variants`) partageant la même option "Color"/"Couleur".
  *
- * Contrairement à `buildNormalizedColor` — pensé pour le cas "collection"
- * où chaque couleur EST un produit à part —, ici les couleurs vivent toutes
+ * Contrairement à `buildNormalizedColor` - pensé pour le cas "collection"
+ * où chaque couleur EST un produit à part -, ici les couleurs vivent toutes
  * dans `product.variants` d'un seul et même produit (modèle du backend :
  * un produit standalone porte directement ses déclinaisons de couleur).
  */
@@ -216,7 +216,7 @@ function buildStandaloneColorGroup(
 /**
  * Regroupe les variantes d'un produit standalone par couleur réelle
  * (option "Color"/"Couleur"), une entrée `NormalizedColorVariant` par
- * couleur — c'est ce qui alimente les pastilles de `ColorSelector` sur les
+ * couleur - c'est ce qui alimente les pastilles de `ColorSelector` sur les
  * cartes produit (grille collections, "Tu peux aussi aimer"...).
  *
  * Sans option couleur sur le produit (cas fréquent : bijoux, pièce unique),

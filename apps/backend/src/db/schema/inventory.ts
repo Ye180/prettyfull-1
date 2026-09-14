@@ -33,7 +33,7 @@ import { users } from "./users.js";
  *
  * `quantity` est la quantité physique (réservations comprises) et
  * `reservedQuantity` ce qui est immobilisé par un paiement en cours. Le
- * vendable est la différence — jamais stockée, pour éviter toute divergence.
+ * vendable est la différence - jamais stockée, pour éviter toute divergence.
  */
 export const inventoryItems = pgTable(
 	"inventory_items",

@@ -76,7 +76,7 @@ export const seedContent = async (
 			].join("\n"),
 			status: "published",
 			publishedAt: now,
-			metaTitle: "CGV — PrettyFull",
+			metaTitle: "CGV - PrettyFull",
 		},
 		{
 			slug: "livraison-et-retours",
@@ -85,7 +85,7 @@ export const seedContent = async (
 			content: [
 				"## Livraison",
 				"",
-				"- **Abidjan** : 24 à 48 heures, 1 500 FCFA — offerte dès 50 000 FCFA d'achat.",
+				"- **Abidjan** : 24 à 48 heures, 1 500 FCFA - offerte dès 50 000 FCFA d'achat.",
 				"- **Sous-région** : 3 à 7 jours, 8 000 FCFA.",
 				"- **International** : 7 à 14 jours, tarif calculé selon le poids.",
 				"",

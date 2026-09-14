@@ -3,7 +3,7 @@ import { BANNER_PLACEMENTS, CONTACT_MESSAGE_STATUSES, CONTENT_STATUSES, FEATURED
 import { emailSchema, paginationQuerySchema, slugSchema, translationsSchema, uuidSchema, } from "./common.js";
 // --- Bannières (§2.6) ------------------------------------------------------
 /**
- * Champs d'une bannière, sans contrôle croisé — même raison que pour les
+ * Champs d'une bannière, sans contrôle croisé - même raison que pour les
  * tarifs de livraison : Zod refuse `.partial()` sur un objet raffiné.
  */
 export const bannerBaseSchema = z

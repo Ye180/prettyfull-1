@@ -15,7 +15,10 @@ const FALLBACK_IMAGE = "/home/cover-desktop.jpg";
 export const MonalisaHero = () => {
 	const [activeProductIndex, setActiveProductIndex] = useState(0);
 	const sectionRef = useRef<HTMLDivElement>(null);
-	const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+	const { scrollYProgress } = useScroll({
+		target: sectionRef,
+		offset: ["start start", "end start"],
+	});
 	const parallaxY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
 
 	const { data: banner } = useGetHeroBanner();
@@ -36,15 +39,20 @@ export const MonalisaHero = () => {
 		[rawProducts],
 	);
 
-	const activeProduct = heroProducts[activeProductIndex % Math.max(heroProducts.length, 1)];
+	const activeProduct =
+		heroProducts[activeProductIndex % Math.max(heroProducts.length, 1)];
 
 	const handleNext = () => {
-		setActiveProductIndex((prev) => (heroProducts.length ? (prev + 1) % heroProducts.length : 0));
+		setActiveProductIndex((prev) =>
+			heroProducts.length ? (prev + 1) % heroProducts.length : 0,
+		);
 	};
 
 	const handlePrev = () => {
 		setActiveProductIndex((prev) =>
-			heroProducts.length ? (prev - 1 + heroProducts.length) % heroProducts.length : 0,
+			heroProducts.length
+				? (prev - 1 + heroProducts.length) % heroProducts.length
+				: 0,
 		);
 	};
 
@@ -62,8 +70,11 @@ export const MonalisaHero = () => {
 				ref={sectionRef}
 				className="relative w-full min-h-[580px] lg:min-h-[660px] rounded-[2.8rem] overflow-hidden bg-[#CCD1D5]"
 			>
-				{/* Image de fond — effet parallax léger : dérive plus lentement que le défilement */}
-				<motion.div style={{ y: parallaxY }} className="absolute inset-0 scale-[1.15]">
+				{/* Image de fond - effet parallax léger : dérive plus lentement que le défilement */}
+				<motion.div
+					style={{ y: parallaxY }}
+					className="absolute inset-0 scale-[1.15]"
+				>
 					<Image
 						src={heroImage}
 						alt={heroTitle}
@@ -75,11 +86,11 @@ export const MonalisaHero = () => {
 					/>
 				</motion.div>
 
-				<div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none" />
+				<div className="absolute inset-0 bg-gradient-to-r via-transparent to-transparent pointer-events-none from-black/20" />
 
 				{/* Contenu */}
 				<div className="relative z-10 w-full h-full min-h-[580px] lg:min-h-[660px] flex flex-col justify-between p-6 sm:p-10 lg:p-14">
-					<div className="max-w-xl text-white space-y-4 pt-4 sm:pt-6">
+					<div className="pt-4 space-y-4 max-w-xl text-white sm:pt-6">
 						<h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.12]">
 							{heroTitle}
 						</h1>
@@ -94,27 +105,43 @@ export const MonalisaHero = () => {
 						</Link>
 					</div>
 
-					{/* Carte flottante — produits récents */}
+					{/* Carte flottante - produits récents */}
 					{activeProduct && (
 						<div className="lg:absolute lg:right-12 lg:bottom-10 mt-8 lg:mt-0 w-full max-w-[260px] self-end bg-white/25 backdrop-blur-xl border border-white/40 p-4 rounded-[1.8rem] shadow-2xl transition-all">
-							<div className="flex items-center justify-between pb-2">
-								<span className="text-[1.3rem] font-semibold text-white">Nouveautés</span>
+							<div className="flex justify-between items-center pb-2">
+								<span className="text-[1.3rem] font-semibold text-white">
+									Nouveautés
+								</span>
 								<div className="flex items-center space-x-1.5">
 									<button
 										onClick={handlePrev}
 										aria-label="Produit précédent"
-										className="w-6 h-6 rounded-full bg-white/30 hover:bg-white/60 text-white hover:text-black flex items-center justify-center transition-all cursor-pointer"
+										className="flex justify-center items-center w-6 h-6 text-white rounded-full transition-all cursor-pointer bg-white/30 hover:bg-white/60 hover:text-black"
 									>
-										<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+										<svg
+											width="12"
+											height="12"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="2.5"
+										>
 											<path d="M15 18l-6-6 6-6" />
 										</svg>
 									</button>
 									<button
 										onClick={handleNext}
 										aria-label="Produit suivant"
-										className="w-6 h-6 rounded-full bg-white text-black hover:bg-white/80 flex items-center justify-center transition-all shadow cursor-pointer"
+										className="flex justify-center items-center w-6 h-6 text-black bg-white rounded-full shadow transition-all cursor-pointer hover:bg-white/80"
 									>
-										<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+										<svg
+											width="12"
+											height="12"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="2.5"
+										>
 											<path d="M9 18l6-6-6-6" />
 										</svg>
 									</button>
@@ -132,12 +159,14 @@ export const MonalisaHero = () => {
 								/>
 							</div>
 
-							<div className="flex items-baseline justify-between pt-1">
+							<div className="flex justify-between items-baseline pt-1">
 								<div className="space-y-0.5 max-w-[70%]">
 									<h4 className="text-[1.2rem] font-semibold text-white truncate leading-snug">
 										{activeProduct.name}
 									</h4>
-									<span className="text-[1.1rem] text-white/70 block">{activeProduct.category}</span>
+									<span className="text-[1.1rem] text-white/70 block">
+										{activeProduct.category}
+									</span>
 								</div>
 								<span className="text-[1.5rem] font-bold text-white">
 									{formatCurrency_FR(activeProduct.price, currencySymbol)}

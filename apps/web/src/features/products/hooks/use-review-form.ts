@@ -16,7 +16,7 @@ export interface ReviewFormValues {
 /**
  * Partie « réseau » du formulaire d'avis : téléversement des photos et envoi.
  *
- * L'état des champs (saisie, étoiles) reste dans `DrawerReview` — c'est de
+ * L'état des champs (saisie, étoiles) reste dans `DrawerReview` - c'est de
  * l'état d'interface pure, pas la peine d'un hook dédié pour ça. Ce hook
  * n'existe que parce que `DrawerReview` vit dans `packages/ui`, qui ne peut
  * pas dépendre de `apps/web/src/lib/store-api` ni `apps/web/src/lib/uploadthing` :

@@ -25,7 +25,7 @@ export type Database = typeof db;
 /** Transaction Drizzle : type attendu par les services qui composent des écritures. */
 export type Transaction = Parameters<Parameters<Database["transaction"]>[0]>[0];
 
-/** Ferme le pool — utilisé par les scripts ponctuels (seed, migrations). */
+/** Ferme le pool - utilisé par les scripts ponctuels (seed, migrations). */
 export const closeDb = () => client.end({ timeout: 5 });
 
 export { schema, client };

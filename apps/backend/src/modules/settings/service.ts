@@ -87,7 +87,7 @@ export const listTaxRates = async (): Promise<TaxRate[]> => {
 
 /**
  * Crée ou met à jour un taux. Marquer un taux « par défaut » retire le drapeau
- * des autres — la base impose déjà l'unicité, on la respecte explicitement
+ * des autres - la base impose déjà l'unicité, on la respecte explicitement
  * plutôt que de laisser remonter une violation de contrainte.
  */
 export const createTaxRate = async (input: TaxRateInput): Promise<TaxRate> => {

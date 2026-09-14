@@ -8,7 +8,7 @@ import { CONTACT_DETAILS, SHORTCUTS } from "../data";
  * Le formulaire occupe la colonne principale, les coordonnées la colonne
  * latérale : la plupart des visiteurs viennent écrire, pas relever une adresse.
  *
- * Au mobile, l'ordre est repensé — coordonnées, puis formulaire, puis horaires
+ * Au mobile, l'ordre est repensé - coordonnées, puis formulaire, puis horaires
  * et raccourcis. Faire défiler trois blocs avant d'atteindre le champ de saisie
  * décourage précisément ceux qui étaient venus écrire, tandis qu'un numéro de
  * téléphone en tête sert immédiatement ceux qui préfèrent appeler.
@@ -73,7 +73,8 @@ const Content = () => (
 							<dd className="text-[1.7rem] font-light leading-relaxed text-white/90 font-manrope">
 								{CONTACT_DETAILS.address.line1}
 								<br />
-								{CONTACT_DETAILS.address.city}, {CONTACT_DETAILS.address.country}
+								{CONTACT_DETAILS.address.city},{" "}
+								{CONTACT_DETAILS.address.country}
 							</dd>
 						</div>
 					</dl>
@@ -95,7 +96,9 @@ const Content = () => (
 								<dt className="text-[1.5rem] font-light text-neutral-600 font-manrope">
 									{slot.days}
 								</dt>
-								<dd className="text-[1.5rem] font-medium font-manrope">{slot.time}</dd>
+								<dd className="text-[1.5rem] font-medium font-manrope">
+									{slot.time}
+								</dd>
 							</div>
 						))}
 					</dl>

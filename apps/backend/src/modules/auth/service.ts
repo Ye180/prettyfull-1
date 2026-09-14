@@ -275,7 +275,7 @@ export const logout = async (refreshToken: string | undefined): Promise<void> =>
 		);
 };
 
-/** Révoque toutes les sessions d'un compte — après changement de mot de passe. */
+/** Révoque toutes les sessions d'un compte - après changement de mot de passe. */
 export const revokeAllSessions = async (userId: string): Promise<void> => {
 	await db
 		.update(t.refreshTokens)

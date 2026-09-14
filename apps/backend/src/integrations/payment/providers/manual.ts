@@ -1,7 +1,7 @@
 import type { PaymentAdapter } from "../types.js";
 
 /**
- * Paiement à la livraison / virement — sans prestataire externe.
+ * Paiement à la livraison / virement - sans prestataire externe.
  *
  * Aucune clé, aucun webhook : la commande est acceptée immédiatement en
  * attente d'encaissement, et c'est l'administrateur qui la marque payée

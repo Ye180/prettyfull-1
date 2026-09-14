@@ -15,9 +15,13 @@ interface AuthModalProps {
 }
 
 // ponytail: quick-auth modal so shoppers don't get bounced off the page to
-// log in/sign up mid-cart — reuses the existing forms + CustomModal as-is,
+// log in/sign up mid-cart - reuses the existing forms + CustomModal as-is,
 // just toggles which one renders.
-export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalProps) {
+export function AuthModal({
+	open,
+	onClose,
+	defaultMode = "login",
+}: AuthModalProps) {
 	const [mode, setMode] = useState<AuthMode>(defaultMode);
 	const router = useRouter();
 
@@ -36,9 +40,9 @@ export function AuthModal({ open, onClose, defaultMode = "login" }: AuthModalPro
 		<CustomModal
 			open={open}
 			onClose={onClose}
-			close
+			hideTitle
 			title={mode === "login" ? "Connexion" : "Créer un compte"}
-			className="!w-[95vw] lg:!w-[35vw] p-6"
+			className="w-[95vw] lg:w-[35vw] p-6"
 		>
 			{mode === "login" ? (
 				<LoginForm

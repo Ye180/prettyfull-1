@@ -16,7 +16,7 @@ import { closeDb, db } from "./index.js";
 const REQUIRED_EXTENSIONS = ["unaccent"] as const;
 
 /**
- * `unaccent()` est déclarée STABLE et non IMMUTABLE — Postgres la refuse donc
+ * `unaccent()` est déclarée STABLE et non IMMUTABLE - Postgres la refuse donc
  * dans une expression d'index. Ce wrapper la redéclare IMMUTABLE, ce qui est
  * correct tant que le dictionnaire `unaccent` n'est pas modifié à chaud (le
  * contournement de référence pour la recherche insensible aux accents).

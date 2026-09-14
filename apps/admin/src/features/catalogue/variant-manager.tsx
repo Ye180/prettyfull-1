@@ -15,8 +15,8 @@ import {
 	Input,
 	stockStatusTone,
 } from "@/components/ui/primitives";
-import { IconPlus, IconTrash } from "@/components/icons";
-import { ImageUpload } from "@/components/ui/image-upload";
+import { IconEdit, IconPlus, IconTrash } from "@/components/icons";
+import { ImageUploadList } from "@/components/ui/image-upload";
 
 /**
  * Gestion incrémentale des variantes et des tailles d'un produit existant.
@@ -37,13 +37,19 @@ export const VariantManager = ({
 	const { notify, notifyError } = useToast();
 
 	const [variantDialog, setVariantDialog] = useState(false);
+	const [editDialog, setEditDialog] = useState<{ variantId: string } | null>(null);
 	const [sizeDialog, setSizeDialog] = useState<{ variantId: string | null } | null>(null);
 
 	const [variantDraft, setVariantDraft] = useState({
 		name: "",
 		colorHex: "#111111",
 		quantity: "0",
-		imageUrl: "",
+		imageUrls: [] as string[],
+	});
+	const [editDraft, setEditDraft] = useState({
+		name: "",
+		colorHex: "#111111",
+		imageUrls: [] as string[],
 	});
 	const [sizeDraft, setSizeDraft] = useState({ label: "", quantity: "0" });
 
@@ -58,17 +64,47 @@ export const VariantManager = ({
 				name: variantDraft.name.trim(),
 				colorHex: variantDraft.colorHex,
 				initialQuantity: Number(variantDraft.quantity) || 0,
-				images: variantDraft.imageUrl.trim()
-					? [{ url: variantDraft.imageUrl.trim(), position: 0 }]
-					: [],
+				images: variantDraft.imageUrls
+					.map((url) => url.trim())
+					.filter(Boolean)
+					.map((url, position) => ({ url, position })),
 			}),
 		onSuccess: () => {
 			refresh();
 			setVariantDialog(false);
-			setVariantDraft({ name: "", colorHex: "#111111", quantity: "0", imageUrl: "" });
+			setVariantDraft({ name: "", colorHex: "#111111", quantity: "0", imageUrls: [] });
 			notify("Variante ajoutée.");
 		},
 		onError: (error) => notifyError(error, "Ajout impossible."),
+	});
+
+	const openEdit = (variant: Product["variants"][number]) => {
+		setEditDraft({
+			name: variant.name,
+			colorHex: variant.colorHex ?? "#111111",
+			imageUrls: [...variant.images]
+				.sort((a, b) => a.position - b.position)
+				.map((image) => image.url),
+		});
+		setEditDialog({ variantId: variant.id });
+	};
+
+	const updateVariant = useMutation({
+		mutationFn: () =>
+			api.patch(`/api/admin/products/${product.id}/variants/${editDialog?.variantId}`, {
+				name: editDraft.name.trim(),
+				colorHex: editDraft.colorHex,
+				images: editDraft.imageUrls
+					.map((url) => url.trim())
+					.filter(Boolean)
+					.map((url, position) => ({ url, position })),
+			}),
+		onSuccess: () => {
+			refresh();
+			setEditDialog(null);
+			notify("Variante mise à jour.");
+		},
+		onError: (error) => notifyError(error, "Mise à jour impossible."),
 	});
 
 	const removeVariant = useMutation({
@@ -150,6 +186,14 @@ export const VariantManager = ({
 
 									{!disabled && (
 										<>
+											<Button
+												size="sm"
+												variant="ghost"
+												onClick={() => openEdit(variant)}
+												aria-label={`Modifier ${variant.name}`}
+											>
+												<IconEdit width={15} height={15} />
+											</Button>
 											<Button
 												size="sm"
 												onClick={() => setSizeDialog({ variantId: variant.id })}
@@ -278,13 +322,13 @@ export const VariantManager = ({
 					</Field>
 
 					<Field
-						label="Photo du coloris"
-						hint="Affichée quand la cliente sélectionne ce coloris."
+						label="Photos du coloris"
+						hint="La première sert de vignette quand la cliente sélectionne ce coloris."
 					>
-						<ImageUpload
+						<ImageUploadList
 							endpoint={UPLOAD_ENDPOINTS.catalog}
-							value={variantDraft.imageUrl}
-							onChange={(imageUrl) => setVariantDraft({ ...variantDraft, imageUrl })}
+							values={variantDraft.imageUrls}
+							onChange={(imageUrls) => setVariantDraft({ ...variantDraft, imageUrls })}
 						/>
 					</Field>
 
@@ -295,6 +339,68 @@ export const VariantManager = ({
 							onChange={(event) =>
 								setVariantDraft({ ...variantDraft, quantity: event.target.value })
 							}
+						/>
+					</Field>
+				</div>
+			</Dialog>
+
+			<Dialog
+				open={editDialog !== null}
+				onClose={() => setEditDialog(null)}
+				title="Modifier la variante"
+				description="Nom, couleur et galerie de ce coloris."
+				footer={
+					<>
+						<Button onClick={() => setEditDialog(null)}>Annuler</Button>
+						<Button
+							variant="primary"
+							onClick={() => updateVariant.mutate()}
+							loading={updateVariant.isPending}
+							disabled={!editDraft.name.trim()}
+						>
+							Enregistrer
+						</Button>
+					</>
+				}
+			>
+				<div className="flex flex-col gap-4">
+					<Field label="Nom du coloris" required>
+						<Input
+							autoFocus
+							value={editDraft.name}
+							onChange={(event) => setEditDraft({ ...editDraft, name: event.target.value })}
+							placeholder="Bordeaux"
+						/>
+					</Field>
+
+					<Field label="Couleur">
+						<div className="flex items-center gap-2">
+							<input
+								type="color"
+								value={editDraft.colorHex}
+								onChange={(event) =>
+									setEditDraft({ ...editDraft, colorHex: event.target.value })
+								}
+								className="h-9 w-12 shrink-0 cursor-pointer rounded border border-line bg-raised"
+								aria-label="Couleur"
+							/>
+							<Input
+								value={editDraft.colorHex}
+								onChange={(event) =>
+									setEditDraft({ ...editDraft, colorHex: event.target.value })
+								}
+							/>
+						</div>
+					</Field>
+
+					<Field
+						label="Photos du coloris"
+						hint="Ajoutez, réordonnez ou retirez des visuels pour ce coloris."
+					>
+						<ImageUploadList
+							endpoint={UPLOAD_ENDPOINTS.catalog}
+							values={editDraft.imageUrls}
+							onChange={(imageUrls) => setEditDraft({ ...editDraft, imageUrls })}
 						/>
 					</Field>
 				</div>

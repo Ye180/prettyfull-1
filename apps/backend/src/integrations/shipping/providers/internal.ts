@@ -8,8 +8,8 @@ import type { ShippingAdapter, ShippingQuote } from "../types.js";
  * Livraison assurée en interne : les tarifs viennent de la base, pas d'une
  * API tierce.
  *
- * C'est l'adaptateur par défaut. Il implémente les trois modes du §2.5 —
- * montant fixe, tranche de poids, franco de port au-delà d'un seuil — et
+ * C'est l'adaptateur par défaut. Il implémente les trois modes du §2.5 -
+ * montant fixe, tranche de poids, franco de port au-delà d'un seuil - et
  * démontre que le contrat `ShippingAdapter` couvre aussi bien un transporteur
  * externe qu'une grille tarifaire maison.
  */
@@ -63,7 +63,7 @@ export const internalShippingAdapter: ShippingAdapter = {
 			return [
 				{
 					rateId: rate.id,
-					name: free ? `${rate.name} — offerte` : rate.name,
+					name: free ? `${rate.name} - offerte` : rate.name,
 					amount: free ? 0 : rate.amount,
 					currency: rate.currency as CurrencyCode,
 					estimatedDaysMin: rate.estimatedDaysMin,

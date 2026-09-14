@@ -7,7 +7,7 @@ import { getStoreSettings } from "../settings/service.js";
  * Points d'entrée transverses du storefront : configuration publique de la
  * boutique et moyens de paiement disponibles.
  *
- * Aucune clé d'agrégateur n'y transite — seulement ce que la cliente doit
+ * Aucune clé d'agrégateur n'y transite - seulement ce que la cliente doit
  * voir pour choisir son mode de paiement.
  */
 export const storeMiscRoutes = new Hono<AppEnv>();

@@ -8,7 +8,13 @@ import { api } from "@/lib/api";
 import { STOCK_REASON_LABELS } from "@/lib/format";
 import { useToast } from "@/components/ui/toast";
 import { Dialog } from "@/components/ui/dialog";
-import { Button, Field, Input, Select, Textarea } from "@/components/ui/primitives";
+import {
+	Button,
+	Field,
+	Input,
+	Select,
+	Textarea,
+} from "@/components/ui/primitives";
 
 /**
  * Ajustement manuel de stock (§2.3).
@@ -98,7 +104,9 @@ export const AdjustStockDialog = ({
 			title="Ajuster le stock"
 			description={
 				row
-					? [row.productName, row.variantName, row.sizeLabel].filter(Boolean).join(" · ")
+					? [row.productName, row.variantName, row.sizeLabel]
+							.filter(Boolean)
+							.join(" · ")
 					: undefined
 			}
 			footer={
@@ -120,7 +128,9 @@ export const AdjustStockDialog = ({
 					<div className="grid grid-cols-3 gap-3 rounded-md border border-line bg-sunken p-3 text-center">
 						<div>
 							<p className="text-[12px] text-subtle">En stock</p>
-							<p className="text-lg font-semibold text-ink tabular">{row.quantity}</p>
+							<p className="text-lg font-semibold text-ink tabular">
+								{row.quantity}
+							</p>
 						</div>
 						<div>
 							<p className="text-[12px] text-subtle">Réservé</p>
@@ -137,12 +147,10 @@ export const AdjustStockDialog = ({
 					</div>
 
 					<div className="grid grid-cols-2 gap-2">
-						{(
-							[
-								{ key: "delta" as const, label: "Ajouter / retirer" },
-								{ key: "absolute" as const, label: "Fixer la quantité" },
-							]
-						).map((option) => (
+						{[
+							{ key: "delta" as const, label: "Ajouter / retirer" },
+							{ key: "absolute" as const, label: "Fixer la quantité" },
+						].map((option) => (
 							<button
 								key={option.key}
 								type="button"
@@ -200,7 +208,10 @@ export const AdjustStockDialog = ({
 						/>
 					</Field>
 
-					<Field label="Note" hint="Facultative — numéro de bon de livraison, précision.">
+					<Field
+						label="Note"
+						hint="Facultative - numéro de bon de livraison, précision."
+					>
 						<Textarea
 							rows={2}
 							value={note}
@@ -212,10 +223,12 @@ export const AdjustStockDialog = ({
 					{projected !== null && (
 						<p className="text-[13px] text-muted">
 							Stock après opération :{" "}
-							<span className="font-medium text-ink tabular">{Math.max(0, projected)}</span>
+							<span className="font-medium text-ink tabular">
+								{Math.max(0, projected)}
+							</span>
 							{projected < 0 && (
 								<span className="ml-1.5 text-danger">
-									— retrait supérieur au stock, l’opération sera refusée.
+									- retrait supérieur au stock, l’opération sera refusée.
 								</span>
 							)}
 						</p>

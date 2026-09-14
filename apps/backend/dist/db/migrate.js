@@ -14,7 +14,7 @@ import { closeDb, db } from "./index.js";
  */
 const REQUIRED_EXTENSIONS = ["unaccent"];
 /**
- * `unaccent()` est déclarée STABLE et non IMMUTABLE — Postgres la refuse donc
+ * `unaccent()` est déclarée STABLE et non IMMUTABLE - Postgres la refuse donc
  * dans une expression d'index. Ce wrapper la redéclare IMMUTABLE, ce qui est
  * correct tant que le dictionnaire `unaccent` n'est pas modifié à chaud (le
  * contournement de référence pour la recherche insensible aux accents).
@@ -29,20 +29,23 @@ const IMMUTABLE_UNACCENT = `
 	AS $func$ SELECT public.unaccent('public.unaccent'::regdictionary, $1) $func$;
 `;
 const run = async () => {
-    for (const extension of REQUIRED_EXTENSIONS) {
-        await db.execute(sql.raw(`CREATE EXTENSION IF NOT EXISTS ${extension}`));
-        console.log(`extension prête : ${extension}`);
-    }
-    await db.execute(sql.raw(IMMUTABLE_UNACCENT));
-    console.log("fonction prête : pf_unaccent");
-    const migrationsFolder = resolve(dirname(fileURLToPath(import.meta.url)), "migrations");
-    await migrate(db, { migrationsFolder });
-    console.log("migrations appliquées");
+	for (const extension of REQUIRED_EXTENSIONS) {
+		await db.execute(sql.raw(`CREATE EXTENSION IF NOT EXISTS ${extension}`));
+		console.log(`extension prête : ${extension}`);
+	}
+	await db.execute(sql.raw(IMMUTABLE_UNACCENT));
+	console.log("fonction prête : pf_unaccent");
+	const migrationsFolder = resolve(
+		dirname(fileURLToPath(import.meta.url)),
+		"migrations",
+	);
+	await migrate(db, { migrationsFolder });
+	console.log("migrations appliquées");
 };
 run()
-    .catch((error) => {
-    console.error("échec des migrations :", error);
-    process.exitCode = 1;
-})
-    .finally(() => closeDb());
+	.catch((error) => {
+		console.error("échec des migrations :", error);
+		process.exitCode = 1;
+	})
+	.finally(() => closeDb());
 //# sourceMappingURL=migrate.js.map

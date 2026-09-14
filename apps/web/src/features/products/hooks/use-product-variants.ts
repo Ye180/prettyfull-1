@@ -45,22 +45,22 @@ export function useProductVariants(product: StoreProduct | null | undefined) {
 
 		if (!colorOption) {
 			if (sizeOption) {
-				// Pas de couleur mais des tailles — grouper TOUS les variants ensemble.
-				const thumbs = product.variants.map((v) => v.thumbnail).filter(Boolean) as string[];
+				// Pas de couleur mais des tailles - grouper TOUS les variants ensemble.
+				const variantImgs = product.variants.flatMap((v) => v.images?.map((img) => img.url) ?? []);
 				colorMap.set("__default__", {
 					label: "__default__",
 					variants: product.variants,
-					images: [...new Set([...thumbs, ...productImgUrls])],
+					images: [...new Set([...variantImgs, ...productImgUrls])],
 				});
 			} else {
 				product.variants.forEach((variant, index) => {
 					const variantLabel = variant.title || `Variant ${index + 1}`;
-					const variantImage = variant.thumbnail || productImgUrls[0] || "";
+					const variantImgs = variant.images?.map((img) => img.url) ?? [];
 					if (!colorMap.has(variantLabel)) {
 						colorMap.set(variantLabel, {
 							label: variantLabel,
 							variants: [variant],
-							images: [...new Set([...(variantImage ? [variantImage] : []), ...productImgUrls])],
+							images: [...new Set([...variantImgs, ...productImgUrls])],
 						});
 					}
 				});
@@ -75,7 +75,7 @@ export function useProductVariants(product: StoreProduct | null | undefined) {
 			const colorVariantsList = product.variants.filter(
 				(v) => optionValue(v, colorOption.id) === colorValue,
 			);
-			const colorImages = colorVariantsList.map((v) => v.thumbnail).filter(Boolean) as string[];
+			const colorImages = colorVariantsList.flatMap((v) => v.images?.map((img) => img.url) ?? []);
 			const allImages = [...new Set([...colorImages, ...productImgUrls])];
 
 			colorMap.set(colorValue, {
@@ -89,12 +89,14 @@ export function useProductVariants(product: StoreProduct | null | undefined) {
 	}, [product, colorOption, sizeOption]);
 
 	const availableSizes = useMemo(() => {
+		// Sans option Taille, ce produit (ou ce coloris) n'a aucune taille
+		// réelle : `variant.title` ne porterait ici que le nom du coloris ou
+		// du produit, jamais une taille, et ne doit donc jamais alimenter ce
+		// sélecteur.
+		if (!sizeOption) return [];
+
 		const currentColorVariants =
 			colorVariants.find((cv) => cv.label === selectedColor)?.variants ?? [];
-
-		if (!sizeOption) {
-			return currentColorVariants.map((v) => v.title).filter(Boolean);
-		}
 
 		const sizesSet = new Set<string>();
 		currentColorVariants.forEach((variant) => {
@@ -113,7 +115,15 @@ export function useProductVariants(product: StoreProduct | null | undefined) {
 		return [...new Set([...variantImgs, ...productImgUrls])];
 	}, [selectedColor, colorVariants, product]);
 
-	const availableColors = useMemo(() => colorVariants.map((cv) => cv.label), [colorVariants]);
+	// `colorVariants` porte toujours au moins un groupe interne (même « sans
+	// coloris »), pour que la dérivation des images/tailles ait un point
+	// d'ancrage unique. Il ne devient un vrai sélecteur que si le produit a
+	// une option Couleur - sinon son étiquette (le nom du produit, ou le
+	// jeton interne « __default__ ») ne doit jamais atteindre l'affichage.
+	const availableColors = useMemo(
+		() => (colorOption ? colorVariants.map((cv) => cv.label) : []),
+		[colorVariants, colorOption],
+	);
 
 	/** Coloris → code hexadécimal, porté par les variantes de l'API. */
 	const colorSwatches = useMemo(() => {
@@ -140,13 +150,15 @@ export function useProductVariants(product: StoreProduct | null | undefined) {
 		setActiveImage(0);
 	}, [product?.id]);
 
-	// Un coloris est présélectionné : sans lui, la liste des tailles reste
-	// vide et le produit paraît indisponible.
+	// Un groupe est présélectionné (via `colorVariants`, pas `availableColors` :
+	// même sans option Couleur visible, le groupe interne doit être choisi pour
+	// que la liste des tailles et la galerie se résolvent) - sans lui, le
+	// produit paraît indisponible.
 	useEffect(() => {
-		if (!selectedColor && availableColors.length > 0) {
-			setSelectedColor(availableColors[0]!);
+		if (!selectedColor && colorVariants.length > 0) {
+			setSelectedColor(colorVariants[0]!.label);
 		}
-	}, [availableColors, selectedColor]);
+	}, [colorVariants, selectedColor]);
 
 	const handleColorChange = useCallback((newColor: string) => {
 		setSelectedColor(newColor);

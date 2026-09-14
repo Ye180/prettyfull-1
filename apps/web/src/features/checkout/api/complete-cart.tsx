@@ -1,6 +1,10 @@
 "use client";
 
-import { StoreApiError, completeCheckout, syncCartToServer } from "@/lib/store-api";
+import {
+	StoreApiError,
+	completeCheckout,
+	syncCartToServer,
+} from "@/lib/store-api";
 import { useCartStore } from "@prettyfull/store";
 import { useMutation } from "@tanstack/react-query";
 import { useCheckoutStore } from "../stores/use-checkout-store";
@@ -10,7 +14,7 @@ import { useCheckoutStore } from "../stores/use-checkout-store";
  *
  * Déroulé : le panier local est poussé vers le serveur, puis la commande est
  * créée. C'est le serveur qui réserve le stock sous verrou avant tout appel au
- * prestataire — si un article vient d'être épuisé, rien n'est créé et l'erreur
+ * prestataire - si un article vient d'être épuisé, rien n'est créé et l'erreur
  * remonte avec le disponible réel.
  *
  * Le panier local n'est vidé **qu'après** la création effective de la
@@ -21,8 +25,11 @@ export const useCompleteCart = () =>
 	useMutation({
 		mutationFn: async () => {
 			const { items, clearCart } = useCartStore.getState();
-			const { shippingAddress, selectedShippingOptionId, selectedPaymentProviderId } =
-				useCheckoutStore.getState();
+			const {
+				shippingAddress,
+				selectedShippingOptionId,
+				selectedPaymentProviderId,
+			} = useCheckoutStore.getState();
 
 			if (!shippingAddress) {
 				throw new Error("Renseignez une adresse de livraison.");
@@ -77,7 +84,10 @@ export const useCompleteCart = () =>
 			// L'API nomme l'article épuisé et le disponible restant : ce message
 			// est bien plus utile qu'un « erreur » générique.
 			if (error instanceof StoreApiError) {
-				console.error(`[checkout] ${error.code} : ${error.message}`, error.details);
+				console.error(
+					`[checkout] ${error.code} : ${error.message}`,
+					error.details,
+				);
 			}
 		},
 	});

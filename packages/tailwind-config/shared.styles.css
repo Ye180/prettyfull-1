@@ -211,7 +211,7 @@
   | Accordion (Radix) expand/collapse
   |----------------------------------
   | Consommé par AccordionContent (data-[state=open]:animate-accordion-down /
-  | data-[state=closed]:animate-accordion-up) — sans ces deux entrées,
+  | data-[state=closed]:animate-accordion-up) - sans ces deux entrées,
   | Tailwind ne génère aucune classe `animate-accordion-*` et l'accordéon
   | s'ouvre/ferme sans transition.
   */

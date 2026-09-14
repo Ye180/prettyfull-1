@@ -33,7 +33,7 @@ const NavbarResponsive = ({
 	const t = useTranslations("headerResponsive");
 	return createPortal(
 		<div className="fixed inset-0 z-40 flex justify-end">
-			{/* Backdrop — desktop only, mobile stays full-bleed */}
+			{/* Backdrop - desktop only, mobile stays full-bleed */}
 			<button
 				aria-label="Fermer le menu"
 				onClick={close}
@@ -82,7 +82,9 @@ const NavbarResponsive = ({
 							main_category.map((items: Category, index) => (
 								<Link
 									key={index}
-									href={COLLECTION_PATHS.collectionDetail(items.handle as string)}
+									href={COLLECTION_PATHS.collectionDetail(
+										items.handle as string,
+									)}
 									onClick={close}
 									className="font-black text-[1.2rem] tracking-wide text-gray-700 hover:text-black transition-colors"
 								>
@@ -101,7 +103,9 @@ const NavbarResponsive = ({
 						{secondary_category && secondary_category.length > 0 ? (
 							secondary_category.map((items: Category, index: number) => (
 								<Link
-									href={COLLECTION_PATHS.collectionDetail(items.handle as string)}
+									href={COLLECTION_PATHS.collectionDetail(
+										items.handle as string,
+									)}
 									key={index}
 									onClick={close}
 									className="text-[1.4rem] capitalize w-full py-3 px-3 hover:bg-gray-50 rounded-md font-normal text-gray-700 hover:text-black transition-colors"
@@ -114,7 +118,7 @@ const NavbarResponsive = ({
 						)}
 					</div>
 
-					{/* Auth entry points — the only ones on mobile, since the header's
+					{/* Auth entry points - the only ones on mobile, since the header's
 					 * Login/Sign Up buttons are hidden below the sm breakpoint. */}
 					<div className="flex gap-3 border-t border-gray-100 py-4">
 						{profile ? (

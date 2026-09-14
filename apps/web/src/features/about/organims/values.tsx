@@ -3,7 +3,7 @@ import { VALUES } from "../data";
 /**
  * Nos principes, numérotés.
  *
- * Le numéro est décoratif — le titre porte seul le sens, pour qu'un lecteur
+ * Le numéro est décoratif - le titre porte seul le sens, pour qu'un lecteur
  * d'écran ne s'entende pas annoncer « zéro un » avant chaque bloc.
  */
 const Values = () => (
@@ -17,7 +17,10 @@ const Values = () => (
 
 		<div className="grid gap-x-16 gap-y-14 sm:grid-cols-2">
 			{VALUES.map((value) => (
-				<article key={value.number} className="border-t border-neutral-200 pt-8">
+				<article
+					key={value.number}
+					className="border-t border-neutral-200 pt-8"
+				>
 					<span
 						aria-hidden="true"
 						className="mb-5 block font-bebas-neue text-[2.6rem] leading-none tracking-widest text-neutral-400"

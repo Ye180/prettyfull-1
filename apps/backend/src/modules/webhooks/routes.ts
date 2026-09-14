@@ -16,13 +16,13 @@ import type { AppEnv } from "../../middleware/request-context.js";
  *
  * Trois garanties tiennent ce point d'entrée :
  *
- *  - **Signature** — un événement non signé, ou mal signé, est journalisé
+ *  - **Signature** - un événement non signé, ou mal signé, est journalisé
  *    puis ignoré. Sans cela, n'importe qui pourrait marquer une commande
  *    payée par un simple POST.
- *  - **Idempotence** — `(providerKey, externalId)` est unique en base : un
+ *  - **Idempotence** - `(providerKey, externalId)` est unique en base : un
  *    prestataire qui rejoue sa notification ne décrémente pas le stock deux
  *    fois.
- *  - **Montant** — le montant notifié est comparé au total de la commande ;
+ *  - **Montant** - le montant notifié est comparé au total de la commande ;
  *    un écart empêche la confirmation.
  */
 export const webhookRoutes = new Hono<AppEnv>();

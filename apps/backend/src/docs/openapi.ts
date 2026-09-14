@@ -15,7 +15,7 @@ import { env } from "../lib/env.js";
  * Rédigée à la main plutôt que dérivée des schémas Zod : la génération
  * automatique aurait imposé de réécrire chaque route avec `@hono/zod-openapi`,
  * ce qui alourdit le code métier pour un gain documentaire limité. Les
- * énumérations, elles, viennent des contrats — elles ne peuvent donc pas se
+ * énumérations, elles, viennent des contrats - elles ne peuvent donc pas se
  * désynchroniser du modèle.
  */
 
@@ -52,9 +52,9 @@ export const openApiDocument = {
 			"",
 			"## Deux surfaces",
 			"",
-			"- `/api/store/*` — publique, consommée par le storefront. Session cliente facultative.",
-			"- `/api/admin/*` — back-office. Jeton d'un compte `staff` **et** permission vérifiée route par route.",
-			"- `/api/webhooks/*` — notifications des agrégateurs, authentifiées par signature.",
+			"- `/api/store/*` - publique, consommée par le storefront. Session cliente facultative.",
+			"- `/api/admin/*` - back-office. Jeton d'un compte `staff` **et** permission vérifiée route par route.",
+			"- `/api/webhooks/*` - notifications des agrégateurs, authentifiées par signature.",
 			"",
 			"## Authentification",
 			"",

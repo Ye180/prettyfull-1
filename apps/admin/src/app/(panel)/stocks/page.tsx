@@ -12,7 +12,12 @@ import { STOCK_STATUS_LABELS } from "@/lib/format";
 import { useDebounced, useListQuery } from "@/lib/use-list-query";
 import { PageHeader } from "@/components/layout/page-header";
 import { FilterBar, FilterSelect } from "@/components/ui/filters";
-import { DataTable, Pagination, Thumb, type Column } from "@/components/ui/table";
+import {
+	DataTable,
+	Pagination,
+	Thumb,
+	type Column,
+} from "@/components/ui/table";
 import {
 	Badge,
 	Button,
@@ -23,7 +28,7 @@ import {
 } from "@/components/ui/primitives";
 import { AdjustStockDialog } from "@/features/stocks/adjust-dialog";
 
-/** Module « Stocks » — vue consolidée (§4.3). */
+/** Module « Stocks » - vue consolidée (§4.3). */
 
 const STOCK_OPTIONS = [
 	{ value: "in_stock", label: "En stock" },
@@ -52,7 +57,9 @@ const StocksContent = () => {
 	const { data, isLoading } = useQuery({
 		queryKey: ["inventory", params],
 		queryFn: () =>
-			api.get<Paginated<InventoryRow>>(`/api/admin/inventory${toQueryString(params)}`),
+			api.get<Paginated<InventoryRow>>(
+				`/api/admin/inventory${toQueryString(params)}`,
+			),
 	});
 
 	const adjustable = can(PERMISSIONS.inventory.adjust);
@@ -79,7 +86,9 @@ const StocksContent = () => {
 			header: "SKU",
 			hideOnMobile: true,
 			cell: (row) => (
-				<span className="font-mono text-[12px] text-muted">{row.sku ?? "—"}</span>
+				<span className="font-mono text-[12px] text-muted">
+					{row.sku ?? "-"}
+				</span>
 			),
 		},
 		{
@@ -94,7 +103,9 @@ const StocksContent = () => {
 			align: "right",
 			hideOnMobile: true,
 			cell: (row) => (
-				<span className={row.reservedQuantity > 0 ? "text-warning" : "text-subtle"}>
+				<span
+					className={row.reservedQuantity > 0 ? "text-warning" : "text-subtle"}
+				>
 					{row.reservedQuantity}
 				</span>
 			),
@@ -160,7 +171,10 @@ const StocksContent = () => {
 						size="sm"
 						variant={list.filters.lowStockOnly ? "primary" : "secondary"}
 						onClick={() =>
-							list.setFilter("lowStockOnly", list.filters.lowStockOnly ? "" : "true")
+							list.setFilter(
+								"lowStockOnly",
+								list.filters.lowStockOnly ? "" : "true",
+							)
 						}
 					>
 						Alertes uniquement

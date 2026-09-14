@@ -67,7 +67,7 @@ export const SEED_CATEGORIES: SeedCategory[] = [
  *
  * Exclut volontairement `/banner/*.jpg` et `/assets/product_1.jpg` : ce sont
  * des gabarits marketing avec du texte (anglais, parfois une autre marque)
- * incrusté dans l'image elle-même, ou une déclinaison sous licence (NFL) —
+ * incrusté dans l'image elle-même, ou une déclinaison sous licence (NFL) -
  * inutilisables comme photo produit générique.
  */
 const IMAGE_POOL = [

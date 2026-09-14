@@ -18,7 +18,7 @@ const items = [
 ];
 
 /**
- * Chips couleur sélectionnées + bouton "+" pour en ajouter — présentationnel
+ * Chips couleur sélectionnées + bouton "+" pour en ajouter - présentationnel
  * (pas de filtrage réel derrière), juste une sélection réactive côté UI.
  */
 const Colors = () => {
@@ -43,7 +43,10 @@ const Colors = () => {
 						key={item.name}
 						className="inline-flex gap-2 items-center px-3 py-1.5 text-sm rounded-full border border-gray-200"
 					>
-						<span className="w-3 h-3 rounded-full border border-black/10" style={{ backgroundColor: item.hex }} />
+						<span
+							className="w-3 h-3 rounded-full border border-black/10"
+							style={{ backgroundColor: item.hex }}
+						/>
 						{item.fr}
 						<button
 							type="button"

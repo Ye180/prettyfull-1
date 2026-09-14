@@ -236,7 +236,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 						priority={priority}
 					/>
 
-					{/* Cœur wishlist — toujours visible */}
+					{/* Cœur wishlist - toujours visible */}
 					<button
 						type="button"
 						onClick={(e) => e.stopPropagation()}

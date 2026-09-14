@@ -1,6 +1,12 @@
 "use client";
 
-import { SizeSelector, Tabs, TabsContent, TabsList, TabsTrigger } from "@prettyfull/ui";
+import {
+	SizeSelector,
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import { useState } from "react";
 import { Button } from "../../../../../../../packages/ui/src/button";
@@ -9,7 +15,7 @@ import { MinusIcon } from "../../../../../../../packages/ui/src/icons/minus.icon
 import { PlusIcon } from "../../../../../../../packages/ui/src/icons/plus.icon";
 
 /**
- * Guide des tailles — pas de champ backend Bust/Length/Sleeve par produit,
+ * Guide des tailles - pas de champ backend Bust/Length/Sleeve par produit,
  * stub statique unique affiché pour tous les produits (cf. plan Phase 6).
  */
 const SIZE_CHART = [
@@ -77,7 +83,7 @@ export function ProductInfosNew({
 	features,
 	details,
 	shippingInfo = "Livraison offerte dès 50 000 FCFA",
-	returnPolicy = "Retours acceptés sous 14 jours — échange ou avoir",
+	returnPolicy = "Retours acceptés sous 14 jours - échange ou avoir",
 	currency = "USD",
 }: ProductInfosNewProps) {
 	const defaultFeatures = [
@@ -89,7 +95,7 @@ export function ProductInfosNew({
 		{
 			title: "Coupe Ajustée",
 			description:
-				"Silhouette flatteuse et taille fidèle — conçu pour s'adapter naturellement à votre morphologie.",
+				"Silhouette flatteuse et taille fidèle - conçu pour s'adapter naturellement à votre morphologie.",
 		},
 		{
 			title: "Entretien Facile",
@@ -101,7 +107,7 @@ export function ProductInfosNew({
 	const defaultDetails = [
 		"Tissu premium sélectionné pour la durabilité et le confort",
 		"Coupe ajustée et silhouette flatteuse",
-		"Entretien facile — voir étiquette pour les instructions",
+		"Entretien facile - voir étiquette pour les instructions",
 		"Matières responsables et approvisionnement éthique",
 		"Consultez notre guide des tailles pour un fit parfait",
 		"Design exclusif Prettyfull",
@@ -110,7 +116,7 @@ export function ProductInfosNew({
 	const displayFeatures = features || defaultFeatures;
 	const displayDetails = details || defaultDetails;
 
-	// Stepper local — non branché au store panier, la quantité n'est transmise
+	// Stepper local - non branché au store panier, la quantité n'est transmise
 	// qu'au moment du clic sur "Add to Cart" (cf. useAddToCart).
 	const [quantity, setQuantity] = useState(1);
 	const subtotal = price * quantity;
@@ -206,7 +212,9 @@ export function ProductInfosNew({
 								>
 									<span
 										className="block w-7 h-7 rounded-full border border-black/10"
-										style={{ backgroundColor: colorSwatches[color] ?? "#e5e5e5" }}
+										style={{
+											backgroundColor: colorSwatches[color] ?? "#e5e5e5",
+										}}
 									/>
 									<span className="text-sm text-[#080808]">{color}</span>
 								</button>
@@ -237,12 +245,16 @@ export function ProductInfosNew({
 						onClick={() => setQuantity((q) => Math.max(1, q - 1))}
 						disabled={quantity <= 1}
 						className={`flex justify-center items-center w-8 h-8 rounded-full border border-neutral-300 transition ${
-							quantity <= 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-neutral-200"
+							quantity <= 1
+								? "opacity-50 cursor-not-allowed"
+								: "cursor-pointer hover:bg-neutral-200"
 						}`}
 					>
 						<MinusIcon className="w-6 h-6" />
 					</button>
-					<span className="w-6 text-sm font-medium text-center select-none">{quantity}</span>
+					<span className="w-6 text-sm font-medium text-center select-none">
+						{quantity}
+					</span>
 					<button
 						type="button"
 						aria-label="Augmenter la quantité"
@@ -274,7 +286,9 @@ export function ProductInfosNew({
 						isWishlisted ? "bg-black text-white" : ""
 					}`}
 					onClick={onAddToWishlist}
-					aria-label={isWishlisted ? "Retirer de la wishlist" : "Ajouter à la wishlist"}
+					aria-label={
+						isWishlisted ? "Retirer de la wishlist" : "Ajouter à la wishlist"
+					}
 				>
 					<Heart className="w-8 h-8" />
 				</button>
@@ -300,7 +314,7 @@ export function ProductInfosNew({
 				<span>{shippingInfo}</span>
 			</div>
 
-			{/* Warranty — rangée statique (icône + texte encadré), pas de champ backend dédié */}
+			{/* Warranty - rangée statique (icône + texte encadré), pas de champ backend dédié */}
 			<div className="flex gap-3 items-start p-4 rounded-2xl border border-neutral-200">
 				<span className="flex shrink-0 justify-center items-center w-9 h-9 bg-neutral-100 rounded-full">
 					<svg
@@ -344,13 +358,18 @@ export function ProductInfosNew({
 					</span>
 				</div>
 				{description && (
-					<p className="mb-4 text-sm leading-relaxed text-neutral-600">{description}</p>
+					<p className="mb-4 text-sm leading-relaxed text-neutral-600">
+						{description}
+					</p>
 				)}
 
 				{/* Features Grid */}
 				<div className="grid grid-cols-3 gap-3">
 					{displayFeatures.slice(0, 3).map((feature, index) => (
-						<div key={index} className="p-3 rounded-xl border border-neutral-200">
+						<div
+							key={index}
+							className="p-3 rounded-xl border border-neutral-200"
+						>
 							<div className="flex gap-1 items-center mb-1">
 								<svg
 									className="w-4 h-4 text-neutral-600"
@@ -375,11 +394,9 @@ export function ProductInfosNew({
 						</div>
 					))}
 				</div>
-
-
 			</div>
 
-			{/* Product Details — About / Size & Fit / Additional */}
+			{/* Product Details - About / Size & Fit / Additional */}
 			<Tabs defaultValue="about" className="pt-4 border-t border-neutral-200">
 				<TabsList className="justify-start p-0 space-x-2 h-auto bg-transparent">
 					<TabsTrigger
@@ -415,34 +432,53 @@ export function ProductInfosNew({
 				</TabsContent>
 
 				<TabsContent value="size-fit" className="py-4">
-					{/* Guide des tailles — stub statique, pas de champ backend par produit */}
+					{/* Guide des tailles - stub statique, pas de champ backend par produit */}
 					<table className="w-full text-sm border border-collapse border-neutral-200">
 						<thead>
 							<tr className="bg-neutral-50">
-								<th className="p-3 text-left border border-neutral-200">Taille</th>
-								<th className="p-3 text-left border border-neutral-200">Tour de poitrine</th>
-								<th className="p-3 text-left border border-neutral-200">Longueur</th>
-								<th className="p-3 text-left border border-neutral-200">Manche</th>
+								<th className="p-3 text-left border border-neutral-200">
+									Taille
+								</th>
+								<th className="p-3 text-left border border-neutral-200">
+									Tour de poitrine
+								</th>
+								<th className="p-3 text-left border border-neutral-200">
+									Longueur
+								</th>
+								<th className="p-3 text-left border border-neutral-200">
+									Manche
+								</th>
 							</tr>
 						</thead>
 						<tbody>
 							{SIZE_CHART.map((row) => (
 								<tr key={row.size}>
-									<td className="p-3 font-medium border border-neutral-200">{row.size}</td>
-									<td className="p-3 text-neutral-600 border border-neutral-200">{row.bust} cm</td>
-									<td className="p-3 text-neutral-600 border border-neutral-200">{row.length} cm</td>
-									<td className="p-3 text-neutral-600 border border-neutral-200">{row.sleeve} cm</td>
+									<td className="p-3 font-medium border border-neutral-200">
+										{row.size}
+									</td>
+									<td className="p-3 text-neutral-600 border border-neutral-200">
+										{row.bust} cm
+									</td>
+									<td className="p-3 text-neutral-600 border border-neutral-200">
+										{row.length} cm
+									</td>
+									<td className="p-3 text-neutral-600 border border-neutral-200">
+										{row.sleeve} cm
+									</td>
 								</tr>
 							))}
 						</tbody>
 					</table>
 					<p className="mt-2 text-xs text-neutral-400">
-						Guide des tailles indicatif — les mesures peuvent varier légèrement selon le
-						produit.
+						Guide des tailles indicatif - les mesures peuvent varier légèrement
+						selon le produit.
 					</p>
 				</TabsContent>
 
-				<TabsContent value="additional" className="py-4 text-sm text-neutral-600">
+				<TabsContent
+					value="additional"
+					className="py-4 text-sm text-neutral-600"
+				>
 					<ul className="space-y-2">
 						<li className="flex gap-2 items-start">
 							<span className="mt-0.5 text-neutral-400">•</span>

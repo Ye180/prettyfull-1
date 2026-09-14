@@ -59,7 +59,7 @@ export type PermissionModule = keyof PermissionTree;
 export type Permission = {
     [M in PermissionModule]: PermissionTree[M][keyof PermissionTree[M]];
 }[PermissionModule];
-/** Toutes les permissions à plat — sert au seed de la table `permissions`. */
+/** Toutes les permissions à plat - sert au seed de la table `permissions`. */
 export declare const ALL_PERMISSIONS: Permission[];
 /**
  * Permissions attachées à chaque rôle système.

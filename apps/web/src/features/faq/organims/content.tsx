@@ -24,7 +24,7 @@ const Content = () => {
 	} = useFaqFilters();
 
 	return (
-		<div className="w-full bg-white text-gray-900 pb-20">
+		<div className="pb-20 w-full text-gray-900 bg-white">
 			{/* Top Hero Banner */}
 			<PhotoOverlayBanner
 				image="/category/category-principale.jpg"
@@ -38,21 +38,21 @@ const Content = () => {
 
 			{/* Main Content: 2 Columns */}
 			<section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-				<div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+				<div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
 					{/* Left Column: Filter and Search */}
-					<div className="lg:col-span-4 space-y-8">
+					<div className="space-y-8 lg:col-span-4">
 						<div className="space-y-3">
-							<span className="text-xs uppercase tracking-widest font-semibold text-gray-400">
+							<span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
 								Assistance
 							</span>
-							<h2 className="text-3xl sm:text-4xl font-extrabold font-sans tracking-tight text-gray-950">
+							<h2 className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-950">
 								Parcourir les questions
 							</h2>
 						</div>
 
 						{/* Search Input */}
 						<div className="relative w-full">
-							<Search className="absolute top-1/2 left-4 w-4 h-4 -translate-y-1/2 text-gray-400" />
+							<Search className="absolute left-4 top-1/2 w-4 h-4 text-gray-400 -translate-y-1/2" />
 							<input
 								type="search"
 								value={searchQuery}
@@ -64,7 +64,7 @@ const Content = () => {
 
 						{/* Category Pills */}
 						<div className="space-y-2">
-							<p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+							<p className="text-xs font-semibold tracking-wider text-gray-500 uppercase">
 								Catégories
 							</p>
 							<div className="flex flex-wrap gap-2 pt-1">
@@ -90,10 +90,10 @@ const Content = () => {
 												setSelectedCategory(isActive ? null : category)
 											}
 											className={cn(
-												"rounded-full border px-4 py-2 text-xs sm:text-sm font-semibold transition-all cursor-pointer",
+												"px-4 py-2 text-xs font-semibold rounded-full border transition-all cursor-pointer sm:text-sm",
 												isActive
-													? "bg-black text-white border-black shadow-xs"
-													: "border-gray-200 bg-white text-gray-700 hover:border-gray-300",
+													? "text-white bg-black border-black shadow-xs"
+													: "text-gray-700 bg-white border-gray-200 hover:border-gray-300",
 											)}
 										>
 											{category}
@@ -105,7 +105,7 @@ const Content = () => {
 					</div>
 
 					{/* Right Column: Accordion Items */}
-					<div className="lg:col-span-8 space-y-4">
+					<div className="space-y-4 lg:col-span-8">
 						<Accordion
 							type="single"
 							collapsible
@@ -118,19 +118,19 @@ const Content = () => {
 									value={item.title}
 									className="px-6 py-1 rounded-2xl border border-gray-200 bg-[#F9FAFB] transition-all duration-200 data-[state=open]:bg-black data-[state=open]:border-black data-[state=open]:text-white shadow-xs"
 								>
-									<AccordionTrigger className="text-base sm:text-lg font-bold font-sans tracking-tight text-left hover:no-underline py-4">
+									<AccordionTrigger className="py-4 font-sans text-base font-bold tracking-tight text-left sm:text-lg hover:no-underline">
 										{item.title}
 									</AccordionTrigger>
-									<AccordionContent className="text-sm sm:text-base leading-relaxed opacity-90 pb-5 font-normal">
+									<AccordionContent className="pb-5 text-sm font-normal leading-relaxed opacity-90 sm:text-base">
 										{item.description}
 									</AccordionContent>
 								</AccordionItem>
 							))}
 
 							{visibleItems.length === 0 && (
-								<div className="p-12 text-center rounded-2xl bg-gray-50 border border-gray-200 text-gray-500">
-									Aucun résultat pour «&nbsp;{searchQuery}&nbsp;». Essayez une autre
-									recherche ou sélectionnez une catégorie.
+								<div className="p-12 text-center text-gray-500 bg-gray-50 rounded-2xl border border-gray-200">
+									Aucun résultat pour «&nbsp;{searchQuery}&nbsp;». Essayez une
+									autre recherche ou sélectionnez une catégorie.
 								</div>
 							)}
 						</Accordion>
@@ -152,7 +152,7 @@ const Content = () => {
 
 			{/* Bottom Stratosphere Banner */}
 			<PhotoOverlayBanner
-				image="/home/cover-box-7.jpg"
+				image="/home/sublime-1.jpg"
 				title="Sublimez votre style"
 				subtitle="Prêt à passer au niveau supérieur ? Découvrez nos pièces phares et osez de nouvelles associations."
 				cta={{ label: "Découvrir la boutique", href: "/collections" }}

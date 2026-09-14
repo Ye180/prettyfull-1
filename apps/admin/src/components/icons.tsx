@@ -7,7 +7,7 @@ import type { SVGProps } from "react";
  * n'en utilise qu'une vingtaine, et les embarquer en SVG inline évite une
  * dépendance et le chargement d'un catalogue entier pour quelques traits.
  *
- * Toutes partagent la même grille 24×24 et un trait de 1,75 — c'est ce qui
+ * Toutes partagent la même grille 24×24 et un trait de 1,75 - c'est ce qui
  * les fait lire comme un ensemble cohérent.
  */
 type IconProps = SVGProps<SVGSVGElement>;

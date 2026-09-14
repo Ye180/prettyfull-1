@@ -5,13 +5,13 @@ const DescriptionFooter = () => {
 	return (
 		<div className="flex flex-col space-y-6 text-[1.4rem] lg:col-span-1">
 			{/* Socials - circular outline buttons */}
-			<div className="flex items-center gap-3">
+			<div className="flex gap-3 items-center">
 				{SOCIALS_DATA_FOOTER.map((item, index) => (
 					<Link
 						key={index}
 						href={item.href}
 						aria-label={item.label}
-						className="flex items-center justify-center w-10 h-10 rounded-full border border-white/30 text-white hover:border-white hover:bg-white hover:text-black transition-all"
+						className="flex justify-center items-center w-10 h-10 text-white rounded-full transition-all border-white/30 hover:border-white hover:bg-white hover:text-black"
 					>
 						<item.icon size={16} />
 					</Link>

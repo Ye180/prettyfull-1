@@ -55,7 +55,7 @@ jobs:
 
       - name: Skip
         if: matrix.changed != 'true'
-        run: echo "No change in apps/${{ matrix.app }} — skipping."
+        run: echo "No change in apps/${{ matrix.app }} - skipping."
 
       # Chaque app doit fournir son propre apps/<app>/Dockerfile.
       - name: Set up Docker Buildx

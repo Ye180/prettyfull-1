@@ -49,7 +49,7 @@ export declare const inventoryRowSchema: z.ZodObject<{
 }, z.core.$strip>;
 export type InventoryRow = z.infer<typeof inventoryRowSchema>;
 /**
- * Ajustement manuel. Le motif est obligatoire — c'est le critère
+ * Ajustement manuel. Le motif est obligatoire - c'est le critère
  * d'acceptation §7 (« historisé avec motif et auteur »).
  */
 export declare const stockAdjustmentSchema: z.ZodObject<{

@@ -149,7 +149,7 @@ const ModeCollection = ({ fourth }: ModeCollectionProps) => {
 	const ctaLabel = t("ctaButton");
 	const imageUrl = getMediaUrl(firstCategory?.product_category_image?.[0]?.url);
 
-	// La section reste affichée même sans bannière catégorie configurée — ses
+	// La section reste affichée même sans bannière catégorie configurée - ses
 	// vrais produits n'ont aucune raison de disparaître pour ça. Seule
 	// l'image retombe sur un repli neutre (cf. CategoryImage).
 	return (

@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
 	transpilePackages: ["@prettyfull/ui", "@prettyfull/utils"],
 
 	/**
-	 * Le panel affiche les visuels via `<img>` plutôt que `next/image` — les
+	 * Le panel affiche les visuels via `<img>` plutôt que `next/image` - les
 	 * URL sont saisies ou téléversées par l'administrateur et inconnues à la
 	 * compilation. Le motif est déclaré malgré tout pour qu'un futur passage à
 	 * `next/image` n'échoue pas silencieusement.

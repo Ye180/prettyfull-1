@@ -169,7 +169,7 @@ export const addresses = pgTable(
  *
  * `resourceId` est en texte : il accueille aussi bien un UUID qu'une clé
  * fonctionnelle (`wave`, `store_settings`). `userId` passe à NULL si le
- * compte est supprimé — la trace, elle, doit survivre.
+ * compte est supprimé - la trace, elle, doit survivre.
  */
 export const auditLogs = pgTable(
 	"audit_logs",

@@ -7,7 +7,7 @@ import { isProduction } from "../lib/env.js";
 
 /**
  * Regroupe les erreurs Zod par chemin de champ.
- * `{ "shippingAddress.city": ["Requis"] }` — directement exploitable par les
+ * `{ "shippingAddress.city": ["Requis"] }` - directement exploitable par les
  * formulaires du back-office.
  */
 const formatZodIssues = (error: ZodError): Record<string, string[]> => {

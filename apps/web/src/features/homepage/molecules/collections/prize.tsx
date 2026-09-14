@@ -5,7 +5,7 @@ interface PrizeProps {
 }
 
 /**
- * Section "Prize" (prix) — le seul bloc de la sidebar réellement câblé sur
+ * Section "Prize" (prix) - le seul bloc de la sidebar réellement câblé sur
  * `useCollectionFilters` (minPrice/maxPrice), le reste reste présentationnel.
  */
 const Prize = ({ minPrice, maxPrice, onChange }: PrizeProps) => {
@@ -15,21 +15,29 @@ const Prize = ({ minPrice, maxPrice, onChange }: PrizeProps) => {
 	return (
 		<div className="flex gap-3">
 			<div className="relative flex-1">
-				<span className="absolute left-4 top-1/2 text-sm text-gray-400 -translate-y-1/2">$</span>
+				<span className="absolute left-4 top-1/2 text-sm text-gray-400 -translate-y-1/2">
+					$
+				</span>
 				<input
 					type="number"
 					defaultValue={minPrice ?? ""}
-					onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null, maxPrice)}
+					onChange={(e) =>
+						onChange(e.target.value ? Number(e.target.value) : null, maxPrice)
+					}
 					placeholder="Minimum"
 					className={inputClass}
 				/>
 			</div>
 			<div className="relative flex-1">
-				<span className="absolute left-4 top-1/2 text-sm text-gray-400 -translate-y-1/2">$</span>
+				<span className="absolute left-4 top-1/2 text-sm text-gray-400 -translate-y-1/2">
+					$
+				</span>
 				<input
 					type="number"
 					defaultValue={maxPrice ?? ""}
-					onChange={(e) => onChange(minPrice, e.target.value ? Number(e.target.value) : null)}
+					onChange={(e) =>
+						onChange(minPrice, e.target.value ? Number(e.target.value) : null)
+					}
 					placeholder="Maximum"
 					className={inputClass}
 				/>

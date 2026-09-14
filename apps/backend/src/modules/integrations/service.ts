@@ -266,7 +266,7 @@ export const testPaymentProvider = async (key: string) => {
 	});
 };
 
-/** Moyens de paiement proposés au storefront — sans aucune clé. */
+/** Moyens de paiement proposés au storefront - sans aucune clé. */
 export const listAvailablePaymentOptions = async (): Promise<PaymentOption[]> => {
 	const rows = await db
 		.select({

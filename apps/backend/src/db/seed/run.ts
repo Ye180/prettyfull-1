@@ -395,7 +395,7 @@ const seedCatalog = async (adminId: string) => {
 				weightGrams: 400,
 				tags: seed.tags,
 				publishedAt: new Date(),
-				metaTitle: `${seed.name} — PrettyFull`,
+				metaTitle: `${seed.name} - PrettyFull`,
 				metaDescription: seed.description,
 				isFeatured: seed.isFeatured ?? false,
 				lowStockThreshold: 5,
@@ -533,7 +533,7 @@ const seedVariants = async (
 			variant.images.map((url, position) => ({
 				variantId,
 				url,
-				alt: `${seed.name} — ${variant.name}`,
+				alt: `${seed.name} - ${variant.name}`,
 				position,
 			})),
 		);

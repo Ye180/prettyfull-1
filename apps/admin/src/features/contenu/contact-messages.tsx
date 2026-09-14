@@ -59,8 +59,16 @@ export const ContactMessages = () => {
 	});
 
 	const setStatus = useMutation({
-		mutationFn: ({ id, status }: { id: string; status: ContactMessage["status"] }) =>
-			api.patch<ContactMessage>(`/api/admin/contact-messages/${id}`, { status }),
+		mutationFn: ({
+			id,
+			status,
+		}: {
+			id: string;
+			status: ContactMessage["status"];
+		}) =>
+			api.patch<ContactMessage>(`/api/admin/contact-messages/${id}`, {
+				status,
+			}),
 		onSuccess: (updated) => {
 			void queryClient.invalidateQueries({ queryKey: ["contact-messages"] });
 			setOpened((current) => (current?.id === updated.id ? updated : current));
@@ -123,7 +131,9 @@ export const ContactMessages = () => {
 										<span className="flex items-center gap-2">
 											<span
 												className={`truncate text-[13px] text-ink ${
-													message.status === "new" ? "font-semibold" : "font-medium"
+													message.status === "new"
+														? "font-semibold"
+														: "font-medium"
 												}`}
 											>
 												{message.name}
@@ -133,7 +143,7 @@ export const ContactMessages = () => {
 											</span>
 										</span>
 										<span className="mt-0.5 block truncate text-[12px] text-muted">
-											{message.subject ? `${message.subject} — ` : ""}
+											{message.subject ? `${message.subject} - ` : ""}
 											{message.message}
 										</span>
 									</span>
@@ -158,7 +168,11 @@ export const ContactMessages = () => {
 				open={opened !== null}
 				onClose={() => setOpened(null)}
 				title={opened?.subject || "Message"}
-				description={opened ? `${opened.name} · ${formatDateTime(opened.createdAt)}` : undefined}
+				description={
+					opened
+						? `${opened.name} · ${formatDateTime(opened.createdAt)}`
+						: undefined
+				}
 				size="md"
 				footer={
 					opened && (
@@ -177,7 +191,9 @@ export const ContactMessages = () => {
 
 							{writable && opened.status !== "archived" && (
 								<Button
-									onClick={() => setStatus.mutate({ id: opened.id, status: "archived" })}
+									onClick={() =>
+										setStatus.mutate({ id: opened.id, status: "archived" })
+									}
 									loading={setStatus.isPending}
 								>
 									Archiver
@@ -196,7 +212,10 @@ export const ContactMessages = () => {
 						<dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-[13px]">
 							<dt className="text-subtle">E-mail</dt>
 							<dd>
-								<a href={`mailto:${opened.email}`} className="text-ink underline">
+								<a
+									href={`mailto:${opened.email}`}
+									className="text-ink underline"
+								>
 									{opened.email}
 								</a>
 							</dd>

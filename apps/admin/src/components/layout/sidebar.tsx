@@ -23,8 +23,8 @@ import {
  * Navigation principale : les neuf modules du cahier des charges (§4).
  *
  * Chaque entrée déclare la permission qui la gouverne, et n'apparaît que si
- * le compte la détient. Ce n'est pas une mesure de sécurité — l'API refuse de
- * toute façon — mais un choix d'ergonomie : montrer à un gestionnaire
+ * le compte la détient. Ce n'est pas une mesure de sécurité - l'API refuse de
+ * toute façon - mais un choix d'ergonomie : montrer à un gestionnaire
  * catalogue un menu « Agrégateurs » qui renverra 403 n'aide personne.
  */
 interface NavItem {
@@ -37,15 +37,61 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-	{ href: "/", label: "Tableau de bord", icon: IconDashboard, permission: PERMISSIONS.dashboard.read, exact: true },
-	{ href: "/catalogue", label: "Catalogue", icon: IconCatalog, permission: PERMISSIONS.catalog.read },
-	{ href: "/stocks", label: "Stocks", icon: IconStock, permission: PERMISSIONS.inventory.read },
-	{ href: "/commandes", label: "Commandes", icon: IconOrders, permission: PERMISSIONS.orders.read },
-	{ href: "/clients", label: "Clients", icon: IconCustomers, permission: PERMISSIONS.customers.read },
-	{ href: "/agregateurs", label: "Agrégateurs", icon: IconPlug, permission: PERMISSIONS.integrations.read },
-	{ href: "/contenu", label: "Contenu", icon: IconContent, permission: PERMISSIONS.content.read },
-	{ href: "/utilisateurs", label: "Utilisateurs & rôles", icon: IconShield, permission: PERMISSIONS.staff.read },
-	{ href: "/parametres", label: "Paramètres", icon: IconSettings, permission: PERMISSIONS.settings.read },
+	{
+		href: "/",
+		label: "Tableau de bord",
+		icon: IconDashboard,
+		permission: PERMISSIONS.dashboard.read,
+		exact: true,
+	},
+	{
+		href: "/catalogue",
+		label: "Catalogue",
+		icon: IconCatalog,
+		permission: PERMISSIONS.catalog.read,
+	},
+	{
+		href: "/stocks",
+		label: "Stocks",
+		icon: IconStock,
+		permission: PERMISSIONS.inventory.read,
+	},
+	{
+		href: "/commandes",
+		label: "Commandes",
+		icon: IconOrders,
+		permission: PERMISSIONS.orders.read,
+	},
+	{
+		href: "/clients",
+		label: "Clients",
+		icon: IconCustomers,
+		permission: PERMISSIONS.customers.read,
+	},
+	{
+		href: "/agregateurs",
+		label: "Agrégateurs",
+		icon: IconPlug,
+		permission: PERMISSIONS.integrations.read,
+	},
+	{
+		href: "/contenu",
+		label: "Contenu",
+		icon: IconContent,
+		permission: PERMISSIONS.content.read,
+	},
+	{
+		href: "/utilisateurs",
+		label: "Utilisateurs & rôles",
+		icon: IconShield,
+		permission: PERMISSIONS.staff.read,
+	},
+	{
+		href: "/parametres",
+		label: "Paramètres",
+		icon: IconSettings,
+		permission: PERMISSIONS.settings.read,
+	},
 ];
 
 export const Sidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
@@ -61,7 +107,9 @@ export const Sidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
 				<span className="flex size-7 items-center justify-center rounded-md bg-accent text-[13px] font-bold text-accent-ink">
 					P
 				</span>
-				<span className="font-semibold tracking-tight text-ink">PrettyFull</span>
+				<span className="font-semibold tracking-tight text-ink">
+					PrettyFull
+				</span>
 			</div>
 
 			<ul className="flex-1 space-y-0.5 overflow-y-auto p-2 no-scrollbar">
@@ -93,7 +141,7 @@ export const Sidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
 			<div className="border-t border-line p-2">
 				<div className="px-2.5 py-1.5">
 					<p className="truncate text-[13px] font-medium text-ink">
-						{user ? `${user.firstName} ${user.lastName}` : "—"}
+						{user ? `${user.firstName} ${user.lastName}` : "-"}
 					</p>
 					<p className="truncate text-[12px] text-subtle">{user?.email}</p>
 				</div>

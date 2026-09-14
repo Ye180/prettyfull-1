@@ -8,7 +8,7 @@ import { SUBJECTS } from "../data";
 /**
  * Formulaire de contact.
  *
- * Les messages sont enregistrés côté API et relevés depuis le back-office —
+ * Les messages sont enregistrés côté API et relevés depuis le back-office -
  * un formulaire qui perdrait les envois serait pire que pas de formulaire.
  *
  * Les erreurs de validation sont replacées sous leur champ : « Adresse e-mail
@@ -71,7 +71,9 @@ const ContactForm = () => {
 		// d'attendre un nouvel envoi.
 		if (errors[key]) {
 			setErrors((current) =>
-				Object.fromEntries(Object.entries(current).filter(([field]) => field !== key)),
+				Object.fromEntries(
+					Object.entries(current).filter(([field]) => field !== key),
+				),
 			);
 		}
 	};
@@ -132,7 +134,10 @@ const ContactForm = () => {
 			 * bien de l'affichage que du parcours clavier et des lecteurs
 			 * d'écran : seul un automate le remplit.
 			 */}
-			<div className="absolute left-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+			<div
+				className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
+				aria-hidden="true"
+			>
 				<label htmlFor="website">Ne pas remplir</label>
 				<input
 					id="website"
@@ -165,7 +170,9 @@ const ContactForm = () => {
 						className={FIELD_CLASS}
 					/>
 					{error("name") && (
-						<p className="mt-2 text-[1.3rem] text-red-600 font-manrope">{error("name")}</p>
+						<p className="mt-2 text-[1.3rem] text-red-600 font-manrope">
+							{error("name")}
+						</p>
 					)}
 				</div>
 
@@ -188,7 +195,9 @@ const ContactForm = () => {
 						className={FIELD_CLASS}
 					/>
 					{error("email") && (
-						<p className="mt-2 text-[1.3rem] text-red-600 font-manrope">{error("email")}</p>
+						<p className="mt-2 text-[1.3rem] text-red-600 font-manrope">
+							{error("email")}
+						</p>
 					)}
 				</div>
 
@@ -251,7 +260,9 @@ const ContactForm = () => {
 					className={`${FIELD_CLASS} resize-y`}
 				/>
 				{error("message") && (
-					<p className="mt-2 text-[1.3rem] text-red-600 font-manrope">{error("message")}</p>
+					<p className="mt-2 text-[1.3rem] text-red-600 font-manrope">
+						{error("message")}
+					</p>
 				)}
 			</div>
 

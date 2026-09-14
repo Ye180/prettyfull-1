@@ -27,7 +27,7 @@ const CheckoutView = () => {
 	}, [items.length, router]);
 
 	// ponytail: le panier serveur est invité (cookie), créé à la volée par le
-	// backend au premier appel — il n'existe pas d'id à threader avant ça.
+	// backend au premier appel - il n'existe pas d'id à threader avant ça.
 	// Ce sentinel ne sert qu'à activer les étapes une fois le panier non vide.
 	const cartId = items.length > 0 ? "guest-cart" : null;
 
@@ -40,8 +40,20 @@ const CheckoutView = () => {
 					Checkout
 				</h1>
 
-				<div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-					<div className="space-y-10 lg:col-span-7">
+				{/*
+				 * `sm:` déclenche ici la bascule 2 colonnes, pas `lg:` : les
+				 * breakpoints Tailwind de ce projet sont définis en `rem` mis à
+				 * l'échelle du `html { font-size: 62.5% }` de la page, mais les
+				 * media queries résolvent toujours `rem` contre le 16px par
+				 * défaut du navigateur - jamais contre ce override. Résultat,
+				 * chaque seuil réel est ×1,6 plus large que son nom ne le
+				 * suggère (`lg` ne s'active qu'au-delà de ~1638px). `sm` est
+				 * celui qui tombe, par ce même effet, sur le seuil réellement
+				 * voulu ici (~1024px) - même contournement déjà utilisé par
+				 * `cart-content.tsx`.
+				 */}
+				<div className="grid grid-cols-1 sm:grid-cols-12 gap-12 sm:gap-16">
+					<div className="space-y-10 sm:col-span-7">
 						<AddressStep cartId={cartId} onComplete={() => goToNextStep()} />
 						<DeliveryStep cartId={cartId} onComplete={() => goToNextStep()} />
 						<PaymentStep
@@ -61,7 +73,7 @@ const CheckoutView = () => {
 						/>
 					</div>
 
-					<div className="lg:col-span-5">
+					<div className="sm:col-span-5">
 						<div className="sticky top-24 p-6 sm:p-8 bg-[#F9FAFB] rounded-3xl border border-gray-100 shadow-sm">
 							<CheckoutSummary currency={currency} />
 						</div>

@@ -4,7 +4,7 @@
  * Séparé de `shared/lib/client.ts` (axios, jeton en `localStorage`) parce que
  * les deux politiques de session diffèrent : ici, le jeton d'accès vit en
  * mémoire et la persistance passe par un cookie `httpOnly` inaccessible au
- * JavaScript — un XSS ne peut donc pas voler la session d'une cliente.
+ * JavaScript - un XSS ne peut donc pas voler la session d'une cliente.
  */
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:7777";

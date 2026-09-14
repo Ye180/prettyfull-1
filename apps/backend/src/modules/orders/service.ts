@@ -27,10 +27,10 @@ import { getStoreSettings } from "../settings/service.js";
  *
  * Deux invariants structurent ce module :
  *
- *  1. **Instantané** — chaque ligne fige le libellé, le SKU, la vignette et le
+ *  1. **Instantané** - chaque ligne fige le libellé, le SKU, la vignette et le
  *     prix au moment de l'achat. Modifier ou archiver un produit ensuite ne
  *     réécrit jamais une commande passée.
- *  2. **Stock** — le passage en commande *réserve* (§2.3), il ne décrémente
+ *  2. **Stock** - le passage en commande *réserve* (§2.3), il ne décrémente
  *     pas. La décrémentation ferme intervient à la confirmation de paiement,
  *     et l'annulation ou l'expiration relâchent la réservation.
  */
@@ -199,7 +199,7 @@ export const listOrders = async (query: OrderListQuery): Promise<Paginated<Order
 	if (query.q) {
 		const numeric = Number(query.q.replace(/\D/g, ""));
 		// La recherche accepte indifféremment un numéro de commande, un e-mail
-		// ou un numéro de suivi — c'est ce que tape un agent au téléphone.
+		// ou un numéro de suivi - c'est ce que tape un agent au téléphone.
 		const search = or(
 			ilike(t.orders.email, `%${query.q}%`),
 			ilike(t.orders.trackingNumber, `%${query.q}%`),
@@ -296,8 +296,8 @@ export interface CheckoutResult {
 /**
  * Jeton de consultation d'une commande passée en invité.
  *
- * Une commande sans compte doit rester consultable par son auteur — page de
- * confirmation, retour depuis la page de paiement — mais par personne d'autre.
+ * Une commande sans compte doit rester consultable par son auteur - page de
+ * confirmation, retour depuis la page de paiement - mais par personne d'autre.
  * Une signature HMAC de l'identifiant répond aux deux : impossible à deviner,
  * et sans état à stocker ni à faire expirer.
  */
@@ -323,7 +323,7 @@ export const getOrderByToken = async (id: string, token: string): Promise<Order>
  *
  * Déroulé, tout en une transaction sauf l'appel au prestataire :
  *   1. relecture des prix au catalogue (le panier ne fige rien) ;
- *   2. réservation du stock, sous verrou — c'est ici que la survente est
+ *   2. réservation du stock, sous verrou - c'est ici que la survente est
  *      empêchée, avant tout appel externe ;
  *   3. création de la commande et de ses lignes en instantané ;
  *   4. appel du prestataire, hors transaction : un timeout réseau ne doit pas
@@ -423,7 +423,7 @@ export const checkout = async (
 				quantity: line.quantity,
 				label: [line.productName, line.variantName, line.sizeLabel]
 					.filter(Boolean)
-					.join(" — "),
+					.join(" - "),
 			})),
 			{ orderId: id, cartId, expiresAt },
 		);
@@ -501,7 +501,7 @@ export const checkout = async (
  * Confirme le paiement : consomme les réservations, décrémente fermement le
  * stock, passe la commande en `paid`.
  *
- * Idempotent : une commande déjà payée est ignorée sans erreur — un
+ * Idempotent : une commande déjà payée est ignorée sans erreur - un
  * prestataire qui rejoue sa notification ne doit pas décrémenter deux fois.
  */
 export const markOrderPaid = async (

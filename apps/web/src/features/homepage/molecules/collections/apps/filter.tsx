@@ -16,15 +16,24 @@ interface FilterProps {
 	onClear?: () => void;
 	minPrice?: number | null;
 	maxPrice?: number | null;
-	/** Seul filtre réellement câblé sur `useCollectionFilters` — appliqué au clic sur "Apply". */
+	/** Seul filtre réellement câblé sur `useCollectionFilters` - appliqué au clic sur "Apply". */
 	onPriceChange?: (minPrice: number | null, maxPrice: number | null) => void;
 }
 
-const Filter = ({ onApply, onClear, minPrice = null, maxPrice = null, onPriceChange }: FilterProps) => {
+const Filter = ({
+	onApply,
+	onClear,
+	minPrice = null,
+	maxPrice = null,
+	onPriceChange,
+}: FilterProps) => {
 	const t = useTranslations("CollectionPage.filters");
 
 	// Draft local pour le prix : appliqué seulement au clic sur "Apply".
-	const [priceDraft, setPriceDraft] = useState<{ min: number | null; max: number | null }>({
+	const [priceDraft, setPriceDraft] = useState<{
+		min: number | null;
+		max: number | null;
+	}>({
 		min: minPrice,
 		max: maxPrice,
 	});

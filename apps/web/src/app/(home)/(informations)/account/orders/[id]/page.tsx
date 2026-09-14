@@ -149,12 +149,7 @@ const CopyIcon = ({ className }: { className?: string }) => (
 // ─── Status Mapping ───────────────────────────────────────────────────────────
 
 type OrderStatus =
-	| "pending"
-	| "processing"
-	| "shipped"
-	| "delivered"
-	| "refunded"
-	| "cancelled";
+	"pending" | "processing" | "shipped" | "delivered" | "refunded" | "cancelled";
 
 const statusConfig: Record<
 	OrderStatus,
@@ -230,7 +225,7 @@ const mapPaymentStatus = (status: string): string => {
 		case "canceled":
 			return "Annulé";
 		default:
-			return status || "—";
+			return status || "-";
 	}
 };
 
@@ -322,7 +317,9 @@ export default function OrderDetailPage() {
 		setCancelError(null);
 		const result = await cancelOrder(orderId);
 		if (result.success) {
-			queryClient.invalidateQueries({ queryKey: ["customer-order-detail", orderId] });
+			queryClient.invalidateQueries({
+				queryKey: ["customer-order-detail", orderId],
+			});
 			setShowCancelConfirm(false);
 		} else {
 			setCancelError(result.error || "Une erreur est survenue");
@@ -334,7 +331,7 @@ export default function OrderDetailPage() {
 
 	if (isLoading) {
 		return (
-		<div className="space-y-8">
+			<div className="space-y-8">
 				<Skeleton className="w-40 h-8" />
 				<Skeleton className="w-full h-16" />
 				<div className="flex gap-4">
@@ -385,13 +382,16 @@ export default function OrderDetailPage() {
 
 	const orderData = order as any;
 	const fulfillmentStatus = mapFulfillmentStatus(orderData.status || "pending");
-	const paymentStatus = orderData.status === "canceled" ? "canceled" : "captured";
+	const paymentStatus =
+		orderData.status === "canceled" ? "canceled" : "captured";
 	const isRefunded = false;
 	const isCancellable =
 		fulfillmentStatus === "processing" &&
 		!isRefunded &&
 		paymentStatus !== "canceled";
-	const effectiveStatus: OrderStatus = isRefunded ? "refunded" : fulfillmentStatus;
+	const effectiveStatus: OrderStatus = isRefunded
+		? "refunded"
+		: fulfillmentStatus;
 	const status = statusConfig[effectiveStatus];
 	const paymentLabel = mapPaymentStatus(paymentStatus);
 
@@ -432,10 +432,17 @@ export default function OrderDetailPage() {
 			{showCancelConfirm && (
 				<div className="flex fixed inset-0 z-50 justify-center items-center backdrop-blur-sm bg-black/40">
 					<div className="p-6 mx-4 space-y-4 w-full max-w-sm bg-white rounded-2xl shadow-xl">
-						<h3 className="text-lg font-semibold text-gray-900">Annuler cette commande ?</h3>
-						<p className="text-sm text-gray-500">Cette action est irréversible. Une fois annulée, la commande ne pourra pas être réactivée.</p>
+						<h3 className="text-lg font-semibold text-gray-900">
+							Annuler cette commande ?
+						</h3>
+						<p className="text-sm text-gray-500">
+							Cette action est irréversible. Une fois annulée, la commande ne
+							pourra pas être réactivée.
+						</p>
 						{cancelError && (
-							<p className="px-3 py-2 text-sm text-red-600 bg-red-50 rounded-lg">{cancelError}</p>
+							<p className="px-3 py-2 text-sm text-red-600 bg-red-50 rounded-lg">
+								{cancelError}
+							</p>
 						)}
 						<div className="flex gap-3 justify-end pt-2">
 							<button
@@ -497,10 +504,25 @@ export default function OrderDetailPage() {
 						</button>
 						{isCancellable && (
 							<button
-								onClick={() => { setShowCancelConfirm(true); setCancelError(null); }}
+								onClick={() => {
+									setShowCancelConfirm(true);
+									setCancelError(null);
+								}}
 								className="flex gap-2 items-center self-start px-4 py-2 text-xs font-medium text-red-600 bg-red-50 rounded-lg border border-red-200 transition-all hover:bg-red-100 cursor-pointer"
 							>
-								<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+								<svg
+									className="w-3.5 h-3.5"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M6 18L18 6M6 6l12 12"
+									/>
+								</svg>
 								Annuler la commande
 							</button>
 						)}
@@ -518,11 +540,25 @@ export default function OrderDetailPage() {
 			{isRefunded && (
 				<div className="flex gap-3 items-center p-4 bg-purple-50 rounded-xl border border-purple-200">
 					<div className="flex justify-center items-center w-10 h-10 bg-purple-100 rounded-full shrink-0">
-						<svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+						<svg
+							className="w-5 h-5 text-purple-600"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+							/>
+						</svg>
 					</div>
 					<div>
 						<p className="font-semibold text-purple-800">Commande remboursée</p>
-						<p className="text-sm text-purple-600">Cette commande a été remboursée.</p>
+						<p className="text-sm text-purple-600">
+							Cette commande a été remboursée.
+						</p>
 					</div>
 				</div>
 			)}

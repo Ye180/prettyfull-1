@@ -16,13 +16,16 @@ import {
 } from "../../schemas/register.schema";
 
 interface RegisterFormProps {
-	/** Called instead of the default redirect on success — used by the quick-auth modal to close itself. */
+	/** Called instead of the default redirect on success - used by the quick-auth modal to close itself. */
 	onSuccess?: () => void;
-	/** Renders "Login" as a button instead of a Link — used by the quick-auth modal to switch mode in place. */
+	/** Renders "Login" as a button instead of a Link - used by the quick-auth modal to switch mode in place. */
 	onSwitchMode?: () => void;
 }
 
-export function RegisterForm({ onSuccess, onSwitchMode }: RegisterFormProps = {}) {
+export function RegisterForm({
+	onSuccess,
+	onSwitchMode,
+}: RegisterFormProps = {}) {
 	const router = useRouter();
 
 	const {
@@ -119,7 +122,11 @@ export function RegisterForm({ onSuccess, onSwitchMode }: RegisterFormProps = {}
 					settings={{ isColumn: true, align: "center", spacing: "gap-10" }}
 					className="mt-[5.2rem]"
 				>
-					<Button type="submit" isLoading={registerMutation.isPending} fullWidth>
+					<Button
+						type="submit"
+						isLoading={registerMutation.isPending}
+						fullWidth
+					>
 						Créer un compte
 					</Button>
 					<p className="font-medium text-grey">

@@ -68,7 +68,7 @@ export const formatNumber = (value: number): string =>
 	new Intl.NumberFormat("fr-FR").format(value);
 
 export const formatPercent = (value: number | null): string =>
-	value === null ? "—" : `${value > 0 ? "+" : ""}${value.toFixed(1)} %`;
+	value === null ? "-" : `${value > 0 ? "+" : ""}${value.toFixed(1)} %`;
 
 // --- Libellés métier -------------------------------------------------------
 
@@ -119,9 +119,9 @@ export const CONTENT_STATUS_LABELS: Record<string, string> = {
 };
 
 export const BANNER_PLACEMENT_LABELS: Record<string, string> = {
-	home_hero: "Accueil — bandeau principal",
-	home_secondary: "Accueil — bandeau secondaire",
-	home_promo: "Accueil — promotion",
+	home_hero: "Accueil - bandeau principal",
+	home_secondary: "Accueil - bandeau secondaire",
+	home_promo: "Accueil - promotion",
 	collection_top: "Haut de collection",
 	sidebar: "Colonne latérale",
 };

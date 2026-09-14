@@ -18,7 +18,7 @@ export const STORY = {
 	paragraphs: [
 		"Nous avons commencé par un constat simple : entre la fast fashion qui se déforme au troisième lavage et le luxe inaccessible, il ne restait pas grand-chose pour une femme qui veut s'habiller bien sans y passer ses journées.",
 		"Alors nous avons pris le problème par le bout du tissu. Chaque pièce est essayée, portée, lavée avant d'entrer au catalogue. Celles qui ne passent pas ce test n'y entrent jamais.",
-		"Aujourd'hui, PrettyFull livre depuis Abidjan dans toute l'Afrique de l'Ouest — et l'exigence n'a pas bougé.",
+		"Aujourd'hui, PrettyFull livre depuis Abidjan dans toute l'Afrique de l'Ouest - et l'exigence n'a pas bougé.",
 	],
 } as const;
 

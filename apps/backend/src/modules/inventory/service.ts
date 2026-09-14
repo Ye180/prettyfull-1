@@ -20,9 +20,9 @@ import { paginate, toSqlPagination } from "../../lib/response.js";
  * sur `inventory_items` ailleurs dans le code. C'est ce qui garantit les deux
  * invariants du cahier des charges :
  *
- *  1. **Traçabilité** — chaque variation de quantité produit une ligne dans
+ *  1. **Traçabilité** - chaque variation de quantité produit une ligne dans
  *     `stock_movements`, avec motif et auteur (§2.3, critère §7).
- *  2. **Pas de survente** — chaque lecture-écriture est sérialisée par un
+ *  2. **Pas de survente** - chaque lecture-écriture est sérialisée par un
  *     `SELECT … FOR UPDATE` sur la ligne de stock, à l'intérieur d'une
  *     transaction (§5 « accès concurrents »).
  */
@@ -147,7 +147,7 @@ export const applyMovement = async (
 /**
  * Ajustement manuel par un administrateur (§2.3).
  *
- * Le motif est obligatoire par signature — il n'existe pas de chemin
+ * Le motif est obligatoire par signature - il n'existe pas de chemin
  * permettant d'ajuster un stock sans en donner la raison (critère §7).
  */
 export const adjustStock = async (params: {
@@ -211,7 +211,7 @@ export interface ReservationRequest {
  * Le stock physique n'est pas touché : seule `reservedQuantity` augmente, ce
  * qui retire les unités de la vente sans les consommer. Si le paiement
  * échoue ou est abandonné, la réservation expire et le stock redevient
- * disponible — c'est la règle retenue avec le client : réservation à la
+ * disponible - c'est la règle retenue avec le client : réservation à la
  * commande, décrémentation ferme à la confirmation de paiement.
  *
  * Les lignes sont verrouillées dans un ordre déterministe (tri par

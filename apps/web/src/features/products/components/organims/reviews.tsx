@@ -7,27 +7,38 @@ import { cn } from "@prettyfull/utils";
 import DrawerReview from "../../../../../../../packages/ui/src/drawer-reviews";
 import { ReviewsOneItems } from "../molecules/reviews-items";
 
-const Reviews = ({ productId, className }: { productId: string; className?: string }) => {
+const Reviews = ({
+	productId,
+	className,
+}: {
+	productId: string;
+	className?: string;
+}) => {
 	const { reviews, summary, hasMore, loadMore, submitReview, isSubmitting } =
 		useProductReviews(productId);
-	const { uploadPhotos, isUploading, onSubmit } = useReviewForm(productId, submitReview);
+	const { uploadPhotos, isUploading, onSubmit } = useReviewForm(
+		productId,
+		submitReview,
+	);
 
 	return (
 		<div className={cn(className, "py-9")}>
 			<div className="flex flex-wrap gap-8 justify-between items-center">
-				{/* Résumé de note — agrandi visuellement, cf. inspo. Pas de star-breakdown
+				{/* Résumé de note - agrandi visuellement, cf. inspo. Pas de star-breakdown
 				 * bars ni de carte "AI Reviews Summary" : aucune donnée backend pour
 				 * ces deux blocs, on les omet plutôt que de fabriquer des chiffres. */}
 				<div>
 					<h4 className="mb-2 text-3xl font-bebas-neue">Notes et avis</h4>
 					<div className="flex gap-3 items-end">
 						<span className="text-6xl font-bold leading-none">
-							{summary.count > 0 ? summary.average.toFixed(1) : "—"}
+							{summary.count > 0 ? summary.average.toFixed(1) : "-"}
 						</span>
 						<span className="pb-1 text-lg text-gray-500">/5</span>
 					</div>
 					<span className="text-sm text-gray-500">
-						{summary.count > 0 ? `${summary.count} avis` : "Aucun avis pour l'instant"}
+						{summary.count > 0
+							? `${summary.count} avis`
+							: "Aucun avis pour l'instant"}
 					</span>
 				</div>
 				<DrawerReview
@@ -63,8 +74,8 @@ const Reviews = ({ productId, className }: { productId: string; className?: stri
 							Aucun avis pour le moment
 						</h3>
 						<p className="mt-2 max-w-sm text-sm text-[#666666]">
-							Soyez la première personne à donner votre avis sur ce produit et aidez
-							les autres clientes à choisir.
+							Soyez la première personne à donner votre avis sur ce produit et
+							aidez les autres clientes à choisir.
 						</p>
 						<DrawerReview
 							onSubmit={onSubmit}

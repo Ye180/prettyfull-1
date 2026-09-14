@@ -260,7 +260,7 @@ storeCmsRoutes.get(
  *
  * Publique par nature. Le champ leurre `website` filtre les robots les plus
  * simples : rempli, l'envoi est accepté en apparence mais rien n'est
- * enregistré — lui répondre par une erreur lui apprendrait comment passer.
+ * enregistré - lui répondre par une erreur lui apprendrait comment passer.
  */
 storeCmsRoutes.post(
 	"/contact",

@@ -8,7 +8,7 @@ import { badRequest } from "../lib/errors.js";
  *
  * `zValidator` renvoie par défaut une réponse 400 à son propre format ; ce
  * wrapper lève une `AppError` à la place, pour que toutes les erreurs de
- * l'API — validation comprise — sortent avec la même forme et soient
+ * l'API - validation comprise - sortent avec la même forme et soient
  * exploitables par les formulaires du panel.
  */
 export const validate = <Target extends keyof ValidationTargets, Schema extends ZodType>(

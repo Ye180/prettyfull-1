@@ -2,7 +2,7 @@ import type { ShippingAdapter } from "./types.js";
 import { internalShippingAdapter } from "./providers/internal.js";
 
 /**
- * Registre des agrégateurs de livraison — symétrique du registre paiement.
+ * Registre des agrégateurs de livraison - symétrique du registre paiement.
  * Un transporteur externe (DHL, Chronopost…) s'ajoute ici sans modifier le
  * module Commandes.
  */

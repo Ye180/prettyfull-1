@@ -62,8 +62,8 @@ export const fetchProducts = async (
 /**
  * Même requête que `fetchProducts`, mais renvoyée dans la forme « brute »
  * attendue par `normalizeCollectionProducts`/`normalizeStandaloneProducts` de
- * `@prettyfull/ui` (voir `toRawProduct`) — c'est ce que consomment les
- * grilles produit (`CardProduct`/`GridCollectionLayout`), pas `StoreProduct`.
+ * `@prettyfull/ui` (voir `toRawProduct`) - c'est ce que consomment les
+ * grilles produit (`CardProduct`/`GridCardProduct`), pas `StoreProduct`.
  */
 export const fetchProductsRaw = async (
 	params: FetchProductsParams = {},

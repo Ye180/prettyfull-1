@@ -10,7 +10,9 @@
 */
 
 :root {
-	--font-sans: "Manrope Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	--font-sans:
+		"Manrope Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		sans-serif;
 	--font-display: "Bebas Neue", sans-serif;
 	--color-monalisa-black: #080808;
 	--color-monalisa-card: #f8f8f8;
@@ -37,7 +39,7 @@ html {
 }
 
 /* ponytail: these were plain unlayered rules, which beat Tailwind's utilities
- * layer regardless of specificity/order — every text-white heading/paragraph
+ * layer regardless of specificity/order - every text-white heading/paragraph
  * was silently forced back to near-black. @layer base lets utility classes
  * (text-white, text-neutral-500, etc.) win as expected. */
 @layer base {
@@ -52,7 +54,12 @@ html {
 	}
 
 	/* Headings: Manrope geometric sans with tight tracking matching Monalisa mockups */
-	h1, h2, h3, h4, h5, h6 {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
 		font-family: var(--font-sans) !important;
 		color: #080808;
 		font-weight: 700;
@@ -65,12 +72,12 @@ html {
 	}
 
 	h2 {
-		font-size: clamp(2.4rem, 3.2vw, 4.0rem);
+		font-size: clamp(2.4rem, 3.2vw, 4rem);
 		line-height: 1.2;
 	}
 
 	h3 {
-		font-size: clamp(2.0rem, 2.4vw, 3.0rem);
+		font-size: clamp(2rem, 2.4vw, 3rem);
 		line-height: 1.25;
 		font-weight: 600;
 	}
@@ -100,7 +107,10 @@ html {
 	}
 
 	/* Form inputs & buttons default font sizing */
-	button, input, select, textarea {
+	button,
+	input,
+	select,
+	textarea {
 		font-family: inherit;
 		font-size: 1.4rem;
 	}

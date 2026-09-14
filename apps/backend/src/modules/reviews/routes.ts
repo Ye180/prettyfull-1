@@ -18,7 +18,7 @@ const adminListQuery = reviewListQuerySchema.pick({ page: true, limit: true, sta
 	productId: z.uuid().optional(),
 });
 
-/** Avis produit — surface publique du storefront. */
+/** Avis produit - surface publique du storefront. */
 export const storeReviewRoutes = new Hono<AppEnv>();
 
 storeReviewRoutes.get(
@@ -36,7 +36,7 @@ storeReviewRoutes.get(
 /**
  * Soumission d'un avis depuis la fiche produit.
  *
- * Publique par nature — voir `POST /contact` pour le même traitement du
+ * Publique par nature - voir `POST /contact` pour le même traitement du
  * champ leurre.
  */
 storeReviewRoutes.post(
@@ -56,7 +56,7 @@ storeReviewRoutes.post(
 	},
 );
 
-/** Modération des avis — montée sous `/api/admin`. */
+/** Modération des avis - montée sous `/api/admin`. */
 export const adminReviewRoutes = new Hono<AppEnv>();
 
 adminReviewRoutes.get(

@@ -63,7 +63,7 @@ export type Permission = {
 	[M in PermissionModule]: PermissionTree[M][keyof PermissionTree[M]];
 }[PermissionModule];
 
-/** Toutes les permissions à plat — sert au seed de la table `permissions`. */
+/** Toutes les permissions à plat - sert au seed de la table `permissions`. */
 export const ALL_PERMISSIONS = Object.values(PERMISSIONS).flatMap(
 	(module) => Object.values(module) as Permission[],
 );

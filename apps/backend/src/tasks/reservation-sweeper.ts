@@ -5,7 +5,7 @@ import { expireStaleReservations } from "../modules/inventory/service.js";
  *
  * Sans cette tâche, un paiement abandonné immobiliserait son stock
  * indéfiniment : le rayon paraîtrait épuisé alors que les articles sont
- * disponibles. Le balayage tourne dans le processus API — suffisant pour une
+ * disponibles. Le balayage tourne dans le processus API - suffisant pour une
  * instance unique ; si l'API venait à être répliquée, il faudrait le déplacer
  * dans un travailleur dédié pour éviter que chaque instance ne balaie en
  * parallèle.

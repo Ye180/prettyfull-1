@@ -1,4 +1,9 @@
-import type { SizeInput, VariantInput } from "@prettyfull/contracts";
+import type {
+	SizeInput,
+	UpdateSizeInput,
+	UpdateVariantInput,
+	VariantInput,
+} from "@prettyfull/contracts";
 import { and, eq, isNull } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import * as t from "../../db/schema/index.js";
@@ -11,7 +16,7 @@ import type { Product } from "@prettyfull/contracts";
  *
  * Ces routes sont l'autre porte d'entrée du modèle produit, à côté de la
  * création complète : chacune revérifie la règle de cohérence, car c'est
- * exactement par là qu'un produit hybride pourrait naître — ajouter une
+ * exactement par là qu'un produit hybride pourrait naître - ajouter une
  * variante à un produit simple, ou une taille de produit à un produit à
  * variantes.
  */
@@ -104,7 +109,7 @@ export const addVariant = async (
 export const updateVariant = async (
 	productId: string,
 	variantId: string,
-	input: Partial<VariantInput>,
+	input: UpdateVariantInput,
 ): Promise<Product> => {
 	const [existing] = await db
 		.select({ id: t.productVariants.id })
@@ -270,7 +275,7 @@ export const addSize = async (
 export const updateSize = async (
 	productId: string,
 	sizeId: string,
-	input: Partial<SizeInput>,
+	input: UpdateSizeInput,
 ): Promise<Product> => {
 	const { initialQuantity: _q, lowStockThreshold: _l, ...fields } = input;
 

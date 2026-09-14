@@ -4,7 +4,7 @@ import { Providers } from "@/lib/providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-	title: "PrettyFull — Administration",
+	title: "PrettyFull - Administration",
 	description: "Back-office PrettyFull : catalogue, stocks, commandes.",
 	// Un back-office n'a rien à faire dans un index de moteur de recherche.
 	robots: { index: false, follow: false },

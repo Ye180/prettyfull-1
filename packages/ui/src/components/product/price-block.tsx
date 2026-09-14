@@ -7,7 +7,7 @@ export interface PriceBlockProps {
 	className?: string;
 }
 
-/** Prix courant, éventuellement accompagné du prix barré. Pas de badge ici — voir `DiscountBadge`. */
+/** Prix courant, éventuellement accompagné du prix barré. Pas de badge ici - voir `DiscountBadge`. */
 export const PriceBlock: React.FC<PriceBlockProps> = ({
 	price,
 	compareAtPrice,

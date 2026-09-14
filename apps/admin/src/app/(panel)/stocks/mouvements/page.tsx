@@ -100,7 +100,7 @@ const MovementsPage = () => {
 			header: "Note",
 			hideOnMobile: true,
 			cell: (movement) => (
-				<span className="text-[12px] text-subtle">{movement.note ?? "—"}</span>
+				<span className="text-[12px] text-subtle">{movement.note ?? "-"}</span>
 			),
 		},
 	];

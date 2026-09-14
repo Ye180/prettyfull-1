@@ -70,7 +70,7 @@ export declare const CONTACT_MESSAGE_STATUSES: readonly ["new", "read", "archive
 export type ContactMessageStatus = (typeof CONTACT_MESSAGE_STATUSES)[number];
 export declare const FEATURED_KINDS: readonly ["product", "category"];
 export type FeaturedKind = (typeof FEATURED_KINDS)[number];
-/** Devises supportées. XOF n'a pas de sous-unité — cf. `CURRENCY_EXPONENTS`. */
+/** Devises supportées. XOF n'a pas de sous-unité - cf. `CURRENCY_EXPONENTS`. */
 export declare const CURRENCY_CODES: readonly ["xof", "eur", "usd"];
 export type CurrencyCode = (typeof CURRENCY_CODES)[number];
 /**

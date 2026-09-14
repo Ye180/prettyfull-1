@@ -27,7 +27,7 @@ import {
  *
  * Ajouter une valeur se fait donc dans les contrats : la base, la validation
  * et le typage restent alignés par construction. Attention : Postgres ne sait
- * pas retirer une valeur d'un enum — une suppression demande une migration
+ * pas retirer une valeur d'un enum - une suppression demande une migration
  * manuelle.
  */
 export const userKindEnum = pgEnum("user_kind", USER_KINDS);

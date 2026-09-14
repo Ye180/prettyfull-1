@@ -76,7 +76,7 @@ app.use(
 /**
  * Documentation de l'API (§5).
  *
- * `/docs` sert une interface de lecture, `/openapi.json` le document brut —
+ * `/docs` sert une interface de lecture, `/openapi.json` le document brut -
  * exploitable par un générateur de client ou un outil de test.
  */
 app.get("/openapi.json", (c) => c.json(openApiDocument));
@@ -129,8 +129,8 @@ app.route("/api/store", storeMiscRoutes);
 /**
  * Montées avant les routes ci-dessous : `storeOrdersRoutes` et
  * `storeAddressRoutes` posent chacune un garde `use("*", requireAuth, ...)`
- * sur leur propre routeur, qui — une fois aplati par `.route()` sous le même
- * préfixe `/api/store` — devient un middleware `/api/store/*` s'appliquant à
+ * sur leur propre routeur, qui - une fois aplati par `.route()` sous le même
+ * préfixe `/api/store` - devient un middleware `/api/store/*` s'appliquant à
  * toute route montée après lui, avis compris. Les monter avant évite que les
  * routes publiques héritent d'un garde qui ne les concerne pas.
  */

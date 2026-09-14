@@ -5,7 +5,7 @@ const PAGE_SIZE = 6;
 
 /**
  * Filtre/recherche/pagine la FAQ côté client. Petite liste statique
- * (data/index.tsx) — pas besoin de query params ni de debounce.
+ * (data/index.tsx) - pas besoin de query params ni de debounce.
  */
 export const useFaqFilters = () => {
 	const categories = useMemo(

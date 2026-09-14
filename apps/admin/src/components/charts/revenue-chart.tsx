@@ -8,7 +8,7 @@ import { formatMoney, formatNumber } from "@/lib/format";
  * Chiffre d'affaires journalier.
  *
  * Une seule série, donc aucune légende : le titre de la carte la nomme. Le
- * nombre de commandes n'a **pas** son propre axe — deux échelles sur un même
+ * nombre de commandes n'a **pas** son propre axe - deux échelles sur un même
  * graphique se lisent mal et invitent aux fausses corrélations ; il apparaît
  * dans l'infobulle, là où il éclaire un point précis.
  *
@@ -48,9 +48,12 @@ export const RevenueChart = ({
 
 		const x = (index: number) =>
 			PADDING.left +
-			(series.length === 1 ? plotWidth / 2 : (index / (series.length - 1)) * plotWidth);
+			(series.length === 1
+				? plotWidth / 2
+				: (index / (series.length - 1)) * plotWidth);
 
-		const y = (value: number) => PADDING.top + plotHeight - (value / max) * plotHeight;
+		const y = (value: number) =>
+			PADDING.top + plotHeight - (value / max) * plotHeight;
 
 		const points = series.map((point, index) => ({
 			...point,
@@ -87,14 +90,23 @@ export const RevenueChart = ({
 			>
 				<defs>
 					<linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-						<stop offset="0%" stopColor="var(--chart-series)" stopOpacity="0.18" />
-						<stop offset="100%" stopColor="var(--chart-series)" stopOpacity="0" />
+						<stop
+							offset="0%"
+							stopColor="var(--chart-series)"
+							stopOpacity="0.18"
+						/>
+						<stop
+							offset="100%"
+							stopColor="var(--chart-series)"
+							stopOpacity="0"
+						/>
 					</linearGradient>
 				</defs>
 
 				{/* Grille discrète : trois repères suffisent à situer l'ordre de grandeur. */}
 				{[0, 0.5, 1].map((ratio) => {
-					const y = PADDING.top + (HEIGHT - PADDING.top - PADDING.bottom) * (1 - ratio);
+					const y =
+						PADDING.top + (HEIGHT - PADDING.top - PADDING.bottom) * (1 - ratio);
 					return (
 						<line
 							key={ratio}
@@ -146,7 +158,10 @@ export const RevenueChart = ({
 				{geometry.points.map((point, index) => (
 					<rect
 						key={point.date}
-						x={point.x - (WIDTH - PADDING.left - PADDING.right) / series.length / 2}
+						x={
+							point.x -
+							(WIDTH - PADDING.left - PADDING.right) / series.length / 2
+						}
 						y={0}
 						width={(WIDTH - PADDING.left - PADDING.right) / series.length}
 						height={HEIGHT}
@@ -178,14 +193,16 @@ export const RevenueChart = ({
 
 			<div className="flex justify-between px-2 text-[11px] text-subtle tabular">
 				<span>
-					{new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" }).format(
-						new Date(series[0]!.date),
-					)}
+					{new Intl.DateTimeFormat("fr-FR", {
+						day: "numeric",
+						month: "short",
+					}).format(new Date(series[0]!.date))}
 				</span>
 				<span>
-					{new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" }).format(
-						new Date(series[series.length - 1]!.date),
-					)}
+					{new Intl.DateTimeFormat("fr-FR", {
+						day: "numeric",
+						month: "short",
+					}).format(new Date(series[series.length - 1]!.date))}
 				</span>
 			</div>
 		</div>

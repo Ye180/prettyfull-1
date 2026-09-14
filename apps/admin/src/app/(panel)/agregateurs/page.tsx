@@ -1,6 +1,10 @@
 "use client";
 
-import type { ProviderConfig, ShippingRate, ShippingZone } from "@prettyfull/contracts";
+import type {
+	ProviderConfig,
+	ShippingRate,
+	ShippingZone,
+} from "@prettyfull/contracts";
 import { PERMISSIONS } from "@prettyfull/contracts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -26,7 +30,7 @@ import { IconCheck, IconAlert } from "@/components/icons";
  *
  * L'écran est **généré depuis le registre du backend** : les champs de clés
  * viennent de `requiredCredentials`, exposé par l'API. Ajouter un prestataire
- * ne demande donc aucune modification ici — c'est ce qui rend vraie la
+ * ne demande donc aucune modification ici - c'est ce qui rend vraie la
  * promesse « activable sans intervention technique » (§7).
  */
 
@@ -51,7 +55,10 @@ const ProviderCard = ({
 
 	const save = useMutation({
 		mutationFn: (payload: Record<string, unknown>) =>
-			api.patch<ProviderConfig>(`/api/admin/integrations/${kind}/${provider.key}`, payload),
+			api.patch<ProviderConfig>(
+				`/api/admin/integrations/${kind}/${provider.key}`,
+				payload,
+			),
 		onSuccess: () => {
 			refresh();
 			setCredentials({});
@@ -67,7 +74,8 @@ const ProviderCard = ({
 			api.post<{ ok: boolean; message: string }>(
 				`/api/admin/integrations/${kind}/${provider.key}/test`,
 			),
-		onSuccess: (result) => notify(result.message, result.ok ? "success" : "error"),
+		onSuccess: (result) =>
+			notify(result.message, result.ok ? "success" : "error"),
 		onError: (error) => notifyError(error, "Test impossible."),
 	});
 
@@ -116,9 +124,16 @@ const ProviderCard = ({
 										value={credentials[field.key] ?? ""}
 										disabled={!writable}
 										onChange={(event) =>
-											setCredentials({ ...credentials, [field.key]: event.target.value })
+											setCredentials({
+												...credentials,
+												[field.key]: event.target.value,
+											})
 										}
-										placeholder={alreadySet ? "••••••••••••" : `Coller la ${field.label.toLowerCase()}`}
+										placeholder={
+											alreadySet
+												? "••••••••••••"
+												: `Coller la ${field.label.toLowerCase()}`
+										}
 										autoComplete="off"
 									/>
 								</div>
@@ -136,7 +151,9 @@ const ProviderCard = ({
 						value={environment}
 						disabled={!writable}
 						onChange={(event) =>
-							setEnvironment(event.target.value as ProviderConfig["environment"])
+							setEnvironment(
+								event.target.value as ProviderConfig["environment"],
+							)
 						}
 						options={[
 							{ value: "test", label: "Test (bac à sable)" },
@@ -150,7 +167,11 @@ const ProviderCard = ({
 						label="URL de notification"
 						hint="À déclarer dans le tableau de bord du prestataire pour qu'il confirme les paiements."
 					>
-						<Input readOnly value={provider.webhookUrl} className="font-mono text-[12px]" />
+						<Input
+							readOnly
+							value={provider.webhookUrl}
+							className="font-mono text-[12px]"
+						/>
 					</Field>
 				)}
 
@@ -160,7 +181,9 @@ const ProviderCard = ({
 							onClick={() =>
 								save.mutate({
 									environment,
-									...(Object.keys(credentials).length > 0 ? { credentials } : {}),
+									...(Object.keys(credentials).length > 0
+										? { credentials }
+										: {}),
 								})
 							}
 							loading={save.isPending}
@@ -178,7 +201,9 @@ const ProviderCard = ({
 								save.mutate({
 									isEnabled: !provider.isEnabled,
 									environment,
-									...(Object.keys(credentials).length > 0 ? { credentials } : {}),
+									...(Object.keys(credentials).length > 0
+										? { credentials }
+										: {}),
 								})
 							}
 							loading={save.isPending}
@@ -192,7 +217,8 @@ const ProviderCard = ({
 					<p className="flex items-start gap-1.5 text-[12px] text-warning">
 						<IconAlert width={14} height={14} className="mt-0.5 shrink-0" />
 						L’activation est bloquée tant que les clés obligatoires ne sont pas
-						renseignées — un agrégateur incomplet produirait des paiements en échec.
+						renseignées - un agrégateur incomplet produirait des paiements en
+						échec.
 					</p>
 				)}
 			</div>
@@ -213,7 +239,8 @@ const IntegrationsPage = () => {
 
 	const { data: shipping } = useQuery({
 		queryKey: ["providers", "shipping"],
-		queryFn: () => api.get<ProviderConfig[]>("/api/admin/integrations/shipping"),
+		queryFn: () =>
+			api.get<ProviderConfig[]>("/api/admin/integrations/shipping"),
 	});
 
 	const { data: zones } = useQuery({
@@ -274,7 +301,9 @@ const IntegrationsPage = () => {
 						<Card key={zone.id}>
 							<CardHeader
 								title={zone.name}
-								description={zone.countryCodes.map((code) => code.toUpperCase()).join(", ")}
+								description={zone.countryCodes
+									.map((code) => code.toUpperCase())
+									.join(", ")}
 								action={
 									<Badge tone={zone.isActive ? "success" : "neutral"}>
 										{zone.isActive ? "Active" : "Inactive"}
@@ -283,7 +312,9 @@ const IntegrationsPage = () => {
 							/>
 							<ul className="divide-y divide-[var(--border)]">
 								{zone.rates.length === 0 ? (
-									<li className="px-4 py-3 text-[13px] text-muted">Aucun tarif défini.</li>
+									<li className="px-4 py-3 text-[13px] text-muted">
+										Aucun tarif défini.
+									</li>
 								) : (
 									zone.rates.map((rate) => (
 										<li
@@ -291,7 +322,9 @@ const IntegrationsPage = () => {
 											className="flex items-center gap-3 px-4 py-2.5 text-[13px]"
 										>
 											<span className="min-w-0 flex-1">
-												<span className="block truncate text-ink">{rate.name}</span>
+												<span className="block truncate text-ink">
+													{rate.name}
+												</span>
 												<span className="block text-[12px] text-subtle">
 													{rate.kind === "flat"
 														? "Montant fixe"
