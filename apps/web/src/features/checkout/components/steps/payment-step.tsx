@@ -126,7 +126,8 @@ export function PaymentStep({
 	};
 
 	const isStripeProvider = selectedMethod?.includes("stripe");
-	const isSystemProvider = selectedMethod?.includes("system");
+	const isSystemProvider =
+		selectedMethod?.includes("system") || selectedMethod?.includes("manual");
 
 	const isCardFormValid =
 		isStripeProvider &&
@@ -151,7 +152,7 @@ export function PaymentStep({
 						},
 					)}
 				>
-					Payment
+					Paiement
 					{isCompleted && (
 						<svg
 							className="w-8 h-8 text-green-600"
@@ -172,7 +173,7 @@ export function PaymentStep({
 						onClick={handleEdit}
 						className="px-6 py-2 text-sm text-dark w-fit"
 					>
-						Edit
+						Modifier
 					</Button>
 				)}
 			</div>
@@ -180,7 +181,7 @@ export function PaymentStep({
 			{/* Content */}
 			{isOpen && canAccess ? (
 				<div className="space-y-6">
-					<p className="text-sm text-gray-600">Select your payment method</p>
+					<p className="text-sm text-gray-600">Sélectionnez votre méthode de paiement</p>
 
 					{/* Error Message */}
 					{error && (
@@ -191,7 +192,7 @@ export function PaymentStep({
 
 					{/* Payment Methods */}
 					{providersLoading ? (
-						<p className="text-sm text-gray-500">Loading payment methods...</p>
+						<p className="text-sm text-gray-500">Chargement des méthodes de paiement...</p>
 					) : (
 						<div className="space-y-8">
 							{paymentProviders?.map((provider: any) => (
@@ -238,7 +239,7 @@ export function PaymentStep({
 						<div className="p-4 space-y-4 bg-gray-50 rounded-lg">
 							<div>
 								<label className="block mb-2 text-sm font-medium">
-									Card number
+									Numéro de carte
 								</label>
 								<Input
 									value={cardNumber}
@@ -253,12 +254,12 @@ export function PaymentStep({
 
 							<div>
 								<label className="block mb-2 text-sm font-medium">
-									Name on card
+									Nom sur la carte
 								</label>
 								<Input
 									value={cardName}
 									onChange={(e) => setCardName(e.target.value)}
-									placeholder="John Doe"
+									placeholder="Jean Dupont"
 									className="py-5"
 								/>
 							</div>
@@ -266,7 +267,7 @@ export function PaymentStep({
 							<div className="grid grid-cols-2 gap-4">
 								<div>
 									<label className="block mb-2 text-sm font-medium">
-										Expiry date
+										Date d'expiration
 									</label>
 									<Input
 										value={expiryDate}
@@ -300,14 +301,14 @@ export function PaymentStep({
 						className="py-6 w-full"
 						disabled={!canSubmit || isLoading || !cartId}
 					>
-						{isLoading ? "Processing..." : "Review order"}
+						{isLoading ? "Traitement..." : "Vérifier la commande"}
 					</Button>
 				</div>
 			) : isCompleted ? (
 				/* Summary when completed */
 				<div className="text-sm text-gray-600">
 					<p>
-						Payment method:{" "}
+						Méthode de paiement :{" "}
 						{selectedMethod
 							? getProviderName(
 									paymentProviders?.find((p: any) => p.id === selectedMethod) ?? {
@@ -317,12 +318,12 @@ export function PaymentStep({
 							: ""}
 					</p>
 					{isStripeProvider && cardNumber && (
-						<p>Card ending in {cardNumber.slice(-4)}</p>
+						<p>Carte se terminant par {cardNumber.slice(-4)}</p>
 					)}
 				</div>
 			) : !canAccess ? (
 				<p className="text-sm text-gray-400">
-					Complete the previous step to continue
+					Complétez l'étape précédente pour continuer
 				</p>
 			) : null}
 

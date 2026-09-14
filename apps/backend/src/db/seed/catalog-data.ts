@@ -62,15 +62,15 @@ export const SEED_CATEGORIES: SeedCategory[] = [
 	{ slug: "soldes", name: "Soldes", nameEn: "Sale", imageUrl: "/home/arrivals-4.jpg" },
 ];
 
-/** Visuels déjà présents dans `apps/web/public`, piochés en rotation. */
+/**
+ * Visuels déjà présents dans `apps/web/public`, piochés en rotation.
+ *
+ * Exclut volontairement `/banner/*.jpg` et `/assets/product_1.jpg` : ce sont
+ * des gabarits marketing avec du texte (anglais, parfois une autre marque)
+ * incrusté dans l'image elle-même, ou une déclinaison sous licence (NFL) —
+ * inutilisables comme photo produit générique.
+ */
 const IMAGE_POOL = [
-	"/banner/banner1.jpg",
-	"/banner/banner2.jpg",
-	"/banner/banner3.jpg",
-	"/banner/banner4.jpg",
-	"/banner/banner5.jpg",
-	"/banner/banner6.jpg",
-	"/banner/banner8.jpg",
 	"/home/arrivals-1.jpg",
 	"/home/arrivals-2.jpg",
 	"/home/arrivals-3.jpg",
@@ -79,14 +79,16 @@ const IMAGE_POOL = [
 	"/home/commerce1.jpg",
 	"/home/cover-box-3.jpg",
 	"/home/cover-box-7.jpg",
-	"/home/cover-box-second-1.jpg",
 	"/home/cover-box-second-3.jpg",
 	"/home/cover-box-second-4.jpg",
 	"/home/cover-box-second-5.jpg",
+	"/home/cover-desktop.jpg",
+	"/home/cover-desktop-1.jpg",
+	"/home/promotion.jpg",
 	"/collections/banner-mode.jpg",
-	"/assets/product_1.jpg",
 	"/assets/product_2.jpg",
 	"/assets/product5.webp",
+	"/products/lifestyle-dressing.jpg",
 ];
 
 let imageCursor = 0;
@@ -149,6 +151,8 @@ interface ProductSource {
 	isFeatured?: boolean;
 	/** Quantités forcées, pour peupler les alertes de stock du tableau de bord. */
 	quantities?: number[];
+	/** Visuel principal dédié (sinon pioché dans `IMAGE_POOL`). */
+	heroImage?: string;
 }
 
 const SOURCES: ProductSource[] = [
@@ -184,6 +188,39 @@ const SOURCES: ProductSource[] = [
 	{ slug: "jean-slim-delave", name: "Jean Slim Délavé", nameEn: "Faded Slim Jeans", description: "Jean slim délavé, coupe taille haute.", categorySlug: "soldes", price: 45, discountPercent: 30, tags: ["promo", "denim"] },
 	{ slug: "pull-en-maille", name: "Pull en Maille", nameEn: "Knit Sweater", description: "Pull en maille douce, coupe ample.", categorySlug: "soldes", price: 39, discountPercent: 25, tags: ["promo"] },
 	{ slug: "jupe-plissee", name: "Jupe Plissée", nameEn: "Pleated Skirt", description: "Jupe plissée midi, taille élastiquée.", categorySlug: "soldes", price: 35, discountPercent: 20, tags: ["promo"] },
+
+	// --- Robes (suite) ---------------------------------------------------------
+	{ slug: "robe-pailletee-soiree", name: "Robe Pailletée Soirée", nameEn: "Sequin Evening Dress", description: "Robe courte pailletée à bustier, parfaite pour les soirées et événements.", categorySlug: "robes", price: 135, tags: ["soirée", "paillettes"], isFeatured: true, heroImage: "/products/robe-pailletee-soiree.jpg" },
+	{ slug: "robe-lin-champetre", name: "Robe en Lin Champêtre", nameEn: "Countryside Linen Dress", description: "Robe longue en lin naturel, manches courtes et taille cintrée par un lien tressé.", categorySlug: "robes", price: 72, tags: ["été", "lin"], heroImage: "/products/robe-lin-champetre.jpg" },
+	{ slug: "robe-bustier-blanche", name: "Robe Bustier Blanche", nameEn: "White Bustier Dress", description: "Robe moulante bustier blanche, coupe seconde peau pour une silhouette affirmée.", categorySlug: "robes", price: 68, tags: ["soirée", "moulante"], heroImage: "/products/robe-bustier-blanche.jpg" },
+	{ slug: "robe-tunique-brodee", name: "Robe Tunique Brodée", nameEn: "Embroidered Tunic Dress", description: "Robe tunique blanche aux broderies fleuries et col perlé, inspirée des coupes traditionnelles.", categorySlug: "robes", price: 89, tags: ["brodé", "élégant"], heroImage: "/products/robe-tunique-brodee.jpg" },
+
+	// --- Hauts (suite) -----------------------------------------------------------
+	{ slug: "chemisier-satine-rose", name: "Chemisier Satiné", nameEn: "Satin Blouse", description: "Chemisier fluide en satin rose poudré, col chemise et manches amples.", categorySlug: "hauts", price: 58, tags: ["satin"], heroImage: "/products/chemisier-satine-rose.jpg" },
+	{ slug: "chemise-blanche-intemporelle", name: "Chemise Blanche Intemporelle", nameEn: "Timeless White Shirt", description: "Chemise blanche en coton, coupe classique à porter au bureau comme en ville.", categorySlug: "hauts", price: 45, tags: ["coton", "classique"], heroImage: "/products/chemise-blanche-intemporelle.jpg" },
+	{ slug: "pull-jacquard-multicolore", name: "Pull Jacquard Multicolore", nameEn: "Multicolor Jacquard Sweater", description: "Pull en maille jacquard à motifs graphiques, chaud et texturé pour l'hiver.", categorySlug: "hauts", price: 62, tags: ["hiver", "jacquard"], isFeatured: true, heroImage: "/products/pull-jacquard-multicolore.jpg" },
+	{ slug: "pull-col-roule-anthracite", name: "Pull Col Roulé Anthracite", nameEn: "Charcoal Turtleneck Sweater", description: "Pull col roulé en maille fine, coupe ajustée, essentiel de la garde-robe froide.", categorySlug: "hauts", price: 49, tags: ["hiver"], heroImage: "/products/pull-col-roule-anthracite.jpg" },
+
+	// --- Ensembles (suite) -------------------------------------------------------
+	{ slug: "tailleur-pantalon-rouge", name: "Tailleur Pantalon Rouge", nameEn: "Red Pantsuit", description: "Ensemble blazer et pantalon rouge coquelicot, coupe structurée pour un look affirmé.", categorySlug: "ensembles", price: 155, tags: ["tailleur", "soirée"], isFeatured: true, heroImage: "/products/tailleur-pantalon-rouge.jpg" },
+	{ slug: "tailleur-beige-ample", name: "Tailleur Beige Ample", nameEn: "Beige Relaxed Suit", description: "Ensemble blazer oversize et pantalon large beige, silhouette décontractée chic.", categorySlug: "ensembles", price: 132, tags: ["tailleur", "bureau"], heroImage: "/products/tailleur-beige-ample.jpg" },
+	{ slug: "blazer-imprime-oversize", name: "Blazer Imprimé Oversize", nameEn: "Oversized Printed Blazer", description: "Blazer long oversize à imprimé magazine, pièce statement à assortir avec un jean brut.", categorySlug: "ensembles", price: 98, tags: ["imprimé", "statement"], heroImage: "/products/blazer-imprime-oversize.jpg" },
+
+	// --- Accessoires (suite) -----------------------------------------------------
+	{ slug: "sac-besace-rose", name: "Sac Besace Rose Poudré", nameEn: "Powder Pink Crossbody Bag", description: "Sac besace en simili cuir rose poudré, format compact avec bandoulière ajustable.", categorySlug: "accessoires", price: 48, model: "colors-only", colors: ["Beige", "Noir"], tags: ["sac"], heroImage: "/products/sac-besace-rose.jpg" },
+	{ slug: "lunettes-soleil-retro", name: "Lunettes de Soleil Rétro", nameEn: "Retro Sunglasses", description: "Lunettes de soleil rondes à monture dorée, verres teintés effet vintage.", categorySlug: "accessoires", price: 26, model: "single", tags: ["lunettes"], quantities: [15], heroImage: "/products/lunettes-soleil-retro.jpg" },
+	{ slug: "lunettes-aviator-jaune", name: "Lunettes Aviator Teintées", nameEn: "Tinted Aviator Sunglasses", description: "Lunettes aviator à monture fine, verres jaunes pour un style affirmé.", categorySlug: "accessoires", price: 24, model: "single", tags: ["lunettes"], quantities: [12], heroImage: "/products/lunettes-aviator-jaune.jpg" },
+	{ slug: "parure-bijoux-doree", name: "Parure Bijoux Dorée", nameEn: "Gold Jewelry Set", description: "Parure trois pièces plaquée or : bague, bracelet chaîne et boucles d'oreilles assorties.", categorySlug: "accessoires", price: 42, model: "single", tags: ["bijou"], quantities: [8], isFeatured: true, heroImage: "/products/parure-bijoux-doree.jpg" },
+
+	// --- Nouveautés (suite) --------------------------------------------------------
+	{ slug: "blazer-noir-cintre", name: "Blazer Noir Cintré", nameEn: "Fitted Black Blazer", description: "Blazer noir cintré à revers, coupe droite pour un look bureau ou soirée.", categorySlug: "nouveautes", price: 105, tags: ["nouveauté", "bureau"], heroImage: "/products/blazer-noir-cintre.jpg" },
+	{ slug: "jean-large-taille-haute", name: "Jean Large Taille Haute", nameEn: "High-Waisted Wide Jeans", description: "Jean large taille haute en denim brut, coupe droite tendance.", categorySlug: "nouveautes", price: 58, tags: ["nouveauté", "denim"], heroImage: "/products/jean-large-taille-haute.jpg" },
+	{ slug: "manteau-court-laine-gris", name: "Manteau Court en Laine", nameEn: "Short Wool Coat", description: "Manteau court en laine mélangée grise, coupe croisée et col large.", categorySlug: "nouveautes", price: 128, tags: ["nouveauté", "hiver"], isFeatured: true, heroImage: "/products/manteau-court-laine-gris.jpg" },
+
+	// --- Soldes (suite) --------------------------------------------------------
+	{ slug: "pull-torsade-creme", name: "Pull Torsadé Crème", nameEn: "Cream Cable-Knit Sweater", description: "Pull à torsades en maille crème, coupe ample et confortable.", categorySlug: "soldes", price: 44, discountPercent: 25, tags: ["promo", "hiver"], heroImage: "/products/pull-torsade-creme.jpg" },
+	{ slug: "boucles-oreilles-perlees", name: "Boucles d'Oreilles Perlées", nameEn: "Pearl Earrings", description: "Boucles d'oreilles ornées de perles nacrées, finition dorée.", categorySlug: "soldes", price: 19, discountPercent: 30, model: "single", tags: ["promo", "bijou"], quantities: [10], heroImage: "/products/boucles-oreilles-perlees.jpg" },
+	{ slug: "pull-col-roule-blanc", name: "Pull Col Roulé Blanc", nameEn: "White Turtleneck Sweater", description: "Pull col roulé blanc en maille douce, coupe près du corps.", categorySlug: "soldes", price: 36, discountPercent: 20, tags: ["promo"], heroImage: "/products/pull-col-roule-blanc.jpg" },
 ];
 
 /** Quantités par défaut, variées pour rendre les écrans de stock parlants. */
@@ -192,7 +229,7 @@ const defaultQuantities = (count: number, offset: number): number[] =>
 
 export const SEED_PRODUCTS: SeedProduct[] = SOURCES.map((source, sourceIndex) => {
 	const model = source.model ?? "apparel";
-	const images = nextImages(3);
+	const images = source.heroImage ? [source.heroImage, ...nextImages(2)] : nextImages(3);
 	const price = toXof(source.price);
 	const compareAtPrice = source.discountPercent
 		? toXof(Math.round(source.price / (1 - source.discountPercent / 100)))

@@ -18,8 +18,8 @@ export const seedContent = async (
 		{
 			title: "Nouvelle collection",
 			subtitle: "Des pièces pensées pour vous, disponibles dès maintenant.",
-			imageUrl: "/banner/banner1.jpg",
-			mobileImageUrl: "/banner/banner2.jpg",
+			imageUrl: "/home/cover-desktop.jpg",
+			mobileImageUrl: "/home/cover-phone.jpg",
 			linkUrl: "/collections/nouveautes",
 			ctaLabel: "Découvrir",
 			placement: "home_hero",
@@ -32,7 +32,7 @@ export const seedContent = async (
 		{
 			title: "Soldes jusqu'à -30 %",
 			subtitle: "Sélection limitée, pendant que les tailles sont encore là.",
-			imageUrl: "/banner/banner4.jpg",
+			imageUrl: "/home/cover-desktop-1.jpg",
 			linkUrl: "/collections/soldes",
 			ctaLabel: "En profiter",
 			placement: "home_promo",

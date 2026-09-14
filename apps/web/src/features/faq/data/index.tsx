@@ -1,47 +1,105 @@
-export const DataRule = [
+export interface FaqItem {
+	title: string;
+	description: string;
+	category: string;
+}
+
+// ponytail: static hand-authored content, categories inferred from titles — not backend-driven
+export const DataRule: FaqItem[] = [
 	{
-		title: "PRE-ORDER / GROUP BUY ITEMS",
+		title: "ARTICLES EN PRÉCOMMANDE / ACHAT GROUPÉ",
+		category: "Commandes",
 		description:
-			"All orders are made by-hand, to specification, and are considered pre-order purchases. There are absolutely no refunds, or cancellations once an order has been placed on any of our products. You can read more about our Terms and Conditions here.Please inspect your order upon reception and contact us immediately if the item is defective, damaged or if you receive the wrong item, so that we can evaluate the issue and make it right",
+			"Certains articles sont fabriqués ou confectionnés sur mesure et sont proposés en précommande. Une fois la commande validée, aucun remboursement ni annulation n'est possible sur ces articles. Retrouvez le détail de cette politique dans nos Conditions Générales de Vente. Merci de vérifier votre colis dès sa réception et de nous contacter immédiatement si l'article est défectueux, endommagé ou ne correspond pas à votre commande, afin que nous puissions étudier la situation et trouver une solution rapidement.",
 	},
 	{
-		title: "IN-STOCK ITEMS",
+		title: "COMMENT SUIVRE MA COMMANDE ?",
+		category: "Commandes",
 		description:
-			"Returns/exchanges/part replacement (at our discretion after examining the problem) are available within 30 days of purchase for major issues/failure only (no minor defect). Read below what are major defect.",
+			"Dès l'expédition de votre commande, vous recevez un e-mail contenant un lien de suivi. Vous pouvez également retrouver ce lien à tout moment dans la section « Mes commandes » de votre compte.",
 	},
 	{
-		title: "DAMAGES AND ISSUES",
+		title: "PUIS-JE MODIFIER OU ANNULER MA COMMANDE ?",
+		category: "Commandes",
 		description:
-			"Due to the nature of manufacturing processes and methods used, minor defects may be present in the end product.Minor defects include: Minor machining marksMinor oil marks on PCBs / Minor hook marks Major defects include: Large scratches, or dents on the exterior of the product / Broken components / Dead PCBsIncorrect item received",
+			"Contactez-nous le plus rapidement possible après validation de votre commande. Tant qu'elle n'est pas encore préparée pour expédition, nous pouvons modifier l'adresse, la taille ou annuler la commande.",
 	},
 	{
-		title: "EXCEPTIONS / NON-RETURNABLE ITEMS",
+		title: "QUELS SONT LES DÉLAIS DE LIVRAISON ?",
+		category: "Livraison",
 		description:
-			"Certain types of items cannot be returned, like custom products (such as special orders or personalised items), sale items or gift cards. Please get in touch if you have questions or concerns about your specific item.",
+			"Les commandes sont expédiées sous 2 à 5 jours ouvrés. Comptez ensuite 2 à 4 jours ouvrés pour une livraison standard en France métropolitaine, et 5 à 10 jours ouvrés pour les livraisons internationales.",
 	},
 	{
-		title: "EXCHANGES",
+		title: "LIVREZ-VOUS À L'INTERNATIONAL ?",
+		category: "Livraison",
 		description:
-			"The fastest way to ensure you get what you want is to return the item you have, and once the return is accepted, make a separate purchase for the new item.You are responsible for paying your own shipping costs for returning items to us.We do not guarantee that we will receive your returned item.It is recommended you use a shipping method with tracking and insurance.",
+			"Oui, nous livrons dans la majorité des pays d'Europe ainsi qu'en Amérique du Nord. Les frais de douane éventuels restent à la charge du destinataire selon la réglementation locale.",
 	},
 	{
-		title: "IN-STOCK ITEMS",
+		title: "ARTICLES EN STOCK",
+		category: "Retours & Échanges",
 		description:
-			"Returns/exchanges/part replacement (at our discretion after examining the problem) are available within 30 days of purchase for major issues/failure only (no minor defect). Read below what are major defect.",
+			"Les retours, échanges ou remplacements partiels (selon notre appréciation après examen du problème) sont possibles dans un délai de 30 jours après l'achat, uniquement pour les défauts majeurs ou non-conformités (les défauts mineurs ne sont pas concernés). Consultez ci-dessous la définition d'un défaut majeur.",
 	},
 	{
-		title: "DAMAGES AND ISSUES",
+		title: "ÉCHANGES",
+		category: "Retours & Échanges",
 		description:
-			"Due to the nature of manufacturing processes and methods used, minor defects may be present in the end product.Minor defects include: Minor machining marksMinor oil marks on PCBs / Minor hook marks Major defects include: Large scratches, or dents on the exterior of the product / Broken components / Dead PCBsIncorrect item received",
+			"Le moyen le plus rapide d'obtenir l'article souhaité est de nous retourner celui que vous possédez puis, une fois le retour accepté, de passer une nouvelle commande séparée pour le nouvel article. Les frais d'expédition du retour restent à votre charge. Nous ne pouvons garantir la bonne réception de votre colis retourné : nous vous recommandons donc d'utiliser un mode d'envoi avec suivi et assurance.",
 	},
 	{
-		title: "EXCEPTIONS / NON-RETURNABLE ITEMS",
+		title: "DOMMAGES ET PROBLÈMES CONSTATÉS",
+		category: "Retours & Échanges",
 		description:
-			"Certain types of items cannot be returned, like custom products (such as special orders or personalised items), sale items or gift cards. Please get in touch if you have questions or concerns about your specific item.",
+			"En raison de la nature des processus de fabrication utilisés, de légères imperfections peuvent subsister sur le produit final. Sont considérés comme défauts mineurs : de petites marques de finition, de légères traces sur les finitions ou de petits accrocs. Sont considérés comme défauts majeurs : de larges rayures ou déformations visibles, des éléments cassés ou manquants, ou la réception d'un article différent de celui commandé. Dans ce dernier cas, contactez-nous immédiatement pour un échange ou un remboursement.",
 	},
 	{
-		title: "EXCHANGES",
+		title: "EXCEPTIONS / ARTICLES NON REMBOURSABLES",
+		category: "Retours & Échanges",
 		description:
-			"The fastest way to ensure you get what you want is to return the item you have, and once the return is accepted, make a separate purchase for the new item.You are responsible for paying your own shipping costs for returning items to us.We do not guarantee that we will receive your returned item.It is recommended you use a shipping method with tracking and insurance.",
+			"Certains articles ne peuvent pas faire l'objet d'un retour, notamment les produits personnalisés (commandes spéciales ou articles réalisés sur mesure), les articles soldés ou les cartes cadeaux. Pour toute question concernant un article spécifique, n'hésitez pas à nous contacter.",
+	},
+	{
+		title: "COMMENT DÉMARRER UN RETOUR ?",
+		category: "Retours & Échanges",
+		description:
+			"Rendez-vous dans « Mes commandes », sélectionnez l'article concerné et suivez les étapes du formulaire de retour. Une étiquette prépayée vous sera envoyée par e-mail sous 24h.",
+	},
+	{
+		title: "COMMENT CHOISIR MA TAILLE ?",
+		category: "Produits & Tailles",
+		description:
+			"Chaque fiche produit propose un guide des tailles détaillé avec les mesures en centimètres. En cas de doute entre deux tailles, nous recommandons généralement de prendre la taille au-dessus.",
+	},
+	{
+		title: "LES COULEURS SONT-ELLES FIDÈLES AUX PHOTOS ?",
+		category: "Produits & Tailles",
+		description:
+			"Nous ajustons nos photos pour rester au plus proche de la réalité, mais un léger écart peut subsister selon le réglage de votre écran. N'hésitez pas à nous écrire pour toute précision sur un coloris.",
+	},
+	{
+		title: "QUELS MOYENS DE PAIEMENT ACCEPTEZ-VOUS ?",
+		category: "Paiements",
+		description:
+			"Nous acceptons les cartes bancaires (Visa, Mastercard, Amex), PayPal ainsi que le paiement en plusieurs fois selon le montant de votre panier.",
+	},
+	{
+		title: "MES DONNÉES BANCAIRES SONT-ELLES SÉCURISÉES ?",
+		category: "Paiements",
+		description:
+			"Oui, tous les paiements sont traités par un prestataire certifié PCI-DSS. Nous ne stockons jamais vos coordonnées bancaires sur nos serveurs.",
+	},
+	{
+		title: "COMMENT RÉINITIALISER MON MOT DE PASSE ?",
+		category: "Compte",
+		description:
+			"Depuis la page de connexion, cliquez sur « Mot de passe oublié » et suivez les instructions envoyées par e-mail pour en choisir un nouveau.",
+	},
+	{
+		title: "COMMENT SUPPRIMER MON COMPTE ?",
+		category: "Compte",
+		description:
+			"Envoyez-nous une demande depuis la page Contact avec l'adresse e-mail associée à votre compte. La suppression est effective sous 48h conformément au RGPD.",
 	},
 ];

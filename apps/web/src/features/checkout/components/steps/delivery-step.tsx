@@ -80,7 +80,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 						},
 					)}
 				>
-					Delivery
+					Livraison
 					{isCompleted && (
 						<svg
 							className="w-8 h-8 text-green-600"
@@ -102,7 +102,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 						onClick={handleEdit}
 						className="px-6 py-2 text-sm text-dark w-fit"
 					>
-						Edit
+						Modifier
 					</Button>
 				)}
 			</div>
@@ -111,7 +111,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 			{isOpen && canAccess ? (
 				<div className="space-y-4">
 					<p className="mb-4 text-sm text-gray-600">
-						Select your preferred shipping method
+						Sélectionnez votre méthode de livraison préférée
 					</p>
 
 					{(error || fetchError) && (
@@ -122,7 +122,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 					)}
 
 					{optionsLoading ? (
-						<p className="text-sm text-gray-500">Loading shipping options...</p>
+						<p className="text-sm text-gray-500">Chargement des options de livraison...</p>
 					) : fetchError ? (
 						<div className="p-4 text-sm text-red-800 bg-red-100 rounded-lg">
 							Impossible de charger les options de livraison. Veuillez vérifier
@@ -156,11 +156,11 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 										/>
 										<div>
 											<p className="font-medium">{option.name}</p>
-											<p className="text-sm text-gray-500">Standard delivery</p>
+											<p className="text-sm text-gray-500">Livraison standard</p>
 										</div>
 									</div>
 									<span className="font-medium">
-										{option.amount ? formatCurrency_FR(option.amount) : "Free"}
+										{option.amount ? formatCurrency_FR(option.amount) : "Gratuit"}
 									</span>
 								</label>
 							))}
@@ -172,7 +172,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 						className="py-6 mt-6 w-full"
 						disabled={!selectedOptionId || isLoading || !cartId}
 					>
-						{isLoading ? "Processing..." : "Continue to payment"}
+						{isLoading ? "Traitement..." : "Continuer vers le paiement"}
 					</Button>
 				</div>
 			) : isCompleted ? (
@@ -181,20 +181,20 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 					{selectedShipping ? (
 						<>
 							<p className="font-medium">{selectedShipping.name}</p>
-							<p>Standard delivery</p>
+							<p>Livraison standard</p>
 							<p className="mt-1 font-medium">
 								{selectedShipping.amount
 									? formatCurrency_FR(selectedShipping.amount)
-									: "Free"}
+									: "Gratuit"}
 							</p>
 						</>
 					) : (
-						<p>Delivery method selected</p>
+						<p>Méthode de livraison sélectionnée</p>
 					)}
 				</div>
 			) : !canAccess ? (
 				<p className="text-sm text-gray-400">
-					Complete the previous step to continue
+					Complétez l'étape précédente pour continuer
 				</p>
 			) : null}
 

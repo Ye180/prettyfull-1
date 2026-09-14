@@ -18,7 +18,7 @@ import { OrderIcon } from "../../../../../../../packages/ui/src/icons/order.icon
 
 const StatCard = ({ icon: Icon, label, value, href }: any) => (
 	<Link href={href} className="block group">
-		<div className="p-6 h-60 bg-white rounded-md border border-gray-100 transition-all duration-200">
+		<div className="p-6 h-60 bg-white rounded-2xl border border-gray-100 transition-all duration-200">
 			<div className="flex flex-col justify-between items-start">
 				<div className="">
 					<p className="font-medium text-gray-500 text-md">{label}</p>
@@ -131,7 +131,7 @@ export default function AccountPage() {
 			<div className="flex flex-col gap-4 justify-between xs:flex-row xs:items-center xs:px-3">
 				<div>
 					<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-						Overview
+						Aperçu
 					</h2>
 					<p className="text-gray-500">
 						Happy to see you again, {customer.first_name || customer.email}.
@@ -148,30 +148,30 @@ export default function AccountPage() {
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 				<StatCard
 					icon={OrderIcon}
-					label="Orders"
+					label="Commandes"
 					value={ordersLoading ? "..." : String(ordersCount)}
 					href="/account/orders"
 				/>
 				<StatCard
 					icon={Heart}
-					label="Wishlist"
+					label="Liste de souhaits"
 					value="0"
-					href="/account/wishlist"
+					href="/wishlist"
 				/>
 				<StatCard
 					icon={AddressIcon}
-					label="Addresses"
+					label="Adresses"
 					value={String(customer.addresses?.length ?? 0)}
 					href="/account/addresses"
 				/>
 			</div>
 
 			<div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-				<div className="flex flex-col justify-between p-6 bg-white border border-gray-100 rounded-md!">
+				<div className="flex flex-col justify-between p-6 bg-white border border-gray-100 rounded-2xl!">
 					<div className="space-y-10">
 						<div className="flex justify-between items-center">
 							<p className=" text-gray-800 font-semibold text-xl! ">
-								Last Order
+								Dernière commande
 							</p>
 							{lastOrderStatus && (
 								<span
@@ -185,7 +185,7 @@ export default function AccountPage() {
 							<Skeleton className="w-full h-24" />
 						) : lastOrder ? (
 							<div className="flex gap-4">
-								<div className="overflow-hidden w-24 h-24 bg-gray-100 rounded-lg shrink-0">
+								<div className="overflow-hidden w-24 h-24 bg-gray-100 rounded-2xl shrink-0">
 									{lastOrder.items?.[0]?.thumbnail && (
 										<Image
 											src={lastOrder.items[0].thumbnail}
@@ -199,7 +199,7 @@ export default function AccountPage() {
 								</div>
 								<div>
 									<p className="text-sm font-medium text-gray-900">
-										Order #{lastOrder.display_id}
+										Commande n°{lastOrder.display_id}
 									</p>
 									<p className="text-sm text-gray-500">
 										{new Date(lastOrder.created_at).toLocaleDateString(
@@ -217,21 +217,21 @@ export default function AccountPage() {
 								</div>
 							</div>
 						) : (
-							<p className="text-sm text-gray-500">No order</p>
+							<p className="text-sm text-gray-500">Aucune commande</p>
 						)}
 					</div>
 					<Link href="/account/orders">
 						<Button variant="outline" className="mt-6 w-full border-gray-200">
-							See orders
+							Voir les commandes
 						</Button>
 					</Link>
 				</div>
 
-				<div className="flex flex-col justify-between p-6 bg-white border border-gray-100 rounded-md!">
+				<div className="flex flex-col justify-between p-6 bg-white border border-gray-100 rounded-2xl!">
 					<div className="space-y-10">
 						<div className="flex justify-between items-center mb-4">
 							<p className=" text-gray-800 font-semibold  text-xl! ">
-								Default Address
+								Adresse par défaut
 							</p>
 						</div>
 						{defaultAddress ? (
@@ -248,12 +248,12 @@ export default function AccountPage() {
 							</address>
 						) : (
 							<address className="space-y-1 text-sm not-italic text-gray-600">
-								<p className="text-gray-500">No address registered</p>
+								<p className="text-gray-500">Aucune adresse enregistrée</p>
 							</address>
 						)}
 						<Link href="/account/addresses">
 							<Button variant="outline" className="mt-6 w-full border-gray-200">
-								See Addresses
+								Voir les adresses
 							</Button>
 						</Link>
 					</div>
@@ -265,25 +265,25 @@ export default function AccountPage() {
 				<div className="flex flex-col gap-4 justify-between sm:flex-row sm:items-center">
 					<div>
 						<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-							Personal Information
+							Informations personnelles
 						</h2>
-						<p className="text-gray-500">Update your login information.</p>
+						<p className="text-gray-500">Mettez à jour vos informations de connexion.</p>
 					</div>
 				</div>
-				<div className="px-8 py-12 bg-white border border-gray-100 rounded-md!">
+				<div className="px-8 py-12 bg-white border border-gray-100 rounded-2xl!">
 					<form className="space-y-10 w-full" onSubmit={handleSaveProfile}>
 						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 							<Input
-								label="First name"
-								placeholder="Write first name"
+								label="Prénom"
+								placeholder="Saisissez votre prénom"
 								className="h-fit"
 								value={firstName}
 								onChange={(e) => setFirstName(e.target.value)}
 							/>
 
 							<Input
-								label="Last name"
-								placeholder="Write last name"
+								label="Nom"
+								placeholder="Saisissez votre nom"
 								className="h-fit"
 								value={lastName}
 								onChange={(e) => setLastName(e.target.value)}
@@ -292,7 +292,7 @@ export default function AccountPage() {
 						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 							<Input
 								type="email"
-								label="Email"
+								label="E-mail"
 								placeholder="exemple@gmail.com"
 								className="h-fit"
 								value={email}
@@ -300,8 +300,8 @@ export default function AccountPage() {
 							/>
 
 							<Input
-								label="Number"
-								placeholder="+33 6..."
+								label="Téléphone"
+								placeholder="+225 07 00 00 00 00"
 								className="h-fit"
 								value={phone}
 								onChange={(e) => setPhone(e.target.value)}
@@ -313,10 +313,10 @@ export default function AccountPage() {
 								className="px-8 font-medium text-white bg-black rounded-full shadow-lg transition-all hover:bg-gray-800 shadow-gray-200"
 								disabled={isSaving}
 							>
-								{isSaving ? "Saving..." : "Save"}
+								{isSaving ? "Enregistrement..." : "Enregistrer"}
 							</Button>
 							{saveSuccess && (
-								<span className="text-sm text-green-600">Profile updated!</span>
+								<span className="text-sm text-green-600">Profil mis à jour !</span>
 							)}
 						</div>
 					</form>

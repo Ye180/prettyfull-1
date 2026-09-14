@@ -17,3 +17,4 @@ export * from "./integrations.js";
 export * from "./cms.js";
 export * from "./settings.js";
 export * from "./dashboard.js";
+export * from "./reviews.js";

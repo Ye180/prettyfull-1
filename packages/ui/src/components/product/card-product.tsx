@@ -4,8 +4,7 @@
 // CardProduct : Carte produit principale avec sélection couleur/taille
 // =============================================================================
 
-import { cn, formatCurrency_FR, getMediaUrl } from "@prettyfull/utils";
-import { ImageOff } from "lucide-react";
+import { cn, getMediaUrl } from "@prettyfull/utils";
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -15,6 +14,7 @@ const Image = NextImage as any;
 
 import { useCartStore } from "@prettyfull/store";
 import { ColorSelector } from "./color-selector";
+import { DiscountBadge, PriceBlock } from "./price-block";
 import { SizeSelector } from "./size-selector";
 import type { NormalizedCollectionProduct } from "./types";
 
@@ -163,6 +163,13 @@ export const CardProduct: React.FC<CardProductProps> = ({
 					amount: matchingVariant.calculated_price?.calculated_amount ?? 0,
 					currency: currencyCode === "xof" ? "FCFA" : "USD",
 				},
+				// Triplet du point de stock : c'est lui, et non le libellé affiché, que
+				// le tunnel d'achat renvoie à l'API pour réserver la bonne déclinaison.
+				selection: {
+					productId: activeColor?.productId ?? matchingVariant.id,
+					variantId: matchingVariant.variantId ?? null,
+					sizeId: matchingVariant.sizeId ?? null,
+				},
 			});
 
 			toast.cart("Ajouté au panier", {
@@ -184,7 +191,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 	if (!activeColor) {
 		return (
 			<article className={cn("w-full max-w-sm animate-pulse", className)}>
-				<div className="bg-gray-200 rounded-lg aspect-3/4" />
+				<div className="bg-gray-200 rounded-[2.2rem] aspect-3/4" />
 				<div className="mt-3 w-3/4 h-4 bg-gray-200 rounded" />
 				<div className="mt-2 w-1/2 h-4 bg-gray-200 rounded" />
 			</article>
@@ -197,84 +204,83 @@ export const CardProduct: React.FC<CardProductProps> = ({
 		<article className={cn("pb-4 space-y-3 w-full group", className)}>
 			{/* ===== Image principale ===== */}
 			<div
-				className="overflow-hidden relative bg-gray-50 rounded-none cursor-pointer"
+				className="overflow-hidden relative bg-gray-50 rounded-[2.2rem] cursor-pointer"
 				onClick={handleNavigate}
 			>
 				<div className="relative w-full aspect-3/4">
-					{thumbnailSrc ? (
-						<>
-							{isImageLoading && (
-								<div className="flex absolute inset-0 z-10 justify-center items-center bg-gray-100">
-									<div className="w-8 h-8 rounded-full border-2 border-gray-300 animate-spin border-t-black" />
-								</div>
-							)}
+					<DiscountBadge
+						price={activeColor.price}
+						compareAtPrice={activeColor.compareAtPrice}
+						className="absolute top-3 left-3"
+					/>
 
-							<Image
-								src={thumbnailSrc}
-								alt={`${product.collectionTitle} - ${activeColor.label}`}
-								width={600}
-								height={800}
-								sizes="(max-width: 639px) 50vw, (max-width: 1024px) 33vw, 25vw"
-								className={cn(
-									"object-cover transition-opacity duration-300",
-									isImageLoading ? "opacity-0" : "opacity-100",
-								)}
-								onLoad={() => setIsImageLoading(false)}
-								onError={() => setIsImageLoading(false)}
-								unoptimized
-								priority={priority}
-							/>
-						</>
-					) : (
-						// Visuel manquant : un repli neutre plutôt qu'une image cassée —
-						// la carte reste affichée, avec sa couleur, son prix et ses tailles.
-						<div className="flex absolute inset-0 justify-center items-center bg-gray-100">
-							<ImageOff className="w-10 h-10 text-gray-300" strokeWidth={1.25} />
+					{isImageLoading && (
+						<div className="flex absolute inset-0 z-10 justify-center items-center bg-gray-100">
+							<div className="w-8 h-8 rounded-full border-2 border-gray-300 animate-spin border-t-black" />
 						</div>
 					)}
 
-					{/* Boutons d'action desktop (hover) */}
-					<div className="flex absolute right-0 left-0 bottom-4 gap-3 justify-between items-center px-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-md:hidden">
+					<Image
+						src={thumbnailSrc}
+						alt={`${product.collectionTitle} - ${activeColor.label}`}
+						width={600}
+						height={800}
+						sizes="(max-width: 639px) 50vw, (max-width: 1024px) 33vw, 25vw"
+						className={cn(
+							"object-cover transition-opacity duration-300",
+							isImageLoading ? "opacity-0" : "opacity-100",
+						)}
+						onLoad={() => setIsImageLoading(false)}
+						onError={() => setIsImageLoading(false)}
+						unoptimized
+						priority={priority}
+					/>
+
+					{/* Cœur wishlist — toujours visible */}
+					<button
+						type="button"
+						onClick={(e) => e.stopPropagation()}
+						className="flex absolute top-3 right-3 z-20 justify-center items-center w-9 h-9 bg-white rounded-full shadow-sm cursor-pointer"
+						aria-label="Ajouter aux favoris"
+					>
+						<Heart className="w-4 h-4" />
+					</button>
+
+					{/* Bouton d'ajout au panier desktop (hover) */}
+					<div className="flex absolute inset-x-4 bottom-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-md:hidden">
 						<Button
 							type="button"
 							onClick={handleToggleSizeSelector}
-							className="pt-4 pb-5 px-4 w-2/3 text-[1.4rem] font-medium"
+							className="px-4 py-3 w-full text-sm font-medium"
 						>
 							Ajouter au panier
 						</Button>
-						<button
-							type="button"
-							onClick={(e) => e.stopPropagation()}
-							className="p-4 text-2xl rounded-full cursor-pointer w-fit bg-secondary"
-							aria-label="Ajouter aux favoris"
-						>
-							<Heart className="w-8 h-8" />
-						</button>
 					</div>
 
 					{/* Bouton mobile */}
-					<div className="absolute right-4 bottom-4 flex-col space-y-4 rounded-lg max-md:flex w-fit md:hidden">
+					<div className="flex absolute right-3 bottom-3 max-md:flex md:hidden">
 						<button
 							type="button"
 							onClick={handleToggleSizeSelector}
-							className="py-2 px-2 text-[1.4rem] font-medium shadow-sm text-white h-fit w-fit bg-secondary rounded-full"
+							className="flex justify-center items-center w-9 h-9 bg-black rounded-full shadow-sm cursor-pointer"
+							aria-label="Ajouter au panier"
 						>
-							<AddToCardIcon className="w-12 h-12 text-white" />
+							<AddToCardIcon className="w-4 h-4 text-white" />
 						</button>
 					</div>
 
 					{/* Sélecteur de taille Desktop (overlay) */}
 					{!isMobile && showSizeSelector && availableSizes.length > 0 && (
 						<div
-							className="absolute right-4 bottom-4 left-4 p-4 space-y-4 bg-white rounded-lg shadow-xl lg:px-8 lg:py-5"
+							className="absolute right-4 bottom-4 left-4 p-4 space-y-4 bg-white rounded-2xl shadow-xl lg:px-8 lg:py-5"
 							onClick={(e) => e.stopPropagation()}
 						>
 							<div className="flex justify-between items-center pb-4 mb-3">
-								<span className="text-sm font-semibold">Size</span>
+								<span className="text-sm font-semibold">Taille</span>
 								<button
 									type="button"
 									onClick={handleCloseSizeSelector}
-									className="text-gray-500 hover:text-black"
+									className="text-gray-500 cursor-pointer hover:text-black"
 									aria-label="Fermer"
 								>
 									<CloseIcon className="w-8 h-8" />
@@ -308,7 +314,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 								<DrawerClose asChild>
 									<button
 										type="button"
-										className="text-gray-500 hover:text-black"
+										className="text-gray-500 cursor-pointer hover:text-black"
 										aria-label="Fermer"
 									>
 										<CloseIconImported className="w-8 h-8" />
@@ -329,21 +335,17 @@ export const CardProduct: React.FC<CardProductProps> = ({
 			)}
 
 			{/* ===== Infos produit ===== */}
-			<div className="space-y-2">
-				<div className="flex justify-between items-start text-[#000]">
-					{/*
-					 * `min-w-0` est indispensable : sans lui, un enfant flex ne
-					 * rétrécit jamais sous sa largeur intrinsèque, et `truncate`
-					 * n'a plus rien à couper — le titre déborde alors sous la
-					 * ligne de couleurs au lieu d'être tronqué proprement.
-					 */}
-					<h3 className="min-w-0 flex-1 tracking-[0.03em] text-2xl! max-md:text-[1.8rem]! truncate">
-						{activeColor?.title}
-					</h3>
-					<h3 className="shrink-0 tracking-[0.03em] text-2xl! max-md:text-[1.8rem]! whitespace-nowrap!">
-						{formatCurrency_FR(activeColor?.price, currencySymbol)}
-					</h3>
-				</div>
+			<div className="space-y-1.5">
+				<h3 className="text-sm font-medium tracking-wide truncate line-clamp-1">
+					{activeColor?.title}
+				</h3>
+
+				<PriceBlock
+					price={activeColor.price}
+					compareAtPrice={activeColor.compareAtPrice}
+					currencySymbol={currencySymbol}
+					className="flex gap-1 items-baseline"
+				/>
 
 				<ColorSelector
 					colors={product.colors}

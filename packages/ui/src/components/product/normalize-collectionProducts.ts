@@ -71,7 +71,10 @@ function buildNormalizedColor(product: RawProduct): NormalizedColorVariant {
       purchasable,
       calculated_price: {
         calculated_amount: variant.calculated_price?.calculated_amount ?? 0,
+        original_amount: variant.calculated_price?.original_amount,
       },
+      variantId: variant.variant_id ?? null,
+      sizeId: variant.size_id ?? null,
     };
   });
 
@@ -94,6 +97,7 @@ function buildNormalizedColor(product: RawProduct): NormalizedColorVariant {
     variants,
     title: product.title,
     price: product.variants[0]?.calculated_price?.calculated_amount ?? 0,
+    compareAtPrice: product.variants[0]?.calculated_price?.original_amount,
   };
 }
 

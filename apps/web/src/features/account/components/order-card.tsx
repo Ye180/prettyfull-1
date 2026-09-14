@@ -78,7 +78,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 	});
 
 	return (
-		<div className="w-[83%]  rounded-md border border-gray-100 transition-all duration-200 group">
+		<div className="w-[83%]  rounded-2xl border border-gray-100 transition-all duration-200 group">
 			<div className="flex flex-col gap-4 justify-between p-6 border-b border-gray-100/80 sm:flex-row sm:items-start">
 				<div className="space-y-3">
 					<div className="flex gap-3 items-center">
@@ -117,14 +117,14 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 				<div className="flex gap-x-10 items-center pb-2 h-60 horizontal-scroll scrollbar-hide">
 					{order.items.map((item) => (
 						<div key={item.id} className="flex space-x-8 sm:space-x-10">
-							<div className="relative w-40 h-44 bg-gray-100 rounded-md aspect-square">
-								<div className="overflow-hidden w-40 h-44 rounded-md border border-gray-200">
+							<div className="relative w-40 h-44 bg-gray-100 rounded-2xl aspect-square">
+								<div className="overflow-hidden w-40 h-44 rounded-2xl border border-gray-200">
 									<Image
 										src={item.thumbnail}
 										alt={item.title}
 										width={100}
 										height={100}
-										className="object-top rounded"
+										className="object-top rounded-2xl"
 										unoptimized
 									/>
 								</div>

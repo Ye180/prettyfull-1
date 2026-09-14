@@ -3,8 +3,7 @@ import { useGetParentsCategoryMedusa } from "@/features/homepage/api/medusa/get-
 import Footer from "@/shared/components/organims/footer";
 import Header from "@/shared/components/organims/header";
 import { cn } from "@prettyfull/utils";
-import { usePathname, useRouter } from "next/navigation";
-import { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren, useState } from "react";
 
 interface HomeLayoutProps extends PropsWithChildren<{ className?: string }> {}
 
@@ -12,36 +11,31 @@ const HomeLayout = ({
 	children,
 	className,
 }: PropsWithChildren<HomeLayoutProps>) => {
-	const router = useRouter();
-	const pathname = usePathname();
-
 	const {
 		data: parentsCategoryMedusa,
 		isLoading: loadingParentsCategoryMedusa,
 	} = useGetParentsCategoryMedusa();
-
-	useEffect(() => {
-		if (
-			!loadingParentsCategoryMedusa &&
-			parentsCategoryMedusa &&
-			parentsCategoryMedusa.length > 0 &&
-			pathname === "/"
-		) {
-			const firstPageHandle = parentsCategoryMedusa[0]?.handle;
-			if (firstPageHandle) {
-				router.replace(`/pages/${firstPageHandle}`);
-			}
-		}
-	}, [parentsCategoryMedusa, loadingParentsCategoryMedusa, pathname, router]);
+	// ponytail: footer is `position: fixed` behind the page (real sticky-reveal
+	// effect, not a scroll-in animation) — the content column needs bottom
+	// padding matching its live height so the footer only shows once scrolled
+	// past, instead of sitting hidden under the content permanently.
+	const [footerHeight, setFooterHeight] = useState(0);
 
 	return (
-		<div className="flex overflow-x-hidden flex-col min-h-screen">
-			<Header
-				main_category={parentsCategoryMedusa}
-				loading={loadingParentsCategoryMedusa}
-			/>
-			<div className={cn("h-fit", className)}>{children}</div>
-			<Footer />
+		<div className="overflow-x-hidden">
+			{/* ponytail: padding-bottom must live on THIS transparent wrapper, not
+			 * the white one below — a background-color paints across its own
+			 * padding box, so the reveal gap was being hidden by its own bg-white. */}
+			<div className="relative z-10" style={{ paddingBottom: footerHeight }}>
+				<div className="flex flex-col min-h-screen bg-white">
+					<Header
+						main_category={parentsCategoryMedusa}
+						loading={loadingParentsCategoryMedusa}
+					/>
+					<div className={cn("h-fit", className)}>{children}</div>
+				</div>
+			</div>
+			<Footer onHeightChange={setFooterHeight} />
 		</div>
 	);
 };

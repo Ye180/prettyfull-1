@@ -9,7 +9,7 @@ import type {
 	StaticPage,
 	StaticPageInput,
 } from "@prettyfull/contracts";
-import { and, asc, count, desc, eq, isNull, ilike, lte, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, isNull, ilike, lte, or, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import * as t from "../../db/schema/index.js";
@@ -76,7 +76,7 @@ export const listPublicBanners = async (
 	const filters: SQL[] = [
 		eq(t.banners.status, "published"),
 		or(isNull(t.banners.startsAt), lte(t.banners.startsAt, now))!,
-		or(isNull(t.banners.endsAt), sql`${t.banners.endsAt} > ${now}`)!,
+		or(isNull(t.banners.endsAt), gt(t.banners.endsAt, now))!,
 	];
 
 	if (placement) filters.push(eq(t.banners.placement, placement));

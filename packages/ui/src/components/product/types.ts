@@ -112,6 +112,9 @@ export interface RawVariant {
   options: RawVariantOption[];
   /** Quantité en stock (gérée par Medusa inventory) */
   inventory_quantity?: number;
+  /** Triplet du point de stock réel — distinct de `id`, qui adresse la combinaison couleur × taille. */
+  variant_id?: string | null;
+  size_id?: string | null;
   /** Present when pricing context is requested (region_id, currency_code) */
   calculated_price?: {
     calculated_amount: number;
@@ -150,7 +153,11 @@ export interface NormalizedVariant {
   purchasable: boolean;
   calculated_price: {
     calculated_amount: number;
+    original_amount?: number;
   };
+  /** Triplet du point de stock réel, nécessaire pour réserver la bonne déclinaison au panier. */
+  variantId?: string | null;
+  sizeId?: string | null;
 }
 
 export interface NormalizedColorVariant {
@@ -164,6 +171,8 @@ export interface NormalizedColorVariant {
   variants: NormalizedVariant[];
   title: string;
   price: number; // Calculated price from first variant
+  /** Prix barré, si le premier variant est en réduction. */
+  compareAtPrice?: number;
 }
 
 export interface NormalizedCollectionProduct {

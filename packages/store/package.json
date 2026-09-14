@@ -3,8 +3,9 @@
 	"version": "1.0.0",
 	"private": true,
 	"exports": {
-		".": "./src/use-cart-store.ts",
-		"./use-cart-store": "./src/use-cart-store.ts"
+		".": "./src/index.ts",
+		"./use-cart-store": "./src/use-cart-store.ts",
+		"./use-wishlist-store": "./src/use-wishlist-store.ts"
 	},
 	"scripts": {
 		"lint": "eslint . --max-warnings 0",

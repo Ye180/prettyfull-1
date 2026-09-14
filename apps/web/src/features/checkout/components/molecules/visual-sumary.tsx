@@ -18,14 +18,14 @@ const VisualSummary = ({
 	};
 	return (
 		<div className="flex space-x-8 sm:space-x-10">
-			<div className="relative w-40 h-44 bg-gray-100 rounded-md aspect-square">
-				<div className="overflow-hidden w-40 h-44 rounded-md">
+			<div className="relative w-40 h-44 bg-gray-100 rounded-2xl aspect-square">
+				<div className="overflow-hidden w-40 h-44 rounded-2xl">
 					<Image
 						src={item.image}
 						alt={item.name}
 						width={100}
 						height={100}
-						className="object-top w-40 rounded h-58"
+						className="object-top object-cover w-40 h-44 rounded-2xl"
 					unoptimized
 					/>
 				</div>

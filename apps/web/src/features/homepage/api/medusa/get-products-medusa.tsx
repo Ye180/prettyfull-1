@@ -3,7 +3,10 @@
 import { fetchProducts } from "@/lib/store-api";
 import { useQuery } from "@tanstack/react-query";
 
-export const getProductsMedusa = async () => fetchProducts();
+export const getProductsMedusa = async () => {
+	const { products } = await fetchProducts();
+	return products;
+};
 
 export const useGetProductsMedusa = () =>
 	useQuery({

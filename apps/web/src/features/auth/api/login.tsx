@@ -1,32 +1,19 @@
-
-import { API_ROUTES } from "@/api";
-import { setItem } from "@/lib/utils/local-storage";
-import apiClient from "@/shared/lib/client";
-import { USER_QUERY_KEY } from "@/shared/utils/query-keys";
+import { setStoreAccessToken, storeApi } from "@/lib/store-api";
+import type { AuthResponse } from "@prettyfull/contracts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { User } from "../../users/types";
-import { LoginDto } from "../types/login.dto";
+import type { LoginFormData } from "../schemas/login.schema";
 
-interface LoginResponse {
-  user: User;
-  accessToken: string;
-}
-
-export const login = async (data: LoginDto): Promise<LoginResponse> => {
-	const response = await apiClient.post(API_ROUTES.auth.login, data);
-	return response.data;
-};
+export const login = (data: LoginFormData) =>
+	storeApi.post<AuthResponse>("/api/store/auth/login", data, true);
 
 export const useLogin = () => {
-    const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: login,
-        onSuccess: (data) => {
-            setItem('accessToken', data.accessToken);
-            
-            queryClient.setQueryData([USER_QUERY_KEY, 'profile'], data.user);
-
-        }
+		onSuccess: (data) => {
+			setStoreAccessToken(data.accessToken);
+			queryClient.setQueryData(["customer-profile"], data.user);
+		},
 	});
 };

@@ -35,7 +35,7 @@ export function CollectionVariants({
 							"shrink-0 size-10 md:size-14 overflow-hidden border transition-all duration-200 relative group rounded-full p-1 ",
 							variant.isActive
 								? "border-black border-2 scale-110"
-								: "border-gray-200 hover:border-gray-400 hover:scale-105"
+								: "border-gray-200 hover:border-gray-400 hover:scale-105",
 						)}
 						title={variant.color || variant.title}
 					>

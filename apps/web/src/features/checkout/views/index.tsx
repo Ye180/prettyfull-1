@@ -1,8 +1,9 @@
 "use client";
 
 import { useRegionStore } from "@/stores/useRegion";
+import { useCartStore } from "@prettyfull/store";
 import { useRouter } from "next/navigation";
-import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+import { useEffect } from "react";
 import CheckoutSummary from "../components/organims/checkout-summary";
 import {
 	AddressStep,
@@ -12,61 +13,62 @@ import {
 } from "../components/steps";
 import { useCheckoutStep } from "../hooks/use-checkout-step";
 
-const GUEST_CART_ID = "guest-cart";
-
 const CheckoutView = () => {
 	const router = useRouter();
-
+	const items = useCartStore((state) => state.items);
 	const { goToNextStep } = useCheckoutStep();
 	const region = useRegionStore((state) => state.region);
+	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
 
-	const handleAddressComplete = () => {
-		goToNextStep();
-	};
+	useEffect(() => {
+		if (items.length === 0) {
+			router.replace("/cart");
+		}
+	}, [items.length, router]);
 
-	const handleDeliveryComplete = () => {
-		goToNextStep();
-	};
+	// ponytail: le panier serveur est invité (cookie), créé à la volée par le
+	// backend au premier appel — il n'existe pas d'id à threader avant ça.
+	// Ce sentinel ne sert qu'à activer les étapes une fois le panier non vide.
+	const cartId = items.length > 0 ? "guest-cart" : null;
 
-	const handlePaymentComplete = () => {
-		goToNextStep();
-	};
-
-	/**
-	 * Le jeton de confirmation accompagne l'identifiant : une commande passée
-	 * sans compte ne serait sinon pas consultable par son auteur.
-	 */
-	const handlePlaceOrder = (orderId: string, confirmationToken?: string) => {
-		const query = new URLSearchParams({ order_id: orderId });
-		if (confirmationToken) query.set("token", confirmationToken);
-
-		router.push(`/order-confirmation?${query.toString()}`);
-	};
+	if (items.length === 0) return null;
 
 	return (
-		<Container
-			maxWidth="100vw"
-			className="flex flex-col gap-y-4 px-4 py-12 pb-20 sm:flex-row md:justify-between sm:gap-x-24 lg:px-80"
-		>
-			{/* Left Column: Checkout Steps */}
-			<div className="flex flex-col gap-y-8 py-6 w-full bg-white sm:w-2/3">
-				<AddressStep cartId={GUEST_CART_ID} onComplete={handleAddressComplete} />
-				<DeliveryStep cartId={GUEST_CART_ID} onComplete={handleDeliveryComplete} />
-				<PaymentStep
-					cartId={GUEST_CART_ID}
-					regionId={region?.id ?? null}
-					onComplete={handlePaymentComplete}
-				/>
-				<ReviewStep cartId={GUEST_CART_ID} onPlaceOrder={handlePlaceOrder} />
-			</div>
+		<main className="w-full min-h-screen bg-white text-gray-900 pb-28 pt-6 sm:pt-10">
+			<div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+				<h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight font-sans text-gray-950 mb-8 pb-4 border-b border-gray-100">
+					Checkout
+				</h1>
 
-			{/* Right Column: Order Summary */}
-			<div className="py-12 w-full sm:w-1/3">
-				<CheckoutSummary
-					currency={region?.currency_code === "xof" ? "FCFA" : "$"}
-				/>
+				<div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+					<div className="space-y-10 lg:col-span-7">
+						<AddressStep cartId={cartId} onComplete={() => goToNextStep()} />
+						<DeliveryStep cartId={cartId} onComplete={() => goToNextStep()} />
+						<PaymentStep
+							cartId={cartId}
+							regionId={null}
+							onComplete={() => goToNextStep()}
+						/>
+						<ReviewStep
+							cartId={cartId}
+							onPlaceOrder={(orderId, confirmationToken) =>
+								router.push(
+									`/order-confirmation?order_id=${orderId}${
+										confirmationToken ? `&token=${confirmationToken}` : ""
+									}`,
+								)
+							}
+						/>
+					</div>
+
+					<div className="lg:col-span-5">
+						<div className="sticky top-24 p-6 sm:p-8 bg-[#F9FAFB] rounded-3xl border border-gray-100 shadow-sm">
+							<CheckoutSummary currency={currency} />
+						</div>
+					</div>
+				</div>
 			</div>
-		</Container>
+		</main>
 	);
 };
 

@@ -1,62 +1,63 @@
-// import { CardProduct, GridCardProduct } from "@prettyfull/ui";
-// import Container from "../../../../../../../packages/ui/src/layouts/helpers/container";
+"use client";
 
-// export const TABS = {
-// 	for_you: "Pour toi",
-// 	woman: "Femme",
-// 	men: "Homme",
-// 	accessory: "Accessoires",
-// };
+import { useRelatedProducts } from "@/features/products/hooks/use-related-products";
+import SectionHeading from "@/shared/components/molecules/core/section-heading";
+import { useRegionStore } from "@/stores/useRegion";
+import { CardProduct, GridCardProduct } from "@prettyfull/ui";
+import Link from "next/link";
+import Container from "../../../../../../../packages/ui/src/layouts/helpers/container";
 
-// const ProductSuggestion = () => {
-// 	const handleGridClick = (value: number) => {
-// 		return (
-// 			<GridCardProduct>
-// 				<>
-// 					{Array.from({ length: value }).map((_, i) => (
-// 						<div key={i} className="w-full aspect-10/9">
-// 							<CardProduct
-// 								key={i}
-// 								productId={`suggestion-${i}`}
-// 								notVariable={{
-// 									color: {
-// 										code: "#FF0000",
-// 										label: "Rouge",
-// 									},
-// 									image: ["/assets/product_1.jpg"],
-// 									quantity: 1,
-// 									size: ["S", "M", "L"],
-// 								}}
-// 								price={
-// 									{ amount: 12000, currency: "USD" } /* Example price object */
-// 								}
-// 								promotion={{
-// 									pourcentage: 50,
-// 									reduced_price: {
-// 										amount: 6000,
-// 										currency: "USD",
-// 									},
-// 								}}
-// 								smallDescription="Top polyvalente á Manche"
-// 								name="Sweet-Top"
-// 							/>
-// 						</div>
-// 					))}
-// 				</>
-// 			</GridCardProduct>
-// 		);
-// 	};
-// 	return (
-// 		<Container maxWidth="100vw" className="px-4 space-y-8 w-full lg:px-40">
-// 			<div className="flex justify-between space-y-8">
-// 				<h4 className="py-2 capitalize w-fit"> tu peux aussi aimer</h4>
-// 			</div>
+interface ProductSuggestionProps {
+	categorySlug: string | undefined;
+	excludeProductId: string;
+}
 
-// 			<div className="flex justify-between w-full max-lg:flex-col">
-// 				{handleGridClick(4)}
-// 			</div>
-// 		</Container>
-// 	);
-// };
+const ProductSuggestion = ({
+	categorySlug,
+	excludeProductId,
+}: ProductSuggestionProps) => {
+	const currencyCode = useRegionStore((state) => state.region?.currency_code);
+	const { data: products, isLoading } = useRelatedProducts(
+		categorySlug,
+		excludeProductId,
+	);
 
-// export default ProductSuggestion;
+	if (!isLoading && (!products || products.length === 0)) return null;
+
+	return (
+		<Container className="py-8 space-y-8">
+			<SectionHeading title="Tu peux aussi aimer" />
+
+			<GridCardProduct action_grid className="max-sm:gap-y-8">
+				<>
+					{isLoading
+						? Array.from({ length: 4 }).map((_, index) => (
+								<div
+									key={index}
+									className="w-full aspect-3/4 bg-gray-100 rounded-[2.2rem] animate-pulse"
+								/>
+							))
+						: products!.map((product, index) => (
+								<CardProduct
+									key={product.collectionId}
+									product={product}
+									currencyCode={currencyCode}
+									priority={index < 4}
+								/>
+							))}
+				</>
+			</GridCardProduct>
+
+			<div className="flex justify-center">
+				<Link
+					href="/collections"
+					className="inline-flex items-center px-8 py-3 text-sm font-medium text-white bg-black rounded-full transition-colors hover:bg-gray-800"
+				>
+					See More
+				</Link>
+			</div>
+		</Container>
+	);
+};
+
+export default ProductSuggestion;

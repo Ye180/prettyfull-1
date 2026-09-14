@@ -1,67 +1,116 @@
 "use client";
 
-import CartSummary from "@/features/cart/components/molecules/cart-summary";
-import CartItems from "@/features/cart/components/organims/cart-items";
-import { useRegionStore } from "@/stores/useRegion";
+import CartContent from "@/features/cart/components/organims/cart-content";
+import { Checkbox } from "@prettyfull/ui";
 import { useCartStore } from "@prettyfull/store";
-import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-
-const TAX_RATE = 0.18;
-const SHIPPING_FEE = 10;
-const FREE_SHIPPING_THRESHOLD = 50000;
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowRightIcon } from "@/components/icons/arrow-icon";
 
 const CartView = () => {
 	const items = useCartStore((state) => state.items);
-	const regions = useRegionStore((state) => state.region);
+	const clearCart = useCartStore((state) => state.clearCart);
+	const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-	const subtotal = items.reduce(
-		(acc, item) => acc + (item.unitPrice?.amount ?? item.product.price?.amount ?? 0) * item.quantity,
-		0,
-	);
-	const shipping = items.length === 0 || subtotal > FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
-	const taxes = subtotal * TAX_RATE;
-	const total = subtotal + shipping + taxes;
+	const totalItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
+	const allSelected =
+		items.length > 0 && items.every((item) => selectedIds.has(item.productId));
+
+	const toggleAll = () => {
+		setSelectedIds(
+			allSelected ? new Set() : new Set(items.map((item) => item.productId)),
+		);
+	};
+
+	const toggleItem = (productId: string) => {
+		setSelectedIds((prev) => {
+			const next = new Set(prev);
+			if (next.has(productId)) {
+				next.delete(productId);
+			} else {
+				next.add(productId);
+			}
+			return next;
+		});
+	};
 
 	return (
-		<Container
-			maxWidth="100vw"
-			className="py-4 pb-40 min-h-screen max-lg:px-4 lg:px-40"
-		>
-			<div className="grid grid-cols-1 gap-x-20 md:grid-cols-12">
-				<section className="bg-white md:col-span-8">
-					<div className="flex justify-between items-center mb-6">
-						<h2 className="py-8 text-[3rem]! lg:text-[3.5rem]!">
-							Votre panier
-						</h2>
-						<span className="text-gray-500 text-md">
-							{items.length} article{items.length > 1 ? "s" : ""}
-						</span>
-					</div>
-					<div className="divide-y divide-gray-100">
-						<CartItems items={items} />
-					</div>
+		<main className="w-full min-h-screen bg-white text-gray-900 pb-28 pt-6 sm:pt-10">
+			<div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+				{/* Title */}
+				<div className="flex flex-wrap items-center justify-between gap-4 pb-6">
+					<h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight font-sans text-gray-950">
+						Mon panier <span className="font-medium text-gray-400">({totalItemCount || items.length})</span>
+					</h1>
+				</div>
 
-					<div className="mt-6 text-sm text-gray-600">
-						<p>
-							Shipping costs are calculated at checkout. You can modify the
-							quantity or remove items before confirming your order.
-						</p>
-					</div>
-				</section>
+				{items.length > 0 ? (
+					<>
+						{/* Select all & Remove all toolbar */}
+						<div className="flex justify-between items-center py-4 mb-6 border-b border-gray-200">
+							<label className="flex gap-3 items-center cursor-pointer select-none">
+								<Checkbox
+									checked={allSelected}
+									onCheckedChange={toggleAll}
+									aria-label="Tout sélectionner"
+									className="rounded"
+								/>
+								<span className="text-sm sm:text-base font-medium text-gray-800">
+									Tout sélectionner
+								</span>
+							</label>
+							<button
+								type="button"
+								onClick={clearCart}
+								className="text-sm sm:text-base font-semibold text-rose-500 cursor-pointer hover:text-rose-600 transition"
+							>
+								Tout supprimer
+							</button>
+						</div>
 
-				<aside className="md:col-span-4">
-					<div className="sticky top-24">
-						<CartSummary
-							subtotal={subtotal}
-							shipping={shipping}
-							taxes={taxes}
-							total={total}
-							currency={regions?.currency_code === "xof" ? "FCFA" : "$"}
+						<CartContent
+							items={items}
+							layout="page"
+							selectedIds={selectedIds}
+							onToggleItem={toggleItem}
+							itemsFooter={
+								<div className="mt-8 pt-4 text-xs sm:text-sm text-gray-500 leading-relaxed border-t border-gray-100">
+									<p>
+										Les frais de livraison sont calculés au moment du paiement. Vous
+										pouvez modifier la quantité ou retirer des articles avant de
+										confirmer votre commande.
+									</p>
+								</div>
+							}
 						/>
+					</>
+				) : (
+					/* Empty Cart State */
+					<div className="py-20 text-center max-w-lg mx-auto flex flex-col items-center">
+						<div className="w-20 h-20 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-3xl mb-6">
+							🛍️
+						</div>
+						<h2 className="text-2xl font-bold text-gray-900 mb-2">
+							Votre panier est actuellement vide
+						</h2>
+						<p className="text-gray-500 mb-8 leading-relaxed">
+							Découvrez nos silhouettes sélectionnées, nos mailles intemporelles et
+							nos pièces contemporaines pensées pour un quotidien tout en légèreté.
+						</p>
+						<div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+							<Link
+								href="/collections"
+								className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-full transition shadow-sm"
+							>
+								<span>Découvrir les collections</span>
+								<ArrowRightIcon className="w-4 h-4" />
+							</Link>
+						</div>
 					</div>
-				</aside>
+				)}
 			</div>
-		</Container>
+		</main>
 	);
 };
 

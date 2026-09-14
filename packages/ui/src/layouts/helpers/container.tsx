@@ -21,7 +21,7 @@ const Container = ({
   return (
     <Component
       style={{ maxWidth }}
-      className={cn(`mx-auto px-8 sm:px-20`, props.className)}
+      className={cn(`mx-auto px-6 lg:px-10 xl:px-16`, props.className)}
     >
       {children}
     </Component>

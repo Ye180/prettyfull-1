@@ -24,6 +24,13 @@ const IMAGE_LIMITS = {
 	},
 } as const;
 
+const REVIEW_PHOTO_LIMITS = {
+	image: {
+		maxFileSize: "4MB",
+		maxFileCount: 4,
+	},
+} as const;
+
 /**
  * Vérifie le jeton et la permission portés par la requête.
  *
@@ -73,6 +80,20 @@ export const uploadRouter = {
 		.middleware(({ req }) => requireStaff(req, PERMISSIONS.content.write))
 		.onUploadComplete(({ metadata, file }) => {
 			console.log(`[upload] contenu · ${file.name} par ${metadata.email}`);
+			return { url: file.ufsUrl, key: file.key, name: file.name };
+		}),
+
+	/**
+	 * Photos jointes à un avis produit (client montrant l'article porté).
+	 *
+	 * Pas d'authentification requise : un avis se dépose sans compte, même
+	 * posture que le formulaire de contact public. La modération se fait à la
+	 * publication de l'avis, pas au téléversement de la photo.
+	 */
+	[UPLOAD_ENDPOINTS.reviewPhoto]: f(REVIEW_PHOTO_LIMITS)
+		.middleware(() => ({}))
+		.onUploadComplete(({ file }) => {
+			console.log(`[upload] avis · ${file.name}`);
 			return { url: file.ufsUrl, key: file.key, name: file.name };
 		}),
 } satisfies FileRouter;

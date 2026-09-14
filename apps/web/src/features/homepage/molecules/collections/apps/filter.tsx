@@ -1,77 +1,97 @@
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "@prettyfull/ui";
-import { cn } from "@prettyfull/utils";
+import { Button } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import Adjust from "../adjust";
+import Availability from "../availability";
 import Colors from "../colors";
+import Material from "../material";
+import Prize from "../prize";
 import Size from "../size";
-import ToPull from "../to-pull";
 import TypeClothes from "../type-clothes";
 
-const Filter = () => {
+interface FilterProps {
+	/** Ferme le panneau (drawer) en conservant les filtres sélectionnés. */
+	onApply?: () => void;
+	/** Réinitialise les filtres pilotés par l'URL (recherche/tri/prix) puis ferme. */
+	onClear?: () => void;
+	minPrice?: number | null;
+	maxPrice?: number | null;
+	/** Seul filtre réellement câblé sur `useCollectionFilters` — appliqué au clic sur "Apply". */
+	onPriceChange?: (minPrice: number | null, maxPrice: number | null) => void;
+}
+
+const Filter = ({ onApply, onClear, minPrice = null, maxPrice = null, onPriceChange }: FilterProps) => {
 	const t = useTranslations("CollectionPage.filters");
 
-	const checkboxClass =
-		"pb-8 mt-4 space-y-10  max-md:flex max-md:flex-wrap max-md:gap-x-10";
+	// Draft local pour le prix : appliqué seulement au clic sur "Apply".
+	const [priceDraft, setPriceDraft] = useState<{ min: number | null; max: number | null }>({
+		min: minPrice,
+		max: maxPrice,
+	});
+	// Force le remontage de <Prize> (inputs non contrôlés) quand on efface.
+	const [priceResetKey, setPriceResetKey] = useState(0);
 
-	const headerClass = "!font-manrope  text-lg font-medium  ";
+	const handleApply = () => {
+		onPriceChange?.(priceDraft.min, priceDraft.max);
+		onApply?.();
+	};
+
+	const handleClear = () => {
+		setPriceDraft({ min: null, max: null });
+		setPriceResetKey((key) => key + 1);
+		onClear?.();
+	};
+
+	const sectionTitleClass = "mb-4 text-sm font-semibold text-black";
+
 	return (
 		<div>
-			<Accordion
-				type="multiple"
-				className="w-full text-black "
-				defaultValue={["item-12", "item-1", "item-2", "item-3", "item-4"]}
-			>
-				<AccordionItem value="item-12" className="pb-4 space-y-2 md:hidden">
-					<AccordionTrigger className={cn(headerClass)}>
-						{t("sort_by")}
-					</AccordionTrigger>
-					<AccordionContent className="pb-8 mt-4 space-y-10 ">
-						<ToPull />
-					</AccordionContent>
-				</AccordionItem>
-				<AccordionItem value="item-1" className="space-y-2">
-					<AccordionTrigger className={cn(headerClass)}>
-						{t("type_clothes")}
-					</AccordionTrigger>
-					<AccordionContent className={cn(checkboxClass)}>
-						<TypeClothes />
-					</AccordionContent>
-				</AccordionItem>
-				<AccordionItem value="item-2">
-					<AccordionTrigger className={cn(headerClass)}>
-						{t("colors")}
-					</AccordionTrigger>
-					<AccordionContent className="">
-						<Colors />
-					</AccordionContent>
-				</AccordionItem>
-				<AccordionItem value="item-3" className="space-y-2">
-					<AccordionTrigger className={cn(headerClass)}>
-						{t("adjust")}
-					</AccordionTrigger>
-					<AccordionContent className={cn(checkboxClass)}>
-						<Adjust />
-					</AccordionContent>
-				</AccordionItem>
-				<AccordionItem value="item-4">
-					<AccordionTrigger className={cn(headerClass)}>
-						{t("taille")}
-					</AccordionTrigger>
-					<AccordionContent className="flex flex-wrap gap-8 text-balance">
-						<Size />
-					</AccordionContent>
-				</AccordionItem>
-			</Accordion>
+			<div className="space-y-8 divide-y divide-gray-100">
+				<div className="pt-0">
+					<h4 className={sectionTitleClass}>{t("type_clothes")}</h4>
+					<TypeClothes />
+				</div>
+				<div className="pt-8">
+					<h4 className={sectionTitleClass}>{t("taille")}</h4>
+					<Size />
+				</div>
+				<div className="pt-8">
+					<h4 className={sectionTitleClass}>Prize</h4>
+					<Prize
+						key={priceResetKey}
+						minPrice={priceDraft.min}
+						maxPrice={priceDraft.max}
+						onChange={(min, max) => setPriceDraft({ min, max })}
+					/>
+				</div>
+				<div className="pt-8">
+					<h4 className={sectionTitleClass}>{t("colors")}</h4>
+					<Colors />
+				</div>
+				<div className="pt-8">
+					<h4 className={sectionTitleClass}>Fit</h4>
+					<Adjust />
+				</div>
+				<div className="pt-8">
+					<h4 className={sectionTitleClass}>Material</h4>
+					<Material />
+				</div>
+				<div className="pt-8">
+					<h4 className={sectionTitleClass}>Availability</h4>
+					<Availability />
+				</div>
+			</div>
 
-			{/* <div className="justify-between hidden w-full gap-5 mt-8 max-md:flex">
-				<Button variant="outline">Effacer</Button>
-				<Button>Appliquer</Button>
-			</div> */}
+			{(onApply || onClear) && (
+				<div className="flex gap-5 justify-between w-full mt-8">
+					<Button type="button" variant="outline" onClick={handleClear}>
+						{t("clear")}
+					</Button>
+					<Button type="button" onClick={handleApply}>
+						{t("apply")}
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 };

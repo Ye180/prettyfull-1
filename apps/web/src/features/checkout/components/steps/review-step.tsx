@@ -4,6 +4,7 @@ import { useGetShippingOptions } from "@/features/checkout/api/get-shipping-opti
 import { useCartStore } from "@prettyfull/store";
 import { Button, Checkbox } from "@prettyfull/ui";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import { useCompleteCart } from "../../api/complete-cart";
@@ -18,6 +19,7 @@ interface ReviewStepProps {
 }
 
 export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
+	const t = useTranslations("CheckoutPage.summary");
 	const { isStepCompleted, isStepActive } = useCheckoutStep();
 	const { reset: resetCheckoutStore } = useCheckoutStore();
 	const selectedShippingOptionId = useCheckoutStore(
@@ -79,7 +81,7 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 						}
 					)}
 				>
-					Review
+					Récapitulatif
 				</h2>
 			</div>
 
@@ -87,13 +89,13 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 			{isOpen && canAccess ? (
 				<div className="space-y-6">
 					<p className="text-sm text-gray-600">
-						Please review your order before placing it
+						Veuillez vérifier votre commande avant de la valider
 					</p>
 
 					{/* Order Items Summary */}
-					<div className="p-8 space-y-4 bg-gray-50 rounded-lg">
+					<div className="p-8 space-y-4 bg-gray-50 rounded-3xl">
 						<h3 className="flex flex-row font-medium gap-x-2 items-center text-2xl! tracking-wider">
-							Order Items ({items.length})
+							Articles de la commande ({items.length})
 						</h3>
 						<div className="space-y-4">
 							{items.map((item) => {
@@ -105,14 +107,14 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 										className="flex justify-between items-center text-sm"
 									>
 										<div className="flex gap-4 items-center">
-											<div className="overflow-y-hidden w-32 rounded-md h-38">
+											<div className="overflow-y-hidden w-32 rounded-2xl h-38">
 												{item.product.image && (
 													<Image
 														src={item.product.image}
 														alt={item.product.name}
 														width={100}
 														height={100}
-														className="object-cover w-32 h-52 bg-amber-400 rounded"
+														className="object-cover w-32 h-38 rounded-2xl"
 													unoptimized
 													/>
 												)}
@@ -137,19 +139,19 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 					{/* Totals */}
 					<div className="pt-4 space-y-4 border-t border-gray-200">
 						<div className="flex justify-between py-3 text-sm">
-							<span>Subtotal</span>
+							<span>{t("subtotal")}</span>
 							<span>{formatCurrency_FR(subtotal)}</span>
 						</div>
 						<div className="flex justify-between py-3 text-sm">
-							<span>Shipping</span>
+							<span>{t("shipping")}</span>
 							<span>{formatCurrency_FR(shipping)}</span>
 						</div>
 						<div className="flex justify-between py-3 text-sm">
-							<span>Taxes</span>
+							<span>{t("taxes")}</span>
 							<span>{formatCurrency_FR(taxes)}</span>
 						</div>
 						<div className="flex justify-between py-3 text-lg font-semibold border-t border-gray-200">
-							<span>Total</span>
+							<span>{t("total")}</span>
 							<span>{formatCurrency_FR(total)}</span>
 						</div>
 					</div>
@@ -162,9 +164,9 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 							id="terms"
 						/>
 						<label htmlFor="terms" className="text-sm text-gray-600">
-							By clicking the Place Order button, you confirm that you have
-							read, understand and accept our Terms of Use, Terms of Sale and
-							Returns Policy.
+							En cliquant sur le bouton Passer la commande, vous confirmez avoir
+							lu, compris et accepté nos Conditions d'utilisation, nos Conditions
+							de vente et notre Politique de retour.
 						</label>
 					</div>
 
@@ -175,12 +177,12 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 						className="py-6 w-full"
 						disabled={!termsAccepted || isLoading || !cartId}
 					>
-						{isLoading ? "Placing order..." : "Place Order"}
+						{isLoading ? "Passage de la commande..." : "Passer la commande"}
 					</Button>
 				</div>
 			) : !canAccess ? (
 				<p className="text-sm text-gray-400">
-					Complete the previous steps to continue
+					Complétez les étapes précédentes pour continuer
 				</p>
 			) : null}
 		</div>
