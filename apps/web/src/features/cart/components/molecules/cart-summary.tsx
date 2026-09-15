@@ -1,7 +1,14 @@
 "use client";
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
+import {
+	StoreApiError,
+	applyDiscountCode,
+	removeDiscountCode,
+	syncCartToServer,
+} from "@/lib/store-api";
 import { Button, toast } from "@prettyfull/ui";
+import { useCartStore } from "@prettyfull/store";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -27,26 +34,67 @@ const CartSummary = ({
 }: CartSummaryProps) => {
 	const t = useTranslations("Cart.summary");
 	const router = useRouter();
-	const [couponCode, setCouponCode] = useState("BOOOM55");
-	const [discountApplied, setDiscountApplied] = useState(true);
+	const items = useCartStore((state) => state.items);
+	const [couponCode, setCouponCode] = useState("");
+	const [appliedCode, setAppliedCode] = useState<string | null>(null);
+	const [discountAmount, setDiscountAmount] = useState(0);
+	const [isApplying, setIsApplying] = useState(false);
 
-	// 5% discount matching mockup ($42.50 on $850)
-	const discountAmount = discountApplied ? subtotal * 0.05 : 0;
-	const taxAmount = subtotal > 0 ? subtotal * 0.05 : 0;
+	const taxAmount = taxes;
 	const finalTotal = Math.max(
 		0,
 		subtotal - discountAmount + taxAmount + shipping,
 	);
 
-	const handleApplyCoupon = () => {
-		if (couponCode.trim().toUpperCase() === "BOOOM55") {
-			setDiscountApplied(true);
-			toast.success("Code promo BOOOM55 appliqué : réduction de 5 % !");
-		} else if (couponCode.trim()) {
-			toast.info(`Code promo « ${couponCode} » appliqué.`);
-			setDiscountApplied(true);
-		} else {
-			setDiscountApplied(false);
+	/**
+	 * Le code est validé côté serveur, contre le vrai sous-total : le panier
+	 * local est d'abord poussé au panier serveur (comme au passage en
+	 * commande, § `syncCartToServer`), sans quoi le serveur validerait le code
+	 * contre un panier vide.
+	 */
+	const handleApplyCoupon = async () => {
+		const code = couponCode.trim();
+		if (!code) return;
+
+		setIsApplying(true);
+		try {
+			await syncCartToServer(items);
+			const cart = await applyDiscountCode(code);
+
+			setAppliedCode(cart.discountCode);
+			setDiscountAmount(cart.discountTotal);
+
+			if (cart.discountCode) {
+				toast.success(`Code promo « ${cart.discountCode} » appliqué.`);
+			} else {
+				toast.info("Ce code ne s'applique pas à votre panier actuel.");
+			}
+		} catch (error) {
+			toast.error(
+				error instanceof StoreApiError
+					? error.message
+					: "Impossible d'appliquer ce code promo.",
+			);
+		} finally {
+			setIsApplying(false);
+		}
+	};
+
+	const handleRemoveCoupon = async () => {
+		setIsApplying(true);
+		try {
+			await removeDiscountCode();
+			setAppliedCode(null);
+			setDiscountAmount(0);
+			setCouponCode("");
+		} catch (error) {
+			toast.error(
+				error instanceof StoreApiError
+					? error.message
+					: "Impossible de retirer ce code promo.",
+			);
+		} finally {
+			setIsApplying(false);
 		}
 	};
 
@@ -80,14 +128,14 @@ const CartSummary = ({
 					</span>
 				</div>
 
-				<div className="flex justify-between items-center text-gray-600">
-					<span>Réduction</span>
-					<span className="font-semibold text-rose-500">
-						{discountApplied && subtotal > 0
-							? `-${formatCurrency_FR(discountAmount, currency)} (5%)`
-							: "0 FCFA"}
-					</span>
-				</div>
+				{appliedCode && (
+					<div className="flex justify-between items-center text-gray-600">
+						<span>Réduction ({appliedCode})</span>
+						<span className="font-semibold text-rose-500">
+							-{formatCurrency_FR(discountAmount, currency)}
+						</span>
+					</div>
+				)}
 
 				<div className="flex justify-between items-center text-gray-600">
 					<span>{t("shipping")}</span>
@@ -99,7 +147,7 @@ const CartSummary = ({
 				<div className="flex justify-between items-center text-gray-600">
 					<span>{t("taxes")}</span>
 					<span className="font-semibold text-gray-900">
-						{formatCurrency_FR(taxAmount, currency)} (5%)
+						{formatCurrency_FR(taxAmount, currency)}
 					</span>
 				</div>
 			</div>
@@ -113,29 +161,50 @@ const CartSummary = ({
 				>
 					{t("couponsCode")}
 				</label>
+				{appliedCode ? (
+					<div
+						className={cn(
+							"flex items-center justify-between gap-2.5 px-4 py-3 text-sm bg-white border border-gray-200 font-medium",
+							square ? "rounded-none" : "rounded-full",
+						)}
+					>
+						<span className="text-gray-900">{appliedCode}</span>
+						<button
+							type="button"
+							onClick={() => void handleRemoveCoupon()}
+							disabled={isApplying}
+							className="text-gray-400 hover:text-black transition disabled:opacity-50 cursor-pointer"
+						>
+							Retirer
+						</button>
+					</div>
+				) : (
 				<div className="flex gap-2.5">
 					<input
 						id="coupon-input"
 						type="text"
 						value={couponCode}
-						onChange={(e) => setCouponCode(e.target.value)}
+						onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
 						placeholder={t("couponPlaceholder")}
+						disabled={isApplying}
 						className={cn(
-							"flex-1 px-4 py-3 text-sm bg-white border border-gray-200 focus:outline-none focus:border-black font-medium transition",
+							"flex-1 px-4 py-3 text-sm bg-white border border-gray-200 focus:outline-none focus:border-black font-medium transition disabled:opacity-50",
 							square ? "rounded-none" : "rounded-full",
 						)}
 					/>
 					<button
 						type="button"
-						onClick={handleApplyCoupon}
+						onClick={() => void handleApplyCoupon()}
+						disabled={isApplying || !couponCode.trim()}
 						className={cn(
-							"px-6 py-3 text-sm font-semibold text-white bg-black hover:bg-black/85 transition cursor-pointer shadow-sm shrink-0",
+							"px-6 py-3 text-sm font-semibold text-white bg-black hover:bg-black/85 transition cursor-pointer shadow-sm shrink-0 disabled:opacity-50 disabled:cursor-not-allowed",
 							square ? "rounded-none" : "rounded-full",
 						)}
 					>
-						{t("apply")}
+						{isApplying ? "…" : t("apply")}
 					</button>
 				</div>
+				)}
 			</div>
 
 			<button

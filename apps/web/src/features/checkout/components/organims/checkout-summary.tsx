@@ -19,18 +19,22 @@ const CheckoutSummary = ({ currency }: { currency: string }) => {
 	const { data: shippingOptions } = useGetShippingOptions("cart");
 
 	const subtotal = items.reduce(
-		(acc, item) => acc + (item.unitPrice?.amount ?? item.product.price?.amount ?? 0) * item.quantity,
+		(acc, item) =>
+			acc +
+			(item.unitPrice?.amount ?? item.product.price?.amount ?? 0) *
+				item.quantity,
 		0,
 	);
 	// Le port affiché suit l'option réellement choisie ; tant qu'aucune ne
 	// l'est, il reste à zéro plutôt que d'annoncer un tarif arbitraire.
 	const shipping =
-		shippingOptions?.find((option) => option.id === selectedShippingOptionId)?.amount ?? 0;
+		shippingOptions?.find((option) => option.id === selectedShippingOptionId)
+			?.amount ?? 0;
 	const taxes = subtotal * TAX_RATE;
 	const total = subtotal + shipping + taxes;
 
 	return (
-		<div className="py-6 w-full bg-white">
+		<div className="px-8 py-6 w-full bg-white rounded-4xl">
 			{/* SECTION: Produits visuels */}
 			<div className="flex flex-col pb-8 space-y-10">
 				{items.map((item) => (
@@ -51,7 +55,7 @@ const CheckoutSummary = ({ currency }: { currency: string }) => {
 			</div>
 
 			{/* SECTION: Résumé des coûts */}
-			<h3 className="py-8 text-2xl! lg:text-3xl! ">{t("title")}</h3>
+			<h3 className="py-8 text-2xl! lg:text-3xl!">{t("title")}</h3>
 			<div className="mb-6 space-y-8">
 				<div className="space-y-8">
 					<div className="flex justify-between text-md">

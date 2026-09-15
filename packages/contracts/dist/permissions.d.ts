@@ -37,6 +37,10 @@ export declare const PERMISSIONS: {
         readonly read: "content.read";
         readonly write: "content.write";
     };
+    readonly promotions: {
+        readonly read: "promotions.read";
+        readonly write: "promotions.write";
+    };
     readonly staff: {
         readonly read: "staff.read";
         readonly write: "staff.write";

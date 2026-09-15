@@ -48,6 +48,47 @@ export const seedContent = async (
 			status: "published",
 			position: 2,
 		},
+		{
+			title: "New Season Essentials",
+			subtitle: "Soft silhouettes and modern staples for everyday wear.",
+			imageUrl: "/home/cover-desktop.jpg",
+			linkUrl: "#catalog-grid",
+			ctaLabel: "Achetez maintenant",
+			placement: "collection_top",
+			status: "published",
+			position: 0,
+		},
+		{
+			title: "Soldes Mi-Saison",
+			subtitle: "Up to 40% off selected styles",
+			imageUrl: "/banner/banner6.jpg",
+			linkUrl: "#catalog-grid",
+			ctaLabel: "Voir les soldes",
+			placement: "collection_promo",
+			status: "published",
+			position: 0,
+		},
+		{
+			title: "Everyday Knitwear",
+			subtitle: "Lightweight layers you'll reach for daily",
+			imageUrl: "/home/cover-box.jpg",
+			linkUrl: "#catalog-grid",
+			ctaLabel: "Explore",
+			placement: "collection_promo",
+			status: "published",
+			position: 1,
+		},
+		{
+			title: "Let's Take Your Fashion to The Stratosphere",
+			subtitle:
+				"Ready to elevate your style? Let's launch your fashion into the stratosphere with bold choices and unique trends!",
+			imageUrl: "/banner/banner4.jpg",
+			linkUrl: "/collections",
+			ctaLabel: "Get Started Now",
+			placement: "collection_footer",
+			status: "published",
+			position: 0,
+		},
 	]);
 
 	const now = new Date();
@@ -158,6 +199,6 @@ export const seedContent = async (
 	await db.insert(t.featuredEntries).values([...categoryEntries, ...productEntries]);
 
 	console.log(
-		`  contenu : 3 bannières, 3 pages statiques, ${categoryEntries.length + productEntries.length} mises en avant`,
+		`  contenu : 7 bannières, 3 pages statiques, ${categoryEntries.length + productEntries.length} mises en avant`,
 	);
 };

@@ -1,6 +1,12 @@
 "use client";
 
-import { parseAsInteger, parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
+import {
+	parseAsArrayOf,
+	parseAsInteger,
+	parseAsString,
+	parseAsStringEnum,
+	useQueryStates,
+} from "nuqs";
 
 /**
  * Champs sur lesquels le backend accepte de trier (`products.service.ts`).
@@ -15,6 +21,9 @@ type Order = (typeof ORDERS)[number];
 const DEFAULT_SORT: SortField = "createdAt";
 const DEFAULT_ORDER: Order = "desc";
 
+const AVAILABILITY = ["all", "in_stock", "on_sale"] as const;
+export type Availability = (typeof AVAILABILITY)[number];
+
 const filterParsers = {
 	q: parseAsString.withDefault(""),
 	sort: parseAsStringEnum<SortField>([...SORT_FIELDS]).withDefault(DEFAULT_SORT),
@@ -22,11 +31,15 @@ const filterParsers = {
 	page: parseAsInteger.withDefault(1),
 	minPrice: parseAsInteger,
 	maxPrice: parseAsInteger,
+	sizes: parseAsArrayOf(parseAsString).withDefault([]),
+	colors: parseAsArrayOf(parseAsString).withDefault([]),
+	availability: parseAsStringEnum<Availability>([...AVAILABILITY]).withDefault("all"),
 };
 
 /**
- * État de recherche/tri/prix/pagination de la page rayon, porté par l'URL
- * (comme `useCheckoutStep`) : partageable/bookmarkable, pas de store séparé.
+ * État de recherche/tri/prix/tailles/couleurs/pagination de la page rayon,
+ * porté par l'URL (comme `useCheckoutStep`) : partageable/bookmarkable, pas
+ * de store séparé.
  */
 export function useCollectionFilters() {
 	const [state, setState] = useQueryStates(filterParsers);
@@ -40,8 +53,34 @@ export function useCollectionFilters() {
 	const setPriceRange = (minPrice: number | null, maxPrice: number | null) =>
 		setState({ minPrice, maxPrice, page: 1 });
 
-	const clear = () =>
-		setState({ q: null, sort: DEFAULT_SORT, order: DEFAULT_ORDER, minPrice: null, maxPrice: null, page: 1 });
+	const setSizes = (sizes: string[]) => setState({ sizes, page: 1 });
 
-	return { ...state, setSearch, setSort, setPage, setPriceRange, clear };
+	const setColors = (colors: string[]) => setState({ colors, page: 1 });
+
+	const setAvailability = (availability: Availability) => setState({ availability, page: 1 });
+
+	const clear = () =>
+		setState({
+			q: null,
+			sort: DEFAULT_SORT,
+			order: DEFAULT_ORDER,
+			minPrice: null,
+			maxPrice: null,
+			sizes: [],
+			colors: [],
+			availability: "all",
+			page: 1,
+		});
+
+	return {
+		...state,
+		setSearch,
+		setSort,
+		setPage,
+		setPriceRange,
+		setSizes,
+		setColors,
+		setAvailability,
+		clear,
+	};
 }

@@ -67,6 +67,12 @@ export const syncCartToServer = async (
 
 export const getServerCart = () => storeApi.get<Cart>("/api/store/cart", false);
 
+/** Applique un code promo au panier serveur, revalidé au sous-total courant. */
+export const applyDiscountCode = (code: string) =>
+	storeApi.put<Cart>("/api/store/cart/discount-code", { code });
+
+export const removeDiscountCode = () => storeApi.delete<Cart>("/api/store/cart/discount-code");
+
 /** Enregistre l'adresse : les options de livraison en dépendent. */
 export const setCartAddress = (address: StoreAddress & { email?: string }) =>
 	storeApi.put<Cart>("/api/store/cart/addresses", {

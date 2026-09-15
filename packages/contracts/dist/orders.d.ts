@@ -97,6 +97,7 @@ export declare const cartSchema: z.ZodObject<{
     shippingTotal: z.ZodNumber;
     taxTotal: z.ZodNumber;
     discountTotal: z.ZodNumber;
+    discountCode: z.ZodNullable<z.ZodString>;
     total: z.ZodNumber;
     updatedAt: z.ZodString;
 }, z.core.$strip>;
@@ -335,6 +336,7 @@ export declare const orderSchema: z.ZodObject<{
     shippingTotal: z.ZodNumber;
     taxTotal: z.ZodNumber;
     discountTotal: z.ZodNumber;
+    discountCode: z.ZodNullable<z.ZodString>;
     total: z.ZodNumber;
     refundedTotal: z.ZodNumber;
     note: z.ZodNullable<z.ZodString>;

@@ -104,11 +104,15 @@ export const BANNER_PLACEMENTS = [
     "home_secondary",
     "home_promo",
     "collection_top",
+    "collection_promo",
+    "collection_footer",
     "sidebar",
 ];
 /** Cycle de vie d'un message reçu via le formulaire de contact. */
 export const CONTACT_MESSAGE_STATUSES = ["new", "read", "archived"];
 export const FEATURED_KINDS = ["product", "category"];
+/** Type de remise d'un code promo (§2.9) : pourcentage du sous-total, ou montant fixe. */
+export const DISCOUNT_TYPES = ["percentage", "fixed"];
 /** Devises supportées. XOF n'a pas de sous-unité - cf. `CURRENCY_EXPONENTS`. */
 export const CURRENCY_CODES = ["xof", "eur", "usd"];
 /**

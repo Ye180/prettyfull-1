@@ -265,6 +265,14 @@ const OrderDetailPage = () => {
 									</span>
 								</div>
 							)}
+							{order.discountTotal > 0 && (
+								<div className="flex justify-between text-muted">
+									<span>Remise{order.discountCode ? ` (${order.discountCode})` : ""}</span>
+									<span className="tabular">
+										− {formatMoney(order.discountTotal, order.currency)}
+									</span>
+								</div>
+							)}
 							<div className="flex justify-between border-t border-line pt-1.5 font-semibold text-ink">
 								<span>Total</span>
 								<span className="tabular">

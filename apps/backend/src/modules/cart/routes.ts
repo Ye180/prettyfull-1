@@ -1,6 +1,7 @@
 import {
 	addCartItemSchema,
 	addressInputSchema,
+	applyDiscountCodeSchema,
 	checkoutSchema,
 	updateCartItemSchema,
 } from "@prettyfull/contracts";
@@ -146,6 +147,23 @@ storeCartRoutes.put(
 		return c.json(await service.getCart(cartId));
 	},
 );
+
+/** Applique un code promo au panier (§2.9), revalidé au sous-total courant. */
+storeCartRoutes.put(
+	"/cart/discount-code",
+	validate("json", applyDiscountCodeSchema),
+	async (c) => {
+		const cartId = await resolveCartId(c);
+		await service.applyDiscountCode(cartId, c.req.valid("json").code);
+		return c.json(await service.getCart(cartId));
+	},
+);
+
+storeCartRoutes.delete("/cart/discount-code", async (c) => {
+	const cartId = await resolveCartId(c);
+	await service.removeDiscountCode(cartId);
+	return c.json(await service.getCart(cartId));
+});
 
 /**
  * Passage en commande. Renvoie `redirectUrl` quand le prestataire exige une

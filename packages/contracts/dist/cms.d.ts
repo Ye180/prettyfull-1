@@ -15,6 +15,8 @@ export declare const bannerBaseSchema: z.ZodObject<{
         home_secondary: "home_secondary";
         home_promo: "home_promo";
         collection_top: "collection_top";
+        collection_promo: "collection_promo";
+        collection_footer: "collection_footer";
         sidebar: "sidebar";
     }>;
     status: z.ZodDefault<z.ZodEnum<{
@@ -42,6 +44,8 @@ export declare const bannerInputSchema: z.ZodObject<{
         home_secondary: "home_secondary";
         home_promo: "home_promo";
         collection_top: "collection_top";
+        collection_promo: "collection_promo";
+        collection_footer: "collection_footer";
         sidebar: "sidebar";
     }>;
     status: z.ZodDefault<z.ZodEnum<{
@@ -69,6 +73,8 @@ export declare const updateBannerSchema: z.ZodObject<{
         home_secondary: "home_secondary";
         home_promo: "home_promo";
         collection_top: "collection_top";
+        collection_promo: "collection_promo";
+        collection_footer: "collection_footer";
         sidebar: "sidebar";
     }>>;
     status: z.ZodOptional<z.ZodDefault<z.ZodEnum<{
@@ -99,6 +105,8 @@ export declare const bannerSchema: z.ZodObject<{
         home_secondary: "home_secondary";
         home_promo: "home_promo";
         collection_top: "collection_top";
+        collection_promo: "collection_promo";
+        collection_footer: "collection_footer";
         sidebar: "sidebar";
     }>;
     status: z.ZodEnum<{
@@ -201,6 +209,8 @@ export declare const bannerListQuerySchema: z.ZodObject<{
         home_secondary: "home_secondary";
         home_promo: "home_promo";
         collection_top: "collection_top";
+        collection_promo: "collection_promo";
+        collection_footer: "collection_footer";
         sidebar: "sidebar";
     }>>;
     status: z.ZodOptional<z.ZodEnum<{

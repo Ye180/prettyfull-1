@@ -213,6 +213,12 @@ export const productListQuerySchema = paginationQuerySchema.extend({
     tag: z.string().trim().max(48).optional(),
     isFeatured: z.stringbool().optional(),
     includeArchived: z.stringbool().optional(),
+    /** Liste de tailles séparées par des virgules (correspondance « ou »). */
+    size: z.string().trim().max(200).optional(),
+    /** Liste de noms de couleur de variante séparés par des virgules (« ou »). */
+    color: z.string().trim().max(200).optional(),
+    /** Ne garde que les produits ayant un prix barré supérieur au prix courant. */
+    onSale: z.stringbool().optional(),
 });
 export const categoryListQuerySchema = paginationQuerySchema.extend({
     q: z.string().trim().max(160).optional(),
@@ -221,5 +227,22 @@ export const categoryListQuerySchema = paginationQuerySchema.extend({
     isFeatured: z.stringbool().optional(),
     /** `true` renvoie l'arbre complet au lieu d'une page plate. */
     tree: z.stringbool().optional(),
+});
+// --- Facettes de liste -------------------------------------------------------
+/**
+ * Filtres qui délimitent le périmètre des facettes (§ collections) : les
+ * mêmes que ceux de `productListQuerySchema` qui changent le *catalogue*
+ * regardé, pas ceux qui sélectionnent une valeur *dans* ce catalogue - une
+ * taille cochée ne doit pas faire disparaître les autres tailles proposées.
+ */
+export const productFacetsQuerySchema = z.object({
+    categoryId: uuidSchema.optional(),
+    categorySlug: slugSchema.optional(),
+    q: z.string().trim().max(160).optional(),
+});
+export const productFacetsSchema = z.object({
+    sizes: z.array(z.string()),
+    colors: z.array(z.object({ name: z.string(), hex: z.string().nullable() })),
+    priceRange: z.object({ min: z.number(), max: z.number() }),
 });
 //# sourceMappingURL=catalog.js.map

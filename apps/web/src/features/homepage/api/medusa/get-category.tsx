@@ -9,6 +9,7 @@ export interface Category {
 	handle: string;
 	image?: string | { url: string };
 	metadata?: Record<string, unknown>;
+	isFeatured: boolean;
 }
 
 export const getCategory = async (): Promise<Category[]> => {
@@ -22,6 +23,7 @@ export const getCategory = async (): Promise<Category[]> => {
 			category.product_category_image?.[0]?.url ??
 			(category.metadata as Record<string, string> | undefined)?.image,
 		metadata: category.metadata,
+		isFeatured: category.is_featured ?? false,
 	}));
 };
 

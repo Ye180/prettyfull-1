@@ -34,9 +34,9 @@ const CheckoutView = () => {
 	if (items.length === 0) return null;
 
 	return (
-		<main className="w-full min-h-screen bg-white text-gray-900 pb-28 pt-6 sm:pt-10">
+		<main className="pt-6 pb-28 w-full min-h-screen text-gray-900 bg-white sm:pt-10">
 			<div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-				<h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight font-sans text-gray-950 mb-8 pb-4 border-b border-gray-100">
+				<h1 className="pb-4 mb-8 font-sans text-3xl font-extrabold tracking-tight border-b border-gray-100 sm:text-4xl md:text-5xl text-gray-950">
 					Checkout
 				</h1>
 
@@ -52,7 +52,7 @@ const CheckoutView = () => {
 				 * voulu ici (~1024px) - même contournement déjà utilisé par
 				 * `cart-content.tsx`.
 				 */}
-				<div className="grid grid-cols-1 sm:grid-cols-12 gap-12 sm:gap-16">
+				<div className="grid grid-cols-1 gap-12 sm:grid-cols-12 sm:gap-16">
 					<div className="space-y-10 sm:col-span-7">
 						<AddressStep cartId={cartId} onComplete={() => goToNextStep()} />
 						<DeliveryStep cartId={cartId} onComplete={() => goToNextStep()} />

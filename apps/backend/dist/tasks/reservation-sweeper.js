@@ -12,27 +12,30 @@ import { expireStaleReservations } from "../modules/inventory/service.js";
 const SWEEP_INTERVAL_MS = 60_000;
 let timer = null;
 const sweep = async () => {
-	try {
-		const released = await expireStaleReservations();
-		if (released > 0) {
-			console.log(`[stock] ${released} réservation(s) expirée(s) libérée(s)`);
-		}
-	} catch (error) {
-		// Une passe en échec ne doit pas arrêter la boucle : la suivante
-		// rattrapera les réservations restées actives.
-		console.error("[stock] balayage des réservations en échec", error);
-	}
+    try {
+        const released = await expireStaleReservations();
+        if (released > 0) {
+            console.log(`[stock] ${released} réservation(s) expirée(s) libérée(s)`);
+        }
+    }
+    catch (error) {
+        // Une passe en échec ne doit pas arrêter la boucle : la suivante
+        // rattrapera les réservations restées actives.
+        console.error("[stock] balayage des réservations en échec", error);
+    }
 };
 export const startReservationSweeper = () => {
-	if (timer) return;
-	// `unref` : la tâche n'empêche pas le processus de s'arrêter proprement.
-	timer = setInterval(() => void sweep(), SWEEP_INTERVAL_MS);
-	timer.unref();
-	void sweep();
+    if (timer)
+        return;
+    // `unref` : la tâche n'empêche pas le processus de s'arrêter proprement.
+    timer = setInterval(() => void sweep(), SWEEP_INTERVAL_MS);
+    timer.unref();
+    void sweep();
 };
 export const stopReservationSweeper = () => {
-	if (!timer) return;
-	clearInterval(timer);
-	timer = null;
+    if (!timer)
+        return;
+    clearInterval(timer);
+    timer = null;
 };
 //# sourceMappingURL=reservation-sweeper.js.map

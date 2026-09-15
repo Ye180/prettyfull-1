@@ -1,4 +1,4 @@
-import { PERMISSIONS, categoryListQuerySchema, createCategorySchema, createProductSchema, duplicateProductSchema, productListQuerySchema, reorderCategoriesSchema, sizeInputSchema, updateCategorySchema, updateProductSchema, variantInputSchema, } from "@prettyfull/contracts";
+import { PERMISSIONS, categoryListQuerySchema, createCategorySchema, createProductSchema, duplicateProductSchema, productListQuerySchema, reorderCategoriesSchema, sizeInputSchema, updateCategorySchema, updateProductSchema, updateSizeSchema, updateVariantSchema, variantInputSchema, } from "@prettyfull/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { recordAudit } from "../../lib/audit.js";
@@ -153,7 +153,7 @@ adminCatalogRoutes.post("/products/:id/variants", requirePermission(PERMISSIONS.
     });
     return c.json(updated, 201);
 });
-adminCatalogRoutes.patch("/products/:id/variants/:variantId", requirePermission(PERMISSIONS.catalog.write), validate("param", variantParam), validate("json", variantInputSchema.partial()), async (c) => {
+adminCatalogRoutes.patch("/products/:id/variants/:variantId", requirePermission(PERMISSIONS.catalog.write), validate("param", variantParam), validate("json", updateVariantSchema), async (c) => {
     const { id, variantId } = c.req.valid("param");
     const updated = await variants.updateVariant(id, variantId, c.req.valid("json"));
     await recordAudit(c, {
@@ -186,7 +186,7 @@ adminCatalogRoutes.post("/products/:id/sizes", requirePermission(PERMISSIONS.cat
     });
     return c.json(updated, 201);
 });
-adminCatalogRoutes.patch("/products/:id/sizes/:sizeId", requirePermission(PERMISSIONS.catalog.write), validate("param", sizeParam), validate("json", sizeInputSchema.partial()), async (c) => {
+adminCatalogRoutes.patch("/products/:id/sizes/:sizeId", requirePermission(PERMISSIONS.catalog.write), validate("param", sizeParam), validate("json", updateSizeSchema), async (c) => {
     const { id, sizeId } = c.req.valid("param");
     const updated = await variants.updateSize(id, sizeId, c.req.valid("json"));
     await recordAudit(c, {

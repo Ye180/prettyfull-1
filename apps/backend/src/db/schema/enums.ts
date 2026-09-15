@@ -6,6 +6,7 @@ import {
 	CONTACT_MESSAGE_STATUSES,
 	CONTENT_STATUSES,
 	CURRENCY_CODES,
+	DISCOUNT_TYPES,
 	FEATURED_KINDS,
 	FULFILLMENT_STATUSES,
 	INTEGRATION_ENVIRONMENTS,
@@ -62,3 +63,4 @@ export const contactMessageStatusEnum = pgEnum(
 	"contact_message_status",
 	CONTACT_MESSAGE_STATUSES,
 );
+export const discountTypeEnum = pgEnum("discount_type", DISCOUNT_TYPES);

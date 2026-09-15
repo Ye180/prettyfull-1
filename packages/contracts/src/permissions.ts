@@ -38,6 +38,10 @@ export const PERMISSIONS = {
 		read: "content.read",
 		write: "content.write",
 	},
+	promotions: {
+		read: "promotions.read",
+		write: "promotions.write",
+	},
 	staff: {
 		read: "staff.read",
 		write: "staff.write",
@@ -87,6 +91,8 @@ export const ROLE_PERMISSIONS: Record<RoleKey, readonly Permission[]> = {
 		PERMISSIONS.inventory.adjust,
 		PERMISSIONS.content.read,
 		PERMISSIONS.content.write,
+		PERMISSIONS.promotions.read,
+		PERMISSIONS.promotions.write,
 	],
 
 	order_manager: [
@@ -97,6 +103,7 @@ export const ROLE_PERMISSIONS: Record<RoleKey, readonly Permission[]> = {
 		PERMISSIONS.orders.write,
 		PERMISSIONS.orders.refund,
 		PERMISSIONS.customers.read,
+		PERMISSIONS.promotions.read,
 	],
 
 	support: [
@@ -117,7 +124,7 @@ export const ROLE_LABELS: Record<RoleKey, string> = {
 
 export const ROLE_DESCRIPTIONS: Record<RoleKey, string> = {
 	super_admin: "Accès complet, y compris la configuration des agrégateurs.",
-	catalog_manager: "Gère produits, catégories, variantes, stocks et contenu.",
+	catalog_manager: "Gère produits, catégories, variantes, stocks, contenu et codes promo.",
 	order_manager: "Gère les commandes, remboursements et fiches clients.",
 	support: "Consultation seule du catalogue, des commandes et des clients.",
 };

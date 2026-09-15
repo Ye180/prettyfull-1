@@ -15,6 +15,12 @@ interface CollectionProductsParams {
 	q: string;
 	minPrice: number | null;
 	maxPrice: number | null;
+	/** Tailles sélectionnées (correspondance « ou »). */
+	sizes?: string[];
+	/** Couleurs sélectionnées (correspondance « ou »). */
+	colors?: string[];
+	stockStatus?: "in_stock" | "low_stock" | "out_of_stock";
+	onSale?: boolean;
 }
 
 /** Catégorie d'un produit brut, dérivée du `collection` renvoyé par `toRawProduct`. */
@@ -41,9 +47,13 @@ const getCollectionProducts = async (params: CollectionProductsParams) => {
 	const [category, { products, meta }] = await Promise.all([
 		params.categorySlug
 			? storeApi
-					.get<{ id: string; name: string; slug: string }>(
-						`/api/store/categories/${encodeURIComponent(params.categorySlug)}`,
-					)
+					.get<{
+						id: string;
+						name: string;
+						slug: string;
+						imageUrl: string | null;
+						bannerUrl: string | null;
+					}>(`/api/store/categories/${encodeURIComponent(params.categorySlug)}`)
 					.catch(() => null)
 			: Promise.resolve(null),
 		fetchProductsRaw({
@@ -54,6 +64,10 @@ const getCollectionProducts = async (params: CollectionProductsParams) => {
 			q: params.q || undefined,
 			minPrice: params.minPrice ?? undefined,
 			maxPrice: params.maxPrice ?? undefined,
+			size: params.sizes && params.sizes.length > 0 ? params.sizes.join(",") : undefined,
+			color: params.colors && params.colors.length > 0 ? params.colors.join(",") : undefined,
+			stockStatus: params.stockStatus,
+			onSale: params.onSale,
 		}),
 	]);
 
@@ -64,7 +78,12 @@ const getCollectionProducts = async (params: CollectionProductsParams) => {
 		}),
 	);
 
-	return { categoryName: category?.name ?? "", products: normalized, meta };
+	return {
+		categoryName: category?.name ?? "",
+		categoryImage: category?.bannerUrl || category?.imageUrl || "",
+		products: normalized,
+		meta,
+	};
 };
 
 export const useCollectionProducts = (params: CollectionProductsParams) =>

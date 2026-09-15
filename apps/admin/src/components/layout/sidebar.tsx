@@ -14,6 +14,7 @@ import {
 	IconLogout,
 	IconOrders,
 	IconPlug,
+	IconPromo,
 	IconSettings,
 	IconShield,
 	IconStock,
@@ -79,6 +80,12 @@ const NAV_ITEMS: NavItem[] = [
 		label: "Contenu",
 		icon: IconContent,
 		permission: PERMISSIONS.content.read,
+	},
+	{
+		href: "/promotions",
+		label: "Codes promo",
+		icon: IconPromo,
+		permission: PERMISSIONS.promotions.read,
 	},
 	{
 		href: "/utilisateurs",

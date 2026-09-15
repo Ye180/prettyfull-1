@@ -11,36 +11,47 @@ import PhotoOverlayBanner from "@/shared/components/organims/photo-overlay-banne
 import ProductCardSkeleton from "@/shared/components/organims/product-loading";
 import { useRegionStore } from "@/stores/useRegion";
 import { CardProduct, GridCardProduct } from "@prettyfull/ui";
+import { useCollectionFacets } from "../hooks/use-collection-facets";
 import { useCollectionFilters } from "../hooks/use-collection-filters";
 import { useCollectionProducts } from "../hooks/use-collection-products";
 
 // 7 lignes de la grille dense (5 colonnes en desktop) avant le bouton "See More".
 const PAGE_SIZE = 35;
 
-const INITIAL_FILTERS: FilterState = {
-	categories: [],
-	sizes: [],
-	minPrice: "",
-	maxPrice: "",
-	color: "",
-	fits: [],
-	materials: [],
-	availability: "all",
-};
+const SORT_OPTIONS = [
+	{ value: "createdAt:desc", label: "Nouveautés", sort: "createdAt" as const, order: "desc" as const },
+	{ value: "basePrice:asc", label: "Prix croissant", sort: "basePrice" as const, order: "asc" as const },
+	{ value: "basePrice:desc", label: "Prix décroissant", sort: "basePrice" as const, order: "desc" as const },
+	{ value: "name:asc", label: "Nom (A → Z)", sort: "name" as const, order: "asc" as const },
+];
 
 export const CollectionViews = () => {
 	const params = useParams();
 	const slug = (params.slug as string) || "";
 
-	const { q, sort, order, setSearch, setSort } = useCollectionFilters();
+	const {
+		q,
+		sort,
+		order,
+		minPrice,
+		maxPrice,
+		sizes,
+		colors,
+		availability,
+		setSearch,
+		setSort,
+		setPriceRange,
+		setSizes,
+		setColors,
+		setAvailability,
+		clear: clearFilters,
+	} = useCollectionFilters();
 	const currencyCode = useRegionStore((state) => state.region?.currency_code);
 	const [searchDraft, setSearchDraft] = useState(q);
 	const [limit, setLimit] = useState(PAGE_SIZE);
-	const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
-	// Debounce : un fetch par pause de frappe, pas par caractère (même logique
-	// que `Toolbar`, l'organism plus abouti mais jamais branché à cette vue).
+	// Debounce : un fetch par pause de frappe, pas par caractère.
 	useEffect(() => {
 		const id = setTimeout(() => {
 			if (searchDraft !== q) setSearch(searchDraft);
@@ -49,10 +60,10 @@ export const CollectionViews = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchDraft]);
 
-	// Nouvelle recherche/tri => on repart du premier palier de "Load More".
+	// Nouveau filtre/tri => on repart du premier palier de "Load More".
 	useEffect(() => {
 		setLimit(PAGE_SIZE);
-	}, [q, sort, order]);
+	}, [q, sort, order, minPrice, maxPrice, sizes, colors, availability]);
 
 	const { data, isLoading } = useCollectionProducts({
 		categorySlug: slug,
@@ -60,25 +71,53 @@ export const CollectionViews = () => {
 		sort,
 		order,
 		q,
-		minPrice: null,
-		maxPrice: null,
+		minPrice,
+		maxPrice,
+		sizes,
+		colors,
+		stockStatus: availability === "in_stock" ? "in_stock" : undefined,
+		onSale: availability === "on_sale" ? true : undefined,
 	});
+
+	const { data: facets, isLoading: isLoadingFacets } = useCollectionFacets({
+		categorySlug: slug,
+		q,
+	});
+
+	const filters: FilterState = {
+		categorySlug: slug,
+		sizes,
+		colors,
+		minPrice: minPrice != null ? String(minPrice) : "",
+		maxPrice: maxPrice != null ? String(maxPrice) : "",
+		availability,
+	};
+
+	const applyFilters = (next: FilterState) => {
+		setSizes(next.sizes);
+		setColors(next.colors);
+		setAvailability(next.availability);
+		const nextMin = next.minPrice.trim() === "" ? null : Number(next.minPrice);
+		const nextMax = next.maxPrice.trim() === "" ? null : Number(next.maxPrice);
+		setPriceRange(
+			nextMin != null && !Number.isNaN(nextMin) ? nextMin : null,
+			nextMax != null && !Number.isNaN(nextMax) ? nextMax : null,
+		);
+	};
+
+	const resetAllFilters = () => {
+		setSearchDraft("");
+		setSearch("");
+		clearFilters();
+	};
 
 	const formattedTitle =
 		data?.categoryName || (slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : "Collection");
-	const allProducts = data?.products ?? [];
+	const heroImage = data?.categoryImage || "/collections/banner-mode.jpg";
+	const products = data?.products ?? [];
 	const hasMore = data?.meta.hasNext ?? false;
 
-	// Prix min/max encore local (le back n'expose pas les autres facettes du
-	// panneau) : mêmes bornes qu'avant, juste appliquées aux vrais produits.
-	const products = allProducts.filter((p) => {
-		const price = p.colors[0]?.price ?? 0;
-		if (filters.minPrice && price < parseFloat(filters.minPrice)) return false;
-		if (filters.maxPrice && price > parseFloat(filters.maxPrice)) return false;
-		return true;
-	});
-
-	const selectedSort = sort === "basePrice" && order === "asc" ? "Prix croissant" : "Prix décroissant";
+	const selectedSortValue = `${sort}:${order}`;
 
 	return (
 		<main className="w-full bg-white pb-16">
@@ -105,7 +144,7 @@ export const CollectionViews = () => {
 			<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 py-4">
 				<div className="relative w-full h-[260px] sm:h-[340px] rounded-[2.6rem] overflow-hidden">
 					<Image
-						src="/collections/banner-mode.jpg"
+						src={heroImage}
 						alt={formattedTitle}
 						fill
 						priority
@@ -166,15 +205,18 @@ export const CollectionViews = () => {
 
 					<div className="flex items-center gap-3">
 						<select
-							value={selectedSort}
+							value={selectedSortValue}
 							onChange={(e) => {
-								if (e.target.value === "Prix croissant") setSort("basePrice", "asc");
-								else setSort("basePrice", "desc");
+								const option = SORT_OPTIONS.find((o) => o.value === e.target.value);
+								if (option) setSort(option.sort, option.order);
 							}}
 							className="px-4 py-2.5 rounded-full border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-black"
 						>
-							<option value="Prix décroissant">Prix décroissant</option>
-							<option value="Prix croissant">Prix croissant</option>
+							{SORT_OPTIONS.map((option) => (
+								<option key={option.value} value={option.value}>
+									{option.label}
+								</option>
+							))}
 						</select>
 					</div>
 				</div>
@@ -195,8 +237,11 @@ export const CollectionViews = () => {
 							>
 								<SidebarFilter
 									filters={filters}
-									onChange={setFilters}
-									onClear={() => setFilters(INITIAL_FILTERS)}
+									onChange={applyFilters}
+									onClear={resetAllFilters}
+									sizeOptions={facets?.sizes ?? []}
+									colorOptions={facets?.colors ?? []}
+									isLoadingFacets={isLoadingFacets}
 								/>
 							</motion.div>
 						)}
@@ -221,11 +266,7 @@ export const CollectionViews = () => {
 									Essayez d&apos;ajuster vos filtres ou votre recherche.
 								</p>
 								<button
-									onClick={() => {
-										setSearchDraft("");
-										setSearch("");
-										setFilters(INITIAL_FILTERS);
-									}}
+									onClick={resetAllFilters}
 									className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-black text-white font-semibold rounded-full hover:bg-neutral-800 transition shadow-lg group text-sm sm:text-base cursor-pointer"
 								>
 									<span>Réinitialiser les filtres</span>

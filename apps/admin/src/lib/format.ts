@@ -122,6 +122,8 @@ export const BANNER_PLACEMENT_LABELS: Record<string, string> = {
 	home_hero: "Accueil - bandeau principal",
 	home_secondary: "Accueil - bandeau secondaire",
 	home_promo: "Accueil - promotion",
-	collection_top: "Haut de collection",
+	collection_top: "Collections - bandeau principal",
+	collection_promo: "Collections - cartes promo",
+	collection_footer: "Collections - bandeau bas de page",
 	sidebar: "Colonne latérale",
 };

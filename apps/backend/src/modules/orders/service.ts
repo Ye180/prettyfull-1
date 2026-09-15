@@ -20,6 +20,7 @@ import { env } from "../../lib/env.js";
 import { getPaymentAdapter } from "../../integrations/payment/registry.js";
 import * as inventory from "../inventory/service.js";
 import * as cart from "../cart/service.js";
+import { incrementUsage, resolveDiscountForSubtotal } from "../promotions/service.js";
 import { getStoreSettings } from "../settings/service.js";
 
 /**
@@ -106,6 +107,7 @@ const hydrateOrders = async (
 			shippingTotal: order.shippingTotal,
 			taxTotal: order.taxTotal,
 			discountTotal: order.discountTotal,
+			discountCode: order.discountCode,
 			total: order.total,
 			refundedTotal: order.refundedTotal,
 			note: order.note,
@@ -344,7 +346,11 @@ export const checkout = async (
 	if (lines.length === 0) throw badRequest("Votre panier est vide.");
 
 	const [cartRow] = await db
-		.select({ currency: t.carts.currency, status: t.carts.status })
+		.select({
+			currency: t.carts.currency,
+			status: t.carts.status,
+			discountCodeId: t.carts.discountCodeId,
+		})
 		.from(t.carts)
 		.where(eq(t.carts.id, cartId))
 		.limit(1);
@@ -359,7 +365,23 @@ export const checkout = async (
 	if (!shipping) throw badRequest("Choisissez un mode de livraison.");
 
 	const shippingTotal = shipping.amount;
-	const total = subtotal + shippingTotal;
+
+	// Revalidé ici, pas seulement recopié du panier : le code peut avoir
+	// expiré ou atteint sa limite entre son application et le paiement (§2.9).
+	let discount: { promoCodeId: string; code: string; amount: number } | null = null;
+
+	if (cartRow.discountCodeId) {
+		const [promo] = await db
+			.select({ code: t.promoCodes.code })
+			.from(t.promoCodes)
+			.where(eq(t.promoCodes.id, cartRow.discountCodeId))
+			.limit(1);
+
+		if (promo) discount = await resolveDiscountForSubtotal(promo.code, subtotal);
+	}
+
+	const discountTotal = discount?.amount ?? 0;
+	const total = Math.max(0, subtotal + shippingTotal - discountTotal);
 
 	const { adapter, runtime } = await loadProviderConfig(input.paymentProviderKey);
 
@@ -387,7 +409,9 @@ export const checkout = async (
 				subtotal,
 				shippingTotal,
 				taxTotal: 0,
-				discountTotal: 0,
+				discountTotal,
+				discountCodeId: discount?.promoCodeId ?? null,
+				discountCode: discount?.code ?? null,
 				total,
 				note: input.note ?? null,
 			})
@@ -429,6 +453,8 @@ export const checkout = async (
 		);
 
 		await appendStatusHistory(tx, id, null, "pending_payment", "Commande créée");
+
+		if (discount) await incrementUsage(discount.promoCodeId, tx);
 
 		await tx
 			.update(t.carts)

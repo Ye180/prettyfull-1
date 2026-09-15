@@ -143,6 +143,8 @@ export const BANNER_PLACEMENTS = [
 	"home_secondary",
 	"home_promo",
 	"collection_top",
+	"collection_promo",
+	"collection_footer",
 	"sidebar",
 ] as const;
 export type BannerPlacement = (typeof BANNER_PLACEMENTS)[number];
@@ -153,6 +155,10 @@ export type ContactMessageStatus = (typeof CONTACT_MESSAGE_STATUSES)[number];
 
 export const FEATURED_KINDS = ["product", "category"] as const;
 export type FeaturedKind = (typeof FEATURED_KINDS)[number];
+
+/** Type de remise d'un code promo (§2.9) : pourcentage du sous-total, ou montant fixe. */
+export const DISCOUNT_TYPES = ["percentage", "fixed"] as const;
+export type DiscountType = (typeof DISCOUNT_TYPES)[number];
 
 /** Devises supportées. XOF n'a pas de sous-unité - cf. `CURRENCY_EXPONENTS`. */
 export const CURRENCY_CODES = ["xof", "eur", "usd"] as const;

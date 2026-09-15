@@ -5,6 +5,7 @@ import * as t from "../../db/schema/index.js";
 import type { AddressSnapshot } from "../../db/schema/orders.js";
 import { badRequest, conflict, insufficientStock, notFound } from "../../lib/errors.js";
 import { getShippingAdapter } from "../../integrations/shipping/registry.js";
+import { getAppliedDiscount, resolveDiscountForSubtotal } from "../promotions/service.js";
 import { getStoreSettings } from "../settings/service.js";
 
 /**
@@ -304,6 +305,31 @@ export const setShippingRate = async (
 		.where(eq(t.carts.id, cartId));
 };
 
+/**
+ * Applique un code promo au panier : revalidé au sous-total courant, jamais
+ * figé ici - `getCart` recalcule la remise à chaque lecture (§2.9), comme le
+ * sous-total lui-même.
+ */
+export const applyDiscountCode = async (cartId: string, code: string): Promise<void> => {
+	const lines = await loadCartLines(cartId);
+	if (lines.length === 0) throw badRequest("Votre panier est vide.");
+
+	const subtotal = lines.reduce((total, line) => total + line.lineTotal, 0);
+	const { promoCodeId } = await resolveDiscountForSubtotal(code, subtotal);
+
+	await db
+		.update(t.carts)
+		.set({ discountCodeId: promoCodeId, updatedAt: new Date() })
+		.where(eq(t.carts.id, cartId));
+};
+
+export const removeDiscountCode = async (cartId: string): Promise<void> => {
+	await db
+		.update(t.carts)
+		.set({ discountCodeId: null, updatedAt: new Date() })
+		.where(eq(t.carts.id, cartId));
+};
+
 // --- Lecture et totaux -----------------------------------------------------
 
 /** Lignes du panier, prix relus au catalogue. */
@@ -507,6 +533,11 @@ export const getCart = async (cartId: string): Promise<Cart> => {
 	// la taxe est déjà comprise dans le sous-total et ne s'y ajoute pas.
 	const taxTotal = 0;
 
+	const discount = cart.discountCodeId
+		? await getAppliedDiscount(cart.discountCodeId, subtotal)
+		: null;
+	const discountTotal = discount?.amount ?? 0;
+
 	return {
 		id: cart.id,
 		userId: cart.userId,
@@ -523,8 +554,9 @@ export const getCart = async (cartId: string): Promise<Cart> => {
 		subtotal,
 		shippingTotal,
 		taxTotal,
-		discountTotal: 0,
-		total: subtotal + shippingTotal + taxTotal,
+		discountTotal,
+		discountCode: discount?.code ?? null,
+		total: Math.max(0, subtotal + shippingTotal + taxTotal - discountTotal),
 		updatedAt: cart.updatedAt.toISOString(),
 	};
 };

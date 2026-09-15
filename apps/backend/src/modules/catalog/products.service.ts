@@ -3,6 +3,7 @@ import {
 	type CreateProductInput,
 	type Paginated,
 	type Product,
+	type ProductFacets,
 	type Size,
 	type UpdateProductInput,
 	type Variant,
@@ -344,6 +345,9 @@ export interface ProductListQuery {
 	tag?: string;
 	isFeatured?: boolean;
 	includeArchived?: boolean;
+	size?: string;
+	color?: string;
+	onSale?: boolean;
 }
 
 const SORTABLE = {
@@ -353,6 +357,60 @@ const SORTABLE = {
 	updatedAt: t.products.updatedAt,
 	publishedAt: t.products.publishedAt,
 } as const;
+
+/** Un paramètre « virgule » (`"S,M,L"`) devient une liste de valeurs non vides. */
+const splitList = (value: string | undefined): string[] =>
+	value
+		? value
+				.split(",")
+				.map((item) => item.trim())
+				.filter(Boolean)
+		: [];
+
+/**
+ * Une catégorie inclut ses descendantes : filtrer sur « Robes » remonte aussi
+ * les produits de « Robes / Soirée ». `null` = pas de filtre catégorie.
+ */
+const resolveCategoryIds = async (
+	query: Pick<ProductListQuery, "categoryId" | "categorySlug">,
+): Promise<string[] | null> => {
+	if (query.categorySlug) {
+		const [category] = await db
+			.select({ id: t.categories.id })
+			.from(t.categories)
+			.where(and(eq(t.categories.slug, query.categorySlug), isNull(t.categories.deletedAt)))
+			.limit(1);
+
+		return category ? await getDescendantIds(category.id) : [];
+	}
+
+	if (query.categoryId) return getDescendantIds(query.categoryId);
+
+	return null;
+};
+
+const categoryFilter = (categoryIds: string[] | null): SQL | null => {
+	if (!categoryIds) return null;
+
+	return categoryIds.length === 0
+		? sql`false`
+		: sql`exists (
+				select 1 from ${t.productCategories}
+				where ${t.productCategories.productId} = ${t.products.id}
+				  and ${t.productCategories.categoryId} in ${categoryIds}
+			)`;
+};
+
+/** Recherche plein texte insensible aux accents, adossée à l'index GIN. */
+const searchFilter = (q: string | undefined): SQL | null =>
+	q
+		? sql`
+			to_tsvector('french', pf_unaccent(coalesce(${t.products.name}, '') || ' ' || coalesce(${t.products.shortDescription}, '')))
+			@@ plainto_tsquery('french', pf_unaccent(${q}))
+			or ${t.products.name} ilike ${`%${q}%`}
+			or ${t.products.sku} ilike ${`%${q}%`}
+		`
+		: null;
 
 export const listProducts = async (
 	query: ProductListQuery,
@@ -366,45 +424,42 @@ export const listProducts = async (
 	if (query.minPrice !== undefined) filters.push(gte(t.products.basePrice, query.minPrice));
 	if (query.maxPrice !== undefined) filters.push(lte(t.products.basePrice, query.maxPrice));
 	if (query.tag) filters.push(sql`${query.tag} = any(${t.products.tags})`);
+	if (query.onSale) {
+		filters.push(
+			sql`${t.products.compareAtPrice} is not null and ${t.products.compareAtPrice} > ${t.products.basePrice}`,
+		);
+	}
 
-	// Recherche plein texte insensible aux accents, adossée à l'index GIN.
-	if (query.q) {
+	const q = searchFilter(query.q);
+	if (q) filters.push(q);
+
+	const categoryIds = await resolveCategoryIds(query);
+	const category = categoryFilter(categoryIds);
+	if (category) filters.push(category);
+
+	const sizeLabels = splitList(query.size);
+	if (sizeLabels.length > 0) {
 		filters.push(sql`
-			to_tsvector('french', pf_unaccent(coalesce(${t.products.name}, '') || ' ' || coalesce(${t.products.shortDescription}, '')))
-			@@ plainto_tsquery('french', pf_unaccent(${query.q}))
-			or ${t.products.name} ilike ${`%${query.q}%`}
-			or ${t.products.sku} ilike ${`%${query.q}%`}
+			exists (
+				select 1 from ${t.sizes}
+				left join ${t.productVariants} on ${t.productVariants.id} = ${t.sizes.variantId}
+				where coalesce(${t.sizes.productId}, ${t.productVariants.productId}) = ${t.products.id}
+				  and ${t.sizes.label} in ${sizeLabels}
+				  and ${t.sizes.status} = 'active'
+			)
 		`);
 	}
 
-	// Une catégorie inclut ses descendantes : filtrer sur « Robes » remonte
-	// aussi les produits de « Robes / Soirée ».
-	let categoryIds: string[] | null = null;
-
-	if (query.categorySlug) {
-		const [category] = await db
-			.select({ id: t.categories.id })
-			.from(t.categories)
-			.where(
-				and(eq(t.categories.slug, query.categorySlug), isNull(t.categories.deletedAt)),
+	const colorNames = splitList(query.color);
+	if (colorNames.length > 0) {
+		filters.push(sql`
+			exists (
+				select 1 from ${t.productVariants}
+				where ${t.productVariants.productId} = ${t.products.id}
+				  and ${t.productVariants.name} in ${colorNames}
+				  and ${t.productVariants.status} = 'active'
 			)
-			.limit(1);
-
-		categoryIds = category ? await getDescendantIds(category.id) : [];
-	} else if (query.categoryId) {
-		categoryIds = await getDescendantIds(query.categoryId);
-	}
-
-	if (categoryIds) {
-		filters.push(
-			categoryIds.length === 0
-				? sql`false`
-				: sql`exists (
-						select 1 from ${t.productCategories}
-						where ${t.productCategories.productId} = ${t.products.id}
-						  and ${t.productCategories.categoryId} in ${categoryIds}
-					)`,
-		);
+		`);
 	}
 
 	if (query.stockStatus) {
@@ -448,6 +503,87 @@ export const listProducts = async (
 		query,
 		totals?.total ?? 0,
 	);
+};
+
+export interface ProductFacetsQuery {
+	categoryId?: string;
+	categorySlug?: string;
+	q?: string;
+}
+
+/**
+ * Facettes du rayon regardé : tailles/couleurs distinctes et bornes de prix,
+ * pour que le panneau de filtres du storefront ne propose jamais une valeur
+ * qui ne renverrait aucun résultat.
+ *
+ * Volontairement scopé par catégorie/recherche seulement (pas par les
+ * facettes elles-mêmes) : cocher « M » ne doit pas faire disparaître les
+ * autres tailles de la liste, sans quoi cocher deux tailles deviendrait
+ * impossible.
+ */
+export const getProductFacets = async (query: ProductFacetsQuery): Promise<ProductFacets> => {
+	const filters: SQL[] = [isNull(t.products.deletedAt), eq(t.products.status, "published")];
+
+	const q = searchFilter(query.q);
+	if (q) filters.push(q);
+
+	const category = categoryFilter(await resolveCategoryIds(query));
+	if (category) filters.push(category);
+
+	const where = and(...filters);
+
+	const [priceRow] = await db
+		.select({
+			min: sql<number>`coalesce(min(${t.products.basePrice}), 0)`,
+			max: sql<number>`coalesce(max(${t.products.basePrice}), 0)`,
+		})
+		.from(t.products)
+		.where(where);
+
+	const productIdRows = await db.select({ id: t.products.id }).from(t.products).where(where);
+	const productIds = productIdRows.map((row) => row.id);
+
+	if (productIds.length === 0) {
+		return { sizes: [], colors: [], priceRange: { min: 0, max: 0 } };
+	}
+
+	const sizeRows = await db
+		.select({
+			label: t.sizes.label,
+			position: sql<number>`min(${t.sizes.position})`,
+		})
+		.from(t.sizes)
+		.leftJoin(t.productVariants, eq(t.productVariants.id, t.sizes.variantId))
+		.where(
+			and(
+				eq(t.sizes.status, "active"),
+				sql`coalesce(${t.sizes.productId}, ${t.productVariants.productId}) in ${productIds}`,
+			),
+		)
+		.groupBy(t.sizes.label)
+		.orderBy(sql`min(${t.sizes.position}) asc`);
+
+	const colorRows = await db
+		.select({
+			name: t.productVariants.name,
+			hex: t.productVariants.colorHex,
+			position: sql<number>`min(${t.productVariants.position})`,
+		})
+		.from(t.productVariants)
+		.where(
+			and(
+				eq(t.productVariants.status, "active"),
+				inArray(t.productVariants.productId, productIds),
+			),
+		)
+		.groupBy(t.productVariants.name, t.productVariants.colorHex)
+		.orderBy(sql`min(${t.productVariants.position}) asc`);
+
+	return {
+		sizes: sizeRows.map((row) => row.label),
+		colors: colorRows.map((row) => ({ name: row.name, hex: row.hex })),
+		priceRange: { min: priceRow?.min ?? 0, max: priceRow?.max ?? 0 },
+	};
 };
 
 // --- Écriture --------------------------------------------------------------

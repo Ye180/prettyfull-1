@@ -778,7 +778,9 @@ export default function OrderDetailPage() {
 
 						{discountTotal > 0 && (
 							<div className="flex justify-between text-sm text-green-600">
-								<span>Remise</span>
+								<span>
+									Remise{orderData.discount_code ? ` (${orderData.discount_code})` : ""}
+								</span>
 								<span>-{formatCurrency_FR(discountTotal, currency)}</span>
 							</div>
 						)}

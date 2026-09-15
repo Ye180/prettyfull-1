@@ -2,6 +2,7 @@
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
 import { useGetCategory } from "@/features/homepage/api/medusa/get-category";
+import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
 import PhotoOverlayBanner from "@/shared/components/organims/photo-overlay-banner";
 import ProductCardSkeleton from "@/shared/components/organims/product-loading";
 import { useRegionStore } from "@/stores/useRegion";
@@ -12,6 +13,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useCollectionBanners } from "../hooks/use-collection-banners";
+import { useCollectionFacets } from "../hooks/use-collection-facets";
 import { useCollectionFilters } from "../hooks/use-collection-filters";
 import { useCollectionProducts } from "../hooks/use-collection-products";
 import SidebarFilter, { FilterState } from "../organims/sidebar-filter";
@@ -19,30 +22,39 @@ import SidebarFilter, { FilterState } from "../organims/sidebar-filter";
 // 7 lignes de la grille dense (5 colonnes en desktop) avant le bouton "See More".
 const PAGE_SIZE = 35;
 
-const INITIAL_FILTERS: FilterState = {
-	categories: [],
-	sizes: [],
-	minPrice: "",
-	maxPrice: "",
-	color: "",
-	fits: [],
-	materials: [],
-	availability: "all",
-};
+/** `image` peut être une URL ou `{ url }` selon la source (§ `useGetCategory`). */
+const imageUrlOf = (image: string | { url: string } | undefined): string | undefined =>
+	typeof image === "string" ? image : image?.url;
 
 export const ShopAllView = () => {
 	const searchParams = useSearchParams();
 	const { data: categories } = useGetCategory();
+	const { data: heroBanners } = useCollectionBanners("collection_top");
+	const { data: promoBanners } = useCollectionBanners("collection_promo");
+	const { data: footerBanners } = useCollectionBanners("collection_footer");
 	const tHero = useTranslations("HomePage.hero");
-	const tPromoDuo = useTranslations("HomePage.promoDuo");
 
-	const { q, sort, order, setSearch, setSort } = useCollectionFilters();
+	const {
+		q,
+		sort,
+		order,
+		minPrice,
+		maxPrice,
+		sizes,
+		colors,
+		availability,
+		setSearch,
+		setSort,
+		setPriceRange,
+		setSizes,
+		setColors,
+		setAvailability,
+		clear: clearFilters,
+	} = useCollectionFilters();
 	const currencyCode = useRegionStore((state) => state.region?.currency_code);
 	const [searchDraft, setSearchDraft] = useState(q);
 	const [limit, setLimit] = useState(PAGE_SIZE);
-	const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
 	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const [selectedSize, setSelectedSize] = useState("M");
 	const [categorySlug, setCategorySlug] = useState(
 		searchParams.get("category") ?? "",
 	);
@@ -54,8 +66,7 @@ export const ShopAllView = () => {
 		setCategorySlug(searchParams.get("category") ?? "");
 	}, [searchParams]);
 
-	// Debounce : un fetch par pause de frappe, pas par caractère (même logique
-	// que `Toolbar`, l'organism plus abouti mais jamais branché à cette vue).
+	// Debounce : un fetch par pause de frappe, pas par caractère.
 	useEffect(() => {
 		const id = setTimeout(() => {
 			if (searchDraft !== q) setSearch(searchDraft);
@@ -64,10 +75,10 @@ export const ShopAllView = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchDraft]);
 
-	// Nouvelle recherche/tri/rayon => on repart du premier palier de "Load More".
+	// Nouveau filtre/tri/rayon => on repart du premier palier de "Load More".
 	useEffect(() => {
 		setLimit(PAGE_SIZE);
-	}, [q, sort, order, categorySlug]);
+	}, [q, sort, order, categorySlug, minPrice, maxPrice, sizes, colors, availability]);
 
 	const { data, isLoading } = useCollectionProducts({
 		categorySlug: categorySlug || undefined,
@@ -75,35 +86,79 @@ export const ShopAllView = () => {
 		sort,
 		order,
 		q,
-		minPrice: null,
-		maxPrice: null,
+		minPrice,
+		maxPrice,
+		sizes,
+		colors,
+		stockStatus: availability === "in_stock" ? "in_stock" : undefined,
+		onSale: availability === "on_sale" ? true : undefined,
 	});
 
-	const allProducts = data?.products ?? [];
+	const { data: facets, isLoading: isLoadingFacets } = useCollectionFacets({
+		categorySlug: categorySlug || undefined,
+		q,
+	});
+
+	const filters: FilterState = {
+		categorySlug,
+		sizes,
+		colors,
+		minPrice: minPrice != null ? String(minPrice) : "",
+		maxPrice: maxPrice != null ? String(maxPrice) : "",
+		availability,
+	};
+
+	const applyFilters = (next: FilterState) => {
+		setCategorySlug(next.categorySlug);
+		setSizes(next.sizes);
+		setColors(next.colors);
+		setAvailability(next.availability);
+		const nextMin = next.minPrice.trim() === "" ? null : Number(next.minPrice);
+		const nextMax = next.maxPrice.trim() === "" ? null : Number(next.maxPrice);
+		setPriceRange(
+			nextMin != null && !Number.isNaN(nextMin) ? nextMin : null,
+			nextMax != null && !Number.isNaN(nextMax) ? nextMax : null,
+		);
+	};
+
+	const resetAllFilters = () => {
+		setSearchDraft("");
+		setSearch("");
+		setCategorySlug("");
+		clearFilters();
+	};
+
+	const displayedProducts = data?.products ?? [];
 	const hasMore = data?.meta.hasNext ?? false;
 
-	// Prix min/max encore local (le back n'expose pas les autres facettes du
-	// panneau) : mêmes bornes qu'avant, juste appliquées aux vrais produits.
-	const displayedProducts = allProducts.filter((p) => {
-		const price = p.colors[0]?.price ?? 0;
-		if (filters.minPrice && price < parseFloat(filters.minPrice)) return false;
-		if (filters.maxPrice && price > parseFloat(filters.maxPrice)) return false;
-		return true;
-	});
+	const SORT_OPTIONS = [
+		{ value: "createdAt:desc", label: "Nouveautés", sort: "createdAt" as const, order: "desc" as const },
+		{ value: "basePrice:asc", label: "Prix croissant", sort: "basePrice" as const, order: "asc" as const },
+		{ value: "basePrice:desc", label: "Prix décroissant", sort: "basePrice" as const, order: "desc" as const },
+		{ value: "name:asc", label: "Nom (A → Z)", sort: "name" as const, order: "asc" as const },
+	];
+	const selectedSortValue = `${sort}:${order}`;
 
-	const selectedSort =
-		sort === "basePrice" && order === "asc"
-			? "Prix croissant"
-			: "Prix décroissant";
+	const heroBanner = heroBanners?.[0];
+	const heroImage = heroBanner?.image || "/home/cover-desktop.jpg";
+	const heroTitle = heroBanner?.title || "New Season Essentials";
+	const heroSubtitle =
+		heroBanner?.subtitle || "Soft silhouettes and modern staples for everyday wear.";
+	const heroCta = heroBanner?.cta || tHero("ctaButton");
+	const heroLink = heroBanner?.link || "#catalog-grid";
+
+	const promos = (promoBanners ?? []).slice(0, 2);
+	const footerBanner = footerBanners?.[0];
+	const featuredCategories = (categories ?? []).filter((category) => category.isFeatured);
 
 	return (
 		<main className="pb-16 w-full bg-white">
-			{/* 1. Hero: New Season Essentials */}
+			{/* 1. Hero */}
 			<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
 				<div className="relative w-full min-h-[480px] lg:min-h-[520px] rounded-[2.6rem] overflow-hidden bg-[#888]">
 					<Image
-						src="/home/cover-desktop.jpg"
-						alt="New Season Essentials"
+						src={heroImage}
+						alt={heroTitle}
 						fill
 						priority
 						sizes="(max-width: 1400px) 100vw, 1400px"
@@ -121,16 +176,14 @@ export const ShopAllView = () => {
 					{/* Headline Left */}
 					<div className="relative z-10 flex flex-col justify-end h-full min-h-[480px] lg:min-h-[520px] p-8 sm:p-12 lg:p-16 max-w-xl text-white space-y-4">
 						<h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.12]">
-							New Season Essentials
+							{heroTitle}
 						</h1>
-						<p className="text-[1.5rem] sm:text-[1.6rem] text-white/90">
-							Soft silhouettes and modern staples for everyday wear.
-						</p>
+						<p className="text-[1.5rem] sm:text-[1.6rem] text-white/90">{heroSubtitle}</p>
 						<a
-							href="#catalog-grid"
+							href={heroLink}
 							className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black text-[1.4rem] font-semibold rounded-full whitespace-nowrap hover:bg-neutral-100 transition-all self-start shadow"
 						>
-							<span>{tHero("ctaButton")}</span>
+							<span>{heroCta}</span>
 							<svg
 								width="16"
 								height="16"
@@ -148,223 +201,106 @@ export const ShopAllView = () => {
 				</div>
 			</section>
 
-			{/* 2. Dual Promotion Cards */}
-			<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-				<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-					{/* Mid-Season Sale */}
-					<div className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group">
-						<Image
-							src="/banner/banner6.jpg"
-							alt="Mid-Season Sale"
-							fill
-							sizes="(max-width: 768px) 100vw, 50vw"
-							className="object-cover transition-transform duration-500 group-hover:scale-105"
-						/>
-						<div className="absolute inset-0 bg-black/35" />
-						<div className="flex relative z-10 flex-col justify-end p-8 space-y-2 h-full text-white">
-							<h3 className="text-3xl font-bold text-white">
-								{tPromoDuo("saleTitle")}
-							</h3>
-							<p className="text-[1.4rem] text-white/85">
-								Up to 40% off selected styles
-							</p>
-							<a
-								href="#catalog-grid"
-								className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black text-[1.3rem] font-medium rounded-full self-start hover:bg-white/90 transition-all mt-2"
+			{/* 2. Dual Promotion Cards - pilotées depuis Admin > Contenu (bannières "collection_promo") */}
+			{promos.length > 0 && (
+				<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+					<div className={`grid grid-cols-1 gap-6 ${promos.length > 1 ? "md:grid-cols-2" : ""}`}>
+						{promos.map((promo) => (
+							<div
+								key={promo.id}
+								className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group"
 							>
-								<span>{tPromoDuo("saleCta")}</span>
-								<svg
-									width="14"
-									height="14"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2.2"
-								>
-									<line x1="7" y1="17" x2="17" y2="7" />
-									<polyline points="7 7 17 7 17 17" />
-								</svg>
-							</a>
-						</div>
+								<Image
+									src={promo.image}
+									alt={promo.title || "Promotion"}
+									fill
+									sizes="(max-width: 768px) 100vw, 50vw"
+									className="object-cover transition-transform duration-500 group-hover:scale-105"
+								/>
+								<div className="absolute inset-0 bg-black/35" />
+								<div className="flex relative z-10 flex-col justify-end p-8 space-y-2 h-full text-white">
+									{promo.title && (
+										<h3 className="text-3xl font-bold text-white">{promo.title}</h3>
+									)}
+									{promo.subtitle && (
+										<p className="text-[1.4rem] text-white/85">{promo.subtitle}</p>
+									)}
+									{promo.link && (
+										<Link
+											href={promo.link}
+											className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black text-[1.3rem] font-medium rounded-full self-start hover:bg-white/90 transition-all mt-2"
+										>
+											<span>{promo.cta || "Découvrir"}</span>
+											<svg
+												width="14"
+												height="14"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												strokeWidth="2.2"
+											>
+												<line x1="7" y1="17" x2="17" y2="7" />
+												<polyline points="7 7 17 7 17 17" />
+											</svg>
+										</Link>
+									)}
+								</div>
+							</div>
+						))}
+					</div>
+				</section>
+			)}
+
+			{/* 3. Shop by Collection - catégories marquées "Mise en avant" dans Admin > Catalogue */}
+			{featuredCategories.length > 0 && (
+				<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+					<div className="flex justify-between items-center pb-8">
+						<h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#080808]">
+							Shop by Collection
+						</h2>
 					</div>
 
-					{/* Everyday Knitwear */}
-					<div className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group">
-						<Image
-							src="/home/cover-box.jpg"
-							alt="Everyday Knitwear"
-							fill
-							sizes="(max-width: 768px) 100vw, 50vw"
-							className="object-cover transition-transform duration-500 group-hover:scale-105"
-						/>
-						<div className="absolute inset-0 bg-black/35" />
-						<div className="flex relative z-10 flex-col justify-end p-8 space-y-2 h-full text-white">
-							<h3 className="text-3xl font-bold text-white">
-								Everyday Knitwear
-							</h3>
-							<p className="text-[1.4rem] text-white/85">
-								Lightweight layers you'll reach for daily
-							</p>
-							<a
-								href="#catalog-grid"
-								className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black text-[1.3rem] font-medium rounded-full self-start hover:bg-white/90 transition-all mt-2"
+					<div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+						{featuredCategories.map((category) => (
+							<div
+								key={category.id}
+								className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group"
 							>
-								<span>Explore</span>
-								<svg
-									width="14"
-									height="14"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2.2"
-								>
-									<line x1="7" y1="17" x2="17" y2="7" />
-									<polyline points="7 7 17 7 17 17" />
-								</svg>
-							</a>
-						</div>
+								{imageUrlOf(category.image) && (
+									<Image
+										src={imageUrlOf(category.image)!}
+										alt={category.name}
+										fill
+										sizes="(max-width: 640px) 100vw, 33vw"
+										className="object-cover transition-transform duration-500 group-hover:scale-105"
+									/>
+								)}
+								<div className="absolute inset-0 bg-black/25" />
+								<div className="flex relative z-10 flex-col justify-end p-6 space-y-2 h-full text-white">
+									<h3 className="text-2xl font-bold text-white">{category.name}</h3>
+									<Link
+										href={COLLECTION_PATHS.collectionDetail(category.handle)}
+										className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-[1.2rem] font-medium rounded-full self-start hover:bg-white/90 transition-all"
+									>
+										<span>See Collection</span>
+										<svg
+											width="13"
+											height="13"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="2"
+										>
+											<line x1="7" y1="17" x2="17" y2="7" />
+											<polyline points="7 7 17 7 17 17" />
+										</svg>
+									</Link>
+								</div>
+							</div>
+						))}
 					</div>
-				</div>
-			</section>
-
-			{/* 3. Shop by Collection */}
-			<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-				<div className="flex justify-between items-center pb-8">
-					<h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#080808]">
-						Shop by Collection
-					</h2>
-					<div className="flex items-center space-x-3">
-						<button
-							aria-label="Previous"
-							className="flex justify-center items-center w-10 h-10 rounded-full border border-gray-300 transition-colors cursor-pointer hover:border-black"
-						>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2"
-							>
-								<path d="M19 12H5M12 19l-7-7 7-7" />
-							</svg>
-						</button>
-						<button
-							aria-label="Next"
-							className="flex justify-center items-center w-10 h-10 text-white bg-black rounded-full shadow transition-colors cursor-pointer hover:bg-neutral-800"
-						>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2"
-							>
-								<path d="M5 12h14M12 5l7 7-7 7" />
-							</svg>
-						</button>
-					</div>
-				</div>
-
-				<div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-					{/* Jacket */}
-					<div className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group">
-						<Image
-							src="/home/commerce.jpg"
-							alt="Jacket"
-							fill
-							sizes="(max-width: 640px) 100vw, 33vw"
-							className="object-cover transition-transform duration-500 group-hover:scale-105"
-						/>
-						<div className="absolute inset-0 bg-black/25" />
-						<div className="flex relative z-10 flex-col justify-end p-6 space-y-2 h-full text-white">
-							<h3 className="text-2xl font-bold text-white">Jacket</h3>
-							<Link
-								href="/collections"
-								className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-[1.2rem] font-medium rounded-full self-start hover:bg-white/90 transition-all"
-							>
-								<span>See Collection</span>
-								<svg
-									width="13"
-									height="13"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-								>
-									<line x1="7" y1="17" x2="17" y2="7" />
-									<polyline points="7 7 17 7 17 17" />
-								</svg>
-							</Link>
-						</div>
-					</div>
-
-					{/* T-Shirts */}
-					<div className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group">
-						<Image
-							src="/home/presentation.jpg"
-							alt="T-Shirts"
-							fill
-							sizes="(max-width: 640px) 100vw, 33vw"
-							className="object-cover transition-transform duration-500 group-hover:scale-105"
-						/>
-						<div className="absolute inset-0 bg-black/25" />
-						<div className="flex relative z-10 flex-col justify-end p-6 space-y-2 h-full text-white">
-							<h3 className="text-2xl font-bold text-white">T-Shirts</h3>
-							<Link
-								href="/collections"
-								className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-[1.2rem] font-medium rounded-full self-start hover:bg-white/90 transition-all"
-							>
-								<span>See Collection</span>
-								<svg
-									width="13"
-									height="13"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-								>
-									<line x1="7" y1="17" x2="17" y2="7" />
-									<polyline points="7 7 17 7 17 17" />
-								</svg>
-							</Link>
-						</div>
-					</div>
-
-					{/* Shorts */}
-					<div className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group">
-						<Image
-							src="/home/promotion.jpg"
-							alt="Shorts"
-							fill
-							sizes="(max-width: 640px) 100vw, 33vw"
-							className="object-cover transition-transform duration-500 group-hover:scale-105"
-						/>
-						<div className="absolute inset-0 bg-black/25" />
-						<div className="flex relative z-10 flex-col justify-end p-6 space-y-2 h-full text-white">
-							<h3 className="text-2xl font-bold text-white">Shorts</h3>
-							<Link
-								href="/collections"
-								className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-[1.2rem] font-medium rounded-full self-start hover:bg-white/90 transition-all"
-							>
-								<span>See Collection</span>
-								<svg
-									width="13"
-									height="13"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-								>
-									<line x1="7" y1="17" x2="17" y2="7" />
-									<polyline points="7 7 17 7 17 17" />
-								</svg>
-							</Link>
-						</div>
-					</div>
-				</div>
-			</section>
+				</section>
+			)}
 
 			{/* 4. Toolbar & Search Bar */}
 			<section
@@ -428,7 +364,7 @@ export const ShopAllView = () => {
 							onChange={(e) => setCategorySlug(e.target.value)}
 							className="px-4 py-2.5 rounded-full border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-black"
 						>
-							<option value="">Category</option>
+							<option value="">Toutes les catégories</option>
 							{categories?.map((category) => (
 								<option key={category.id} value={category.handle}>
 									{category.name}
@@ -438,29 +374,32 @@ export const ShopAllView = () => {
 
 						{/* Size dropdown */}
 						<select
-							value={selectedSize}
-							onChange={(e) => setSelectedSize(e.target.value)}
+							value={sizes[0] ?? ""}
+							onChange={(e) => setSizes(e.target.value ? [e.target.value] : [])}
 							className="px-4 py-2.5 rounded-full border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-black"
 						>
-							<option value="XS">XS</option>
-							<option value="S">S</option>
-							<option value="M">M</option>
-							<option value="L">L</option>
-							<option value="XL">XL</option>
+							<option value="">Toutes tailles</option>
+							{facets?.sizes.map((size) => (
+								<option key={size} value={size}>
+									{size}
+								</option>
+							))}
 						</select>
 
 						{/* Sort dropdown */}
 						<select
-							value={selectedSort}
+							value={selectedSortValue}
 							onChange={(e) => {
-								if (e.target.value === "Prix croissant")
-									setSort("basePrice", "asc");
-								else setSort("basePrice", "desc");
+								const option = SORT_OPTIONS.find((o) => o.value === e.target.value);
+								if (option) setSort(option.sort, option.order);
 							}}
 							className="px-4 py-2.5 rounded-full border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-black"
 						>
-							<option value="Prix décroissant">Prix décroissant</option>
-							<option value="Prix croissant">Prix croissant</option>
+							{SORT_OPTIONS.map((option) => (
+								<option key={option.value} value={option.value}>
+									{option.label}
+								</option>
+							))}
 						</select>
 					</div>
 				</div>
@@ -482,8 +421,15 @@ export const ShopAllView = () => {
 							>
 								<SidebarFilter
 									filters={filters}
-									onChange={setFilters}
-									onClear={() => setFilters(INITIAL_FILTERS)}
+									onChange={applyFilters}
+									onClear={resetAllFilters}
+									categoryOptions={categories?.map((category) => ({
+										slug: category.handle,
+										name: category.name,
+									}))}
+									sizeOptions={facets?.sizes ?? []}
+									colorOptions={facets?.colors ?? []}
+									isLoadingFacets={isLoadingFacets}
 								/>
 							</motion.div>
 						)}
@@ -517,12 +463,7 @@ export const ShopAllView = () => {
 									Essayez d&apos;ajuster vos filtres ou votre recherche.
 								</p>
 								<button
-									onClick={() => {
-										setSearchDraft("");
-										setSearch("");
-										setFilters(INITIAL_FILTERS);
-										setCategorySlug("");
-									}}
+									onClick={resetAllFilters}
 									className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-black text-white font-semibold rounded-full hover:bg-neutral-800 transition shadow-lg group text-sm sm:text-base cursor-pointer"
 								>
 									<span>Réinitialiser les filtres</span>
@@ -563,14 +504,17 @@ export const ShopAllView = () => {
 				</div>
 			</section>
 
-			{/* 6. Stratosphere Call-To-Action Banner */}
+			{/* 6. Bandeau de fin - piloté depuis Admin > Contenu (bannière "collection_footer") */}
 			<PhotoOverlayBanner
-				image="/banner/banner4.jpg"
-				title="Let's Take Your Fashion to The Stratosphere"
-				subtitle="Ready to elevate your style? Let's launch your fashion into the stratosphere with bold choices and unique trends!"
+				image={footerBanner?.image || "/banner/banner4.jpg"}
+				title={footerBanner?.title || "Let's Take Your Fashion to The Stratosphere"}
+				subtitle={
+					footerBanner?.subtitle ||
+					"Ready to elevate your style? Let's launch your fashion into the stratosphere with bold choices and unique trends!"
+				}
 				cta={{
-					label: "Get Started Now",
-					href: "/collections",
+					label: footerBanner?.cta || "Get Started Now",
+					href: footerBanner?.link || "/collections",
 				}}
 				contained={true}
 				height="lg"

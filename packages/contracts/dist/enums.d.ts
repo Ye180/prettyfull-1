@@ -63,13 +63,16 @@ export type IntegrationEnvironment = (typeof INTEGRATION_ENVIRONMENTS)[number];
 export declare const SHIPPING_RATE_KINDS: readonly ["flat", "weight", "api"];
 export type ShippingRateKind = (typeof SHIPPING_RATE_KINDS)[number];
 /** Emplacements de bannière exposés au storefront (§2.6). */
-export declare const BANNER_PLACEMENTS: readonly ["home_hero", "home_secondary", "home_promo", "collection_top", "sidebar"];
+export declare const BANNER_PLACEMENTS: readonly ["home_hero", "home_secondary", "home_promo", "collection_top", "collection_promo", "collection_footer", "sidebar"];
 export type BannerPlacement = (typeof BANNER_PLACEMENTS)[number];
 /** Cycle de vie d'un message reçu via le formulaire de contact. */
 export declare const CONTACT_MESSAGE_STATUSES: readonly ["new", "read", "archived"];
 export type ContactMessageStatus = (typeof CONTACT_MESSAGE_STATUSES)[number];
 export declare const FEATURED_KINDS: readonly ["product", "category"];
 export type FeaturedKind = (typeof FEATURED_KINDS)[number];
+/** Type de remise d'un code promo (§2.9) : pourcentage du sous-total, ou montant fixe. */
+export declare const DISCOUNT_TYPES: readonly ["percentage", "fixed"];
+export type DiscountType = (typeof DISCOUNT_TYPES)[number];
 /** Devises supportées. XOF n'a pas de sous-unité - cf. `CURRENCY_EXPONENTS`. */
 export declare const CURRENCY_CODES: readonly ["xof", "eur", "usd"];
 export type CurrencyCode = (typeof CURRENCY_CODES)[number];

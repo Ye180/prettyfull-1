@@ -132,7 +132,7 @@ export function ProductInfosNew({
 
 				{/* Titre et Rating */}
 				<div className="flex gap-4 justify-between items-start">
-					<h3 className="text-4xl lg:text-5xl font-semibold text-[#080808]">
+					<h3 className="text-2xl lg:text-4xl font-semibold text-[#080808]">
 						{productName}
 					</h3>
 					<div className="flex gap-1 items-center shrink-0">
@@ -283,7 +283,7 @@ export function ProductInfosNew({
 				</Button>
 				<button
 					className={`w-fit! rounded-full border p-3 border-black h-fit hover:border-black cursor-pointer hover:bg-black hover:text-white ${
-						isWishlisted ? "bg-black text-white" : ""
+						isWishlisted ? "text-white bg-black" : ""
 					}`}
 					onClick={onAddToWishlist}
 					aria-label={
@@ -316,7 +316,7 @@ export function ProductInfosNew({
 
 			{/* Warranty - rangée statique (icône + texte encadré), pas de champ backend dédié */}
 			<div className="flex gap-3 items-start p-4 rounded-2xl border border-neutral-200">
-				<span className="flex shrink-0 justify-center items-center w-9 h-9 bg-neutral-100 rounded-full">
+				<span className="flex justify-center items-center w-9 h-9 rounded-full shrink-0 bg-neutral-100">
 					<svg
 						className="w-5 h-5 text-neutral-700"
 						fill="none"
@@ -456,13 +456,13 @@ export function ProductInfosNew({
 									<td className="p-3 font-medium border border-neutral-200">
 										{row.size}
 									</td>
-									<td className="p-3 text-neutral-600 border border-neutral-200">
+									<td className="p-3 border text-neutral-600 border-neutral-200">
 										{row.bust} cm
 									</td>
-									<td className="p-3 text-neutral-600 border border-neutral-200">
+									<td className="p-3 border text-neutral-600 border-neutral-200">
 										{row.length} cm
 									</td>
-									<td className="p-3 text-neutral-600 border border-neutral-200">
+									<td className="p-3 border text-neutral-600 border-neutral-200">
 										{row.sleeve} cm
 									</td>
 								</tr>

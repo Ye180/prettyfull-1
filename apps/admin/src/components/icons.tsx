@@ -83,6 +83,13 @@ export const IconContent = (p: IconProps) => (
 	</Icon>
 );
 
+export const IconPromo = (p: IconProps) => (
+	<Icon {...p}>
+		<path d="M20 12.5 12.5 20a1.5 1.5 0 0 1-2.12 0l-6.38-6.38a1.5 1.5 0 0 1 0-2.12L11.5 4h6A2.5 2.5 0 0 1 20 6.5z" />
+		<circle cx="15.5" cy="8.5" r="1.5" />
+	</Icon>
+);
+
 export const IconShield = (p: IconProps) => (
 	<Icon {...p}>
 		<path d="M12 2.75 4.5 6v6c0 4.5 3.2 7.9 7.5 9.25 4.3-1.35 7.5-4.75 7.5-9.25V6z" />

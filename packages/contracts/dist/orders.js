@@ -50,6 +50,8 @@ export const cartSchema = z.object({
     shippingTotal: moneySchema,
     taxTotal: moneySchema,
     discountTotal: moneySchema,
+    /** Code promo actif sur ce panier, `null` si aucun n'est appliqué. */
+    discountCode: z.string().nullable(),
     total: moneySchema,
     updatedAt: z.string(),
 });
@@ -147,6 +149,8 @@ export const orderSchema = z.object({
     shippingTotal: moneySchema,
     taxTotal: moneySchema,
     discountTotal: moneySchema,
+    /** Instantané du code utilisé à l'achat - lisible même si le code est supprimé depuis. */
+    discountCode: z.string().nullable(),
     total: moneySchema,
     refundedTotal: moneySchema,
     note: z.string().nullable(),

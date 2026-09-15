@@ -1,66 +1,56 @@
 "use client";
 
+import type { Availability } from "../hooks/use-collection-filters";
 import { useTranslations } from "next-intl";
 
 export interface FilterState {
-	categories: string[];
+	/** Slug du rayon actif ; `""` = tout le catalogue. Un seul à la fois. */
+	categorySlug: string;
 	sizes: string[];
+	colors: string[];
 	minPrice: string;
 	maxPrice: string;
-	color: string;
-	fits: string[];
-	materials: string[];
-	availability: "in_stock" | "on_sale" | "all";
+	availability: Availability;
+}
+
+export interface CategoryOption {
+	slug: string;
+	name: string;
+}
+
+export interface ColorOption {
+	name: string;
+	hex: string | null;
 }
 
 interface SidebarFilterProps {
 	filters: FilterState;
 	onChange: (filters: FilterState) => void;
 	onClear: () => void;
+	/** Rayons proposés ; section masquée si vide (page déjà scopée à un rayon). */
+	categoryOptions?: CategoryOption[];
+	/** Tailles distinctes du catalogue regardé (§ `useCollectionFacets`). */
+	sizeOptions: string[];
+	/** Couleurs distinctes du catalogue regardé. */
+	colorOptions: ColorOption[];
+	isLoadingFacets?: boolean;
 	className?: string;
 }
+
+const toggleItem = (list: string[], item: string): string[] =>
+	list.includes(item) ? list.filter((x) => x !== item) : [...list, item];
 
 export const SidebarFilter = ({
 	filters,
 	onChange,
 	onClear,
+	categoryOptions = [],
+	sizeOptions,
+	colorOptions,
+	isLoadingFacets = false,
 	className = "",
 }: SidebarFilterProps) => {
 	const t = useTranslations("CollectionPage.filters");
-
-	const categoryOptions = [
-		"Knitwear",
-		"T-Shirts",
-		"Shirts",
-		"Jeans",
-		"Jackets",
-		"Trousers",
-		"Hoodies",
-		"Shorts",
-	];
-
-	const sizeOptions = ["S", "M", "L", "XL"];
-	const fitOptions = ["Slim", "Regular", "Relaxed", "Oversized"];
-	const materialOptions = [
-		"Cutton",
-		"Knit",
-		"Wool",
-		"Linen",
-		"Denim",
-		"Polyester Blend",
-	];
-
-	const toggleArrayItem = (
-		key: "categories" | "sizes" | "fits" | "materials",
-		item: string,
-	) => {
-		const current = filters[key];
-		const exists = current.includes(item);
-		const updated = exists
-			? current.filter((x) => x !== item)
-			: [...current, item];
-		onChange({ ...filters, [key]: updated });
-	};
 
 	return (
 		<aside
@@ -92,53 +82,64 @@ export const SidebarFilter = ({
 			</div>
 
 			{/* Category */}
-			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">Catégorie</h4>
-				<div className="space-y-2.5">
-					{categoryOptions.map((cat) => {
-						const isChecked = filters.categories.includes(cat);
-						return (
-							<label
-								key={cat}
-								className="flex items-center gap-3 cursor-pointer text-[1.4rem] text-neutral-800 hover:text-black select-none"
-							>
-								<input
-									type="checkbox"
-									checked={isChecked}
-									onChange={() => toggleArrayItem("categories", cat)}
-									className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black accent-black"
-								/>
-								<span>{cat}</span>
-							</label>
-						);
-					})}
+			{categoryOptions.length > 0 && (
+				<div className="space-y-3">
+					<h4 className="text-[1.5rem] font-semibold text-black">Catégorie</h4>
+					<div className="space-y-2.5">
+						{categoryOptions.map((category) => {
+							const isChecked = filters.categorySlug === category.slug;
+							return (
+								<label
+									key={category.slug}
+									className="flex items-center gap-3 cursor-pointer text-[1.4rem] text-neutral-800 hover:text-black select-none"
+								>
+									<input
+										type="checkbox"
+										checked={isChecked}
+										onChange={() =>
+											onChange({
+												...filters,
+												categorySlug: isChecked ? "" : category.slug,
+											})
+										}
+										className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black accent-black"
+									/>
+									<span>{category.name}</span>
+								</label>
+							);
+						})}
+					</div>
 				</div>
-			</div>
+			)}
 
 			{/* Size */}
 			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">
-					{t("taille")}
-				</h4>
-				<div className="space-y-2.5">
-					{sizeOptions.map((size) => {
-						const isChecked = filters.sizes.includes(size);
-						return (
-							<label
-								key={size}
-								className="flex items-center gap-3 cursor-pointer text-[1.4rem] text-neutral-800 hover:text-black select-none"
-							>
-								<input
-									type="checkbox"
-									checked={isChecked}
-									onChange={() => toggleArrayItem("sizes", size)}
-									className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black accent-black"
-								/>
-								<span>{size}</span>
-							</label>
-						);
-					})}
-				</div>
+				<h4 className="text-[1.5rem] font-semibold text-black">{t("taille")}</h4>
+				{sizeOptions.length > 0 ? (
+					<div className="flex flex-wrap gap-2">
+						{sizeOptions.map((size) => {
+							const isChecked = filters.sizes.includes(size);
+							return (
+								<button
+									key={size}
+									type="button"
+									onClick={() => onChange({ ...filters, sizes: toggleItem(filters.sizes, size) })}
+									className={`px-4 py-1.5 rounded-full border text-[1.3rem] font-medium transition-colors cursor-pointer ${
+										isChecked
+											? "bg-black text-white border-black"
+											: "border-neutral-300 text-neutral-800 hover:border-black"
+									}`}
+								>
+									{size}
+								</button>
+							);
+						})}
+					</div>
+				) : (
+					<p className="text-[1.3rem] text-neutral-400">
+						{isLoadingFacets ? "Chargement…" : "Aucune taille disponible"}
+					</p>
+				)}
 			</div>
 
 			{/* Prix */}
@@ -146,26 +147,24 @@ export const SidebarFilter = ({
 				<h4 className="text-[1.5rem] font-semibold text-black">Prix</h4>
 				<div className="space-y-2">
 					<div className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200">
-						<span className="text-[1.3rem] text-neutral-500">$</span>
+						<span className="text-[1.3rem] text-neutral-500">FCFA</span>
 						<input
-							type="text"
+							type="number"
+							min={0}
 							placeholder="Minimum"
 							value={filters.minPrice}
-							onChange={(e) =>
-								onChange({ ...filters, minPrice: e.target.value })
-							}
+							onChange={(e) => onChange({ ...filters, minPrice: e.target.value })}
 							className="w-full text-[1.4rem] bg-transparent outline-none placeholder:text-neutral-400"
 						/>
 					</div>
 					<div className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200">
-						<span className="text-[1.3rem] text-neutral-500">$</span>
+						<span className="text-[1.3rem] text-neutral-500">FCFA</span>
 						<input
-							type="text"
+							type="number"
+							min={0}
 							placeholder="Maximum"
 							value={filters.maxPrice}
-							onChange={(e) =>
-								onChange({ ...filters, maxPrice: e.target.value })
-							}
+							onChange={(e) => onChange({ ...filters, maxPrice: e.target.value })}
 							className="w-full text-[1.4rem] bg-transparent outline-none placeholder:text-neutral-400"
 						/>
 					</div>
@@ -174,91 +173,56 @@ export const SidebarFilter = ({
 
 			{/* Color */}
 			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">
-					{t("colors")}
-				</h4>
-				<div className="flex items-center gap-2 flex-wrap">
-					<div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-neutral-200 text-[1.3rem]">
-						<span className="w-3.5 h-3.5 rounded-full bg-[#A3E635]" />
-						<span>Vert</span>
-						<button
-							onClick={() => onChange({ ...filters, color: "" })}
-							className="text-neutral-400 hover:text-black ml-1 text-sm cursor-pointer"
-						>
-							-
-						</button>
+				<h4 className="text-[1.5rem] font-semibold text-black">{t("colors")}</h4>
+				{colorOptions.length > 0 ? (
+					<div className="flex items-center gap-2 flex-wrap">
+						{colorOptions.map((color) => {
+							const isChecked = filters.colors.includes(color.name);
+							return (
+								<button
+									key={color.name}
+									type="button"
+									onClick={() => onChange({ ...filters, colors: toggleItem(filters.colors, color.name) })}
+									className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-[1.3rem] transition-colors cursor-pointer ${
+										isChecked ? "border-black bg-neutral-100" : "border-neutral-200 hover:border-black"
+									}`}
+								>
+									<span
+										className="w-3.5 h-3.5 rounded-full border border-neutral-200"
+										style={{ backgroundColor: color.hex ?? "#e5e5e5" }}
+									/>
+									<span>{color.name}</span>
+								</button>
+							);
+						})}
 					</div>
-					<button
-						onClick={() => onChange({ ...filters, color: "Vert" })}
-						className="w-8 h-8 rounded-full border border-neutral-200 flex items-center justify-center hover:border-black text-[1.4rem] cursor-pointer"
-					>
-						+
-					</button>
-				</div>
-			</div>
-
-			{/* Fit */}
-			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">Coupe</h4>
-				<div className="space-y-2.5">
-					{fitOptions.map((fit) => {
-						const isChecked = filters.fits.includes(fit);
-						return (
-							<label
-								key={fit}
-								className="flex items-center gap-3 cursor-pointer text-[1.4rem] text-neutral-800 hover:text-black select-none"
-							>
-								<input
-									type="checkbox"
-									checked={isChecked}
-									onChange={() => toggleArrayItem("fits", fit)}
-									className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black accent-black"
-								/>
-								<span>{fit}</span>
-							</label>
-						);
-					})}
-				</div>
-			</div>
-
-			{/* Material */}
-			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">Matière</h4>
-				<div className="space-y-2.5">
-					{materialOptions.map((mat) => {
-						const isChecked = filters.materials.includes(mat);
-						return (
-							<label
-								key={mat}
-								className="flex items-center gap-3 cursor-pointer text-[1.4rem] text-neutral-800 hover:text-black select-none"
-							>
-								<input
-									type="checkbox"
-									checked={isChecked}
-									onChange={() => toggleArrayItem("materials", mat)}
-									className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black accent-black"
-								/>
-								<span>{mat}</span>
-							</label>
-						);
-					})}
-				</div>
+				) : (
+					<p className="text-[1.3rem] text-neutral-400">
+						{isLoadingFacets ? "Chargement…" : "Aucune couleur disponible"}
+					</p>
+				)}
 			</div>
 
 			{/* Availability */}
 			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">
-					Disponibilité
-				</h4>
+				<h4 className="text-[1.5rem] font-semibold text-black">Disponibilité</h4>
 				<div className="space-y-2.5">
 					<label className="flex items-center gap-3 cursor-pointer text-[1.4rem] text-neutral-800 hover:text-black select-none">
 						<input
 							type="radio"
 							name="availability"
+							checked={filters.availability === "all"}
+							onChange={() => onChange({ ...filters, availability: "all" })}
+							className="w-4 h-4 accent-black"
+						/>
+						<span>Tous les produits</span>
+					</label>
+					<label className="flex items-center gap-3 cursor-pointer text-[1.4rem] text-neutral-800 hover:text-black select-none">
+						<input
+							type="radio"
+							name="availability"
 							checked={filters.availability === "in_stock"}
-							onChange={() =>
-								onChange({ ...filters, availability: "in_stock" })
-							}
+							onChange={() => onChange({ ...filters, availability: "in_stock" })}
 							className="w-4 h-4 accent-black"
 						/>
 						<span>En stock</span>

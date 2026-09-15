@@ -1,4 +1,4 @@
-import { addCartItemSchema, addressInputSchema, checkoutSchema, updateCartItemSchema, } from "@prettyfull/contracts";
+import { addCartItemSchema, addressInputSchema, applyDiscountCodeSchema, checkoutSchema, updateCartItemSchema, } from "@prettyfull/contracts";
 import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
@@ -87,6 +87,17 @@ storeCartRoutes.get("/cart/shipping-options", async (c) => c.json(await service.
 storeCartRoutes.put("/cart/shipping-method", validate("json", z.object({ rateId: z.uuid().nullable() })), async (c) => {
     const cartId = await resolveCartId(c);
     await service.setShippingRate(cartId, c.req.valid("json").rateId);
+    return c.json(await service.getCart(cartId));
+});
+/** Applique un code promo au panier (§2.9), revalidé au sous-total courant. */
+storeCartRoutes.put("/cart/discount-code", validate("json", applyDiscountCodeSchema), async (c) => {
+    const cartId = await resolveCartId(c);
+    await service.applyDiscountCode(cartId, c.req.valid("json").code);
+    return c.json(await service.getCart(cartId));
+});
+storeCartRoutes.delete("/cart/discount-code", async (c) => {
+    const cartId = await resolveCartId(c);
+    await service.removeDiscountCode(cartId);
     return c.json(await service.getCart(cartId));
 });
 /**

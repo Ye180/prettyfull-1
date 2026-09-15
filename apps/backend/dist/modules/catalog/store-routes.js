@@ -1,4 +1,4 @@
-import { categoryListQuerySchema, productListQuerySchema } from "@prettyfull/contracts";
+import { categoryListQuerySchema, productFacetsQuerySchema, productListQuerySchema, } from "@prettyfull/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { validate } from "../../middleware/validate.js";
@@ -18,6 +18,14 @@ storeCatalogRoutes.get("/products", validate("query", productListQuerySchema), a
     status: "published",
     includeArchived: false,
 })));
+/**
+ * Facettes du catalogue (tailles/couleurs distinctes, bornes de prix), pour
+ * que le panneau de filtres du storefront reflète les vrais produits.
+ *
+ * Enregistrée avant `/products/:slug` : sinon `slug` = `"facets"` intercepte
+ * la route et la renvoie en 404 (aucun produit de ce slug).
+ */
+storeCatalogRoutes.get("/products/facets", validate("query", productFacetsQuerySchema), async (c) => c.json(await products.getProductFacets(c.req.valid("query"))));
 storeCatalogRoutes.get("/products/:slug", validate("param", slugParam), async (c) => c.json(await products.getProductBySlug(c.req.valid("param").slug, { publishedOnly: true })));
 storeCatalogRoutes.get("/categories", validate("query", categoryListQuerySchema), async (c) => {
     const query = c.req.valid("query");

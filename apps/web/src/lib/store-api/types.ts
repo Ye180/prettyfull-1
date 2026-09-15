@@ -83,6 +83,7 @@ export interface StoreCategory {
 	metadata?: Record<string, unknown>;
 	product_category_image?: StoreCategoryImage[];
 	category_children?: StoreCategory[];
+	is_featured?: boolean;
 }
 
 export interface StoreProduct {
@@ -129,6 +130,8 @@ export interface StoreOrder {
 	subtotal: number;
 	shipping_total: number;
 	tax_total: number;
+	discount_total: number;
+	discount_code: string | null;
 	total: number;
 	currency_code: string;
 }

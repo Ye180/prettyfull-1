@@ -20,6 +20,7 @@ import {
 	paymentStatusEnum,
 } from "./enums.js";
 import { inventoryItems } from "./inventory.js";
+import { promoCodes } from "./promotions.js";
 import { users } from "./users.js";
 
 /** Adresse figée dans une commande - copie, jamais référence. */
@@ -59,6 +60,15 @@ export const carts = pgTable(
 		shippingAddress: jsonb("shipping_address").$type<AddressSnapshot>(),
 		billingAddress: jsonb("billing_address").$type<AddressSnapshot>(),
 		shippingRateId: uuid("shipping_rate_id"),
+		/**
+		 * Code promo actif sur ce panier. Recalculé à chaque lecture (comme le
+		 * sous-total) plutôt que figé : un panier est mutable, contrairement à
+		 * une commande. `set null` si le code est supprimé - le panier reste
+		 * valide, simplement sans remise.
+		 */
+		discountCodeId: uuid("discount_code_id").references(() => promoCodes.id, {
+			onDelete: "set null",
+		}),
 		completedAt: timestamp("completed_at", { withTimezone: true }),
 		createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 		updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
@@ -142,6 +152,12 @@ export const orders = pgTable(
 		shippingTotal: integer("shipping_total").notNull().default(0),
 		taxTotal: integer("tax_total").notNull().default(0),
 		discountTotal: integer("discount_total").notNull().default(0),
+		/** `set null` si le code est supprimé - la commande reste lisible via le snapshot ci-dessous. */
+		discountCodeId: uuid("discount_code_id").references(() => promoCodes.id, {
+			onDelete: "set null",
+		}),
+		/** Instantané du code au moment de l'achat (§2.4), indépendant de sa suppression ultérieure. */
+		discountCode: varchar("discount_code", { length: 40 }),
 		total: integer("total").notNull().default(0),
 		refundedTotal: integer("refunded_total").notNull().default(0),
 		note: text("note"),
@@ -263,6 +279,10 @@ export const refunds = pgTable(
 export const cartsRelations = relations(carts, ({ one, many }) => ({
 	user: one(users, { fields: [carts.userId], references: [users.id] }),
 	items: many(cartItems),
+	discountCode: one(promoCodes, {
+		fields: [carts.discountCodeId],
+		references: [promoCodes.id],
+	}),
 }));
 
 export const cartItemsRelations = relations(cartItems, ({ one }) => ({

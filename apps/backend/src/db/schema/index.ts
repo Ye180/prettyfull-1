@@ -9,6 +9,7 @@ export * from "./users.js";
 export * from "./catalog.js";
 export * from "./inventory.js";
 export * from "./orders.js";
+export * from "./promotions.js";
 export * from "./integrations.js";
 export * from "./cms.js";
 export * from "./settings.js";

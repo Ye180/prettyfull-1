@@ -11,10 +11,10 @@ import * as schema from "./schema/index.js";
  * requêtes préparées entre deux allers-retours.
  */
 const client = postgres(env.DATABASE_URL, {
-	max: env.DATABASE_POOL_MAX,
-	idle_timeout: 20,
-	connect_timeout: 15,
-	prepare: false,
+    max: env.DATABASE_POOL_MAX,
+    idle_timeout: 20,
+    connect_timeout: 15,
+    prepare: false,
 });
 export const db = drizzle(client, { schema, logger: env.DB_LOGGING });
 /** Ferme le pool - utilisé par les scripts ponctuels (seed, migrations). */

@@ -37,6 +37,14 @@ const schema = z.object({
         .string()
         .default("false")
         .transform((v) => v === "true"),
+    /**
+     * Jeton UploadThing (stockage des visuels).
+     *
+     * Optionnel : sans lui, l'API démarre normalement et les routes de
+     * téléversement répondent une erreur explicite. Rendre la variable
+     * obligatoire empêcherait de lancer le projet sans compte UploadThing.
+     */
+    UPLOADTHING_TOKEN: z.string().optional(),
     /** Base publique de l'API, utilisée pour construire les URLs de webhook. */
     PUBLIC_API_URL: z.string().default("http://localhost:7777"),
     STOREFRONT_URL: z.string().default("http://localhost:3000"),

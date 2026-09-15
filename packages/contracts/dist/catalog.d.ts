@@ -233,11 +233,11 @@ export declare const updateVariantSchema: z.ZodObject<{
 }, z.core.$strip>;
 export type UpdateVariantInput = z.infer<typeof updateVariantSchema>;
 export declare const variantSchema: z.ZodObject<{
-    name: z.ZodString;
     status: z.ZodDefault<z.ZodEnum<{
         active: "active";
         inactive: "inactive";
     }>>;
+    name: z.ZodString;
     position: z.ZodDefault<z.ZodNumber>;
     sku: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     priceOverride: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
@@ -470,11 +470,11 @@ export declare const productSchema: z.ZodObject<{
         id: z.ZodUUID;
     }, z.core.$strip>>;
     variants: z.ZodArray<z.ZodObject<{
-        name: z.ZodString;
         status: z.ZodDefault<z.ZodEnum<{
             active: "active";
             inactive: "inactive";
         }>>;
+        name: z.ZodString;
         position: z.ZodDefault<z.ZodNumber>;
         sku: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         priceOverride: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
@@ -540,9 +540,9 @@ export declare const productSchema: z.ZodObject<{
         }>;
     }, z.core.$strip>>;
     categories: z.ZodArray<z.ZodObject<{
+        id: z.ZodUUID;
         slug: z.ZodString;
         name: z.ZodString;
-        id: z.ZodUUID;
     }, z.core.$strip>>;
     quantity: z.ZodNumber;
     availableQuantity: z.ZodNumber;
@@ -587,6 +587,9 @@ export declare const productListQuerySchema: z.ZodObject<{
     tag: z.ZodOptional<z.ZodString>;
     isFeatured: z.ZodOptional<z.ZodCodec<z.ZodString, z.ZodBoolean>>;
     includeArchived: z.ZodOptional<z.ZodCodec<z.ZodString, z.ZodBoolean>>;
+    size: z.ZodOptional<z.ZodString>;
+    color: z.ZodOptional<z.ZodString>;
+    onSale: z.ZodOptional<z.ZodCodec<z.ZodString, z.ZodBoolean>>;
 }, z.core.$strip>;
 export type ProductListQuery = z.infer<typeof productListQuerySchema>;
 export declare const categoryListQuerySchema: z.ZodObject<{
@@ -606,5 +609,29 @@ export declare const categoryListQuerySchema: z.ZodObject<{
     isFeatured: z.ZodOptional<z.ZodCodec<z.ZodString, z.ZodBoolean>>;
     tree: z.ZodOptional<z.ZodCodec<z.ZodString, z.ZodBoolean>>;
 }, z.core.$strip>;
+/**
+ * Filtres qui délimitent le périmètre des facettes (§ collections) : les
+ * mêmes que ceux de `productListQuerySchema` qui changent le *catalogue*
+ * regardé, pas ceux qui sélectionnent une valeur *dans* ce catalogue - une
+ * taille cochée ne doit pas faire disparaître les autres tailles proposées.
+ */
+export declare const productFacetsQuerySchema: z.ZodObject<{
+    categoryId: z.ZodOptional<z.ZodUUID>;
+    categorySlug: z.ZodOptional<z.ZodString>;
+    q: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>;
+export type ProductFacetsQuery = z.infer<typeof productFacetsQuerySchema>;
+export declare const productFacetsSchema: z.ZodObject<{
+    sizes: z.ZodArray<z.ZodString>;
+    colors: z.ZodArray<z.ZodObject<{
+        name: z.ZodString;
+        hex: z.ZodNullable<z.ZodString>;
+    }, z.core.$strip>>;
+    priceRange: z.ZodObject<{
+        min: z.ZodNumber;
+        max: z.ZodNumber;
+    }, z.core.$strip>;
+}, z.core.$strip>;
+export type ProductFacets = z.infer<typeof productFacetsSchema>;
 export type CategoryListQuery = z.infer<typeof categoryListQuerySchema>;
 //# sourceMappingURL=catalog.d.ts.map

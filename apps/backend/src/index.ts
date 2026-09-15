@@ -24,6 +24,7 @@ import {
 	storeOrderConfirmationRoutes,
 	storeOrdersRoutes,
 } from "./modules/orders/routes.js";
+import { adminPromotionsRoutes } from "./modules/promotions/routes.js";
 import { adminReviewRoutes, storeReviewRoutes } from "./modules/reviews/routes.js";
 import { adminSettingsRoutes } from "./modules/settings/routes.js";
 import { storeMiscRoutes } from "./modules/store/routes.js";
@@ -148,6 +149,7 @@ app.route("/api/admin", adminInventoryRoutes);
 app.route("/api/admin", adminOrdersRoutes);
 app.route("/api/admin", adminIntegrationsRoutes);
 app.route("/api/admin", adminCmsRoutes);
+app.route("/api/admin", adminPromotionsRoutes);
 app.route("/api/admin", adminReviewRoutes);
 app.route("/api/admin", adminSettingsRoutes);
 app.route("/api/admin", adminUploadRoutes);

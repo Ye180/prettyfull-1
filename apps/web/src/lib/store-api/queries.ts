@@ -9,6 +9,7 @@ import type {
 	Paginated,
 	PaginationMeta,
 	Product,
+	ProductFacets,
 	ShippingOption,
 	StaticPage,
 	User,
@@ -46,7 +47,27 @@ export interface FetchProductsParams {
 	isFeatured?: boolean;
 	tag?: string;
 	stockStatus?: string;
+	/** Tailles séparées par des virgules (`"S,M"`), correspondance « ou ». */
+	size?: string;
+	/** Noms de couleur de variante séparés par des virgules, correspondance « ou ». */
+	color?: string;
+	onSale?: boolean;
 }
+
+export interface FetchProductFacetsParams {
+	categorySlug?: string;
+	categoryId?: string;
+	q?: string;
+}
+
+/**
+ * Tailles/couleurs distinctes et bornes de prix du rayon regardé, pour bâtir
+ * un panneau de filtres qui ne propose jamais une valeur sans résultat.
+ */
+export const fetchProductFacets = (
+	params: FetchProductFacetsParams = {},
+): Promise<ProductFacets> =>
+	storeApi.get<ProductFacets>(`/api/store/products/facets${toQuery({ ...params })}`);
 
 /** Liste paginée : le total/`hasNext` viennent du backend, pas recalculés côté client. */
 export const fetchProducts = async (

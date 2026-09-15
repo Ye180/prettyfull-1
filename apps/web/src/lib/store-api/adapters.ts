@@ -270,6 +270,7 @@ export const toStoreCategory = (
 			"children" in category && category.children.length > 0
 				? category.children.map((child) => toStoreCategory(child, sectionKeys))
 				: undefined,
+		is_featured: category.isFeatured,
 	};
 };
 
@@ -314,6 +315,8 @@ export const toStoreOrder = (order: Order): StoreOrder => ({
 	subtotal: order.subtotal,
 	shipping_total: order.shippingTotal,
 	tax_total: order.taxTotal,
+	discount_total: order.discountTotal,
+	discount_code: order.discountCode,
 	total: order.total,
 	currency_code: order.currency,
 });
