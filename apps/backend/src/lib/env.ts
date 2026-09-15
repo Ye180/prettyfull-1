@@ -1,5 +1,5 @@
-import "./load-env.js";
 import { z } from "zod";
+import "./load-env.js";
 
 /**
  * Variables d'environnement, validées au démarrage.
