@@ -7,8 +7,8 @@ import { db } from "../../db/index.js";
 import * as t from "../../db/schema/index.js";
 import { notFound } from "../../lib/errors.js";
 import { currentUser, requireAuth, requireKind } from "../../middleware/auth.js";
-import { validate } from "../../middleware/validate.js";
 import type { AppEnv } from "../../middleware/request-context.js";
+import { validate } from "../../middleware/validate.js";
 
 /**
  * Carnet d'adresses de la cliente (§2.7).
