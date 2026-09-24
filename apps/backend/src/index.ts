@@ -9,7 +9,7 @@ import { openApiDocument } from "./docs/openapi.js";
 import { env, isProduction } from "./lib/env.js";
 import { requireAuth, requireKind } from "./middleware/auth.js";
 import { errorHandler, notFoundHandler } from "./middleware/error.js";
-import { type AppEnv, requestContext } from "./middleware/request-context.js";
+import { requestContext, type AppEnv } from "./middleware/request-context.js";
 import { storeAddressRoutes } from "./modules/auth/addresses.js";
 import { adminAuthRoutes, storeAuthRoutes } from "./modules/auth/routes.js";
 import { storeCartRoutes } from "./modules/cart/routes.js";
