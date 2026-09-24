@@ -1,20 +1,24 @@
 import { Checkbox } from "@prettyfull/ui";
 
+const SIZES = ["S", "M", "L", "XL"];
+
+/**
+ * Size en cases à cocher simples dans la sidebar - distinct du
+ * `SizeSelector` en pastilles rondes utilisé sur PDP/panier.
+ */
 const Size = () => {
 	return (
-		<>
-			{Array.from({ length: 9 }).map((_, i) => (
-				<div
-					className="flex items-center justify-center gap-4 uppercase border rounded-lg border-black/10 size-15"
-					key={i}
+		<div className="space-y-3">
+			{SIZES.map((size) => (
+				<label
+					key={size}
+					className="flex gap-3 items-center text-sm text-gray-800 cursor-pointer"
 				>
-					{" "}
-					<Checkbox className="flex items-center justify-center gap-4 border rounded-lg border-black/10 size-15">
-						M
-					</Checkbox>
-				</div>
+					<Checkbox />
+					{size}
+				</label>
 			))}
-		</>
+		</div>
 	);
 };
 

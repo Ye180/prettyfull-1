@@ -3,16 +3,14 @@ import Link from "next/link";
 
 const LinksFooter = () => {
 	return (
-		<div className="flex gap-8 max-lg:justify-between lg:justify-start lg:w-3/6 max-lg:w-full max-md:grid max-md:grid-cols-2 max-md:gap-y-16 ">
-			{/* SHOP */}
-
-			{FOOTER_DATA.map((items, index) => (
-				<div key={index} className="text-left lg:w-auto lg:flex-1">
-					<h5 className="mb-3 !text-[2.5rem] font-semibold tracking-wider">
-						{items.title}
+		<div className="grid grid-cols-2 col-span-1 gap-8 sm:grid-cols-4 lg:col-span-4">
+			{FOOTER_DATA.map((item, index) => (
+				<div key={index} className="text-left space-y-4">
+					<h5 className="text-[1.5rem] font-semibold text-white tracking-wide">
+						{item.title}
 					</h5>
-					<ul className="space-y-3 text-gray-400 text-md">
-						{items.links.map((link) => (
+					<ul className="space-y-3 text-[1.4rem] text-white/60">
+						{item.links.map((link) => (
 							<li key={link.label}>
 								<Link
 									href={link.url}

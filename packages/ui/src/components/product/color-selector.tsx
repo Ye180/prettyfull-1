@@ -39,11 +39,11 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
 		<div className="flex flex-wrap gap-2 items-center px-1">
 			{visibleColors.map((color, index) => (
 				<button
-					key={color.productId}
+					key={`${color.productId}-${color.label}`}
 					type="button"
 					onClick={() => onChange(index)}
 					className={cn(
-						"flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-200",
+						"flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-200 cursor-pointer",
 						index === activeIndex
 							? "border-black scale-110"
 							: "border-gray-200 hover:border-gray-400 hover:scale-105"

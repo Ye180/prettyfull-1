@@ -1,21 +1,19 @@
-import { sdk } from "@/lib/api/sdk";
-import type { StoreProductCategoryListResponse } from "@medusajs/types";
+"use client";
+
+import { fetchCategoryTree } from "@/lib/store-api";
 import { useQuery } from "@tanstack/react-query";
 
 export const CATEGORIES_ALL_KEY = "product-categories-all";
 
-const CATEGORY_FIELDS =
-	"name, handle, *product_category_image, *category_children, *category_children.metadata, *category_children.product_category_image";
+export const fetchAllProductCategories = () => fetchCategoryTree();
 
-export const fetchAllProductCategories = async () => {
-	const { product_categories } =
-		await sdk.client.fetch<StoreProductCategoryListResponse>(
-			`/store/product-categories`,
-			{ query: { fields: CATEGORY_FIELDS } },
-		);
-	return product_categories;
-};
-
+/**
+ * Rayons rattachés à une section de la page d'accueil.
+ *
+ * Les clés de section (`third_section`, `sixth_section`…) sont injectées dans
+ * `metadata` par l'adaptateur, à partir des mises en avant configurées dans le
+ * back-office : ces emplacements sont donc pilotables sans toucher au front.
+ */
 export const useGetCategoryByHandler = (
 	handle: string,
 	metadata: string | string[],
@@ -35,15 +33,7 @@ export const useGetCategoryByHandler = (
 				child?.metadata &&
 				metadataKey in (child.metadata as Record<string, unknown>),
 		);
-		return {
-			isLoading,
-			data: data ?? (isLoading ? undefined : []),
-		};
-	});
-};
 
-export const getCategoryByHandle = async (_categoryHandle: string[]) => {
-	return sdk.client.fetch("/store/product-categories", {
-		query: { fields: "*category_children, *products, *product_category_image" },
+		return { isLoading, data: data ?? (isLoading ? undefined : []) };
 	});
 };

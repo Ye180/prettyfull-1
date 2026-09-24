@@ -1,181 +1,57 @@
+"use client";
+
 import { COLLECTION_PATHS } from "@/lib/routes/paths-en";
-import { LoadingPrettyfull } from "@/shared/components/molecules/core/loading-prettyfull";
 import { getMediaUrl } from "@prettyfull/utils";
-import { Button } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useCallback, useMemo } from "react";
-import { ArrowIcon } from "../../../../../../packages/ui/src/icons/arrow-top.icon";
-import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-import { useGetCategoryByHandler } from "../api/medusa/get-chidren-metadata";
+import { AddToCardIcon } from "../../../../../../packages/ui/src/icons/add-cart.icon";
+import { useGetHeroBanner } from "../api/medusa/get-hero-banner";
 
-interface HeroProps {
-	video?: boolean;
-	firstSection?: {
-		title?: string;
-		description?: string;
-		button?: string;
-		imageUrlDesktop?: string;
-		imageUrlMobile?: string;
-	};
-}
+const FALLBACK_IMAGE = "/home/commerce1.jpg";
 
-const heroImageClassName =
-	"object-cover absolute top-0 left-0 z-10 w-full h-full";
-
-const PromoBanner = ({ ctaLabel }: { ctaLabel: string }) => (
-	<Link
-		href={COLLECTION_PATHS.collectionDetail("new-arrivals")}
-		className="flex justify-between items-center h-[10%] lg:h-[7%] bg-black w-full absolute z-30 inset-0 text-white gap-4 py-4"
-	>
-		<p className="font-manrope text-[1.6rem]! sm:text-[2rem]! md:text-[2.2rem]! lg:text-[3.5rem]! pl-8 line-clamp-2 font-semibold whitespace-nowrap max-sm:flex max-sm:flex-col max-sm:items-start max-sm:gap-2">
-			<span className="pr-2 sm:mr-4 sm:border-r-4">
-				GET $20 OFF ON $99+ ORDERS{" "}
-			</span>
-			<span className="font-light!">USE CODE: FREE20</span>
-		</p>
-		<span className="flex gap-2 items-center pr-8 uppercase whitespace-nowrap font-manrope hover:underline underline-offset-4">
-			<span>{ctaLabel}</span>
-			<span className="pr-1 rotate-90">
-				<ArrowIcon />
-			</span>
-		</span>
-	</Link>
-);
-
-const HeroVideo = () => (
-	<video
-		autoPlay
-		muted
-		loop
-		playsInline
-		preload="metadata"
-		className={`flex ${heroImageClassName}`}
-	>
-		<source src="/video/video.mp4" type="video/mp4" />
-	</video>
-);
-
-const HeroImages = ({
-	isLoading,
-	desktopUrl,
-	mobileUrl,
-}: {
-	isLoading: boolean;
-	desktopUrl?: string;
-	mobileUrl?: string;
-}) => {
-	if (isLoading) {
-		return <LoadingPrettyfull />;
-	}
-
-	return (
-		<>
-			{desktopUrl ? (
-				<Image
-					src={desktopUrl}
-					alt="Hero background image"
-					fill
-					sizes="(min-width: 640px) 100vw, 1px"
-					className={`${heroImageClassName} max-sm:hidden sm:flex`}
-					priority
-					unoptimized
-				/>
-			) : null}
-			{mobileUrl ? (
-				<Image
-					src={mobileUrl}
-					alt="Hero background image"
-					fill
-					sizes="(max-width: 639px) 100vw, 1px"
-					className={`${heroImageClassName} max-sm:flex sm:hidden`}
-					priority
-					unoptimized
-				/>
-			) : null}
-		</>
-	);
-};
-
-const HeroOverlay = ({
-	firstSection,
-	t,
-}: {
-	firstSection: NonNullable<HeroProps["firstSection"]>;
-	t: (key: string) => string;
-}) => (
-	<Container
-		maxWidth="100vw"
-		className="flex flex-col justify-center items-center space-y-12 h-full lg:px-40 bg-none/30"
-	>
-		<div className="flex justify-center items-end w-full h-full text-white rounded-xl z-15 lg:p-8 md:justify-start">
-			<div className="pb-40 space-y-8 md:w-1/2 max-md:w-full max-lg:pb-20 max-md:text-center">
-				<h1 className="text-[3rem]! md:text-[4.5rem]! lg:text-[5.5rem]! leading-26 tracking-tight font-normal text-center md:text-start">
-					{firstSection.title || t("title")}
-				</h1>
-				<p className="mt-8 text-[1.5rem] max-md:hidden lg:text-[1.8rem] font-light leading-normal text-pretty lg:text-justify">
-					{firstSection.description || t("subtitle")}
-				</p>
-				<Button
-					variant="default"
-					className="bg-none backdrop-blur-3xl size-fit"
-				>
-					{firstSection.button || t("ctaButton")}
-				</Button>
-			</div>
-		</div>
-	</Container>
-);
-
-const Hero = ({ video, firstSection }: HeroProps) => {
+/**
+ * Hero contenu (pas plein écran) : image encadrée à coins arrondis, rangée
+ * de labels en overlay haut, titre/CTA en overlay bas-gauche.
+ */
+const Hero = () => {
 	const t = useTranslations("HomePage.hero");
-	const params = useParams();
-	const router = useRouter();
+	const { data: banner } = useGetHeroBanner();
 
-	const results = useGetCategoryByHandler(params.id as string, "first-section");
-	const queryResult = results[0];
-	const category = queryResult?.data;
-	const isLoading = queryResult?.isLoading ?? true;
-
-	const firstCategory = useMemo(() => category?.[0], [category]);
-
-	const desktopUrl = getMediaUrl(
-		firstCategory?.product_category_image?.[0]?.url,
-	);
-	const mobileUrl = getMediaUrl(
-		firstCategory?.product_category_image?.[1]?.url,
-	);
-
-	const handleHeroClick = useCallback(() => {
-		if (firstCategory?.handle) {
-			router.push(COLLECTION_PATHS.collectionDetail(firstCategory.handle));
-		}
-	}, [firstCategory?.handle, router]);
-
-	const showOverlay =
-		firstSection?.title && firstSection?.description && firstSection?.button;
+	const imageUrl = getMediaUrl(banner?.image) ?? FALLBACK_IMAGE;
 
 	return (
-		<div className="overflow-hidden relative z-0 w-full h-screen">
-			<PromoBanner ctaLabel={t("ctaButton")} />
+		<div className="overflow-hidden relative w-full h-[500px] bg-gray-100 rounded-2xl lg:h-[620px]">
+			<Image
+				src={imageUrl}
+				alt=""
+				fill
+				sizes="100vw"
+				className="object-cover"
+				priority
+				unoptimized
+			/>
 
-			<div
-				className="h-full absolute top-[7%] left-0 w-full z-20 cursor-pointer"
-				onClick={handleHeroClick}
-			>
-				{video ? (
-					<HeroVideo />
-				) : (
-					<HeroImages
-						isLoading={isLoading}
-						desktopUrl={desktopUrl}
-						mobileUrl={mobileUrl}
-					/>
-				)}
+			<div className="flex absolute inset-x-0 top-6 justify-between px-6 text-sm text-white sm:px-10">
+				<span>{t("eyebrowLeft")}</span>
+				<span className="max-sm:hidden">{t("eyebrowCenter")}</span>
+				<span>{t("eyebrowRight")}</span>
+			</div>
 
-				{showOverlay && <HeroOverlay firstSection={firstSection} t={t} />}
+			<div className="absolute inset-x-0 bottom-8 px-6 sm:px-10">
+				<div className="flex flex-col gap-4 max-w-md text-white">
+					<h1 className="text-4xl leading-[1.05] lg:text-6xl">{t("title")}</h1>
+					<p className="text-white/80">{t("subtitle")}</p>
+					<Link
+						href={COLLECTION_PATHS.collectionDetail("all")}
+						className="inline-flex gap-3 items-center px-6 py-3 w-fit text-sm font-medium bg-black rounded-full transition-colors hover:bg-black/90"
+					>
+						{t("ctaButton")}
+						<span className="flex justify-center items-center w-6 h-6 rounded-full bg-white/15">
+							<AddToCardIcon className="w-3.5 h-3.5" />
+						</span>
+					</Link>
+				</div>
 			</div>
 		</div>
 	);

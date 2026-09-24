@@ -30,7 +30,7 @@
 
 	/* Styles par défaut sans reset spécifique */
 	html {
-		@apply scroll-smooth text-[8.5px]  lg:text-[9.5px] 2xl:text-[62.5%];
+		@apply text-[62.5%];
 
 		font-family: var(--font-family-sans);
 		line-height: 1.5;
@@ -46,7 +46,9 @@
 	h4,
 	h5,
 	h6 {
-		font-family: var(--font-family-heading);
+		font-family: var(--font-family-sans);
+		font-weight: 700;
+		letter-spacing: -0.02em;
 	}
 }
 
@@ -203,4 +205,34 @@
 	--container-7xl: 128rem; /* 1280px */
 	--container-8xl: 153.6rem; /* 1536px */
 	--container-9xl: 192rem; /* 1920px */
+
+	/*
+  |----------------------------------
+  | Accordion (Radix) expand/collapse
+  |----------------------------------
+  | Consommé par AccordionContent (data-[state=open]:animate-accordion-down /
+  | data-[state=closed]:animate-accordion-up) - sans ces deux entrées,
+  | Tailwind ne génère aucune classe `animate-accordion-*` et l'accordéon
+  | s'ouvre/ferme sans transition.
+  */
+	--animate-accordion-down: accordion-down 0.25s ease-out;
+	--animate-accordion-up: accordion-up 0.25s ease-out;
+}
+
+@keyframes accordion-down {
+	from {
+		height: 0;
+	}
+	to {
+		height: var(--radix-accordion-content-height);
+	}
+}
+
+@keyframes accordion-up {
+	from {
+		height: var(--radix-accordion-content-height);
+	}
+	to {
+		height: 0;
+	}
 }

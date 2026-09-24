@@ -65,7 +65,10 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 			postCode: "",
 			city: "",
 			region: "",
-			country: "Cameroun", // Default country
+			// La boutique est basée à Abidjan : c'est le pays par défaut, et le
+			// seul dont les tarifs de port sont configurés d'origine. Les zones
+			// se complètent depuis le panel (Agrégateurs → Zones de livraison).
+			country: "Côte d'Ivoire",
 			phone: "",
 		},
 	});
@@ -87,7 +90,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 				postal_code: data.postCode,
 				city: data.city,
 				province: data.region,
-				country_code: getCountryCode(data.country || "Cameroun"),
+				country_code: getCountryCode(data.country || "Côte d'Ivoire"),
 				phone: data.phone,
 			};
 
@@ -125,7 +128,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 			"Côte d'Ivoire": "ci",
 			Sénégal: "sn",
 		};
-		return countryMap[country] || "cm";
+		return countryMap[country] || "ci";
 	};
 
 	const handleEdit = () => {
@@ -136,13 +139,13 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 
 	// Countries list - you can expand this
 	const countries = [
+		"Côte d'Ivoire",
+		"Sénégal",
 		"Cameroun",
 		"France",
 		"Belgique",
 		"Suisse",
 		"Canada",
-		"Côte d'Ivoire",
-		"Sénégal",
 	];
 
 	return (
@@ -158,7 +161,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 						},
 					)}
 				>
-					Shipping Address
+					Adresse de livraison
 					{isCompleted && (
 						<svg
 							className="w-8 h-8 text-green-600"
@@ -179,7 +182,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 						onClick={handleEdit}
 						className="px-6 py-2 text-sm text-dark w-fit"
 					>
-						Edit
+						Modifier
 					</Button>
 				)}
 			</div>
@@ -208,12 +211,12 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							}}
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Email</FormLabel>
+									<FormLabel>E-mail</FormLabel>
 									<FormControl>
 										<Input
 											{...field}
 											type="email"
-											placeholder="your@email.com"
+											placeholder="votre@email.com"
 											className={classNameInput}
 										/>
 									</FormControl>
@@ -230,11 +233,11 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 								rules={{ required: "Prénom requis" }}
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>First name</FormLabel>
+										<FormLabel>Prénom</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
-												placeholder="First name"
+												placeholder="Prénom"
 												className={classNameInput}
 											/>
 										</FormControl>
@@ -249,11 +252,11 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 								rules={{ required: "Nom requis" }}
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Last name</FormLabel>
+										<FormLabel>Nom</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
-												placeholder="Last name"
+												placeholder="Nom"
 												className={classNameInput}
 											/>
 										</FormControl>
@@ -269,11 +272,11 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							name="company"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Company (optional)</FormLabel>
+									<FormLabel>Société (optionnel)</FormLabel>
 									<FormControl>
 										<Input
 											{...field}
-											placeholder="Company name"
+											placeholder="Nom de la société"
 											className={classNameInput}
 										/>
 									</FormControl>
@@ -289,11 +292,11 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							rules={{ required: "Adresse requise" }}
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Address</FormLabel>
+									<FormLabel>Adresse</FormLabel>
 									<FormControl>
 										<Input
 											{...field}
-											placeholder="Street address"
+											placeholder="Adresse postale"
 											className={classNameInput}
 										/>
 									</FormControl>
@@ -308,11 +311,11 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							name="address2"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Apartment, suite, etc. (optional)</FormLabel>
+									<FormLabel>Appartement, étage, etc. (optionnel)</FormLabel>
 									<FormControl>
 										<Input
 											{...field}
-											placeholder="Apartment, suite, etc."
+											placeholder="Appartement, étage, etc."
 											className={classNameInput}
 										/>
 									</FormControl>
@@ -329,11 +332,11 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 								rules={{ required: "Code postal requis" }}
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Postal code</FormLabel>
+										<FormLabel>Code postal</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
-												placeholder="Postal code"
+												placeholder="Code postal"
 												className={classNameInput}
 											/>
 										</FormControl>
@@ -348,11 +351,11 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 								rules={{ required: "Ville requise" }}
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>City</FormLabel>
+										<FormLabel>Ville</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
-												placeholder="City"
+												placeholder="Ville"
 												className={classNameInput}
 											/>
 										</FormControl>
@@ -370,11 +373,11 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 								rules={{ required: "Région requise" }}
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>State / Province</FormLabel>
+										<FormLabel>Région / Province</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
-												placeholder="State / Province"
+												placeholder="Région / Province"
 												className={classNameInput}
 											/>
 										</FormControl>
@@ -391,8 +394,8 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 									<FormItem>
 										<FormControl>
 											<InputSelect
-												label="Country"
-												placeholder="Select country"
+												label="Pays"
+												placeholder="Sélectionner un pays"
 												classNameSelect="py-2"
 												items={countries}
 												onChange={(value: string) =>
@@ -415,7 +418,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							rules={{ required: "Téléphone requis" }}
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Phone</FormLabel>
+									<FormLabel>Téléphone</FormLabel>
 									<FormControl>
 										<Input
 											{...field}
@@ -437,7 +440,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 								onCheckedChange={(checked) => setSameBilling(checked === true)}
 							/>
 							<label htmlFor="sameBilling" className="text-sm">
-								Billing address same as shipping address
+								L'adresse de facturation est la même que l'adresse de livraison
 							</label>
 						</div>
 
@@ -447,7 +450,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							className="py-6 mt-6 w-full"
 							disabled={isLoading || !cartId}
 						>
-							{isLoading ? "Saving..." : "Continue to delivery"}
+							{isLoading ? "Enregistrement..." : "Continuer vers la livraison"}
 						</Button>
 					</form>
 				</Form>

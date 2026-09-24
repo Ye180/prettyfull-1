@@ -1,6 +1,5 @@
 "use client";
 
-import { useUpdateCartRegion } from "@/features/cart/api/medusa/update-cart-region";
 import { useGetRegion } from "@/shared/api/medusa/get-region";
 import { useRegionStore } from "@/stores/useRegion";
 import {
@@ -12,20 +11,13 @@ import {
 	Wallet,
 } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
-import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// Types pour les devises et langues
+// Types pour les devises
 type Currency = {
 	code: string;
 	symbol: string;
 	name: string;
-};
-
-type Language = {
-	code: string;
-	name: string;
-	flag: string;
 };
 
 // Données statiques
@@ -34,21 +26,11 @@ const CURRENCIES: Currency[] = [
 	{ code: "XOF", symbol: "CFA", name: "Franc CFA" },
 ];
 
-const LANGUAGES: Language[] = [
-	{ code: "fr", name: "Français", flag: "🇫🇷" },
-	{ code: "en", name: "English", flag: "🇬🇧" },
-	{ code: "es", name: "Español", flag: "🇪🇸" },
-];
-
 export function CurrencySelector() {
-	const router = useRouter();
-	const pathname = usePathname();
-
 	const setCurrentRegion = useRegionStore((state) => state.setRegion);
 
 	const { data: regions, isLoading: regionsLoading } = useGetRegion();
 	const currentRegion = useRegionStore((state) => state.region);
-	const { mutate: updateCartRegion } = useUpdateCartRegion();
 
 	const [open, setOpen] = useState(false);
 	const [selectedRegion, setSelectedRegion] = useState<any>(null);
@@ -74,18 +56,8 @@ export function CurrencySelector() {
 	}, [regionsLoading, regions, currentRegion]);
 
 	const handleApply = () => {
-		// Sauvegarder la région sélectionnée dans le store (persiste automatiquement)
 		if (selectedRegion) {
 			setCurrentRegion(selectedRegion);
-
-			// Mettre à jour la région du panier pour que les prix soient recalculés
-			const cartId = localStorage.getItem("cart_id");
-			if (cartId) {
-				updateCartRegion({
-					cartId,
-					regionId: selectedRegion.id,
-				});
-			}
 		}
 		onClose();
 	};
@@ -97,13 +69,9 @@ export function CurrencySelector() {
 				onClick={() => setOpen(true)}
 				className="flex gap-2 items-center px-3 py-2 bg-white rounded-xl border border-gray-200 transition-all duration-200 cursor-pointer group hover:bg-gray-50 hover:border-gray-300"
 			>
-				<Globe className="text-gray-500 size-4 group-hover:text-gray-700" />
+				<Globe className="text-gray-500 w-[20px] h-[20px] group-hover:text-gray-700" />
 				<span className="text-[1.2rem] lg:text-[1.4rem] font-medium text-gray-700">
 					{selectedRegion?.currency_code?.toUpperCase()}
-				</span>
-				<span className="text-gray-300">/</span>
-				<span className="text-[1.2rem] lg:text-[1.4rem] font-medium text-gray-700">
-					EN
 				</span>
 				<ChevronDown className="size-4 text-gray-400 group-hover:text-gray-600 transition-transform group-hover:translate-y-0.5" />
 			</button>
@@ -113,7 +81,7 @@ export function CurrencySelector() {
 				open={open}
 				onClose={onClose}
 				title="Préférences"
-				description="Choisissez votre langue et devise"
+				description="Choisissez votre devise"
 				// close={true}
 				className="!w-[95vw] lg:!w-[40vw] p-0 overflow-hidden"
 				titleClassName="text-[1.8rem]! lg:text-[2.2rem]! font-bold"

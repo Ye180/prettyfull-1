@@ -1,151 +1,185 @@
 "use client";
 
-import { useGetItemsCart } from "@/features/cart/api/medusa/get-items-cart";
-import { Category } from "@/features/homepage/api/medusa/get-category";
-import { PAGES_PATHS } from "@/lib/routes/paths-en";
-import { NAV_USER_LINKS } from "@/lib/utils/constants/header";
-import { Logo, Skeleton } from "@prettyfull/ui";
+import { AuthModal, type AuthMode } from "@/features/auth/components";
+import { useLogout } from "@/features/auth/api/logout";
+import { COLLECTION_PATHS, paths } from "@/lib/routes/paths-en";
+import { fetchProfile } from "@/lib/store-api";
+import { useCartStore } from "@prettyfull/store";
+import { LogOut, User } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useQueryState } from "nuqs";
-import { useCallback, useEffect, useState } from "react";
-import { Menu } from "../../../../../../../packages/ui/src/icons/menu.icon";
-import CartDropdown from "./carte-dropdown";
+import { useState } from "react";
+import CartDrawer from "./cart-drawer";
 import { CurrencySelector } from "./currency-selector";
 import NavbarResponsive from "./navbar-responsive";
-import SearchBar from "./search-bar";
+import WishlistDrawer from "./wishlist-drawer";
+
+export interface NavBarHeadersProps {
+	main_category?: any[];
+	secondary_category?: any[];
+}
 
 const NavBarHeaders = ({
-	main_category,
-	secondary_category,
-}: {
-	main_category: Category[];
-	secondary_category: Category[];
-}) => {
+	main_category = [],
+	secondary_category = [],
+}: NavBarHeadersProps) => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-	const [cartId, setCartId] = useState<string | null>(null);
+	const [authMode, setAuthMode] = useState<AuthMode | null>(null);
 	const pathname = usePathname();
-	const [division] = useQueryState("division");
+	const items = useCartStore((state) => state.items);
 
-	const syncCartId = useCallback(() => {
-		const storedCartId = localStorage.getItem("cart_id");
-		setCartId(storedCartId);
-	}, []);
+	// Session restaurée en mémoire au chargement (voir `SessionBootstrap`) -
+	// même clé de cache que la page /account, alimentée par la connexion.
+	const { data: profile } = useQuery({
+		queryKey: ["customer-profile"],
+		queryFn: fetchProfile,
+	});
+	const { mutate: logout } = useLogout();
 
-	// Initialize cart ID from localStorage and listen for changes
-	useEffect(() => {
-		syncCartId();
+	const openAuth = (mode: AuthMode) => {
+		setIsMobileMenuOpen(false);
+		setAuthMode(mode);
+	};
 
-		// Listen for cross-tab localStorage changes
-		const handleStorage = (e: StorageEvent) => {
-			if (e.key === "cart_id") syncCartId();
-		};
-
-		// Listen for same-tab cart updates (dispatched from add-to-cart)
-		const handleCartUpdate = () => syncCartId();
-
-		window.addEventListener("storage", handleStorage);
-		window.addEventListener("cart_id_updated", handleCartUpdate);
-
-		return () => {
-			window.removeEventListener("storage", handleStorage);
-			window.removeEventListener("cart_id_updated", handleCartUpdate);
-		};
-	}, [syncCartId]);
-
-	const { data: itemsCart } = useGetItemsCart(cartId || "");
+	// ponytail: categories come straight from the backend (however many there
+	// are) instead of a hardcoded Men/Ladies/New Collection list - "Home" is
+	// pinned first so the nav always offers a way back regardless of category count.
+	const navLinks = [
+		{ label: "Accueil", href: paths.home },
+		...main_category.map((cat: any) => ({
+			label: cat.name,
+			href: COLLECTION_PATHS.collectionDetail(cat.handle),
+		})),
+	];
 
 	return (
 		<>
-			<div className="flex relative justify-between items-center h-20">
-				<div className="flex items-center space-x-12">
-					<Link
-						href="/"
-						className="text-[3.5rem] font-bold tracking-wider text-black font-bebas-neue"
-					>
-						<Logo />
-					</Link>
-					<div className=" max-md:hidden flex text-[1.2rem] text-black items-center space-x-6 scrollbar-hide">
-						{main_category ? (
-							main_category.map((items: Category, index: number) => {
-								const itemHandle = items.handle as string;
-								// Check if current pathname matches this category's page
-								const isActive =
-									pathname.includes(`/pages/${itemHandle}`) ||
-									pathname.includes(`/collection/${itemHandle}`) ||
-									division === itemHandle;
+			<div className="grid grid-cols-[1fr_auto_1fr] items-center h-20 w-full">
+				{/* Navigation Links - Left */}
+				<nav className="flex items-center flex-wrap gap-x-8 gap-y-1 text-[1.4rem] font-medium max-md:hidden">
+					{navLinks.map((link) => {
+						const isActive = pathname === link.href;
+						return (
+							<Link
+								key={link.href}
+								href={link.href}
+								className={cn(
+									"text-[#111111] hover:text-black transition-colors",
+									isActive && "text-black font-semibold",
+								)}
+							>
+								{link.label}
+							</Link>
+						);
+					})}
+				</nav>
 
-								return (
-									<Link
-										key={index}
-										href={PAGES_PATHS.pageDetail(itemHandle)}
-										className={cn(
-											"font-black tracking-wide uppercase text-[#262626] hover:text-black text-sm transition-all",
-											isActive &&
-												"underline decoration-[3px] underline-offset-[6px]",
-										)}
-									>
-										{items.name}
-									</Link>
-								);
-							})
+				{/* Mobile left placeholder / spacer */}
+				<div className="md:hidden flex items-center">
+					<button
+						onClick={() => setIsMobileMenuOpen(true)}
+						className="p-2 -ml-2 text-black hover:opacity-70 transition-opacity cursor-pointer"
+						aria-label="Ouvrir le menu"
+					>
+						<svg
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+						>
+							<line x1="3" y1="7" x2="21" y2="7" />
+							<line x1="3" y1="12" x2="21" y2="12" />
+							<line x1="3" y1="17" x2="21" y2="17" />
+						</svg>
+					</button>
+				</div>
+
+				{/* Brand Logo - Center */}
+				<Link
+					href="/"
+					className="justify-self-center flex items-center justify-center p-2 hover:opacity-80 transition-opacity"
+					aria-label="Prettyfull Accueil"
+				>
+					<Image
+						src="/assets/logo.png"
+						alt="Prettyfull"
+						width={140}
+						height={32}
+						className="h-6 w-auto sm:h-7"
+						priority
+					/>
+				</Link>
+
+				{/* Actions - Right */}
+				<div className="flex items-center justify-end space-x-6 text-[1.4rem] font-medium">
+					<div className="max-md:hidden">
+						<CurrencySelector />
+					</div>
+					<WishlistDrawer />
+					<CartDrawer />
+
+					<div className="flex items-center space-x-4 max-sm:hidden">
+						{profile ? (
+							<>
+								<Link
+									href={paths.account}
+									className="flex items-center gap-1.5 text-[#111111] hover:text-black transition-colors"
+								>
+									<User className="w-[20px] h-[20px]" />
+									{profile.firstName}
+								</Link>
+								<button
+									onClick={() => logout()}
+									className="flex items-center gap-1.5 text-[#111111] hover:text-black transition-colors cursor-pointer"
+								>
+									<LogOut className="w-[20px] h-[20px]" />
+									Déconnexion
+								</button>
+							</>
 						) : (
-							<Skeleton className="w-80 h-9" />
+							<>
+								<button
+									onClick={() => openAuth("login")}
+									className="text-[#111111] hover:text-black transition-colors cursor-pointer"
+								>
+									Connexion
+								</button>
+								<button
+									onClick={() => openAuth("register")}
+									className="text-[#111111] hover:text-black transition-colors cursor-pointer"
+								>
+									S'inscrire
+								</button>
+							</>
 						)}
 					</div>
 				</div>
-				<div className="flex gap-2 items-center md:gap-6">
-					<div className="flex gap-2 items-center md:gap-6">
-						<div className="py-3 w-[400px] lg:w-[400px] max-md:hidden">
-							<SearchBar />
-						</div>
-						<div className="max-md:hidden">
-							<CurrencySelector />
-						</div>
-
-						<div className="flex gap-0 justify-center items-center md:gap-2">
-							{NAV_USER_LINKS.map((item, index) => (
-								<Link
-									key={index}
-									href={item.href}
-									aria-label="Liste de souhaits"
-									className={cn(
-										"relative p-3 text-black transition-colors rounded-full hover:bg-gray-100  hover:[&>span]:flex",
-									)}
-								>
-									{item.infos?.count && (
-										<p className="absolute flex items-center justify-center text-[0.8rem] border bottom-2 right-2  text-center content-center w-6 h-6 lg:w-[1.8rem] lg:h-[1.8rem] text-xs text-white bg-red-500 rounded-full lg:right-2 lg:bottom-0 lg:text-[1rem] font-semibold lg:border-2 lg:p-2 border-white">
-											{item.infos.count}
-										</p>
-									)}
-									<item.icon className="" />
-								</Link>
-							))}
-						</div>
-						<CartDropdown cart={itemsCart?.items || []} />
-					</div>
-
-					<div className="md:hidden">
-						<button
-							onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-							className="text-gray-600 hover:text-black focus:outline-none"
-							aria-label="Ouvrir le menu"
-						>
-							<Menu className="w-10 h-10" />
-						</button>
-					</div>
-				</div>
-				{isMobileMenuOpen && (
-					<NavbarResponsive
-						close={() => setIsMobileMenuOpen(false)}
-						onClick={() => setIsMobileMenuOpen(false)}
-						main_category={main_category}
-						secondary_category={secondary_category}
-						cartItems={itemsCart?.items || []}
-					/>
-				)}{" "}
 			</div>
+
+			{isMobileMenuOpen && (
+				<NavbarResponsive
+					close={() => setIsMobileMenuOpen(false)}
+					onClick={() => setIsMobileMenuOpen(false)}
+					main_category={main_category}
+					secondary_category={secondary_category}
+					cartItems={items}
+					onOpenAuth={openAuth}
+					profile={profile}
+					onLogout={() => logout()}
+				/>
+			)}
+
+			<AuthModal
+				open={authMode !== null}
+				onClose={() => setAuthMode(null)}
+				defaultMode={authMode ?? "login"}
+			/>
 		</>
 	);
 };

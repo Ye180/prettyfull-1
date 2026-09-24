@@ -89,30 +89,30 @@ export const NotifyMeModal = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="max-w-4xl p-0 overflow-hidden border-none rounded-lg"
+        className="max-w-4xl p-0 overflow-hidden border-none rounded-3xl"
       >
         <div className="relative max-h-[90vh] overflow-y-auto">
           <button
             onClick={onClose}
-            className="absolute z-10 p-2 bg-white rounded-full top-4 right-4"
+            className="absolute z-10 p-2 bg-white rounded-full top-4 right-4 cursor-pointer"
           >
             <CloseIcon className="w-8 h-8" />
           </button>
           <div className="p-12 space-y-6">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold tracking-widest text-center uppercase">
-                NOTIFY ME
+                ÊTRE PRÉVENU(E)
               </DialogTitle>
             </DialogHeader>
 
 						<div className="flex items-center gap-6">
-							<div className="relative w-24 h-24 bg-gray-100 rounded-md shrink-0">
+							<div className="relative w-24 h-24 bg-gray-100 rounded-2xl shrink-0">
 								<Image
 									src={variant.image}
 									alt={product.name}
 									layout="fill"
 									objectFit="cover"
-									className="rounded-md"
+									className="rounded-2xl"
 								/>
 							</div>
 							<div className="space-y-1">
@@ -124,9 +124,9 @@ export const NotifyMeModal = ({
 						</div>
 
             <p className="text-center text-gray-700 text-md">
-              Sign up for email or text and we will notify you when{' '}
-              <span className="font-semibold">Size: {variant.size}</span> is
-              available.
+              Inscrivez-vous par e-mail ou SMS et nous vous préviendrons dès que{' '}
+              <span className="font-semibold">Taille : {variant.size}</span> sera
+              de nouveau disponible.
             </p>
 
             <div className="space-y-4">
@@ -134,35 +134,35 @@ export const NotifyMeModal = ({
                 htmlFor="contact-info"
                 className="text-sm font-medium text-gray-800"
               >
-                Send to*
+                Envoyer à*
               </label>
               <Input
                 id="contact-info"
-                placeholder="Email Address or Phone Number"
+                placeholder="E-mail ou numéro de téléphone"
                 className="w-full py-6 text-center border-gray-400"
               />
               <Button fullWidth className="py-6 text-lg">
-                Sign up
+                S'inscrire
               </Button>
             </div>
 
             <p className="text-xs text-center text-gray-400">
-              By signing up via email, you agree to Fashion Nova's{' '}
+              En vous inscrivant par e-mail, vous acceptez les{' '}
               <a href="#" className="underline">
-                Terms of Service
+                Conditions d'utilisation
               </a>{' '}
-              and{' '}
+              et la{' '}
               <a href="#" className="underline">
-                Privacy Policy
-              </a>
-              . By signing up via text, you agree to receive recurring automated
-              promotional and personalized marketing text messages...
+                Politique de confidentialité
+              </a>{' '}
+              de Prettyfull. En vous inscrivant par SMS, vous acceptez de recevoir
+              des messages promotionnels automatiques et personnalisés...
             </p>
           </div>
 
 					<div className="px-12 py-8 bg-gray-50">
 						<h3 className="mb-6 text-xl font-bold text-center uppercase">
-							SHOP SIMILAR
+							PRODUITS SIMILAIRES
 						</h3>
 						{/* Affichage conditionnel ici */}
 						{isLoading ? (

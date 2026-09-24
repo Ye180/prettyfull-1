@@ -4,9 +4,6 @@ export * from "./button";
 export * from "./card";
 
 export * from "./components/product";
-export * from "./components/products-/product-options";
-export * from "./components/products-/products-galery";
-export * from "./components/products-/products-infos";
 export * from "./grid-card-product";
 export * from "./input";
 export * from "./input-select";
@@ -37,6 +34,8 @@ export * from "./components/toast/toaster";
 
 // --- Import des icônes ---
 export * from "./icons/spinner.icon"; // <-- AJOUTEZ CETTE LIGNE
+export * from "./icons/star.icon";
+export * from "./icons/filter.icon";
 
 // --- Lucide icons re-export ---
 export {
@@ -47,6 +46,8 @@ export {
     ChevronUp,
     Globe,
     Heart,
+    ImageOff,
+    LogOut,
     Menu,
     Minus,
     Plus,

@@ -1,25 +1,15 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
+import { fetchOrders } from "@/lib/store-api";
 import { useQuery } from "@tanstack/react-query";
 
 const ORDERS_QUERY_KEY = "customer-orders";
 
-const getCustomerOrders = async () => {
-	const { orders, count } = await sdk.store.order.list(
-		{
-			fields:
-				"+items,+items.thumbnail,+items.product_title,+items.variant_title,+items.unit_price,+items.quantity,+shipping_address,+total,+subtotal,+shipping_total,+tax_total",
-			order: "-created_at",
-		},
-	);
-
-	return { orders, count };
-};
-
-export const useGetCustomerOrders = () => {
-	return useQuery({
+/** Historique de commandes de la cliente connectée. */
+export const useGetCustomerOrders = () =>
+	useQuery({
 		queryKey: [ORDERS_QUERY_KEY],
-		queryFn: getCustomerOrders,
+		queryFn: fetchOrders,
+		// Session expirée : l'espace compte redirige, inutile d'insister.
+		retry: false,
 	});
-};

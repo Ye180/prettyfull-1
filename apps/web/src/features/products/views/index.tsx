@@ -1,396 +1,194 @@
 "use client";
 
-import { useAddItemToCartMedusa } from "@/features/cart/api/medusa/add-item-to-cart-medusa";
-import Reviews from "@/features/products/components/organims/reviews";
-import ProductSkeleton from "@/shared/components/organims/product-fiche-loading";
+import { ArrowRightIcon } from "@/components/icons/arrow-icon";
+import { fetchProductByHandle } from "@/lib/store-api";
 import { useRegionStore } from "@/stores/useRegion";
-import { toast } from "@prettyfull/ui";
+import { useWishlistStore } from "@prettyfull/store";
+import { Skeleton } from "@prettyfull/ui";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-import { useGetCollectionProductsMedusa } from "../api/medusa/get-collection-products-medusa";
-import { useGetProductsByHandleMedusa } from "../api/medusa/get-product-by-handle-medusa";
+import { useMemo } from "react";
+import ProductFaq from "../components/organims/product-faq";
 import { ProductGalleryNew } from "../components/organims/product-gallery-new";
 import { ProductInfosNew } from "../components/organims/product-infos-new";
+import ProductSuggestion from "../components/organims/product-suggestion";
+import Reviews from "../components/organims/reviews";
+import { useAddToCart } from "../hooks/use-add-to-cart";
+import { useProductReviews } from "../hooks/use-product-reviews";
+import { useProductVariants } from "../hooks/use-product-variants";
 
 export default function ProductViews() {
 	const params = useParams();
+	const handle = params.handle as string;
 
-	const regions = useRegionStore((state) => state.region);
-	const { data: product, isLoading } = useGetProductsByHandleMedusa(
-		params.handle as string,
-		regions?.id as string,
+	const { data: product, isLoading } = useQuery({
+		queryKey: ["product-by-handle", handle],
+		queryFn: () => fetchProductByHandle(handle),
+		enabled: Boolean(handle),
+	});
+
+	const categorySlug = product?.collection?.handle;
+
+	const {
+		activeImage,
+		setActiveImage,
+		selectedColor,
+		selectedSize,
+		sizeOption,
+		colorOption,
+		colorVariants,
+		availableSizes,
+		currentImages,
+		availableColors,
+		colorSwatches,
+		productPrice,
+		handleColorChange,
+		handleSizeChange,
+	} = useProductVariants(product);
+
+	const currencyCode = useRegionStore((state) => state.region?.currency_code);
+	const currencyLabel = currencyCode === "xof" ? "FCFA" : "$";
+
+	// Variante exacte (coloris × taille) affichée : même appariement que
+	// `useAddToCart`, pour que le prix montré soit celui réellement commandé.
+	const currentVariant = useMemo(() => {
+		const groupVariants =
+			colorVariants.find((cv) => cv.label === selectedColor)?.variants ??
+			product?.variants ??
+			[];
+		if (!sizeOption) return groupVariants[0];
+		return (
+			groupVariants.find(
+				(v) =>
+					v.options?.find((o) => o.option_id === sizeOption.id)?.value ===
+					selectedSize,
+			) ?? groupVariants[0]
+		);
+	}, [colorVariants, selectedColor, sizeOption, selectedSize, product]);
+
+	const { handleAddToCart } = useAddToCart(product, {
+		colorOption,
+		sizeOption,
+		selectedColor,
+		selectedSize,
+		currentImages,
+		currencyCode,
+	});
+
+	const { summary } = useProductReviews(product?.id);
+
+	const isWishlisted = useWishlistStore(
+		(state) => !!product && state.items.some((i) => i.productId === product.id),
 	);
-
-	// Récupérer les produits de la même collection
-	const collectionId = product?.collection?.id;
-	const { data: collectionProducts } = useGetCollectionProductsMedusa(
-		collectionId,
-		regions?.id,
-	);
-
-	const [activeImage, setActiveImage] = useState<number>(0);
-	const [selectedColor, setSelectedColor] = useState<string>("");
-	const [selectedSize, setSelectedSize] = useState<string>("");
-
-	const addItemToCartMutation = useAddItemToCartMedusa();
-
-	// ===== EXTRACTION DES OPTIONS (Color, Size) =====
-	const colorOption = useMemo(() => {
-		return product?.options?.find(
-			(opt: any) =>
-				opt.title.toLowerCase() === "color" ||
-				opt.title.toLowerCase() === "couleur",
-		);
-	}, [product]);
-
-	const sizeOption = useMemo(() => {
-		return product?.options?.find(
-			(opt: any) =>
-				opt.title.toLowerCase() === "size" ||
-				opt.title.toLowerCase() === "taille",
-		);
-	}, [product]);
-
-	// ===== MAPPER LES COULEURS DISPONIBLES =====
-	const colorVariants = useMemo(() => {
-		if (!product?.variants || product.variants.length === 0) return [];
-
-		const colorMap = new Map<
-			string,
-			{
-				label: string;
-				variants: any[];
-				images: string[];
-			}
-		>();
-
-		// Si pas d'option couleur, créer une entrée par variant avec son thumbnail
-		if (!colorOption) {
-			const prodImgs = product.images?.map((img: any) => img.url) || [];
-			if (sizeOption) {
-				// Pas de couleur mais des tailles — grouper TOUS les variants ensemble
-				const thumbs = product.variants
-					.map((v: any) => v.thumbnail)
-					.filter(Boolean);
-				colorMap.set("__default__", {
-					label: "__default__",
-					variants: product.variants,
-					images: [...new Set([...thumbs, ...prodImgs])],
-				});
-			} else {
-				product.variants.forEach((variant: any, index: number) => {
-					const variantLabel = variant.title || `Variant ${index + 1}`;
-					const variantImage =
-						variant.thumbnail || product.images?.[0]?.url || "";
-					if (!colorMap.has(variantLabel)) {
-						colorMap.set(variantLabel, {
-							label: variantLabel,
-							variants: [variant],
-							images: [...new Set([...(variantImage ? [variantImage] : []), ...prodImgs])],
-						});
-					}
-				});
-			}
-			return Array.from(colorMap.values());
-		}
-
-		product.variants.forEach((variant: any) => {
-			const colorValue = variant.options?.find(
-				(opt: any) => opt.option_id === colorOption.id,
-			)?.value;
-
-			if (colorValue && !colorMap.has(colorValue)) {
-				// Récupérer tous les variants de cette couleur
-				const colorVariantsList = (product.variants || []).filter((v: any) =>
-					v.options?.some(
-						(o: any) =>
-							o.option_id === colorOption.id && o.value === colorValue,
-					),
-				);
-
-				// Récupérer toutes les images des variants de cette couleur
-				const colorImages = colorVariantsList
-					.map((v: any) => v.thumbnail)
-					.filter((img: string) => !!img);
-
-				// Combiner thumbnails variants + images produit (déduplication)
-				const productImgUrls = product.images?.map((img: any) => img.url) || [];
-				const allImages = [...new Set([...colorImages, ...productImgUrls])];
-				const finalImages = allImages.length > 0 ? allImages : productImgUrls;
-
-				colorMap.set(colorValue, {
-					label: colorValue,
-					variants: colorVariantsList,
-					images: finalImages,
-				});
-			}
-		});
-
-		return Array.from(colorMap.values());
-	}, [product, colorOption, sizeOption]);
-
-	// ===== TAILLES DISPONIBLES POUR LA COULEUR ACTIVE =====
-	const availableSizes = useMemo(() => {
-		// if (!selectedColor || colorVariants.length === 0) return [];
-
-		const currentColorVariants =
-			colorVariants.find((cv) => cv.label === selectedColor)?.variants || [];
-
-		if (!sizeOption) {
-			return currentColorVariants
-				.map((v: any) => v.title)
-				.filter((title: any) => title && title !== null);
-		}
-
-		const sizesSet = new Set<string>();
-		currentColorVariants.forEach((variant: any) => {
-			const sizeValue = variant.options?.find(
-				(opt: any) => opt.option_id === sizeOption.id,
-			)?.value;
-			if (sizeValue) sizesSet.add(sizeValue);
-		});
-
-		return Array.from(sizesSet);
-	}, [selectedColor, colorVariants, sizeOption]);
-
-	// ===== IMAGES POUR LA COULEUR ACTIVE =====
-	const currentImages = useMemo(() => {
-		const productImgUrls = product?.images?.map((img: any) => img.url) || [];
-		if (!selectedColor || colorVariants.length === 0) {
-			return productImgUrls;
-		}
-		const currentColorVariant = colorVariants.find(
-			(cv) => cv.label === selectedColor,
-		);
-		const variantImgs = currentColorVariant?.images || [];
-		return [...new Set([...variantImgs, ...productImgUrls])];
-	}, [selectedColor, colorVariants, product]);
-
-	// Extraire les noms de couleurs disponibles
-	const availableColors = useMemo(() => {
-		return colorVariants?.map((cv) => cv.label) || [];
-	}, [colorVariants]);
-
-	// Créer les variantes de collection basées sur les produits de la même collection avec couleurs différentes
-	const collectionColorVariants = useMemo(() => {
-		if (!collectionProducts || collectionProducts.length <= 1 || !product) {
-			return [];
-		}
-
-		// Extraire la couleur de chaque produit de la collection
-		const productsWithColors = collectionProducts.map((p: any) => {
-			// Trouver l'option couleur du produit
-			const colorOpt = p.options?.find(
-				(opt: any) =>
-					opt.title.toLowerCase() === "color" ||
-					opt.title.toLowerCase() === "couleur",
-			);
-
-			// Récupérer la première valeur de couleur disponible
-			let colorValue = "";
-			if (colorOpt && p.variants && p.variants.length > 0) {
-				const firstVariant = p.variants[0];
-				const colorOptValue = firstVariant.options?.find(
-					(o: any) => o.option_id === colorOpt.id,
-				)?.value;
-				colorValue = colorOptValue || "";
-			}
-
-			return {
-				id: p.id,
-				handle: p.handle,
-				title: p.title,
-				color: p.hs_code,
-				image: p.thumbnail || p.images?.[0]?.url || "",
-				isActive: p.id === product.id,
-			};
-		});
-
-		// Filtrer pour ne garder que les produits avec des couleurs différentes
-		const uniqueColors = new Map();
-		productsWithColors.forEach((p: any) => {
-			const colorKey = p.color || p.id; // Utiliser l'ID si pas de couleur
-			if (!uniqueColors.has(colorKey)) {
-				uniqueColors.set(colorKey, p);
-			}
-		});
-
-		return Array.from(uniqueColors.values());
-	}, [collectionProducts, product]);
-
-	// Calcul du prix
-	const productPrice = useMemo(() => {
-		if (product?.variants && product.variants.length > 0) {
-			const prices = product.variants
-				.map(
-					(v: any) =>
-						v.calculated_price?.calculated_amount || v.calculated_price || 0,
-				)
-				.filter((p: number) => p > 0);
-			return prices.length > 0 ? Math.min(...prices) : 0;
-		}
-		return 0;
-	}, [product]);
-
-	// ===== RÉINITIALISATION QUAND LE PRODUIT CHANGE =====
-	useEffect(() => {
-		setSelectedColor("");
-		setSelectedSize("");
-		setActiveImage(0);
-	}, [product?.id]);
-
-	// ===== INITIALISATION AU CHARGEMENT =====
-	useEffect(() => {
-		if (
-			product &&
-			colorVariants &&
-			colorVariants.length > 0 &&
-			colorVariants[0] &&
-			!selectedColor
-		) {
-			// Définir la première couleur par défaut
-			const defaultColor = colorVariants[0].label;
-			setSelectedColor(defaultColor);
-
-			const firstColorVariants = colorVariants[0].variants;
-			if (sizeOption && firstColorVariants && firstColorVariants.length > 0) {
-				const firstSize = firstColorVariants[0]?.options?.find(
-					(opt: any) => opt.option_id === sizeOption.id,
-				)?.value;
-				if (firstSize) setSelectedSize(firstSize);
-			}
-		}
-	}, [product, colorVariants, sizeOption, selectedColor]);
-
-	// ===== GESTION DES CHANGEMENTS =====
-	const handleColorChange = useCallback((newColor: string) => {
-		setSelectedColor(newColor);
-		setSelectedSize("");
-		setActiveImage(0);
-	}, []);
-
-	const handleSizeChange = useCallback((size: string) => {
-		setSelectedSize(size);
-	}, []);
-
-	const handleClick = () => {
-		if (!selectedSize) {
-			toast.error("Sélectionnez une taille", {
-				description: "Veuillez choisir une taille avant d'ajouter au panier.",
-			});
-			return;
-		}
-
-		const matchingVariant = sizeOption
-			? product?.variants?.find(
-					(variant: any) =>
-						variant.options?.find((opt: any) => opt.option_id === sizeOption.id)
-							?.value === selectedSize,
-				)
-			: product?.variants?.find(
-					(variant: any) => variant.title === selectedSize,
-				);
-
-		if (!matchingVariant) {
-			toast.error("Taille non disponible", {
-				description: "Ce variant n'existe pas.",
-			});
-			return;
-		}
-
-		const purchasable =
-			!matchingVariant.manage_inventory ||
-			matchingVariant.allow_backorder ||
-			(matchingVariant.inventory_quantity ?? 1) > 0;
-
-		if (!purchasable) {
-			toast.error("Rupture de stock", {
-				description: "Cette taille n'est plus disponible.",
-			});
-			return;
-		}
-
-		const cartId = localStorage.getItem("cart_id");
-		const loadingId = toast.loading("Ajout au panier...");
-
-		addItemToCartMutation.mutate(
-			{ cartId: cartId || "", quantity: 1, variant_id: matchingVariant.id },
-			{
-				onSuccess: () => {
-					toast.cart("Ajouté au panier", {
-						id: loadingId,
-						description: `${product?.title} a été ajouté à votre panier.`,
-					});
-				},
-				onError: (error: any) => {
-					toast.error("Impossible d'ajouter au panier", {
-						id: loadingId,
-						description: error?.message ?? "Une erreur est survenue.",
-					});
+	const toggleWishlistItem = useWishlistStore((state) => state.toggleItem);
+	const handleAddToWishlist = () => {
+		if (!product) return;
+		toggleWishlistItem({
+			productId: product.id,
+			product: {
+				id: product.id,
+				name: product.title,
+				image: currentImages?.[0],
+				price: {
+					amount:
+						currentVariant?.calculated_price.calculated_amount ?? productPrice,
+					currency: currencyCode ?? "usd",
 				},
 			},
-		);
+		});
 	};
 
 	if (isLoading) {
-		return <ProductSkeleton />;
+		return (
+			<div className="px-4 py-12 mx-auto space-y-6 max-w-400 sm:px-6 lg:px-8">
+				<div className="flex flex-col gap-8 md:flex-row md:gap-10">
+					<Skeleton className="w-full rounded-3xl md:flex-1 md:max-w-220 aspect-4/5" />
+					<Skeleton className="w-full rounded-2xl md:w-100 h-140" />
+				</div>
+			</div>
+		);
 	}
 
 	if (!product) {
 		return (
-			<Container maxWidth="100vw" className="px-4 py-12 text-center">
-				<ProductSkeleton />
-			</Container>
+			<div className="flex flex-col items-center px-4 py-24 mx-auto text-center max-w-400 sm:px-6 lg:px-8">
+				<div className="flex justify-center items-center mb-6 w-16 h-16 bg-gray-100 rounded-full">
+					<svg
+						width="28"
+						height="28"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.8"
+						className="text-gray-400"
+					>
+						<circle cx="11" cy="11" r="7" />
+						<line x1="21" y1="21" x2="16.65" y2="16.65" />
+						<line x1="8" y1="11" x2="14" y2="11" />
+					</svg>
+				</div>
+				<span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
+					Produit introuvable
+				</span>
+				<h1 className="mt-3 text-2xl font-bold text-gray-900 sm:text-3xl">
+					Ce produit n&apos;existe pas ou n&apos;est plus disponible
+				</h1>
+				<p className="mt-2 max-w-md text-gray-500">
+					Il a peut-être été retiré du catalogue ou l&apos;adresse a changé.
+				</p>
+				<Link
+					href="/collections"
+					className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-black text-white font-semibold rounded-full hover:bg-neutral-800 transition shadow-lg group text-sm sm:text-base"
+				>
+					<span>Retour à la boutique</span>
+					<ArrowRightIcon className="w-4 h-4 text-white transition-transform group-hover:translate-x-1" />
+				</Link>
+			</div>
 		);
 	}
 
 	return (
-		<>
-			<Container maxWidth="100vw" className="px-4 py-2 mx-auto sm:py-12">
-				<div className="flex flex-col gap-8 justify-center lg:gap-14 sm:flex-row">
-					{/* Colonne gauche: Galerie */}
-					<div className="flex flex-col space-y-4 sm:space-y-8">
-						<ProductGalleryNew
-							images={
-								currentImages.length > 0
-									? currentImages
-									: product?.images?.map((img: any) => img.url) || []
-							}
-							title={product?.title || "Produit"}
-							activeImage={activeImage}
-							setActiveImage={setActiveImage}
-							promotion={undefined}
-						/>
+		<div className="px-4 py-8 mx-auto max-w-400 sm:px-6 lg:px-8">
+			<div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-10">
+				<ProductGalleryNew
+					className="md:flex-1 md:max-w-220"
+					images={currentImages}
+					title={product.title}
+					activeImage={activeImage}
+					setActiveImage={setActiveImage}
+				/>
+				<ProductInfosNew
+					productName={product.title}
+					productCategory={product.collection?.title ?? ""}
+					price={
+						currentVariant?.calculated_price.calculated_amount ?? productPrice
+					}
+					originalPrice={currentVariant?.calculated_price.original_amount}
+					colors={availableColors}
+					colorSwatches={colorSwatches}
+					sizes={availableSizes}
+					selectedColor={selectedColor}
+					selectedSize={selectedSize}
+					onColorChange={handleColorChange}
+					onSizeChange={handleSizeChange}
+					onAddToCart={handleAddToCart}
+					onAddToWishlist={handleAddToWishlist}
+					isWishlisted={isWishlisted}
+					description={product.description}
+					disabled={availableSizes.length > 0 && !selectedSize}
+					rating={summary.average}
+					reviewCount={summary.count}
+					currency={currencyLabel}
+				/>
+			</div>
 
-						<Reviews className="hidden lg:block w-[600px]" />
-					</div>
-
-					{/* Colonne droite: Infos produit */}
-					<ProductInfosNew
-						productName={product?.title || "Produit"}
-						productCategory={product?.collection?.title || "Collection"}
-						price={productPrice}
-						colors={availableColors}
-						sizes={availableSizes}
-						selectedColor={selectedColor}
-						selectedSize={selectedSize}
-						onColorChange={handleColorChange}
-						onSizeChange={handleSizeChange}
-						onAddToCart={handleClick}
-						disabled={!selectedSize || addItemToCartMutation.isPending}
-						isLoading={addItemToCartMutation.isPending}
-						collectionColorVariants={collectionColorVariants}
-						currency={regions?.currency_code === "xof" ? "FCFA" : "$"}
-					/>
-
-					{/* Reviews mobile */}
-					<div className="sm:hidden">
-						<Reviews />
-					</div>
-				</div>
-				{/* <ProductSuggestion /> */}
-			</Container>
-		</>
+			<Reviews productId={product.id} />
+			<ProductSuggestion
+				categorySlug={categorySlug}
+				excludeProductId={product.id}
+			/>
+			<ProductFaq />
+		</div>
 	);
 }

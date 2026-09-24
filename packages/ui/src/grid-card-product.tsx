@@ -23,35 +23,36 @@ interface GridCardProductProps
 	extends
 		React.HTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof gridVariants> {
-	title?: string;
 	className?: string;
 	classGrid?: string;
 	style_everst?: string;
 	grid_card?: string;
 	action_grid?: boolean;
-	children: ReactElement<any, any> | ReactElement<any, any>[];
+	/** Masque le sélecteur de tri décoratif, pour ne garder que les icônes de densité. */
+	hideSort?: boolean;
+	children: ReactElement | ReactElement[];
 }
 
 export const GridCardProduct = ({
-	title,
 	className,
 	classGrid,
 	children,
 	grid_card,
 	action_grid,
+	hideSort,
 	...props
 }: GridCardProductProps) => {
-	const [styleGrid, setStyleGrid] = useState<{ style: Object; active: number }>(
+	const [styleGrid, setStyleGrid] = useState<{ style: object; active: number }>(
 		{
 			style: {
 				display: "grid",
-				gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+				gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
 				gap: "0.5rem",
 				"& > div": {
 					// height: "60rem",
 				},
 			},
-			active: 4,
+			active: 5,
 		},
 	);
 
@@ -59,7 +60,7 @@ export const GridCardProduct = ({
 		"max-md:grid-cols-3 gap-x-[8px]  max-md:grid-cols-3  max-sm:grid-cols-2";
 
 	const handleChangeStyle = useCallback(
-		(style: Object, index: number) => {
+		(style: object, index: number) => {
 			setStyleGrid({
 				...styleGrid,
 				active: index,
@@ -94,7 +95,7 @@ export const GridCardProduct = ({
 		>
 			{action_grid && (
 				<div className="gap-4 py-1 space-x-5 text-black max-md:hidden md:flex md:justify-end md:items-center">
-					<ToPull />
+					{!hideSort && <ToPull />}
 					<span className="flex gap-4 justify-center items-center">
 						{StyleBar.map((styles, index) => (
 							<GridBar

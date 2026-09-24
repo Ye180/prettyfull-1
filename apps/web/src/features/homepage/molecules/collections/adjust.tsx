@@ -1,16 +1,23 @@
 import { Checkbox } from "@prettyfull/ui";
 
+const items = ["Oversized", "Regular", "Slim", "Relaxed"];
+
+/**
+ * Section "Fit" (renommée sémantiquement depuis "Adjust") - présentationnel.
+ */
 const Adjust = () => {
 	return (
-		<>
-			{Array.from({ length: 4 }).map((_, i) => (
-				<div className="flex items-start gap-4 text-balance" key={i}>
-					{" "}
-					<Checkbox className="" />
-					<span className="text-[1.5rem]">Oversized</span>
-				</div>
+		<div className="space-y-3">
+			{items.map((item) => (
+				<label
+					key={item}
+					className="flex gap-3 items-center text-sm text-gray-800 cursor-pointer"
+				>
+					<Checkbox />
+					{item}
+				</label>
 			))}
-		</>
+		</div>
 	);
 };
 

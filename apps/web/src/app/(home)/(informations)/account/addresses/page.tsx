@@ -1,6 +1,12 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
+import {
+	createAddress,
+	deleteAddress,
+	fetchAddresses,
+	updateAddress,
+} from "@/lib/store-api";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 	Button,
 	Dialog,
@@ -9,10 +15,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 	Input,
-	Skeleton,
 } from "@prettyfull/ui";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -455,10 +459,68 @@ const DeleteConfirmModal = ({
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
+/**
+ * Traduit une adresse de l'API vers la forme snake_case utilisée par cette
+ * page. Le rendu reste inchangé ; seule la provenance des données a bougé.
+ */
+const toLocalAddress = (address: {
+	id: string;
+	firstName: string;
+	lastName: string;
+	company: string | null;
+	address1: string;
+	address2: string | null;
+	city: string;
+	postalCode: string | null;
+	province: string | null;
+	countryCode: string;
+	phone: string | null;
+	isDefaultShipping: boolean;
+	isDefaultBilling: boolean;
+}): Address => ({
+	id: address.id,
+	first_name: address.firstName,
+	last_name: address.lastName,
+	company: address.company ?? undefined,
+	address_1: address.address1,
+	address_2: address.address2 ?? undefined,
+	city: address.city,
+	postal_code: address.postalCode ?? "",
+	province: address.province ?? undefined,
+	country_code: address.countryCode,
+	phone: address.phone ?? undefined,
+	is_default_shipping: address.isDefaultShipping,
+	is_default_billing: address.isDefaultBilling,
+});
+
+const toApiAddress = (data: AddressFormData) => ({
+	firstName: data.first_name,
+	lastName: data.last_name,
+	company: data.company || null,
+	address1: data.address_1,
+	address2: data.address_2 || null,
+	city: data.city,
+	postalCode: data.postal_code || null,
+	province: data.province || null,
+	countryCode: (data.country_code || "ci").toLowerCase(),
+	phone: data.phone || null,
+	isDefaultShipping: false,
+	isDefaultBilling: false,
+});
+
 export default function AddressesPage() {
-	const router = useRouter();
-	const [isAuthChecking, setIsAuthChecking] = useState(true);
-	const [customer, setCustomer] = useState<any>(null);
+	const queryClient = useQueryClient();
+
+	const { data: remoteAddresses } = useQuery({
+		queryKey: ["customer-addresses"],
+		queryFn: fetchAddresses,
+		retry: false,
+	});
+
+	const addresses = (remoteAddresses ?? []).map(toLocalAddress);
+
+	const refreshAddresses = () =>
+		queryClient.invalidateQueries({ queryKey: ["customer-addresses"] });
 
 	const [showFormModal, setShowFormModal] = useState(false);
 	const [editingAddress, setEditingAddress] = useState<Address | null>(null);
@@ -471,21 +533,6 @@ export default function AddressesPage() {
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-	const fetchCustomer = useCallback(async () => {
-		try {
-			const { customer } = await sdk.store.customer.retrieve();
-			setCustomer(customer);
-		} catch {
-			router.push("/login");
-		} finally {
-			setIsAuthChecking(false);
-		}
-	}, [router]);
-
-	useEffect(() => {
-		fetchCustomer();
-	}, [fetchCustomer]);
 
 	const showSuccess = (msg: string) => {
 		setSuccessMessage(msg);
@@ -506,40 +553,24 @@ export default function AddressesPage() {
 
 	const handleSave = async (data: AddressFormData) => {
 		setIsSaving(true);
+
 		try {
 			if (editingAddress) {
-				await sdk.store.customer.updateAddress(editingAddress.id, {
-					first_name: data.first_name,
-					last_name: data.last_name,
-					company: data.company || undefined,
-					address_1: data.address_1,
-					address_2: data.address_2 || undefined,
-					city: data.city,
-					postal_code: data.postal_code,
-					province: data.province || undefined,
-					country_code: data.country_code,
-					phone: data.phone || undefined,
-				});
+				await updateAddress(editingAddress.id, toApiAddress(data));
 				showSuccess("Adresse mise à jour !");
 			} else {
-				await sdk.store.customer.createAddress({
-					first_name: data.first_name,
-					last_name: data.last_name,
-					company: data.company || undefined,
-					address_1: data.address_1,
-					address_2: data.address_2 || undefined,
-					city: data.city,
-					postal_code: data.postal_code,
-					province: data.province || undefined,
-					country_code: data.country_code,
-					phone: data.phone || undefined,
-				});
+				await createAddress(toApiAddress(data));
 				showSuccess("Adresse ajoutée !");
 			}
+
+			await refreshAddresses();
 			setShowFormModal(false);
-			await fetchCustomer();
-		} catch (err) {
-			console.error("Failed to save address:", err);
+		} catch (error) {
+			// La modale reste ouverte : la saisie n'est pas perdue et peut être
+			// corrigée à partir du message de l'API.
+			showSuccess(
+				error instanceof Error ? error.message : "Enregistrement impossible.",
+			);
 		} finally {
 			setIsSaving(false);
 		}
@@ -555,37 +586,21 @@ export default function AddressesPage() {
 	const handleConfirmDelete = async () => {
 		if (!deletingAddressId) return;
 		setIsDeleting(true);
+
 		try {
-			await sdk.store.customer.deleteAddress(deletingAddressId);
+			await deleteAddress(deletingAddressId);
+			await refreshAddresses();
+			showSuccess("Adresse supprimée !");
+		} catch (error) {
+			showSuccess(
+				error instanceof Error ? error.message : "Suppression impossible.",
+			);
+		} finally {
 			setShowDeleteModal(false);
 			setDeletingAddressId(null);
-			showSuccess("Adresse supprimée !");
-			await fetchCustomer();
-		} catch (err) {
-			console.error("Failed to delete address:", err);
-		} finally {
 			setIsDeleting(false);
 		}
 	};
-
-	// ── Loading ───────────────────────────────────────────────────────────────
-
-	if (isAuthChecking) {
-		return (
-			<div className="space-y-8">
-				<Skeleton className="w-60 h-10" />
-				<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-					{[1, 2, 3].map((i) => (
-						<Skeleton key={i} className="w-full h-48 rounded-xl" />
-					))}
-				</div>
-			</div>
-		);
-	}
-
-	if (!customer) return null;
-
-	const addresses: Address[] = customer.addresses ?? [];
 
 	// ── Render ────────────────────────────────────────────────────────────────
 
@@ -595,10 +610,10 @@ export default function AddressesPage() {
 			<div className="flex flex-col gap-8 justify-between sm:flex-row sm:items-center">
 				<div>
 					<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-						My Addresses
+						Mes adresses
 					</h2>
 					<p className="mt-1 text-gray-500">
-						Manage your delivery and billing addresses.
+						Gérez vos adresses de livraison et de facturation.
 					</p>
 				</div>
 				<Button
@@ -606,7 +621,7 @@ export default function AddressesPage() {
 					className="flex gap-2 items-center self-start px-8 text-white bg-black rounded-full max-md:py-4 hover:bg-gray-800 w-fit"
 				>
 					<PlusIcon className="size-10" />
-					Add an address
+					Ajouter une adresse
 				</Button>
 			</div>
 
@@ -652,7 +667,7 @@ export default function AddressesPage() {
 							<PlusIcon className="w-6 h-6 text-gray-400 group-hover:text-gray-600" />
 						</div>
 						<span className="text-sm font-medium text-gray-500 group-hover:text-gray-700">
-							Add an address
+							Ajouter une adresse
 						</span>
 					</button>
 				</div>
@@ -662,17 +677,17 @@ export default function AddressesPage() {
 						<MapPinIcon className="w-8 h-8 text-gray-400" />
 					</div>
 					<h3 className="text-lg font-semibold text-gray-900">
-						No address registered
+						Aucune adresse enregistrée
 					</h3>
 					<p className="mx-auto mt-2 mb-8 max-w-sm text-gray-500">
-						Add your first address to make your future orders easier.
+						Ajoutez votre première adresse pour faciliter vos prochaines commandes.
 					</p>
 					<Button
 						onClick={handleOpenAdd}
 						className="flex gap-2 items-center text-white bg-black rounded-full hover:bg-gray-800"
 					>
 						<PlusIcon className="w-4 h-4" />
-						Add an address
+						Ajouter une adresse
 					</Button>
 				</div>
 			)}
@@ -684,11 +699,11 @@ export default function AddressesPage() {
 						<span className="text-xs font-bold text-gray-600">?</span>
 					</div>
 					<div className="text-sm text-gray-600">
-						<p className="font-medium text-gray-900">Tip</p>
+						<p className="font-medium text-gray-900">Astuce</p>
 						<p>
-							Your first address is automatically used as the default address
-							during checkout. You can change the address when finalizing your
-							order.
+							Votre première adresse est automatiquement utilisée comme adresse
+							par défaut lors du paiement. Vous pouvez la modifier au moment de
+							finaliser votre commande.
 						</p>
 					</div>
 				</div>

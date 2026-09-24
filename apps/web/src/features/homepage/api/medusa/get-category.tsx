@@ -1,6 +1,6 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
+import { fetchCategories } from "@/lib/store-api";
 import { useQuery } from "@tanstack/react-query";
 
 export interface Category {
@@ -8,29 +8,28 @@ export interface Category {
 	name: string;
 	handle: string;
 	image?: string | { url: string };
-	metadata?: Record<string, any>;
+	metadata?: Record<string, unknown>;
+	isFeatured: boolean;
 }
 
-export const getCategory = async () => {
-	const response = await sdk.store.category
-		.list({
-			fields: "id, name, handle, metadata, *product_category_image",
-		})
-		.then(({ product_categories }) => {
-			return product_categories.map((cat: any) => ({
-				id: cat.id,
-				name: cat.name,
-				handle: cat.handle,
-				image: cat.product_category_image?.url || cat.metadata?.image,
-				metadata: cat.metadata,
-			}));
-		});
-	return response;
+export const getCategory = async (): Promise<Category[]> => {
+	const categories = await fetchCategories();
+
+	return categories.map((category) => ({
+		id: category.id,
+		name: category.name,
+		handle: category.handle,
+		image:
+			category.product_category_image?.[0]?.url ??
+			(category.metadata as Record<string, string> | undefined)?.image,
+		metadata: category.metadata,
+		isFeatured: category.is_featured ?? false,
+	}));
 };
 
-export const useGetCategory = () => {
-	return useQuery({
+export const useGetCategory = () =>
+	useQuery({
 		queryKey: ["categories"],
 		queryFn: () => getCategory(),
+		staleTime: 10 * 60 * 1000,
 	});
-};

@@ -1,22 +1,31 @@
 "use client";
 
-import { useGetItemsCart } from "@/features/cart/api/medusa/get-items-cart";
+import { useGetShippingOptions } from "@/features/checkout/api/get-shipping-options";
+import { useCartStore } from "@prettyfull/store";
 import { Button, Checkbox } from "@prettyfull/ui";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import { useCompleteCart } from "../../api/complete-cart";
 import { useCheckoutStep } from "../../hooks/use-checkout-step";
 import { useCheckoutStore } from "../../stores/use-checkout-store";
 
+const TAX_RATE = 0.18;
+
 interface ReviewStepProps {
 	cartId: string | null;
-	onPlaceOrder?: (orderId: string) => void;
+	onPlaceOrder?: (orderId: string, confirmationToken?: string) => void;
 }
 
 export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
+	const t = useTranslations("CheckoutPage.summary");
 	const { isStepCompleted, isStepActive } = useCheckoutStep();
 	const { reset: resetCheckoutStore } = useCheckoutStore();
+	const selectedShippingOptionId = useCheckoutStore(
+		(state) => state.selectedShippingOptionId,
+	);
+	const items = useCartStore((state) => state.items);
 	const [isLoading, setIsLoading] = useState(false);
 	const [termsAccepted, setTermsAccepted] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -24,9 +33,17 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 	const isOpen = isStepActive("review");
 	const canAccess = isStepCompleted("payment");
 
-	// Get cart data
-	const { data: cart } = useGetItemsCart(cartId as string);
 	const completeCart = useCompleteCart();
+
+	const subtotal = items.reduce(
+		(acc, item) => acc + (item.unitPrice?.amount ?? item.product.price?.amount ?? 0) * item.quantity,
+		0,
+	);
+	const { data: shippingOptions } = useGetShippingOptions("cart");
+	const shipping =
+		shippingOptions?.find((option) => option.id === selectedShippingOptionId)?.amount ?? 0;
+	const taxes = subtotal * TAX_RATE;
+	const total = subtotal + shipping + taxes;
 
 	const handlePlaceOrder = async () => {
 		if (!termsAccepted || !cartId) return;
@@ -35,16 +52,18 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 		setError(null);
 
 		try {
-			// Complete cart and create order via Medusa API
-			const order = await completeCart.mutateAsync({ cartId });
-
-			// Reset checkout store
+			const order = await completeCart.mutateAsync();
 			resetCheckoutStore();
-
-			onPlaceOrder?.(order.id);
+			onPlaceOrder?.(order.orderId, order.confirmationToken);
 		} catch (err) {
-			console.error("Failed to place order:", err);
-			setError("Failed to place order. Please try again.");
+			// L'API nomme l'article épuisé et le disponible restant : afficher
+			// son message est bien plus actionnable qu'un texte générique.
+			console.error("Échec du passage en commande :", err);
+			setError(
+				err instanceof Error
+					? err.message
+					: "La commande n'a pas pu être passée. Réessayez.",
+			);
 		} finally {
 			setIsLoading(false);
 		}
@@ -62,7 +81,7 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 						}
 					)}
 				>
-					Review
+					Récapitulatif
 				</h2>
 			</div>
 
@@ -70,88 +89,84 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 			{isOpen && canAccess ? (
 				<div className="space-y-6">
 					<p className="text-sm text-gray-600">
-						Please review your order before placing it
+						Veuillez vérifier votre commande avant de la valider
 					</p>
 
 					{/* Order Items Summary */}
-					<div className="p-8 space-y-4 bg-gray-50 rounded-lg">
+					<div className="p-8 space-y-4 bg-gray-50 rounded-3xl">
 						<h3 className="flex flex-row font-medium gap-x-2 items-center text-2xl! tracking-wider">
-							Order Items ({cart?.items?.length || 0})
+							Articles de la commande ({items.length})
 						</h3>
 						<div className="space-y-4">
-							{cart?.items?.map((item: any) => (
-								<div
-									key={item.id}
-									className="flex justify-between items-center text-sm"
-								>
-									<div className="flex gap-4 items-center">
-										<div className="overflow-y-hidden w-32 rounded-md h-38">
-											{item.thumbnail && (
-												<Image
-													src={item.thumbnail}
-													alt={item.product_title}
-													width={100}
-													height={100}
-													className="object-cover w-32 h-52 bg-amber-400 rounded"
-												unoptimized
-												/>
-											)}
-										</div>
+							{items.map((item) => {
+								const variantLabel = Object.values(item.selectedVariants || {}).join(" / ");
+								const unitPrice = item.unitPrice?.amount ?? item.product.price?.amount ?? 0;
+								return (
+									<div
+										key={item.productId}
+										className="flex justify-between items-center text-sm"
+									>
+										<div className="flex gap-4 items-center">
+											<div className="overflow-y-hidden w-32 rounded-2xl h-38">
+												{item.product.image && (
+													<Image
+														src={item.product.image}
+														alt={item.product.name}
+														width={100}
+														height={100}
+														className="object-cover w-32 h-38 rounded-2xl"
+													unoptimized
+													/>
+												)}
+											</div>
 
-										<div className="space-y-4">
-											<p className="font-medium">{item.product_title}</p>
-											<p className="font-semibold text-gray-500">
-												{item.variant_title} × {item.quantity}
-											</p>
+											<div className="space-y-4">
+												<p className="font-medium">{item.product.name}</p>
+												<p className="font-semibold text-gray-500">
+													{variantLabel || "Unique"} × {item.quantity}
+												</p>
+											</div>
 										</div>
+										<span className="font-medium">
+											{formatCurrency_FR(unitPrice * item.quantity)}
+										</span>
 									</div>
-									<span className="font-medium">
-										{formatCurrency_FR(item.unit_price * item.quantity)}
-									</span>
-								</div>
-							))}
+								);
+							})}
 						</div>
 					</div>
 
 					{/* Totals */}
 					<div className="pt-4 space-y-4 border-t border-gray-200">
 						<div className="flex justify-between py-3 text-sm">
-							<span>Subtotal</span>
-							<span>{formatCurrency_FR(cart?.item_subtotal || 0)}</span>
+							<span>{t("subtotal")}</span>
+							<span>{formatCurrency_FR(subtotal)}</span>
 						</div>
 						<div className="flex justify-between py-3 text-sm">
-							<span>Shipping</span>
-							<span>{formatCurrency_FR(cart?.shipping_total || 0)}</span>
+							<span>{t("shipping")}</span>
+							<span>{formatCurrency_FR(shipping)}</span>
 						</div>
 						<div className="flex justify-between py-3 text-sm">
-							<span>Taxes</span>
-							<span>{formatCurrency_FR(cart?.item_tax_total || 0)}</span>
+							<span>{t("taxes")}</span>
+							<span>{formatCurrency_FR(taxes)}</span>
 						</div>
 						<div className="flex justify-between py-3 text-lg font-semibold border-t border-gray-200">
-							<span>Total</span>
-							<span>{formatCurrency_FR(cart?.total || 0)}</span>
+							<span>{t("total")}</span>
+							<span>{formatCurrency_FR(total)}</span>
 						</div>
 					</div>
 
 					{/* Terms */}
 					<div className="flex gap-3 items-start pt-4">
-						{/* <input
-							type="checkbox"
-							id="terms"
-							checked={termsAccepted}
-							onChange={(e) => setTermsAccepted(e.target.checked)}
-							className="mt-1 w-4 h-4 text-black rounded border-gray-300 focus:ring-black"
-						/> */}
-
 						<Checkbox
 							checked={termsAccepted}
 							onCheckedChange={(checked) => setTermsAccepted(checked === true)}
 							id="terms"
 						/>
 						<label htmlFor="terms" className="text-sm text-gray-600">
-							By clicking the Place Order button, you confirm that you have
-							read, understand and accept our Terms of Use, Terms of Sale and
-							Returns Policy.
+							En cliquant sur le bouton Passer la commande, vous confirmez avoir
+							lu, compris et accepté nos Conditions d'utilisation, nos Conditions
+							de vente et notre Politique de retour.
 						</label>
 					</div>
 
@@ -162,12 +177,12 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 						className="py-6 w-full"
 						disabled={!termsAccepted || isLoading || !cartId}
 					>
-						{isLoading ? "Placing order..." : "Place Order"}
+						{isLoading ? "Passage de la commande..." : "Passer la commande"}
 					</Button>
 				</div>
 			) : !canAccess ? (
 				<p className="text-sm text-gray-400">
-					Complete the previous steps to continue
+					Complétez les étapes précédentes pour continuer
 				</p>
 			) : null}
 		</div>

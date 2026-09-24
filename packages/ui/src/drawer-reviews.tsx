@@ -1,5 +1,7 @@
-// import { Button } from "./button";
-import { StarIcon } from "lucide-react";
+"use client";
+
+import { cn } from "@prettyfull/utils";
+import { useState } from "react";
 import { Button } from "./button";
 import {
 	Drawer,
@@ -7,75 +9,248 @@ import {
 	DrawerContent,
 	DrawerTrigger,
 } from "./components/ui/drawer";
-import { DropdownMenuSeparator } from "./components/ui/dropdown-menu";
 import { CloseIcon } from "./icons/close.icon";
+import { StarIcon } from "./icons/star.icon";
 
-const DrawerReview = () => {
+/**
+ * Formulaire de soumission d'un avis produit.
+ *
+ * Reste purement présentatif : les appels réseau (téléversement des photos,
+ * envoi de l'avis) sont préparés par `use-review-form.ts` côté `apps/web` et
+ * passés ici en props - ce paquet ne dépend jamais d'une app en particulier.
+ */
+
+export interface ReviewFormValues {
+	rating: number;
+	authorName: string;
+	authorEmail: string;
+	body: string;
+	photoUrls: string[];
+}
+
+const EMPTY_FORM: ReviewFormValues = {
+	rating: 0,
+	authorName: "",
+	authorEmail: "",
+	body: "",
+	photoUrls: [],
+};
+
+const MAX_PHOTOS = 4;
+
+const FIELD_CLASS =
+	"w-full rounded-xl border border-neutral-300 bg-white px-5 py-4 text-[1.5rem] " +
+	"font-light text-black placeholder:text-neutral-400 transition-colors " +
+	"focus:border-black focus:outline-none";
+
+interface DrawerReviewProps {
+	onSubmit: (values: ReviewFormValues) => Promise<void>;
+	onUploadPhotos: (files: File[]) => Promise<string[]>;
+	isSubmitting?: boolean;
+	isUploading?: boolean;
+	className?: string;
+	triggerLabel?: string;
+	triggerClassName?: string;
+}
+
+const DrawerReview = ({
+	onSubmit,
+	onUploadPhotos,
+	isSubmitting = false,
+	isUploading = false,
+	className,
+	triggerLabel = "Écrire un avis",
+	triggerClassName,
+}: DrawerReviewProps) => {
+	const [form, setForm] = useState<ReviewFormValues>(EMPTY_FORM);
+	const [sent, setSent] = useState(false);
+	const [open, setOpen] = useState(false);
+
+	const set = <K extends keyof ReviewFormValues>(
+		key: K,
+		value: ReviewFormValues[K],
+	) => setForm((current) => ({ ...current, [key]: value }));
+
+	const handleFiles = async (files: FileList | null) => {
+		if (!files || files.length === 0) return;
+		const remaining = MAX_PHOTOS - form.photoUrls.length;
+		if (remaining <= 0) return;
+
+		const urls = await onUploadPhotos(Array.from(files).slice(0, remaining));
+		set("photoUrls", [...form.photoUrls, ...urls].slice(0, MAX_PHOTOS));
+	};
+
+	const canSubmit =
+		form.rating > 0 &&
+		form.authorName.trim() &&
+		form.authorEmail.trim() &&
+		form.body.trim();
+
+	const handleSubmit = async (event: React.FormEvent) => {
+		event.preventDefault();
+		if (!canSubmit) return;
+
+		await onSubmit({
+			...form,
+			authorName: form.authorName.trim(),
+			body: form.body.trim(),
+		});
+		setForm(EMPTY_FORM);
+		setSent(true);
+	};
+
 	return (
-		<Drawer>
+		<Drawer
+			open={open}
+			onOpenChange={(next) => {
+				setOpen(next);
+				if (next) setSent(false);
+			}}
+		>
 			<DrawerTrigger asChild>
 				<Button
 					variant="outline"
-					className="w-full sm:w-[90%] p-2 py-4 text-2xl  rounded-full cursor-pointer  text-[1.8rem] sm:ml-24  sm:mt-8  sm:hidden max-sm:flex"
+					className={cn(
+						"w-fit rounded-full px-8 py-6 text-[1.5rem] font-medium whitespace-nowrap cursor-pointer",
+						triggerClassName,
+					)}
 				>
-					View All Reviews
+					{triggerLabel}
 				</Button>
 			</DrawerTrigger>
 
-			{/* Contenu du Drawer */}
-
 			<DrawerContent
-				title="Reviews"
-				className="w-full p-5 border-none outline-none  md:hidden lg:hidden xl:hidden 2xl:hidden max-h-[90%] "
+				title="Écrire un avis"
+				className={cn("p-5 border-none outline-none", className)}
 			>
 				<DrawerClose
 					className="absolute z-30 p-2 text-2xl bg-white rounded-full cursor-pointer right-4 top-4"
-					onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-						e.stopPropagation()
+					onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
+						event.stopPropagation()
 					}
 				>
 					<CloseIcon className="w-10 h-10" />
 				</DrawerClose>
 
-				<div className="w-full h-[70vh]  max-w-5xl px-4 py-8 mx-auto overflow-y-auto ">
-					{Array.from({ length: 9 }).map((_, index) => (
-						<div className="pb-4 space-y-8 max-md:ml-0 md:ml-24 " key={index}>
-							<div className="flex items-start justify-between ">
-								<div>
-									<div className="text-[1.4rem] font-light flex items-center gap-4">
-										<div className="w-20 h-20 rounded-full bg-amber-700 " />
-										<div>
-											<h5 className="tracking-wide">Marvin McKinney</h5>
-											<div className="flex items-center gap-1">
-												{Array.from({ length: 5 }).map((_, index) => (
-													<span key={index} className=" text-[#ffce31]">
-														<StarIcon className="w-6 h-6" />
-													</span>
-												))}
-											</div>
-										</div>
-									</div>
-								</div>
-								<p className="font-light tracking-wide text-gray-500">
-									2 jours avant
-								</p>
-							</div>
-							<p className="pl-2 font-normal tracking-wide text-justify text-black text-[1.4rem] sm:text-[1.5rem]">
-								I love this stores shirt! It's so comfortable and easy to wear
-								with anything. I ended up buying one in every color during their
-								sale. The quality is great too. Thank you!
+				<div className="w-full max-w-lg px-4 py-8 mx-auto overflow-y-auto">
+					{sent ? (
+						<div className="py-8 text-center space-y-4">
+							<p className="text-[1.8rem] font-medium">
+								Merci pour votre avis !
 							</p>
-
-							<DropdownMenuSeparator />
+							<p className="text-[1.4rem] text-gray-500">
+								Il sera visible sur la fiche produit dès sa validation par notre
+								équipe.
+							</p>
+							<Button
+								type="button"
+								variant="outline"
+								onClick={() => setSent(false)}
+							>
+								Écrire un autre avis
+							</Button>
 						</div>
-					))}
+					) : (
+						<form onSubmit={handleSubmit} className="space-y-6">
+							<div>
+								<span className="mb-2 block text-[1.4rem] font-medium">
+									Note
+								</span>
+								<div className="flex gap-1">
+									{[1, 2, 3, 4, 5].map((value) => (
+										<button
+											key={value}
+											type="button"
+											onClick={() => set("rating", value)}
+											aria-label={`${value} étoile${value > 1 ? "s" : ""}`}
+											className="cursor-pointer p-1"
+										>
+											<StarIcon
+												className={cn(
+													"w-6 h-6",
+													value <= form.rating
+														? "text-[#ffce31]"
+														: "text-gray-200",
+												)}
+											/>
+										</button>
+									))}
+								</div>
+							</div>
 
-					<Button
-						variant="outline"
-						className="w-full sm:w-[90%] p-2 py-4 text-2xl  rounded-full cursor-pointer  text-[1.8rem] sm:ml-10  sm:mt-8   my-8 sm:flex "
-					>
-						Load more
-					</Button>
+							<input
+								required
+								type="text"
+								placeholder="Votre nom"
+								value={form.authorName}
+								onChange={(event) => set("authorName", event.target.value)}
+								className={FIELD_CLASS}
+							/>
+
+							<input
+								required
+								type="email"
+								placeholder="Votre e-mail"
+								value={form.authorEmail}
+								onChange={(event) => set("authorEmail", event.target.value)}
+								className={FIELD_CLASS}
+							/>
+
+							<textarea
+								required
+								rows={4}
+								placeholder="Votre avis"
+								value={form.body}
+								onChange={(event) => set("body", event.target.value)}
+								className={cn(FIELD_CLASS, "resize-y")}
+							/>
+
+							<div className="space-y-2">
+								<span className="block text-[1.4rem] font-medium">
+									Photos (facultatif, {form.photoUrls.length}/{MAX_PHOTOS})
+								</span>
+
+								{form.photoUrls.length > 0 && (
+									<div className="flex gap-2 flex-wrap">
+										{form.photoUrls.map((url) => (
+											// eslint-disable-next-line @next/next/no-img-element
+											<img
+												key={url}
+												src={url}
+												alt=""
+												className="w-16 h-16 rounded-xl object-cover border border-gray-200"
+											/>
+										))}
+									</div>
+								)}
+
+								{form.photoUrls.length < MAX_PHOTOS && (
+									<label className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 px-4 py-3 text-[1.3rem] text-gray-500 cursor-pointer hover:border-gray-400">
+										{isUploading ? "Téléversement…" : "Ajouter une photo"}
+										<input
+											type="file"
+											accept="image/*"
+											multiple
+											disabled={isUploading}
+											className="hidden"
+											onChange={(event) => {
+												void handleFiles(event.target.files);
+												event.target.value = "";
+											}}
+										/>
+									</label>
+								)}
+							</div>
+
+							<Button
+								type="submit"
+								disabled={!canSubmit || isSubmitting}
+								className="w-full rounded-full py-6 text-[1.5rem] font-medium"
+							>
+								{isSubmitting ? "Envoi…" : "Envoyer mon avis"}
+							</Button>
+						</form>
+					)}
 				</div>
 			</DrawerContent>
 		</Drawer>

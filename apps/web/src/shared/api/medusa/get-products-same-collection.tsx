@@ -1,59 +1,43 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
-import { COLLECTIONS_MEDUSA_QUERY_KEY } from "@/shared/utils/query-keys";
-import { useRegionStore } from "@/stores/useRegion";
+import type { Paginated, Product } from "@prettyfull/contracts";
+import { fetchCategories, storeApi, toRawProduct } from "@/lib/store-api";
 import { useQuery } from "@tanstack/react-query";
 
-const getProductsSameCollection = async (regionId: string) => {
-	const { products } = await sdk.store.product.list({
-		fields:
-			"*variants.calculated_price, +variants.inventory_quantity, +variants.manage_inventory, +variants.allow_backorder, *images, *options, *options.values, *variants.options, *variants.options.option, *collection, *collection.metadata",
-		region_id: regionId,
-		limit: 250,
-	});
+/**
+ * Produits groupés par rayon, pour les rangées de la page d'accueil.
+ *
+ * Les rayons sont chargés d'abord, puis leurs produits en parallèle : les
+ * enchaîner ferait attendre le premier rendu autant de fois qu'il y a de
+ * rayons.
+ */
+const getProductsSameCollection = async () => {
+	const categories = await fetchCategories();
 
-	const grouped: Record<
-		string,
-		{
-			collection_id: string | null;
-			collection: any | null;
-			categorie?: any | null;
-			products: any[];
-		}
-	> = {};
+	return Promise.all(
+		categories.map(async (category) => {
+			const response = await storeApi.get<Paginated<Product>>(
+				`/api/store/categories/${encodeURIComponent(category.handle)}/products?limit=20`,
+			);
 
-	for (const product of products) {
-		const collectionId = product.collection_id;
-		const categorieId = product.collection?.metadata?.categorie_id;
-		const categorie =
-			typeof categorieId === "string" ? categorieId.split(",") : undefined;
-
-		if (!collectionId || !categorie || categorie.length === 0) continue;
-
-		if (!grouped[collectionId]) {
-			grouped[collectionId] = {
-				collection_id: collectionId,
-				collection: product.collection ?? null,
-				products: [],
-				categorie,
+			return {
+				collection_id: `col_${category.id}`,
+				collection: {
+					id: `col_${category.id}`,
+					title: category.name,
+					handle: category.handle,
+					metadata: { categorie_id: category.id },
+				},
+				categorie: [category.id],
+				products: response.data.map(toRawProduct),
 			};
-		}
-
-		grouped[collectionId]?.products.push(product);
-	}
-
-	return Object.values(grouped);
+		}),
+	);
 };
 
-export const useGetProductsSameCollection = () => {
-	const region = useRegionStore((state) => state.region);
-	const regionId = region?.id;
-
-	return useQuery({
-		queryKey: [COLLECTIONS_MEDUSA_QUERY_KEY, regionId],
-		queryFn: () => getProductsSameCollection(regionId!),
+export const useGetProductsSameCollection = () =>
+	useQuery({
+		queryKey: ["products-same-collection"],
+		queryFn: () => getProductsSameCollection(),
 		staleTime: 5 * 60 * 1000,
-		enabled: !!regionId,
 	});
-};

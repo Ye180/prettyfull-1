@@ -1,16 +1,14 @@
-import { sdk } from "@/lib/api/sdk";
-import { REGIONS_MEDUSA_QUERY_KEY } from "@/shared/utils/query-keys";
+"use client";
+
+import { fetchRegions } from "@/lib/store-api";
 import { useQuery } from "@tanstack/react-query";
 
-const getRegion = async () => {
-	const { regions } = await sdk.store.region.list();
-	return regions;
-};
+const REGIONS_QUERY_KEY = "list-regions";
 
-export const useGetRegion = () => {
-	return useQuery({
-		queryKey: [REGIONS_MEDUSA_QUERY_KEY],
-		queryFn: getRegion,
-		staleTime: 60 * 60 * 1000,
+/** Devises activées dans le back-office, présentées comme des régions. */
+export const useGetRegion = () =>
+	useQuery({
+		queryKey: [REGIONS_QUERY_KEY],
+		queryFn: fetchRegions,
+		staleTime: 30 * 60 * 1000,
 	});
-};

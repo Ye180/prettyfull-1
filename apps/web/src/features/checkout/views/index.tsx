@@ -1,10 +1,9 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
 import { useRegionStore } from "@/stores/useRegion";
+import { useCartStore } from "@prettyfull/store";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
+import { useEffect } from "react";
 import CheckoutSummary from "../components/organims/checkout-summary";
 import {
 	AddressStep,
@@ -16,95 +15,72 @@ import { useCheckoutStep } from "../hooks/use-checkout-step";
 
 const CheckoutView = () => {
 	const router = useRouter();
-
-	const regionss = useRegionStore((state) => state.region);
-
-	useEffect(() => {
-		let cancelled = false;
-		sdk.store.customer
-			.retrieve()
-			.then(() => {
-				// Le client est connecté
-			})
-			.catch(() => {
-				// Aucun client connecté : rediriger vers le login
-				if (!cancelled) router.push("/login");
-			});
-		return () => {
-			cancelled = true;
-		};
-	}, [router]);
-
+	const items = useCartStore((state) => state.items);
 	const { goToNextStep } = useCheckoutStep();
 	const region = useRegionStore((state) => state.region);
-
-	// Get cart ID from localStorage
-	const [cartId, setCartId] = useState<string | null>(null);
+	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
 
 	useEffect(() => {
-		if (typeof window !== "undefined") {
-			setCartId(localStorage.getItem("cart_id"));
+		if (items.length === 0) {
+			router.replace("/cart");
 		}
-	}, []);
+	}, [items.length, router]);
 
-	useEffect(() => {
-		if (cartId) {
-			sdk.store.fulfillment
-				.listCartOptions({
-					cart_id: cartId,
-				})
-				.then(({ shipping_options }) => {
-					// liste des options possibles
-				})
-				.catch((error) => {
-					console.error(
-						"Erreur lors de la récupération des options de livraison :",
-						error,
-					);
-				});
-		}
-	}, [cartId]);
+	// ponytail: le panier serveur est invité (cookie), créé à la volée par le
+	// backend au premier appel - il n'existe pas d'id à threader avant ça.
+	// Ce sentinel ne sert qu'à activer les étapes une fois le panier non vide.
+	const cartId = items.length > 0 ? "guest-cart" : null;
 
-	const handleAddressComplete = () => {
-		goToNextStep();
-	};
-
-	const handleDeliveryComplete = () => {
-		goToNextStep();
-	};
-
-	const handlePaymentComplete = () => {
-		goToNextStep();
-	};
-
-	const handlePlaceOrder = (orderId: string) => {
-		router.push(`/order-confirmation?order_id=${orderId}`);
-	};
+	if (items.length === 0) return null;
 
 	return (
-		<Container
-			maxWidth="100vw"
-			className="flex flex-col gap-y-4 px-4 py-12 pb-20 sm:flex-row md:justify-between sm:gap-x-24 lg:px-80"
-		>
-			{/* Left Column: Checkout Steps */}
-			<div className="flex flex-col gap-y-8 py-6 w-full bg-white sm:w-2/3">
-				<AddressStep cartId={cartId} onComplete={handleAddressComplete} />
-				<DeliveryStep cartId={cartId} onComplete={handleDeliveryComplete} />
-				<PaymentStep
-					cartId={cartId}
-					regionId={region?.id ?? null}
-					onComplete={handlePaymentComplete}
-				/>
-				<ReviewStep cartId={cartId} onPlaceOrder={handlePlaceOrder} />
-			</div>
+		<main className="pt-6 pb-28 w-full min-h-screen text-gray-900 bg-white sm:pt-10">
+			<div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+				<h1 className="pb-4 mb-8 font-sans text-3xl font-extrabold tracking-tight border-b border-gray-100 sm:text-4xl md:text-5xl text-gray-950">
+					Checkout
+				</h1>
 
-			{/* Right Column: Order Summary */}
-			<div className="py-12 w-full sm:w-1/3">
-				<CheckoutSummary
-					currency={region?.currency_code === "xof" ? "FCFA" : "$"}
-				/>
+				{/*
+				 * `sm:` déclenche ici la bascule 2 colonnes, pas `lg:` : les
+				 * breakpoints Tailwind de ce projet sont définis en `rem` mis à
+				 * l'échelle du `html { font-size: 62.5% }` de la page, mais les
+				 * media queries résolvent toujours `rem` contre le 16px par
+				 * défaut du navigateur - jamais contre ce override. Résultat,
+				 * chaque seuil réel est ×1,6 plus large que son nom ne le
+				 * suggère (`lg` ne s'active qu'au-delà de ~1638px). `sm` est
+				 * celui qui tombe, par ce même effet, sur le seuil réellement
+				 * voulu ici (~1024px) - même contournement déjà utilisé par
+				 * `cart-content.tsx`.
+				 */}
+				<div className="grid grid-cols-1 gap-12 sm:grid-cols-12 sm:gap-16">
+					<div className="space-y-10 sm:col-span-7">
+						<AddressStep cartId={cartId} onComplete={() => goToNextStep()} />
+						<DeliveryStep cartId={cartId} onComplete={() => goToNextStep()} />
+						<PaymentStep
+							cartId={cartId}
+							regionId={null}
+							onComplete={() => goToNextStep()}
+						/>
+						<ReviewStep
+							cartId={cartId}
+							onPlaceOrder={(orderId, confirmationToken) =>
+								router.push(
+									`/order-confirmation?order_id=${orderId}${
+										confirmationToken ? `&token=${confirmationToken}` : ""
+									}`,
+								)
+							}
+						/>
+					</div>
+
+					<div className="sm:col-span-5">
+						<div className="sticky top-24 p-6 sm:p-8 bg-[#F9FAFB] rounded-3xl border border-gray-100 shadow-sm">
+							<CheckoutSummary currency={currency} />
+						</div>
+					</div>
+				</div>
 			</div>
-		</Container>
+		</main>
 	);
 };
 

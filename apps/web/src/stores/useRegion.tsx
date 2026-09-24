@@ -1,6 +1,7 @@
-import { StoreRegion } from "@medusajs/types";
+import type { StoreRegion } from "@/lib/store-api/types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+
 type RegionState = {
 	region: StoreRegion | null;
 	setRegion: (region: StoreRegion | null) => void;

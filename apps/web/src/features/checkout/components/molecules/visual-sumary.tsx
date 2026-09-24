@@ -1,9 +1,6 @@
-import { sdk } from "@/lib/api/sdk";
-import { CART_ITEMS_CART } from "@/shared/utils/query-keys";
+import { useCartStore } from "@prettyfull/store";
 import { formatCurrency_FR } from "@prettyfull/utils";
-import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { useState } from "react";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import { CartItemType } from "../../types";
 
@@ -14,31 +11,21 @@ const VisualSummary = ({
 	item: CartItemType;
 	currency: string;
 }) => {
-	const cartId = localStorage.getItem("cart_id");
-	const queryClient = useQueryClient();
-	const [loadingId, setLoadingId] = useState<string | null>(null);
+	const removeItem = useCartStore((state) => state.removeItem);
 
-	const handleRemove = async (itemId: string) => {
-		try {
-			setLoadingId(itemId);
-			await sdk.store.cart.deleteLineItem(cartId as string, itemId);
-			queryClient.invalidateQueries({
-				queryKey: [CART_ITEMS_CART, cartId as string],
-			});
-		} finally {
-			setLoadingId(null);
-		}
+	const handleRemove = (itemId: string) => {
+		removeItem(itemId);
 	};
 	return (
 		<div className="flex space-x-8 sm:space-x-10">
-			<div className="relative w-40 h-44 bg-gray-100 rounded-md aspect-square">
-				<div className="overflow-hidden w-40 h-44 rounded-md">
+			<div className="relative w-40 h-44 bg-gray-100 rounded-2xl aspect-square">
+				<div className="overflow-hidden w-40 h-44 rounded-2xl">
 					<Image
-						src={item.image + "?view=1"}
+						src={item.image}
 						alt={item.name}
 						width={100}
 						height={100}
-						className="object-top w-40 rounded h-58"
+						className="object-top object-cover w-40 h-44 rounded-2xl"
 					unoptimized
 					/>
 				</div>
@@ -48,7 +35,9 @@ const VisualSummary = ({
 				</p>
 			</div>
 
-			<div className="flex flex-row justify-between space-y-4 w-full lg:flex-col">
+			{/* `sm:` ici pour la même raison qu'en vue checkout (cf. views/index.tsx) :
+			 * c'est le préfixe qui bascule réellement vers ~1024px sur ce projet. */}
+			<div className="flex flex-row justify-between space-y-4 w-full sm:flex-col">
 				<div className="space-y-2 text-[1.5rem]">
 					<h5 className="font-semibold text-[2.2rem]! tracking-wider whitespace-nowrap">
 						{item.name}
@@ -66,12 +55,7 @@ const VisualSummary = ({
 						</p>
 						<button
 							onClick={() => handleRemove(item.id)}
-							disabled={loadingId === item.id}
-							className={`cursor-pointer hidden lg:block ${
-								loadingId === item.id
-									? "opacity-50 cursor-not-allowed"
-									: "hover:bg-gray-100 rounded-full p-2"
-							}`}
+							className="hidden p-2 rounded-full cursor-pointer sm:block hover:bg-gray-100"
 						>
 							<CloseIcon size={15} className="text-gray-400" />
 						</button>
@@ -79,12 +63,7 @@ const VisualSummary = ({
 				</div>
 				<button
 					onClick={() => handleRemove(item.id)}
-					disabled={loadingId === item.id}
-					className={`cursor-pointer block h-fit lg:hidden ${
-						loadingId === item.id
-							? "opacity-50 cursor-not-allowed"
-							: "hover:bg-gray-100 rounded-full p-2"
-					}`}
+					className="block p-2 h-fit rounded-full cursor-pointer sm:hidden hover:bg-gray-100"
 				>
 					<CloseIcon size={15} className="text-gray-400" />
 				</button>

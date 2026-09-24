@@ -40,6 +40,8 @@ interface ButtonProps
 		VariantProps<typeof buttonVariants> {
 	isLoading?: boolean;
 	icon?: React.ReactNode;
+	/** Position de l'icône. "end" reproduit le pattern CTA + flèche circulaire de la DA. */
+	iconPosition?: "start" | "end";
 	fullWidth?: boolean;
 }
 
@@ -50,11 +52,24 @@ export const Button = ({
 	size,
 	shape,
 	icon,
+	iconPosition = "start",
 	isLoading,
 	fullWidth,
 	...props
 }: PropsWithChildren<ButtonProps>) => {
 	const disabled = props.disabled || isLoading;
+
+	const iconEl = icon && (
+		<span
+			className={cn(
+				"flex shrink-0 justify-center items-center",
+				iconPosition === "end" &&
+					"w-6 h-6 rounded-full bg-white/15 text-current",
+			)}
+		>
+			{icon}
+		</span>
+	);
 
 	return (
 		<button
@@ -67,11 +82,12 @@ export const Button = ({
 			disabled={disabled}
 		>
 			<Flex settings={{ align: "center", spacing: "gap-3" }}>
-				{icon && <span className="shrink-0 -mt-1.5">{icon}</span>}
+				{iconPosition === "start" && iconEl}
 				<div className="flex gap-3">
 					{children}
 					{isLoading && <Spinner />}
 				</div>
+				{iconPosition === "end" && iconEl}
 			</Flex>
 		</button>
 	);

@@ -1,28 +1,27 @@
-version: "3.8"
-
 services:
   postgres:
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     container_name: prettyfull-postgres
     environment:
-      POSTGRES_USER: medusa
-      POSTGRES_PASSWORD: medusa
-      POSTGRES_DB: medusa
+      POSTGRES_USER: ${POSTGRES_USER:-prettyfull}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-prettyfull}
+      POSTGRES_DB: ${POSTGRES_DB:-prettyfull}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U medusa"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-prettyfull}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
     container_name: prettyfull-redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -30,25 +29,42 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  medusa:
-    image: prettyfull-medusa-admin
-    container_name: prettyfull-medusa
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    env_file:
-      - apps/prettyfull-medusa/.env
-    environment:
-      DATABASE_URL: postgres://medusa:medusa@postgres:5432/medusa
-      REDIS_URL: redis://redis:6379
-      NODE_ENV: production
-      PORT: 9000
-    ports:
-      - "9000:9000"
     restart: unless-stopped
+
+  # --- À décommenter quand apps/backend (Hono) aura son Dockerfile ---
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/backend/Dockerfile
+  #   container_name: prettyfull-backend
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   environment:
+  #     DATABASE_URL: postgres://${POSTGRES_USER:-prettyfull}:${POSTGRES_PASSWORD:-prettyfull}@postgres:5432/${POSTGRES_DB:-prettyfull}
+  #     REDIS_URL: redis://redis:6379
+  #     NODE_ENV: production
+  #     PORT: 7777
+  #   ports:
+  #     - "7777:7777"
+  #   restart: unless-stopped
+
+  # --- À décommenter quand apps/admin aura son Dockerfile ---
+  # admin:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/admin/Dockerfile
+  #   container_name: prettyfull-admin
+  #   depends_on:
+  #     - backend
+  #   environment:
+  #     NODE_ENV: production
+  #     PORT: 3001
+  #   ports:
+  #     - "3001:3001"
+  #   restart: unless-stopped
 
 volumes:
   postgres_data:

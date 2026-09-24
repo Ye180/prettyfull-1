@@ -1,9 +1,8 @@
 "use client";
 
 import { useGetCategory } from "@/features/homepage/api/medusa/get-category";
-import { sdk } from "@/lib/api/sdk";
+import { fetchProducts } from "@/lib/store-api";
 import { PAGES_PATHS, PRODUCT_PATHS } from "@/lib/routes/paths-en";
-import { useRegionStore } from "@/stores/useRegion";
 import { cn } from "@prettyfull/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
@@ -32,8 +31,6 @@ const useDebouncedValue = <T,>(value: T, delay = 250): T => {
 const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 	const t = useTranslations("HomePage.header");
 	const router = useRouter();
-	const region = useRegionStore((state) => state.region);
-	const regionId = region?.id;
 
 	const [query, setQuery] = useState("");
 	const [isOpen, setIsOpen] = useState(false);
@@ -53,17 +50,15 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 	}, [categories, debouncedQuery, hasQuery]);
 
 	const { data: products, isFetching } = useQuery({
-		queryKey: ["search-products", debouncedQuery, regionId],
-		queryFn: async () => {
-			const response = await sdk.store.product.list({
-				q: debouncedQuery,
-				region_id: regionId,
-				fields: "id,title,handle,thumbnail,*images",
-				limit: 12,
-			} as any);
-			return response.products || [];
+		queryKey: ["search-products", debouncedQuery],
+		queryFn: () => {
+			// Recherche côté serveur : plein texte insensible aux accents,
+			// adossée à l'index du catalogue plutôt qu'à un filtre en mémoire
+			// sur des données chargées d'avance.
+			return fetchProducts({ q: debouncedQuery, limit: 12 });
 		},
-		enabled: hasQuery && !!regionId,
+		select: (data) => data.products,
+		enabled: hasQuery,
 		staleTime: 30_000,
 	});
 
@@ -102,7 +97,7 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 		<div ref={containerRef} className={cn("relative", className)}>
 			<form
 				onSubmit={handleSubmit}
-				className="flex items-center px-4 py-3 bg-white rounded-lg border border-gray-300"
+				className="flex items-center px-4 py-3 bg-white rounded-2xl border border-gray-300"
 			>
 				<Search className="w-5 h-5 text-gray-400 shrink-0" />
 				<input
@@ -128,20 +123,20 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 				<div className="absolute right-0 top-full z-50 mt-2 bg-white rounded-2xl border border-gray-200 shadow-xl max-h-[80vh] overflow-y-auto max-lg:w-full w-[min(400px,70vw)]">
 					{!hasResults && !isFetching && (
 						<div className="p-6 text-center text-[1.3rem] text-gray-500">
-							No results for &ldquo;{debouncedQuery}&rdquo;
+							Aucun résultat pour « {debouncedQuery} »
 						</div>
 					)}
 
 					{isFetching && !hasResults && (
 						<div className="p-6 text-center text-[1.3rem] text-gray-500">
-							Searching...
+							Recherche en cours...
 						</div>
 					)}
 
 					{filteredCategories.length > 0 && (
 						<div className="px-6 py-5 border-b border-gray-100">
 							<p className="pb-3 text-[1.2rem] font-bold tracking-wider text-gray-900">
-								Hot Categories
+								Catégories populaires
 							</p>
 							<div className="flex flex-wrap gap-2">
 								{filteredCategories.map((cat: any) => (
@@ -162,9 +157,9 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 						<div className="px-6 py-5">
 							{(() => {
 								const columns: { title: string; items: any[] }[] = [
-									{ title: "Top Matches", items: products.slice(0, 4) },
-									{ title: "Trending", items: products.slice(4, 8) },
-									{ title: "You May Like", items: products.slice(8, 12) },
+									{ title: "Meilleurs résultats", items: products.slice(0, 4) },
+									{ title: "Tendances", items: products.slice(4, 8) },
+									{ title: "Vous pourriez aimer", items: products.slice(8, 12) },
 								].filter((col) => col.items.length > 0);
 
 								return (
@@ -177,9 +172,7 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 												<ul className="grid grid-cols-2 w-full">
 													{col.items.map((product: any, idx: number) => {
 														const thumb =
-															`${product.thumbnail}?view=1` ||
-															`${product.images?.[0]?.url}?view=1` ||
-															"";
+															product.thumbnail || product.images?.[0]?.url || "";
 														return (
 															<li key={product.id}>
 																<Link
@@ -189,7 +182,7 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 																	onClick={handleNavigate}
 																	className="flex gap-3 items-center py-2 group"
 																>
-																	<div className="overflow-hidden relative w-24 h-40 bg-gray-100 rounded-md shrink-0">
+																	<div className="overflow-hidden relative w-24 h-40 bg-gray-100 rounded-2xl shrink-0">
 																		{thumb && (
 																			<Image
 																				src={thumb}

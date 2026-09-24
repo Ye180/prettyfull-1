@@ -1,57 +1,29 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { useQueryState } from "nuqs";
-import { useMemo } from "react";
-import BottomHeader from "../molecules/header/bottom";
+import { useGetParentsCategoryMedusa } from "@/features/homepage/api/medusa/get-parent-category-medusa";
 import NavBarHeaders from "../molecules/header/navbar";
 
 const Header = ({
 	main_category,
 	loading,
 }: {
-	main_category: any;
-	loading: boolean;
+	main_category?: any;
+	loading?: boolean;
 }) => {
-	const params = useParams();
-	const [division] = useQueryState("division");
+	const {
+		data: fallbackCategories,
+	} = useGetParentsCategoryMedusa();
 
-	// Determine active category handle from URL or query param
-	const activeHandle = division || params.id;
-
-	// Find the active category and its children (fallback to first category)
-	const activeCategory = useMemo(() => {
-		if (!main_category || main_category.length === 0) return null;
-		if (activeHandle) {
-			const found = main_category.find((cat: any) => cat.handle === activeHandle);
-			if (found) return found;
-		}
-		return main_category[0] ?? null;
-	}, [main_category, activeHandle]);
-
-	// Determine parent slug for bottom header navigation
-	const parentSlug = useMemo(() => {
-		if (division) return division;
-		if (params.id && main_category) {
-			const found = main_category.find((cat: any) => cat.handle === params.id);
-			return found?.handle;
-		}
-		return undefined;
-	}, [division, params.id, main_category]);
+	const categories = main_category || fallbackCategories || [];
 
 	return (
-		<header className="py-8 bg-white max-sm:h-fit">
-			<nav className="flex flex-col gap-y-4 justify-start px-4 mx-auto sm:px-6 lg:px-8 max-auto">
+		<header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100">
+			<div className="max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8">
 				<NavBarHeaders
-					main_category={main_category}
-					secondary_category={activeCategory?.category_children || []}
+					main_category={categories}
+					secondary_category={[]}
 				/>
-				<BottomHeader
-					secondary_category={activeCategory?.category_children || []}
-					loading={loading}
-					parentSlug={parentSlug}
-				/>
-			</nav>
+			</div>
 		</header>
 	);
 };

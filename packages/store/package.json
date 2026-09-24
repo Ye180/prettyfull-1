@@ -3,8 +3,9 @@
 	"version": "1.0.0",
 	"private": true,
 	"exports": {
-		".": "./src/use-cart-store.ts",
-		"./use-cart-store": "./src/use-cart-store.ts"
+		".": "./src/index.ts",
+		"./use-cart-store": "./src/use-cart-store.ts",
+		"./use-wishlist-store": "./src/use-wishlist-store.ts"
 	},
 	"scripts": {
 		"lint": "eslint . --max-warnings 0",
@@ -13,9 +14,10 @@
 	"devDependencies": {
 		"@prettyfull/eslint-config": "workspace:*",
 		"@prettyfull/typescript-config": "workspace:*",
-		"typescript": "^5.4.5"
+		"eslint": "^9.39.5",
+		"typescript": "^5.9.3"
 	},
 	"dependencies": {
-		"zustand": "^4.5.2"
+		"zustand": "^4.5.7"
 	}
 }

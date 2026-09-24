@@ -38,9 +38,9 @@ export function ProductGalleryNew({
 	if (!images || images.length === 0) {
 		return (
 			<div
-				className={cn("relative w-full bg-gray-100 aspect-square", className)}
+				className={cn("relative w-full bg-neutral-100 aspect-[4/5] rounded-3xl", className)}
 			>
-				<div className="flex justify-center items-center h-full text-gray-500">
+				<div className="flex justify-center items-center h-full text-[#666666]">
 					Aucune image disponible
 				</div>
 			</div>
@@ -49,53 +49,98 @@ export function ProductGalleryNew({
 
 	return (
 		<>
-			<div className={cn("flex relative gap-4 w-fit", className)}>
-				{/* Thumbnails à gauche - Desktop */}
-				<div className="hidden overflow-y-auto flex-col gap-1 max-md:w-30 sm:flex h-fit scrollbar-hide md:grid md:grid-cols-2">
-					{images.map((image, index) => (
-						<div
-							key={index}
-							onClick={() => setActiveImage(index)}
-							className={cn(
-								"shrink-0 w-18 h-25 cursor-pointer border rounded overflow-hidden transition-all",
-								activeImage === index
-									? "border-black"
-									: "border-transparent hover:border-gray-300",
-							)}
-						>
-							<Image
-								src={image}
-								alt={`${title} - vue ${index + 1}`}
-								width={64}
-								height={90}
-								sizes="72px"
-								className="object-cover w-full h-full"
-								unoptimized
-							/>
-						</div>
-					))}
-				</div>
+			<div className={cn("flex flex-col w-full", className)}>
+				<div className="hidden sm:flex gap-4 w-full">
+					{/* Rail de miniatures - Desktop : colonne à gauche, toutes les vues, scrollable */}
+					<div className="flex overflow-y-auto flex-col gap-3 w-20 shrink-0 max-h-[46rem] scrollbar-hide">
+						{images.map((image, index) => (
+							<button
+								key={index}
+								type="button"
+								aria-label={`Voir la vue ${index + 1}`}
+								onClick={() => setActiveImage(index)}
+								className={cn(
+									"relative shrink-0 w-20 aspect-[3/4] cursor-pointer rounded-xl overflow-hidden border-2 transition-all",
+									activeImage === index
+										? "border-black"
+										: "border-transparent hover:border-neutral-300",
+								)}
+							>
+								<Image
+									src={image}
+									alt={`${title} - vue ${index + 1}`}
+									fill
+									sizes="80px"
+									className="object-cover"
+									unoptimized
+								/>
+							</button>
+						))}
+					</div>
 
-				{/* Image principale - Desktop */}
-				<div
-					className="hidden relative sm:flex cursor-zoom-in"
-					onClick={() => setIsZoomed(true)}
-				>
-					<div className="relative">
+					{/* Image principale - Desktop : grande, dominante, occupe l'espace disponible */}
+					<div
+						className="relative flex-1 aspect-[4/5] rounded-3xl overflow-hidden bg-neutral-100 cursor-zoom-in"
+						onClick={() => setIsZoomed(true)}
+					>
 						<Image
 							src={images[activeImage] || "/placeholder.png"}
 							alt={title}
-							width={480}
-							height={640}
-							sizes="(min-width: 640px) 480px, 100vw"
-							className="object-cover rounded"
+							fill
+							sizes="(max-width: 768px) 100vw, 55rem"
+							className="object-cover"
 							priority
 							unoptimized
 						/>
 						{promotion && (
-							<span className="absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white bg-red-600 rounded">
+							<span className="absolute top-4 left-4 px-3 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
 								STEALS
 							</span>
+						)}
+
+						{/* Flèches prev/next superposées sur l'image */}
+						{images.length > 1 && (
+							<>
+								<button
+									type="button"
+									aria-label="Image précédente"
+									onClick={(e) => {
+										e.stopPropagation();
+										setActiveImage((prev) => (prev > 0 ? prev - 1 : images.length - 1));
+									}}
+									className="flex absolute left-3 top-1/2 justify-center items-center w-9 h-9 rounded-full border border-white/40 bg-white/80 backdrop-blur transition-colors -translate-y-1/2 hover:bg-white cursor-pointer"
+								>
+									<span aria-hidden className="text-lg">‹</span>
+								</button>
+								<button
+									type="button"
+									aria-label="Image suivante"
+									onClick={(e) => {
+										e.stopPropagation();
+										setActiveImage((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+									}}
+									className="flex absolute right-3 top-1/2 justify-center items-center w-9 h-9 rounded-full border border-white/40 bg-white/80 backdrop-blur transition-colors -translate-y-1/2 hover:bg-white cursor-pointer"
+								>
+									<span aria-hidden className="text-lg">›</span>
+								</button>
+								<div className="flex absolute inset-x-0 bottom-4 gap-2 justify-center items-center">
+									{images.map((_, index) => (
+										<button
+											key={index}
+											type="button"
+											aria-label={`Aller à l'image ${index + 1}`}
+											onClick={(e) => {
+												e.stopPropagation();
+												setActiveImage(index);
+											}}
+											className={cn("cursor-pointer", 
+												"h-2 rounded-full transition-all",
+												activeImage === index ? "w-6 bg-white" : "w-2 bg-white/50",
+											)}
+										/>
+									))}
+								</div>
+							</>
 						)}
 					</div>
 				</div>
@@ -109,8 +154,7 @@ export function ProductGalleryNew({
 								alt={`${title} - vue ${index + 1}`}
 								width={280}
 								height={400}
-								sizes="280px"
-								className="rounded cursor-zoom-in"
+								className="object-cover rounded-2xl cursor-zoom-in"
 								onClick={() => {
 									setActiveImage(index);
 									setIsZoomed(true);
@@ -118,7 +162,7 @@ export function ProductGalleryNew({
 								unoptimized
 							/>
 							{index === 0 && promotion && (
-								<span className="absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white bg-red-600 rounded">
+								<span className="absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
 									STEALS
 								</span>
 							)}
@@ -138,7 +182,7 @@ export function ProductGalleryNew({
 						{...swipeHandlers}
 					>
 						<button
-							className="absolute top-4 right-4 z-50 text-3xl text-white transition-colors hover:text-gray-300"
+							className="absolute top-4 right-4 z-50 text-3xl text-white transition-colors hover:text-gray-300 cursor-pointer"
 							onClick={() => setIsZoomed(false)}
 						>
 							×
@@ -153,8 +197,7 @@ export function ProductGalleryNew({
 								alt={title}
 								width={600}
 								height={900}
-								sizes="(min-width: 768px) 600px, 90vw"
-								className="object-contain max-h-[80vh] w-auto mx-auto rounded-lg transition-all"
+								className="object-contain max-h-[80vh] w-auto mx-auto rounded-2xl transition-all"
 								priority
 								unoptimized
 							/>
@@ -167,7 +210,7 @@ export function ProductGalleryNew({
 												prev > 0 ? prev - 1 : images.length - 1,
 											)
 										}
-										className="hidden absolute left-2 top-1/2 text-5xl text-white -translate-y-1/2 sm:block hover:text-gray-300"
+										className="hidden absolute left-2 top-1/2 text-5xl text-white -translate-y-1/2 sm:block hover:text-gray-300 cursor-pointer"
 									>
 										‹
 									</button>
@@ -177,7 +220,7 @@ export function ProductGalleryNew({
 												prev < images.length - 1 ? prev + 1 : 0,
 											)
 										}
-										className="hidden absolute right-2 top-1/2 text-5xl text-white -translate-y-1/2 sm:block hover:text-gray-300"
+										className="hidden absolute right-2 top-1/2 text-5xl text-white -translate-y-1/2 sm:block hover:text-gray-300 cursor-pointer"
 									>
 										›
 									</button>
@@ -192,7 +235,7 @@ export function ProductGalleryNew({
 									key={index}
 									onClick={() => setActiveImage(index)}
 									className={cn(
-										"relative w-16 h-20 rounded overflow-hidden cursor-pointer border-2 transition-all shrink-0",
+										"relative w-16 h-20 rounded-xl overflow-hidden cursor-pointer border-2 transition-all shrink-0",
 										activeImage === index
 											? "border-white scale-105"
 											: "border-transparent opacity-70 hover:opacity-100",

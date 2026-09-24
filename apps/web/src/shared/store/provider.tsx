@@ -1,44 +1,44 @@
 "use client";
-import { QueryClient, QueryClientProvider, isServer } from "@tanstack/react-query";
+import { storeApi } from "@/lib/store-api";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { useState, type PropsWithChildren } from "react";
+import { useEffect, type PropsWithChildren } from "react";
 import { buildProvidersTree } from "../lib/provider-tree";
 import { queryConfig } from "../lib/react-query";
-import { WebCartActionsProvider } from "./cart-actions-provider";
 
-function makeQueryClient() {
-  return new QueryClient({ defaultOptions: queryConfig });
-}
+export const queryClient = new QueryClient({
+	defaultOptions: queryConfig,
+});
 
-let browserQueryClient: QueryClient | undefined = undefined;
+const ProviderTree = buildProvidersTree([
+	[QueryClientProvider, { client: queryClient }],
+	[NuqsAdapter, {}],
+]);
 
 /**
- * Server : un client neuf par requête (aucun partage entre utilisateurs).
- * Navigateur : un singleton stable réutilisé entre les rendus.
+ * Le jeton d'accès vit en mémoire (voir `lib/store-api/client.ts`) : il
+ * disparaît à chaque rechargement de page. Le cookie de rafraîchissement,
+ * lui, survit - cet effet le consomme une fois au montage pour rouvrir la
+ * session silencieusement, sinon toute navigation en dur déconnecterait la
+ * cliente.
  */
-function getQueryClient() {
-  if (isServer) {
-    return makeQueryClient();
-  }
-  if (!browserQueryClient) {
-    browserQueryClient = makeQueryClient();
-  }
-  return browserQueryClient;
-}
+const SessionBootstrap = () => {
+	useEffect(() => {
+		storeApi.refreshSession().then((restored) => {
+			if (restored) {
+				queryClient.invalidateQueries({ queryKey: ["customer-profile"] });
+			}
+		});
+	}, []);
+
+	return null;
+};
 
 export const Provider = ({ children }: PropsWithChildren) => {
-  // useState garantit un client stable pour la durée de vie du composant côté client,
-  // tout en laissant getQueryClient() créer un client par requête côté serveur.
-  const [queryClient] = useState(getQueryClient);
-
-  const [ProviderTree] = useState(() =>
-    buildProvidersTree([
-      [QueryClientProvider, { client: queryClient }],
-      // WebCartActionsProvider doit rester à l'intérieur du QueryClientProvider
-      [WebCartActionsProvider, {}],
-      [NuqsAdapter, {}],
-    ]),
-  );
-
-  return <ProviderTree>{children}</ProviderTree>;
+	return (
+		<ProviderTree>
+			<SessionBootstrap />
+			{children}
+		</ProviderTree>
+	);
 };

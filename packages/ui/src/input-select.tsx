@@ -37,9 +37,13 @@ const InputSelect = ({
 					<SelectLabel className="text-sm text-gray-600">
 						Moyen de livraison
 					</SelectLabel>
-					{items.map((means, _) => {
+					{items.map((means) => {
 						return (
-							<SelectItem value={means} className={classNameSelect}>
+							<SelectItem
+								key={means}
+								value={means}
+								className={classNameSelect}
+							>
 								{means}
 							</SelectItem>
 						);

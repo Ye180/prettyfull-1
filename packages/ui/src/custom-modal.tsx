@@ -22,8 +22,16 @@ type DrawerProps = {
 	triggerClassName?: string; // Classes CSS pour personnaliser le trigger
 	titleClassName?: string;
 	className?: string;
+	/** Afficher le bouton de fermeture - un seul, propre à ce composant (celui de `DialogContent` est désactivé). */
 	close?: boolean;
 	describedby?: string;
+	/**
+	 * Masque visuellement le titre tout en le gardant accessible aux lecteurs
+	 * d'écran (`sr-only`) - pour les contenus qui affichent déjà leur propre
+	 * en-tête (ex. les formulaires de connexion/inscription), afin d'éviter un
+	 * titre dupliqué et le padding qui va avec.
+	 */
+	hideTitle?: boolean;
 };
 
 export function CustomModal({
@@ -36,8 +44,9 @@ export function CustomModal({
 	triggerClassName,
 	titleClassName,
 	className,
-	close,
+	close = true,
 	describedby,
+	hideTitle = false,
 }: DrawerProps) {
 	return (
 		<motion.div>
@@ -56,6 +65,7 @@ export function CustomModal({
 			<Dialog open={open} onOpenChange={onClose}>
 				<DialogContent
 					aria-describedby={describedby}
+					showCloseButton={false}
 					onInteractOutside={(event) => event.preventDefault()}
 					className={cn(
 						"overflow-hidden w-1/2 rounded-3xl border-none outline-none",
@@ -78,18 +88,27 @@ export function CustomModal({
 							<DialogHeader className="flex flex-col items-center w-full h-fit">
 								<DialogTitle
 									className={cn(
-										"h-fit text-center text-[2rem]! tracking-wider lg:text-[4.5rem]! pt-6 ",
-										titleClassName,
+										"h-fit text-center tracking-wider",
+										hideTitle
+											? "sr-only"
+											: cn(
+													"text-[2rem]! lg:text-[4.5rem]! pt-6",
+													titleClassName,
+												),
 									)}
 								>
 									{title}
 								</DialogTitle>
-								<DialogDescription className="text-center text-[1.5rem]">
-									{description}
-								</DialogDescription>
+								{description && (
+									<DialogDescription className="text-center text-[1.5rem]">
+										{description}
+									</DialogDescription>
+								)}
 							</DialogHeader>
 
-							<div className="mt-4 w-full">{children}</div>
+							<div className={cn("w-full", hideTitle ? "mt-2" : "mt-4")}>
+								{children}
+							</div>
 						</motion.div>
 					</AnimatePresence>
 				</DialogContent>

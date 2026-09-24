@@ -1,24 +1,27 @@
 "use client";
 
-import { useActionEvent } from "@/hooks/use-action-event";
-import { sdk } from "@/lib/api/sdk";
+import { StoreApiError } from "@/lib/store-api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@prettyfull/ui";
+import { Button, Input, toast } from "@prettyfull/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useForm } from "react-hook-form";
-import { useCartStore } from "../../../../../../../packages/store/src/use-cart-store";
 import Flex from "../../../../../../../packages/ui/src/layouts/helpers/flex";
+import { useLogin } from "../../api/login";
 import { loginSchema, type LoginFormData } from "../../schemas/login.schema";
 
-export function LoginForm() {
+interface LoginFormProps {
+	/** Called instead of the default redirect on success - used by the quick-auth modal to close itself. */
+	onSuccess?: () => void;
+	/** Renders "Create Account" as a button instead of a Link - used by the quick-auth modal to switch mode in place. */
+	onSwitchMode?: () => void;
+}
+
+export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
 	const router = useRouter();
 
 	const [callbackUrl] = useQueryState("callbackUrl");
-
-	// // Redirige si déjà authentifié (ce hook existe déjà)
-	// useAuthRedirect("/account");
 
 	const {
 		register,
@@ -28,38 +31,22 @@ export function LoginForm() {
 		resolver: zodResolver(loginSchema),
 	});
 
-	const { startLoading, endLoading, loading } = useActionEvent();
-	const { currentCartId } = useCartStore(); // 5. Obtenir l'ID du panier invité
+	const loginMutation = useLogin();
 
 	const onSubmit = async (data: LoginFormData) => {
-		startLoading();
-
 		try {
-			const loginResponse = await sdk.auth.login("customer", "emailpass", {
-				email: data.email,
-				password: data.password,
-			});
-
-			if (!loginResponse) {
-				alert("Erreur lors de la connexion");
-				endLoading();
-				return;
+			await loginMutation.mutateAsync(data);
+			if (onSuccess) {
+				onSuccess();
+			} else {
+				router.push(callbackUrl ?? "/account");
 			}
-
-			if (typeof loginResponse !== "string") {
-				alert(
-					"Authentication requires more actions, which isn't supported by this flow.",
-				);
-				endLoading();
-				return;
-			}
-
-			// Succès - rediriger
-			endLoading();
-			callbackUrl ? router.push(callbackUrl) : router.push("/");
-		} catch (e: any) {
-			alert(`Erreur lors de la connexion: ${e.message || e}`);
-			endLoading();
+		} catch (error) {
+			toast.error(
+				error instanceof StoreApiError
+					? error.message
+					: "Connexion impossible. Veuillez réessayer.",
+			);
 		}
 	};
 
@@ -68,26 +55,27 @@ export function LoginForm() {
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<main className="space-y-12">
 					<div className="mb-16">
-						<h3>Welcome Back to Snaely</h3>
+						<h3>Bon retour sur PrettyFull</h3>
 						<p className="text-neutral-500">
-							Log in to your account to shopping the newest fashion style
+							Connectez-vous à votre compte pour découvrir les dernières
+							tendances mode
 						</p>
 					</div>
 					<div className="space-y-8">
 						<Input
-							label="Email"
+							label="E-mail"
 							{...register("email")}
 							errorMessage={errors.email?.message}
 						/>
 						<Input
 							type="password"
-							label="Password"
+							label="Mot de passe"
 							{...register("password")}
 							errorMessage={errors.password?.message}
 						/>
 					</div>
-					<Button type="submit" isLoading={loading} fullWidth>
-						Login
+					<Button type="submit" isLoading={loginMutation.isPending} fullWidth>
+						Connexion
 					</Button>
 				</main>
 				<header>
@@ -117,10 +105,20 @@ export function LoginForm() {
 					className="mt-[5.2rem]"
 				>
 					<p className="font-medium text-grey">
-						Don't have an account?{" "}
-						<Link href="/create-account" className="text-black underline">
-							Create Account
-						</Link>
+						Vous n'avez pas de compte ?{" "}
+						{onSwitchMode ? (
+							<button
+								type="button"
+								onClick={onSwitchMode}
+								className="text-black underline cursor-pointer"
+							>
+								Créer un compte
+							</button>
+						) : (
+							<Link href="/create-account" className="text-black underline">
+								Créer un compte
+							</Link>
+						)}
 					</p>
 				</Flex>
 			</form>

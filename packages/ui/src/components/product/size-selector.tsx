@@ -55,12 +55,12 @@ export const SizeSelector: React.FC<SizeSelectorProps> = ({
 							onChange(code);
 						}}
 						className={cn(
-							"p-0 font-normal uppercase bg-white border rounded-sm text-[1.3rem] transition-all duration-200",
+							"p-0 font-normal uppercase bg-white border rounded-full text-sm transition-all duration-200",
 							compact ? "w-10 h-10 text-xs" : "w-12 h-12 lg:w-14 lg:h-14",
 							outOfStock
 								? "text-gray-300 border-gray-200 cursor-not-allowed line-through"
 								: isSelected
-									? "border-black text-black"
+									? "bg-black text-white border-black"
 									: "text-gray-600 border-gray-300 hover:border-black hover:text-black cursor-pointer active:bg-white hover:bg-white",
 						)}
 						title={outOfStock ? "Rupture de stock" : undefined}

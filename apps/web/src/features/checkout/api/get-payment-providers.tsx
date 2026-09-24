@@ -1,22 +1,23 @@
 "use client";
 
-import { sdk } from "@/lib/api/sdk";
+import { fetchPaymentOptions } from "@/lib/store-api";
 import { useQuery } from "@tanstack/react-query";
 
 const PAYMENT_PROVIDERS_QUERY_KEY = "payment-providers";
 
-const getPaymentProviders = async (regionId: string) => {
-	const { payment_providers } = await sdk.store.payment.listPaymentProviders({
-		region_id: regionId,
+/**
+ * Moyens de paiement réellement disponibles.
+ *
+ * L'API n'expose que les agrégateurs activés **et** complètement configurés :
+ * un prestataire dont les clés manquent n'apparaît pas, plutôt que d'échouer
+ * au clic.
+ */
+export const useGetPaymentProviders = () =>
+	useQuery({
+		queryKey: [PAYMENT_PROVIDERS_QUERY_KEY],
+		queryFn: async () => {
+			const options = await fetchPaymentOptions();
+			return options.map((option) => ({ id: option.key, name: option.name }));
+		},
+		staleTime: 5 * 60 * 1000,
 	});
-
-	return payment_providers;
-};
-
-export const useGetPaymentProviders = (regionId: string | null) => {
-	return useQuery({
-		queryKey: [PAYMENT_PROVIDERS_QUERY_KEY, regionId],
-		queryFn: () => getPaymentProviders(regionId!),
-		enabled: !!regionId,
-	});
-};
