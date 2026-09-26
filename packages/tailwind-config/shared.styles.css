@@ -113,9 +113,9 @@
   |----------------------------------
   | Border Radius
   |----------------------------------
-  | Buttons and inputs use a fully-rounded, pill shape.
+  | Buttons and inputs use a compact, slightly-rounded rectangle (not a pill).
   */
-	--border-radius-component: 9999px;
+	--border-radius-component: 0.8rem;
 
 	/*
    * Adjusted for 1rem = 10px base (was 16px)

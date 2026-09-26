@@ -2,12 +2,12 @@ export const DataRule = [
 	{
 		title: "1. OBJET",
 		description:
-			"Les présentes Conditions Générales de Vente (CGV) régissent l'ensemble des ventes de vêtements, chaussures et accessoires réalisées sur le site PrettyFull par toute personne physique ou morale (« le Client ») souhaitant procéder à un achat via notre boutique en ligne. Toute commande passée sur le site implique l'acceptation pleine et entière des présentes CGV, sans réserve. PrettyFull se réserve le droit de modifier ces conditions à tout moment ; la version applicable est celle en vigueur au jour de la commande.",
+			"Les présentes Conditions Générales de Vente (CGV) régissent l'ensemble des ventes de vitamines, compléments alimentaires et produits de bien-être réalisées sur le site PrettyFull par toute personne physique ou morale (« le Client ») souhaitant procéder à un achat via notre boutique en ligne. Toute commande passée sur le site implique l'acceptation pleine et entière des présentes CGV, sans réserve. PrettyFull se réserve le droit de modifier ces conditions à tout moment ; la version applicable est celle en vigueur au jour de la commande.",
 	},
 	{
 		title: "2. PRODUITS ET DISPONIBILITÉ",
 		description:
-			"Les produits proposés à la vente sont ceux figurant sur le site au jour de la consultation, dans la limite des stocks disponibles. Chaque article est présenté avec une description, des photographies et un guide des tailles destinés à informer le Client le plus fidèlement possible. En cas d'indisponibilité d'un article après commande, le Client en sera informé dans les meilleurs délais et pourra choisir entre un remboursement intégral, un article de remplacement ou l'attente du réapprovisionnement.",
+			"Les produits proposés à la vente sont ceux figurant sur le site au jour de la consultation, dans la limite des stocks disponibles. Chaque produit est présenté avec une description, des photographies et les informations nutritionnelles disponibles, destinées à informer le Client le plus fidèlement possible. En cas d'indisponibilité d'un produit après commande, le Client en sera informé dans les meilleurs délais et pourra choisir entre un remboursement intégral, un produit de remplacement ou l'attente du réapprovisionnement.",
 	},
 	{
 		title: "3. PRIX ET MONNAIE",
@@ -22,7 +22,7 @@ export const DataRule = [
 	{
 		title: "5. VALIDATION DE LA COMMANDE",
 		description:
-			"Toute commande passée sur le site fait l'objet d'un récapitulatif (articles, tailles, couleurs, prix, adresse de livraison) que le Client doit vérifier avant validation. Une fois la commande confirmée, un e-mail et/ou un message récapitulatif est envoyé au Client. PrettyFull se réserve le droit d'annuler ou de refuser toute commande d'un Client avec lequel existerait un litige relatif au paiement d'une commande antérieure, ou en cas de doute raisonnable sur la validité de la commande.",
+			"Toute commande passée sur le site fait l'objet d'un récapitulatif (produits, formats, saveurs, prix, adresse de livraison) que le Client doit vérifier avant validation. Une fois la commande confirmée, un e-mail et/ou un message récapitulatif est envoyé au Client. PrettyFull se réserve le droit d'annuler ou de refuser toute commande d'un Client avec lequel existerait un litige relatif au paiement d'une commande antérieure, ou en cas de doute raisonnable sur la validité de la commande.",
 	},
 	{
 		title: "6. LIVRAISON",
@@ -32,7 +32,7 @@ export const DataRule = [
 	{
 		title: "7. DROIT DE RÉTRACTATION",
 		description:
-			"Hors articles personnalisés, confectionnés sur mesure ou vendus en précommande (pour lesquels aucune rétractation n'est possible une fois la fabrication engagée), le Client dispose d'un délai pour changer d'avis et demander un retour ou un échange, dans les conditions et délais précisés dans notre politique de Livraison et Retours. L'article doit alors être retourné dans son état d'origine, non porté, non lavé et avec ses étiquettes.",
+			"Hors produits personnalisés, vendus en précommande, ou dont l'emballage a été ouvert pour des raisons d'hygiène et de sécurité sanitaire, le Client dispose d'un délai pour changer d'avis et demander un retour ou un échange, dans les conditions et délais précisés dans notre politique de Livraison et Retours. Le produit doit alors être retourné dans son état d'origine, emballage scellé et non ouvert, avec ses étiquettes.",
 	},
 	{
 		title: "8. RETOURS, ÉCHANGES ET REMBOURSEMENTS",
@@ -42,7 +42,7 @@ export const DataRule = [
 	{
 		title: "9. GARANTIE ET CONFORMITÉ",
 		description:
-			"PrettyFull s'engage à livrer des articles conformes à leur description et exempts de défaut de fabrication. Si un article présente un défaut majeur (couture défectueuse, tissu abîmé, erreur de référence) constaté à la réception, le Client doit le signaler à notre service client dans les meilleurs délais, photographies à l'appui, afin qu'une solution (échange, réparation ou remboursement) soit proposée sans frais supplémentaires pour le Client.",
+			"PrettyFull s'engage à livrer des produits conformes à leur description et exempts de défaut de fabrication. Si un produit présente un défaut majeur (emballage endommagé ou descellé à la livraison, produit périmé, erreur de référence) constaté à la réception, le Client doit le signaler à notre service client dans les meilleurs délais, photographies à l'appui, afin qu'une solution (échange, remboursement) soit proposée sans frais supplémentaires pour le Client.",
 	},
 	{
 		title: "10. DONNÉES PERSONNELLES",
@@ -57,10 +57,15 @@ export const DataRule = [
 	{
 		title: "12. RESPONSABILITÉ",
 		description:
-			"PrettyFull ne saurait être tenue responsable des dommages résultant d'une utilisation du site non conforme à sa destination, d'une intrusion frauduleuse, d'un cas de force majeure, ou de tout dysfonctionnement du réseau internet ou des opérateurs de paiement Mobile Money indépendant de sa volonté. Les photographies illustrant les produits sont les plus fidèles possibles mais ne peuvent assurer une similitude parfaite avec le produit reçu, notamment en matière de coloris, en raison des variations d'affichage selon les écrans.",
+			"PrettyFull ne saurait être tenue responsable des dommages résultant d'une utilisation du site non conforme à sa destination, d'une intrusion frauduleuse, d'un cas de force majeure, ou de tout dysfonctionnement du réseau internet ou des opérateurs de paiement Mobile Money indépendant de sa volonté. Les photographies illustrant les produits sont les plus fidèles possibles mais ne peuvent assurer une similitude parfaite avec le produit reçu (packaging, teinte), en raison des variations d'affichage selon les écrans.",
 	},
 	{
-		title: "13. DROIT APPLICABLE ET LITIGES",
+		title: "13. AVERTISSEMENTS ET INFORMATIONS SANITAIRES",
+		description:
+			"Les compléments alimentaires ne se substituent pas à une alimentation variée et équilibrée ni à un mode de vie sain, et ne doivent pas être utilisés comme substitut. Respectez la dose journalière indiquée sur l'étiquette du produit ; ne pas dépasser la dose recommandée sans avis médical. Tenir hors de portée des jeunes enfants. Il est conseillé de demander l'avis d'un professionnel de santé avant toute prise, notamment en cas de grossesse, d'allaitement, de traitement médical en cours ou de pathologie particulière. En cas de réaction indésirable, cessez la prise du produit et consultez un professionnel de santé.",
+	},
+	{
+		title: "14. DROIT APPLICABLE ET LITIGES",
 		description:
 			"Les présentes Conditions Générales de Vente sont soumises au droit ivoirien. En cas de litige relatif à l'interprétation ou à l'exécution d'une commande, le Client est invité à contacter en priorité notre service client afin de rechercher une solution amiable. À défaut d'accord amiable, les tribunaux compétents de Côte d'Ivoire seront seuls compétents pour connaître du litige.",
 	},

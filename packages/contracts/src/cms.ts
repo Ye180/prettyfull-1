@@ -156,6 +156,48 @@ export const bannerListQuerySchema = paginationQuerySchema.extend({
 	status: z.enum(CONTENT_STATUSES).optional(),
 });
 
+// --- Blocs de mise en avant (badges de confiance, arguments qualité, …) ----
+
+/**
+ * `sectionKey` regroupe les entrées d'un même bloc affiché sur le storefront
+ * (ex. `home_trust`) - même principe que `featuredEntryInputSchema.sectionKey`.
+ */
+export const contentHighlightInputSchema = z.object({
+	icon: z.string().trim().min(1).max(64),
+	title: z.string().trim().min(1).max(160),
+	description: z.string().trim().min(1).max(500),
+	sectionKey: z.string().trim().min(1).max(64),
+	position: z.number().int().min(0).default(0),
+	status: z.enum(CONTENT_STATUSES).default("draft"),
+	translations: translationsSchema,
+});
+
+export type ContentHighlightInput = z.infer<typeof contentHighlightInputSchema>;
+
+export const updateContentHighlightSchema = contentHighlightInputSchema.partial();
+
+export type UpdateContentHighlightInput = z.infer<typeof updateContentHighlightSchema>;
+
+export const contentHighlightSchema = z.object({
+	id: uuidSchema,
+	icon: z.string(),
+	title: z.string(),
+	description: z.string(),
+	sectionKey: z.string(),
+	position: z.number().int(),
+	status: z.enum(CONTENT_STATUSES),
+	translations: translationsSchema,
+	createdAt: z.string(),
+	updatedAt: z.string(),
+});
+
+export type ContentHighlight = z.infer<typeof contentHighlightSchema>;
+
+export const contentHighlightListQuerySchema = paginationQuerySchema.extend({
+	sectionKey: z.string().trim().max(64).optional(),
+	status: z.enum(CONTENT_STATUSES).optional(),
+});
+
 export const staticPageListQuerySchema = paginationQuerySchema.extend({
 	q: z.string().trim().max(160).optional(),
 	status: z.enum(CONTENT_STATUSES).optional(),

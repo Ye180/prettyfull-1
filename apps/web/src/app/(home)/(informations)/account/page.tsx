@@ -40,7 +40,7 @@ const StatCard = ({ icon: Icon, label, value, href }: any) => (
 const statusLabels: Record<string, { label: string; className: string }> = {
 	not_fulfilled: {
 		label: "En préparation",
-		className: "bg-blue-100 text-blue-800",
+		className: "bg-blue-100 text-amber-700",
 	},
 	fulfilled: { label: "Livré", className: "bg-green-100 text-green-800" },
 	delivered: { label: "Livré", className: "bg-green-100 text-green-800" },

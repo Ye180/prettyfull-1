@@ -30,9 +30,9 @@ export const DataRule = [
 			"Vous disposez d'un délai de 14 jours à compter de la réception de votre commande pour demander un retour ou un échange. Passé ce délai, aucune demande ne pourra être acceptée, sauf en cas de défaut de fabrication constaté ultérieurement. Pour initier un retour, contactez notre service client via la page Contact ou depuis votre espace « Mes commandes » en précisant le motif de votre demande.",
 	},
 	{
-		title: "CONDITIONS DE RETOUR DES ARTICLES",
+		title: "CONDITIONS DE RETOUR DES PRODUITS",
 		description:
-			"Pour être accepté, un article retourné doit être dans son état d'origine : non porté, non lavé, non parfumé, avec toutes ses étiquettes d'origine attachées et, si applicable, son emballage d'origine. Tout article présentant des traces d'usure, une odeur de parfum ou de tabac, ou dont les étiquettes ont été retirées, ne pourra pas être accepté et sera renvoyé à l'expéditeur à ses frais.",
+			"Pour être accepté, un produit retourné doit être dans son emballage d'origine, scellé et non ouvert, avec l'ensemble de ses étiquettes et notices. Pour des raisons d'hygiène et de sécurité sanitaire, tout produit dont l'emballage a été ouvert, descellé ou dont le film de protection a été retiré ne peut pas être repris, sauf défaut de fabrication avéré constaté à l'ouverture.",
 	},
 	{
 		title: "MODALITÉS DE REMBOURSEMENT",
@@ -40,13 +40,13 @@ export const DataRule = [
 			"Une fois l'article retourné reçu et contrôlé par notre équipe, vous recevez une confirmation de la validation ou du refus du retour. En cas de retour accepté, le remboursement est effectué sous 5 à 10 jours ouvrés sur le même moyen de paiement utilisé lors de l'achat (Mobile Money, carte bancaire) ou sous forme d'avoir à valoir sur une prochaine commande, selon votre préférence. Les frais de livraison initiaux ne sont remboursés qu'en cas de défaut ou d'erreur imputable à PrettyFull.",
 	},
 	{
-		title: "ARTICLES NON RETOURNABLES",
+		title: "PRODUITS NON RETOURNABLES",
 		description:
-			"Pour des raisons d'hygiène, les boucles d'oreilles et autres bijoux perforants ne peuvent ni être retournés ni échangés, sauf défaut de fabrication avéré. Il en va de même pour les articles en promotion signalés comme « vente finale », les sous-vêtements, les articles personnalisés ou confectionnés sur mesure, ainsi que les cartes cadeaux. Ces exclusions sont indiquées sur la fiche produit lorsqu'elles s'appliquent.",
+			"Pour des raisons d'hygiène et de sécurité sanitaire, tout complément alimentaire, vitamine ou produit de bien-être dont l'emballage a été ouvert ne peut ni être retourné ni échangé, sauf défaut de fabrication avéré. Il en va de même pour les articles en promotion signalés comme « vente finale » et les cartes cadeaux. Ces exclusions sont indiquées sur la fiche produit lorsqu'elles s'appliquent.",
 	},
 	{
-		title: "ÉCHANGE DE TAILLE OU DE COLORIS",
+		title: "ÉCHANGE DE FORMAT OU DE SAVEUR",
 		description:
-			"Si l'article ne vous convient pas en taille ou en coloris, un échange est possible dans les mêmes délais et conditions que pour un retour classique, sous réserve de disponibilité du produit de remplacement. Si l'article souhaité n'est plus disponible, nous vous proposons un remboursement ou un avoir. Les frais de renvoi du nouvel article sont à notre charge lorsque l'échange résulte d'une erreur de notre part, et restent à la charge du Client dans les autres cas.",
+			"Si le produit reçu ne vous convient pas en format ou en saveur et que son emballage est resté scellé, un échange est possible dans les mêmes délais et conditions que pour un retour classique, sous réserve de disponibilité du produit de remplacement. Si le produit souhaité n'est plus disponible, nous vous proposons un remboursement ou un avoir. Les frais de renvoi du nouveau produit sont à notre charge lorsque l'échange résulte d'une erreur de notre part, et restent à la charge du Client dans les autres cas.",
 	},
 ];

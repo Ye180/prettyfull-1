@@ -98,14 +98,14 @@ const CartView = () => {
 							Votre panier est actuellement vide
 						</h2>
 						<p className="mb-8 leading-relaxed text-gray-500">
-							Découvrez nos silhouettes sélectionnées, nos mailles intemporelles
-							et nos pièces contemporaines pensées pour un quotidien tout en
-							légèreté.
+							Découvrez nos vitamines et compléments sélectionnés, testés en
+							laboratoire et pensés pour accompagner votre routine santé au
+							quotidien.
 						</p>
 						<div className="flex flex-col gap-4 justify-center w-full sm:flex-row">
 							<Link
 								href="/collections"
-								className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-full transition shadow-sm"
+								className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-full transition shadow-sm"
 							>
 								<span>Découvrir les collections</span>
 								<ArrowRightIcon className="w-4 h-4" />

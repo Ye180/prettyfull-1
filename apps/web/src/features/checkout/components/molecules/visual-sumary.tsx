@@ -18,19 +18,19 @@ const VisualSummary = ({
 	};
 	return (
 		<div className="flex space-x-8 sm:space-x-10">
-			<div className="relative w-40 h-44 bg-gray-100 rounded-2xl aspect-square">
-				<div className="overflow-hidden w-40 h-44 rounded-2xl">
+			<div className="relative w-40 h-44 bg-gray-100 rounded-lg aspect-square">
+				<div className="overflow-hidden w-40 h-44 rounded-lg">
 					<Image
 						src={item.image}
 						alt={item.name}
 						width={100}
 						height={100}
-						className="object-top object-cover w-40 h-44 rounded-2xl"
+						className="object-top object-cover w-40 h-44 rounded-lg"
 					unoptimized
 					/>
 				</div>
 
-				<p className="absolute flex items-center justify-center font-semibold text-white bg-black rounded-full -top-4 -right-5 size-12 text-[1.4rem]">
+				<p className="absolute flex items-center justify-center font-semibold text-white bg-amber-600 rounded-full -top-4 -right-5 size-12 text-[1.4rem]">
 					{item.quantity}
 				</p>
 			</div>
@@ -46,16 +46,13 @@ const VisualSummary = ({
 						{item.description || ""}
 					</p>
 					<p className="text-gray-500 text-md">
-						Unit price: {formatCurrency_FR(item.price, currency)}
+						Prix unitaire : {formatCurrency_FR(item.price, currency)}
 					</p>
 
 					<div className="flex gap-10 justify-start items-center">
-						<p className="text-gray-500 text-md">
-							Size: <span className="uppercase">{item.size || "-"}</span>
-						</p>
 						<button
 							onClick={() => handleRemove(item.id)}
-							className="hidden p-2 rounded-full cursor-pointer sm:block hover:bg-gray-100"
+							className="hidden p-2 rounded-lg cursor-pointer sm:block hover:bg-gray-100"
 						>
 							<CloseIcon size={15} className="text-gray-400" />
 						</button>
@@ -63,7 +60,7 @@ const VisualSummary = ({
 				</div>
 				<button
 					onClick={() => handleRemove(item.id)}
-					className="block p-2 h-fit rounded-full cursor-pointer sm:hidden hover:bg-gray-100"
+					className="block p-2 h-fit rounded-lg cursor-pointer sm:hidden hover:bg-gray-100"
 				>
 					<CloseIcon size={15} className="text-gray-400" />
 				</button>

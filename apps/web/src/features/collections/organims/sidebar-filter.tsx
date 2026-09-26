@@ -29,7 +29,7 @@ interface SidebarFilterProps {
 	onClear: () => void;
 	/** Rayons proposés ; section masquée si vide (page déjà scopée à un rayon). */
 	categoryOptions?: CategoryOption[];
-	/** Tailles distinctes du catalogue regardé (§ `useCollectionFacets`). */
+	/** Formats distincts du catalogue regardé (§ `useCollectionFacets`). */
 	sizeOptions: string[];
 	/** Couleurs distinctes du catalogue regardé. */
 	colorOptions: ColorOption[];
@@ -124,10 +124,10 @@ export const SidebarFilter = ({
 									key={size}
 									type="button"
 									onClick={() => onChange({ ...filters, sizes: toggleItem(filters.sizes, size) })}
-									className={`px-4 py-1.5 rounded-full border text-[1.3rem] font-medium transition-colors cursor-pointer ${
+									className={`px-4 py-1.5 rounded-md border text-[1.3rem] font-medium transition-colors cursor-pointer ${
 										isChecked
-											? "bg-black text-white border-black"
-											: "border-neutral-300 text-neutral-800 hover:border-black"
+											? "bg-amber-600 text-white border-amber-600"
+											: "border-neutral-300 text-neutral-800 hover:border-amber-600"
 									}`}
 								>
 									{size}
@@ -137,7 +137,7 @@ export const SidebarFilter = ({
 					</div>
 				) : (
 					<p className="text-[1.3rem] text-neutral-400">
-						{isLoadingFacets ? "Chargement…" : "Aucune taille disponible"}
+						{isLoadingFacets ? "Chargement…" : "Aucun format disponible"}
 					</p>
 				)}
 			</div>
@@ -146,7 +146,7 @@ export const SidebarFilter = ({
 			<div className="space-y-3">
 				<h4 className="text-[1.5rem] font-semibold text-black">Prix</h4>
 				<div className="space-y-2">
-					<div className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200">
+					<div className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-neutral-200">
 						<span className="text-[1.3rem] text-neutral-500">FCFA</span>
 						<input
 							type="number"
@@ -157,7 +157,7 @@ export const SidebarFilter = ({
 							className="w-full text-[1.4rem] bg-transparent outline-none placeholder:text-neutral-400"
 						/>
 					</div>
-					<div className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200">
+					<div className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-neutral-200">
 						<span className="text-[1.3rem] text-neutral-500">FCFA</span>
 						<input
 							type="number"
@@ -183,8 +183,8 @@ export const SidebarFilter = ({
 									key={color.name}
 									type="button"
 									onClick={() => onChange({ ...filters, colors: toggleItem(filters.colors, color.name) })}
-									className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-[1.3rem] transition-colors cursor-pointer ${
-										isChecked ? "border-black bg-neutral-100" : "border-neutral-200 hover:border-black"
+									className={`flex items-center gap-2 px-3 py-1.5 rounded-md border text-[1.3rem] transition-colors cursor-pointer ${
+										isChecked ? "border-amber-600 bg-amber-50" : "border-neutral-200 hover:border-amber-600"
 									}`}
 								>
 									<span

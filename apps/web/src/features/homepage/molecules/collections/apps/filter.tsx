@@ -3,11 +3,11 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import Adjust from "../adjust";
 import Availability from "../availability";
-import Colors from "../colors";
-import Material from "../material";
+import DietaryRegime from "../dietary-regime";
+import DosageFormat from "../dosage-format";
+import Flavors from "../flavors";
 import Prize from "../prize";
-import Size from "../size";
-import TypeClothes from "../type-clothes";
+import TypeSupplement from "../type-supplement";
 
 interface FilterProps {
 	/** Ferme le panneau (drawer) en conservant les filtres sélectionnés. */
@@ -58,14 +58,14 @@ const Filter = ({
 			<div className="space-y-8 divide-y divide-gray-100">
 				<div className="pt-0">
 					<h4 className={sectionTitleClass}>{t("type_clothes")}</h4>
-					<TypeClothes />
+					<TypeSupplement />
 				</div>
 				<div className="pt-8">
 					<h4 className={sectionTitleClass}>{t("taille")}</h4>
-					<Size />
+					<DosageFormat />
 				</div>
 				<div className="pt-8">
-					<h4 className={sectionTitleClass}>Prize</h4>
+					<h4 className={sectionTitleClass}>Prix</h4>
 					<Prize
 						key={priceResetKey}
 						minPrice={priceDraft.min}
@@ -75,18 +75,18 @@ const Filter = ({
 				</div>
 				<div className="pt-8">
 					<h4 className={sectionTitleClass}>{t("colors")}</h4>
-					<Colors />
+					<Flavors />
 				</div>
 				<div className="pt-8">
-					<h4 className={sectionTitleClass}>Fit</h4>
+					<h4 className={sectionTitleClass}>Objectif santé</h4>
 					<Adjust />
 				</div>
 				<div className="pt-8">
-					<h4 className={sectionTitleClass}>Material</h4>
-					<Material />
+					<h4 className={sectionTitleClass}>Régime alimentaire</h4>
+					<DietaryRegime />
 				</div>
 				<div className="pt-8">
-					<h4 className={sectionTitleClass}>Availability</h4>
+					<h4 className={sectionTitleClass}>Disponibilité</h4>
 					<Availability />
 				</div>
 			</div>

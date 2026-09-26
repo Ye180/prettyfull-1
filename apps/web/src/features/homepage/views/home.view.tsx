@@ -1,20 +1,31 @@
 "use client";
 
 import PhotoOverlayBanner from "@/shared/components/organims/photo-overlay-banner";
+import { useGetPromoBanner } from "../api/medusa/get-promo-banner";
 import BestSellingSection from "../organims/best-selling";
 import CustomerExperienceSection from "../organims/customer-experience";
-import MonalisaHero from "../organims/monalisa-hero";
+import HeroBanner from "../organims/hero-banner";
 import NewCollectionShowcase from "../organims/new-collection-showcase";
 import ProductRecommendations from "../organims/product-recommendations";
+import ShopNewProducts from "../organims/shop-new-products";
+import TrustBadgesSection from "../organims/trust-badges";
 
 const HomeView = () => {
+	const { data: promoBanner } = useGetPromoBanner();
+
 	return (
 		<main className="pb-12 w-full min-h-screen bg-white">
-			{/* 1. Hero Section with floating interactive New Collection card */}
-			<MonalisaHero />
+			{/* 1. Hero Section */}
+			<HeroBanner />
+
+			{/* 1b. Trust badges */}
+			<TrustBadgesSection />
 
 			{/* 2. Explore Our Best Selling Product Collection */}
 			<BestSellingSection />
+
+			{/* 2b. Grille "Shop New Products" (2 grandes + 3 petites tuiles) */}
+			<ShopNewProducts />
 
 			{/* 3. We Deliver Exceptional Customer Experiences (Dark Section) */}
 			<CustomerExperienceSection />
@@ -27,12 +38,15 @@ const HomeView = () => {
 
 			{/* 6. Stratosphere Call-To-Action Banner */}
 			<PhotoOverlayBanner
-				image="/home/sublime-1.jpg"
-				title="Sublimez votre style"
-				subtitle="Prêt à passer au niveau supérieur ? Découvrez nos pièces phares et osez de nouvelles associations."
+				image={promoBanner?.image || "/home/supplements-hero-flatlay.jpg"}
+				title={promoBanner?.title || "Votre bien-être, notre priorité"}
+				subtitle={
+					promoBanner?.subtitle ||
+					"Formules testées en laboratoire, ingrédients sélectionnés avec soin. Découvrez la gamme qui accompagne votre routine santé au quotidien."
+				}
 				cta={{
-					label: "Découvrir la boutique",
-					href: "/collections",
+					label: promoBanner?.cta || "Découvrir la boutique",
+					href: promoBanner?.link || "/collections",
 				}}
 				contained={true}
 				height="lg"

@@ -1,176 +1,176 @@
 {
-	"headerResponsive": {
-		"setting": "Réglage"
-	},
-	"HomePage": {
-		"header": {
-			"placeholder": "Rechercher des produits..."
-		},
-		"hero": {
-			"eyebrowLeft": "Tous les styles",
-			"eyebrowCenter": "Tout acheter",
-			"eyebrowRight": "Tenue du quotidien",
-			"title": "Essentiels Mi-Saison",
-			"subtitle": "Des silhouettes douces et des indispensables modernes pour tous les jours.",
-			"ctaButton": "Achetez maintenant"
-		},
-		"promoDuo": {
-			"saleTitle": "Soldes Mi-Saison",
-			"saleSubtitle": "Jusqu'à 40% sur une sélection",
-			"saleCta": "Voir les soldes",
-			"knitwearTitle": "Maille du quotidien",
-			"knitwearSubtitle": "Des pièces légères pour chaque jour",
-			"knitwearCta": "Découvrir"
-		},
-		"shopByCollection": {
-			"title": "Acheter par Collection",
-			"jacket": "Veste",
-			"tshirts": "T-Shirts",
-			"shorts": "Shorts",
-			"ctaButton": "Voir la Collection"
-		},
-		"news": {
-			"title": "Nouveautés",
-			"viewAll": "Voir tout"
-		},
-		"bestSelling": {
-			"title": "Découvrez Notre Collection de Meilleures Ventes",
-			"subtitle": "Découvrez et plongez dans nos catégories les plus populaires dont tout le monde parle !",
-			"ctaButton": "Achetez maintenant",
-			"allLabel": "Toute la collection"
-		},
-		"containers": {
-			"paragraph1": "Nous nous engageons à vous offrir une expérience de shopping fluide et agréable."
-		},
-		"collection": {
-			"title": "Collection Femme : élégance réinventée",
-			"subtitle": "Restez à la mode avec notre nouvelle sélection de styles modernes, conçus juste pour vous.",
-			"deal": "Deal de la semaine",
-			"ctaButton": "Lancez-vous"
-		},
-		"trendReport": {
-			"title": "Le Rapport sur les Tendances",
-			"viewAll": "Voir tout"
-		},
-		"recommendation": {
-			"title": "RECOMMANDEZ POUR VOUS",
-			"forYou": "Pour toi",
-			"woman": "Femme",
-			"men": "Homme",
-			"accessory": "Accessoires"
-		},
-		"howItWorks": {
-			"title": "Commandez en 3 étapes",
-			"description": "De votre écran à votre porte, à Abidjan.",
-			"step1Title": "Parcourez",
-			"step1Description": "Explorez la collection et choisissez vos favoris.",
-			"step2Title": "Commandez",
-			"step2Description": "Payez en toute sécurité en quelques clics.",
-			"step3Title": "Nous livrons à Abidjan",
-			"step3Description": "Votre commande est préparée et livrée directement chez vous."
-		},
-		"trust": {
-			"title": "Adoré par nos clientes",
-			"quote": "La qualité est encore meilleure qu'en photo, et la livraison à Abidjan a été plus rapide que prévu. Je prépare déjà ma prochaine commande.",
-			"author": "Aïcha K.",
-			"role": "Cliente vérifiée"
-		},
-		"features": {
-			"title": "Nous Offrons des Expériences Client Exceptionnelles",
-			"description": "Nous nous engageons à offrir des expériences client exceptionnelles qui dépassent les attentes et rendent chaque interaction mémorable.",
-			"paymentTitle": "Paiement sécurisé",
-			"paymentDescription": "Vos transactions sont chiffrées et protégées.",
-			"deliveryTitle": "Livraison à Abidjan",
-			"deliveryDescription": "Expédition rapide et suivie, directement chez vous.",
-			"returnsTitle": "Retours simplifiés",
-			"returnsDescription": "Pas la bonne taille ? Retournez-la sans tracas."
-		},
-		"finalCta": {
-			"title": "Propulsez Votre Style Vers de Nouveaux Sommets",
-			"subtitle": "Prêt à sublimer votre style ? Lancez votre mode vers de nouveaux sommets avec des choix audacieux et des pièces uniques.",
-			"ctaButton": "Commencer"
-		},
-		"featuredProduct": {
-			"label": "Nouvelle collection",
-			"addToCart": "Ajouter au panier"
-		}
-	},
-	"CollectionPage": {
-		"filters": {
-			"sort_by": "Trier par",
-			"type_clothes": "Types de vêtements",
-			"colors": "Couleurs",
-			"adjust": "Ajuster",
-			"taille": "Taille",
-			"clear": "Effacer",
-			"apply": "Appliquer"
-		}
-	},
-	"Cart": {
-		"product": {
-			"title": "Panier"
-		},
-		"summary": {
-			"title": "Résumé",
-			"totalPrize": "Prix total",
-			"subtotal": "Sous-total",
-			"shipping": "Frais de port",
-			"taxes": "Estimation des droits et taxes",
-			"total": "Total",
-			"checkout": "Passer à la caisse",
-			"apply": "Appliquer",
-			"couponsCode": "Code promo",
-			"couponPlaceholder": "Entrer le code",
-			"couponComingSoon": "Coupons bientôt disponibles"
-		}
-	},
-	"Wishlist": {
-		"title": "Liste de souhaits"
-	},
-	"CheckoutPage": {
-		"checkoutForm": {
-			"labelName": "Nom",
-			"labelEmail": "Email",
-			"labelMethod": "Comment souhaitez-vous recevoir votre commande ?",
-			"placeholderMethod": "Entrez votre méthode de livraison...",
-			"labelAddress": "Entrer votre numero, nom et adresse",
-			"placeholderNumber": "Entrez votre numéro de téléphone...",
-			"placeholderLastName": "Entrez votre nom et prénom...",
-			"placeholderAddress": "Entrez votre adresse...",
-			"labelPostCode": "Entrer votre code postal",
-			"placeholderPostCode": "Entrez votre code postal...",
-			"labelCity": "Entrer votre ville",
-			"placeholderCity": "Entrez votre ville...",
-			"labelCountry": "Entrer votre pays",
-			"placeholderCountry": "Entrez votre pays...",
-			"labelState": "Entrer votre région",
-			"placeholderState": "Entrez votre région...",
-			"description": "* Pour la livraison, vous pouvez saisir votre adresse de maniére précise."
-		},
-		"infosCheckout": {
-			"save": "Enregistrer cette adresse dans mon profil",
-			"favorite": "Faites de ceci mon adresse préférée",
-			"termes": "Termes et Conditions",
-			"accept": "J'ai lu et j'accepte les termes et conditions",
-			"ctaButton": "Procéder au paiement"
-		},
-		"features": {
-			"delivery": "Livraison",
-			"shipping": "Expédition",
-			"billing": "Facturation",
-			"payment": "Paiement",
-			"data": "Nous mettons un point d'honneur à soigner chaque étape de votre commande, du choix de la pièce jusqu'à la livraison."
-		},
-		"items": {
-			"color": "Couleur",
-			"size": "Taille"
-		},
-		"summary": {
-			"title": "Résumé",
-			"subtotal": "Sous-total",
-			"shipping": "Frais de livraison",
-			"taxes": "Droits et taxes estimés",
-			"total": "Total"
-		}
-	}
+  "headerResponsive": {
+    "setting": "Réglage"
+  },
+  "HomePage": {
+    "header": {
+      "placeholder": "Rechercher des produits..."
+    },
+    "hero": {
+      "eyebrowLeft": "Testé en laboratoire",
+      "eyebrowCenter": "Livraison rapide",
+      "eyebrowRight": "Qualité garantie",
+      "title": "Toute notre gamme bien-être",
+      "subtitle": "Vitamines, minéraux et compléments testés en laboratoire pour votre routine santé au quotidien.",
+      "ctaButton": "Achetez maintenant"
+    },
+    "promoDuo": {
+      "saleTitle": "Soldes Mi-Saison",
+      "saleSubtitle": "Jusqu'à 40% sur une sélection",
+      "saleCta": "Voir les soldes",
+      "knitwearTitle": "Maille du quotidien",
+      "knitwearSubtitle": "Des pièces légères pour chaque jour",
+      "knitwearCta": "Découvrir"
+    },
+    "shopByCollection": {
+      "title": "Acheter par Collection",
+      "jacket": "Veste",
+      "tshirts": "T-Shirts",
+      "shorts": "Shorts",
+      "ctaButton": "Voir la Collection"
+    },
+    "news": {
+      "title": "Nouveautés",
+      "viewAll": "Voir tout"
+    },
+    "bestSelling": {
+      "title": "Découvrez Notre Collection de Meilleures Ventes",
+      "subtitle": "Découvrez et plongez dans nos catégories les plus populaires dont tout le monde parle !",
+      "ctaButton": "Achetez maintenant",
+      "allLabel": "Toute la collection"
+    },
+    "containers": {
+      "paragraph1": "Nous nous engageons à vous offrir une expérience de shopping fluide et agréable."
+    },
+    "collection": {
+      "title": "Collection Femme : élégance réinventée",
+      "subtitle": "Restez à la mode avec notre nouvelle sélection de styles modernes, conçus juste pour vous.",
+      "deal": "Deal de la semaine",
+      "ctaButton": "Lancez-vous"
+    },
+    "trendReport": {
+      "title": "Le Rapport sur les Tendances",
+      "viewAll": "Voir tout"
+    },
+    "recommendation": {
+      "title": "RECOMMANDEZ POUR VOUS",
+      "forYou": "Pour toi",
+      "woman": "Femme",
+      "men": "Homme",
+      "accessory": "Accessoires"
+    },
+    "howItWorks": {
+      "title": "Commandez en 3 étapes",
+      "description": "De votre écran à votre porte, à Abidjan.",
+      "step1Title": "Parcourez",
+      "step1Description": "Explorez la collection et choisissez vos favoris.",
+      "step2Title": "Commandez",
+      "step2Description": "Payez en toute sécurité en quelques clics.",
+      "step3Title": "Nous livrons à Abidjan",
+      "step3Description": "Votre commande est préparée et livrée directement chez vous."
+    },
+    "trust": {
+      "title": "Adoré par nos clientes",
+      "quote": "La qualité est encore meilleure qu'en photo, et la livraison à Abidjan a été plus rapide que prévu. Je prépare déjà ma prochaine commande.",
+      "author": "Aïcha K.",
+      "role": "Cliente vérifiée"
+    },
+    "features": {
+      "title": "Nous Offrons des Expériences Client Exceptionnelles",
+      "description": "Nous nous engageons à offrir des expériences client exceptionnelles qui dépassent les attentes et rendent chaque interaction mémorable.",
+      "paymentTitle": "Paiement sécurisé",
+      "paymentDescription": "Vos transactions sont chiffrées et protégées.",
+      "deliveryTitle": "Livraison à Abidjan",
+      "deliveryDescription": "Expédition rapide et suivie, directement chez vous.",
+      "returnsTitle": "Retours simplifiés",
+      "returnsDescription": "Pas la bonne taille ? Retournez-la sans tracas."
+    },
+    "finalCta": {
+      "title": "Propulsez Votre Style Vers de Nouveaux Sommets",
+      "subtitle": "Prêt à sublimer votre style ? Lancez votre mode vers de nouveaux sommets avec des choix audacieux et des pièces uniques.",
+      "ctaButton": "Commencer"
+    },
+    "featuredProduct": {
+      "label": "Nouvelle collection",
+      "addToCart": "Ajouter au panier"
+    }
+  },
+  "CollectionPage": {
+    "filters": {
+      "sort_by": "Trier par",
+      "type_clothes": "Catégories",
+      "colors": "Saveurs",
+      "adjust": "Ajuster",
+      "taille": "Format",
+      "clear": "Effacer",
+      "apply": "Appliquer"
+    }
+  },
+  "Cart": {
+    "product": {
+      "title": "Panier"
+    },
+    "summary": {
+      "title": "Résumé",
+      "totalPrize": "Prix total",
+      "subtotal": "Sous-total",
+      "shipping": "Frais de port",
+      "taxes": "Estimation des droits et taxes",
+      "total": "Total",
+      "checkout": "Passer à la caisse",
+      "apply": "Appliquer",
+      "couponsCode": "Code promo",
+      "couponPlaceholder": "Entrer le code",
+      "couponComingSoon": "Coupons bientôt disponibles"
+    }
+  },
+  "Wishlist": {
+    "title": "Liste de souhaits"
+  },
+  "CheckoutPage": {
+    "checkoutForm": {
+      "labelName": "Nom",
+      "labelEmail": "Email",
+      "labelMethod": "Comment souhaitez-vous recevoir votre commande ?",
+      "placeholderMethod": "Entrez votre méthode de livraison...",
+      "labelAddress": "Entrer votre numero, nom et adresse",
+      "placeholderNumber": "Entrez votre numéro de téléphone...",
+      "placeholderLastName": "Entrez votre nom et prénom...",
+      "placeholderAddress": "Entrez votre adresse...",
+      "labelPostCode": "Entrer votre code postal",
+      "placeholderPostCode": "Entrez votre code postal...",
+      "labelCity": "Entrer votre ville",
+      "placeholderCity": "Entrez votre ville...",
+      "labelCountry": "Entrer votre pays",
+      "placeholderCountry": "Entrez votre pays...",
+      "labelState": "Entrer votre région",
+      "placeholderState": "Entrez votre région...",
+      "description": "* Pour la livraison, vous pouvez saisir votre adresse de maniére précise."
+    },
+    "infosCheckout": {
+      "save": "Enregistrer cette adresse dans mon profil",
+      "favorite": "Faites de ceci mon adresse préférée",
+      "termes": "Termes et Conditions",
+      "accept": "J'ai lu et j'accepte les termes et conditions",
+      "ctaButton": "Procéder au paiement"
+    },
+    "features": {
+      "delivery": "Livraison",
+      "shipping": "Expédition",
+      "billing": "Facturation",
+      "payment": "Paiement",
+      "data": "Nous mettons un point d'honneur à soigner chaque étape de votre commande, du choix de la pièce jusqu'à la livraison."
+    },
+    "items": {
+      "color": "Couleur",
+      "size": "Taille"
+    },
+    "summary": {
+      "title": "Résumé",
+      "subtotal": "Sous-total",
+      "shipping": "Frais de livraison",
+      "taxes": "Droits et taxes estimés",
+      "total": "Total"
+    }
+  }
 }

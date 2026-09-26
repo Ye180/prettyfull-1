@@ -33,7 +33,7 @@ export const QuantitySelector = ({
 		<div
 			className={cn(
 				"flex items-center px-2 py-1 bg-[#F4F4F5] w-fit border border-gray-200",
-				square ? "rounded-none" : "rounded-full",
+				square ? "rounded-none" : "rounded-md",
 			)}
 		>
 			<button
@@ -43,7 +43,7 @@ export const QuantitySelector = ({
 				aria-label="Diminuer la quantité"
 				className={cn(
 					"w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-white border border-gray-200 text-gray-700 font-semibold transition",
-					square ? "rounded-none" : "rounded-full",
+					square ? "rounded-none" : "rounded-md",
 					quantity <= 1
 						? "opacity-40 cursor-not-allowed"
 						: "hover:bg-gray-100 cursor-pointer shadow-xs",
@@ -61,8 +61,8 @@ export const QuantitySelector = ({
 				onClick={() => handleUpdate(quantity + 1)}
 				aria-label="Augmenter la quantité"
 				className={cn(
-					"w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-black text-white font-semibold hover:bg-black/80 transition cursor-pointer shadow-xs",
-					square ? "rounded-none" : "rounded-full",
+					"w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-amber-600 text-white font-semibold hover:bg-amber-700 transition cursor-pointer shadow-xs",
+					square ? "rounded-none" : "rounded-md",
 				)}
 			>
 				<span className="text-sm leading-none select-none">+</span>

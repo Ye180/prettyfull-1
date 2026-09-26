@@ -100,7 +100,7 @@ export const ImportDialog = ({
 			<div className="flex flex-col gap-4">
 				<Field
 					label="Fichier CSV"
-					hint="Colonnes attendues : slug, nom, regime, statut, categorie, prix, devise, variante, taille, stock…"
+					hint="Colonnes attendues : slug, nom, regime, statut, categorie, prix, devise, variante, format, stock…"
 				>
 					<input
 						type="file"

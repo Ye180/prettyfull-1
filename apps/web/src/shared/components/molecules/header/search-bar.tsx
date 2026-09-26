@@ -15,6 +15,8 @@ import { Search } from "../../../../../../../packages/ui/src/icons/search.icon";
 type SearchBarProps = {
 	className?: string;
 	onNavigate?: () => void;
+	/** "default" : champ encadré (menu mobile). "minimal" : icône + texte sans cadre, façon barre de header desktop. */
+	variant?: "default" | "minimal";
 };
 
 const MIN_QUERY_LENGTH = 2;
@@ -28,7 +30,8 @@ const useDebouncedValue = <T,>(value: T, delay = 250): T => {
 	return debounced;
 };
 
-const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
+const SearchBar = ({ className, onNavigate, variant = "default" }: SearchBarProps) => {
+	const isMinimal = variant === "minimal";
 	const t = useTranslations("HomePage.header");
 	const router = useRouter();
 
@@ -97,9 +100,14 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 		<div ref={containerRef} className={cn("relative", className)}>
 			<form
 				onSubmit={handleSubmit}
-				className="flex items-center px-4 py-3 bg-white rounded-2xl border border-gray-300"
+				className={cn(
+					"flex items-center",
+					isMinimal
+						? "gap-2 py-2"
+						: "pl-4 bg-white rounded-lg border border-gray-300 focus-within:border-amber-600",
+				)}
 			>
-				<Search className="w-5 h-5 text-gray-400 shrink-0" />
+				<Search className={cn("shrink-0", isMinimal ? "w-4 h-4 text-gray-500" : "hidden")} />
 				<input
 					type="text"
 					value={query}
@@ -109,18 +117,29 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 					}}
 					onFocus={() => setIsOpen(true)}
 					placeholder={t("placeholder")}
-					className="flex-1 min-w-0 px-3 text-[1.4rem] font-light text-black bg-transparent border-none outline-none placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.3rem]"
+					className={cn(
+						"flex-1 min-w-0 text-[1.4rem] font-light text-black bg-transparent border-none outline-none placeholder:font-light placeholder:text-gray-400 placeholder:text-[1.3rem]",
+						isMinimal ? "py-0" : "py-2.5",
+					)}
 				/>
-				{/* <button
-					type="submit"
-					className="flex justify-center items-center w-8 h-8 text-white bg-black rounded-lg transition-colors cursor-pointer shrink-0 hover:bg-gray-800"
-				>
-					<EnterIcon className="w-4 h-4" />
-				</button> */}
+				{!isMinimal && (
+					<button
+						type="submit"
+						aria-label="Rechercher"
+						className="flex justify-center items-center w-11 h-11 text-white bg-amber-600 rounded-r-lg transition-colors cursor-pointer shrink-0 hover:bg-amber-700"
+					>
+						<Search className="w-4 h-4" />
+					</button>
+				)}
 			</form>
 
 			{showDropdown && (
-				<div className="absolute right-0 top-full z-50 mt-2 bg-white rounded-2xl border border-gray-200 shadow-xl max-h-[80vh] overflow-y-auto max-lg:w-full w-[min(400px,70vw)]">
+				<div
+					className={cn(
+						"absolute top-full z-50 mt-2 bg-white rounded-lg border border-gray-200 shadow-xl max-h-[80vh] overflow-y-auto max-lg:w-full w-[min(400px,70vw)]",
+						isMinimal ? "left-0" : "right-0",
+					)}
+				>
 					{!hasResults && !isFetching && (
 						<div className="p-6 text-center text-[1.3rem] text-gray-500">
 							Aucun résultat pour « {debouncedQuery} »
@@ -144,7 +163,7 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 										key={cat.id}
 										href={PAGES_PATHS.pageDetail(cat.handle)}
 										onClick={handleNavigate}
-										className="px-4 py-2 text-[1.2rem] text-gray-800 rounded-full border border-gray-200 transition-colors hover:bg-black hover:text-white hover:border-black"
+										className="px-4 py-2 text-[1.2rem] text-gray-800 rounded-md border border-gray-200 transition-colors hover:bg-amber-600 hover:text-white hover:border-amber-600"
 									>
 										{cat.name}
 									</Link>
@@ -182,7 +201,7 @@ const SearchBar = ({ className, onNavigate }: SearchBarProps) => {
 																	onClick={handleNavigate}
 																	className="flex gap-3 items-center py-2 group"
 																>
-																	<div className="overflow-hidden relative w-24 h-40 bg-gray-100 rounded-2xl shrink-0">
+																	<div className="overflow-hidden relative w-24 h-40 bg-gray-100 rounded-lg shrink-0">
 																		{thumb && (
 																			<Image
 																				src={thumb}

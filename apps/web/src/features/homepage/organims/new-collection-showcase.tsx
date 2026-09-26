@@ -32,7 +32,7 @@ export const NewCollectionShowcase = () => {
 	if (!isLoading && products.length === 0) return null;
 
 	return (
-		<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+		<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
 			{/* Header */}
 			<div className="pb-10 space-y-2 max-w-xl">
 				<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#080808]">

@@ -109,7 +109,7 @@ const ProductsPage = () => {
 							{product.kind === "variant"
 								? `${product.variants.length} coloris`
 								: product.sizes.length > 0
-									? `${product.sizes.length} tailles`
+									? `${product.sizes.length} formats`
 									: "Sans déclinaison"}
 						</p>
 					</div>

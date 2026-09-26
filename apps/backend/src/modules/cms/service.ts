@@ -3,6 +3,8 @@ import type {
 	BannerInput,
 	ContactMessage,
 	ContactMessageInput,
+	ContentHighlight,
+	ContentHighlightInput,
 	FeaturedEntry,
 	FeaturedEntryInput,
 	Paginated,
@@ -437,6 +439,114 @@ export const deleteFeaturedEntry = async (id: string): Promise<void> => {
 		.returning({ id: t.featuredEntries.id });
 
 	if (!deleted) throw notFound("Mise en avant");
+};
+
+// --- Blocs de mise en avant --------------------------------------------------
+
+const toContentHighlight = (
+	row: typeof t.contentHighlights.$inferSelect,
+): ContentHighlight => ({
+	id: row.id,
+	icon: row.icon,
+	title: row.title,
+	description: row.description,
+	sectionKey: row.sectionKey,
+	position: row.position,
+	status: row.status,
+	translations: row.translations ?? undefined,
+	createdAt: row.createdAt.toISOString(),
+	updatedAt: row.updatedAt.toISOString(),
+});
+
+export const listContentHighlights = async (query: {
+	page: number;
+	limit: number;
+	sectionKey?: string;
+	status?: (typeof t.contentStatusEnum.enumValues)[number];
+}): Promise<Paginated<ContentHighlight>> => {
+	const filters: SQL[] = [];
+	if (query.sectionKey) filters.push(eq(t.contentHighlights.sectionKey, query.sectionKey));
+	if (query.status) filters.push(eq(t.contentHighlights.status, query.status));
+
+	const where = filters.length > 0 ? and(...filters) : undefined;
+	const { limit, offset } = toSqlPagination(query);
+
+	const [rows, [totals]] = await Promise.all([
+		db
+			.select()
+			.from(t.contentHighlights)
+			.where(where)
+			.orderBy(asc(t.contentHighlights.sectionKey), asc(t.contentHighlights.position))
+			.limit(limit)
+			.offset(offset),
+		db.select({ total: count() }).from(t.contentHighlights).where(where),
+	]);
+
+	return paginate(rows.map(toContentHighlight), query, totals?.total ?? 0);
+};
+
+/** Blocs servis au storefront : uniquement ceux publiés, pour une section donnée. */
+export const listPublicContentHighlights = async (
+	sectionKey: string,
+): Promise<ContentHighlight[]> => {
+	const rows = await db
+		.select()
+		.from(t.contentHighlights)
+		.where(
+			and(
+				eq(t.contentHighlights.sectionKey, sectionKey),
+				eq(t.contentHighlights.status, "published"),
+			),
+		)
+		.orderBy(asc(t.contentHighlights.position));
+
+	return rows.map(toContentHighlight);
+};
+
+export const createContentHighlight = async (
+	input: ContentHighlightInput,
+): Promise<ContentHighlight> => {
+	const [created] = await db
+		.insert(t.contentHighlights)
+		.values({
+			icon: input.icon,
+			title: input.title,
+			description: input.description,
+			sectionKey: input.sectionKey,
+			position: input.position,
+			status: input.status,
+			translations: input.translations,
+		})
+		.returning();
+
+	return toContentHighlight(created!);
+};
+
+export const updateContentHighlight = async (
+	id: string,
+	input: Partial<ContentHighlightInput>,
+): Promise<ContentHighlight> => {
+	const patch = Object.fromEntries(
+		Object.entries(input).filter(([, value]) => value !== undefined),
+	);
+
+	const [updated] = await db
+		.update(t.contentHighlights)
+		.set({ ...patch, updatedAt: new Date() })
+		.where(eq(t.contentHighlights.id, id))
+		.returning();
+
+	if (!updated) throw notFound("Bloc de mise en avant");
+	return toContentHighlight(updated);
+};
+
+export const deleteContentHighlight = async (id: string): Promise<void> => {
+	const [deleted] = await db
+		.delete(t.contentHighlights)
+		.where(eq(t.contentHighlights.id, id))
+		.returning({ id: t.contentHighlights.id });
+
+	if (!deleted) throw notFound("Bloc de mise en avant");
 };
 
 // --- Messages de contact ---------------------------------------------------

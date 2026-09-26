@@ -106,7 +106,7 @@ const CartSummary = ({
 		<div
 			className={cn(
 				"p-7 md:p-8 bg-[#F9FAFB] border border-gray-100 shadow-sm",
-				square ? "rounded-none" : "rounded-3xl",
+				square ? "rounded-none" : "rounded-xl",
 			)}
 		>
 			<div className="text-center pb-2">
@@ -165,7 +165,7 @@ const CartSummary = ({
 					<div
 						className={cn(
 							"flex items-center justify-between gap-2.5 px-4 py-3 text-sm bg-white border border-gray-200 font-medium",
-							square ? "rounded-none" : "rounded-full",
+							square ? "rounded-none" : "rounded-lg",
 						)}
 					>
 						<span className="text-gray-900">{appliedCode}</span>
@@ -189,7 +189,7 @@ const CartSummary = ({
 						disabled={isApplying}
 						className={cn(
 							"flex-1 px-4 py-3 text-sm bg-white border border-gray-200 focus:outline-none focus:border-black font-medium transition disabled:opacity-50",
-							square ? "rounded-none" : "rounded-full",
+							square ? "rounded-none" : "rounded-lg",
 						)}
 					/>
 					<button
@@ -197,8 +197,8 @@ const CartSummary = ({
 						onClick={() => void handleApplyCoupon()}
 						disabled={isApplying || !couponCode.trim()}
 						className={cn(
-							"px-6 py-3 text-sm font-semibold text-white bg-black hover:bg-black/85 transition cursor-pointer shadow-sm shrink-0 disabled:opacity-50 disabled:cursor-not-allowed",
-							square ? "rounded-none" : "rounded-full",
+							"px-6 py-3 text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition cursor-pointer shadow-sm shrink-0 disabled:opacity-50 disabled:cursor-not-allowed",
+							square ? "rounded-none" : "rounded-lg",
 						)}
 					>
 						{isApplying ? "…" : t("apply")}
@@ -211,8 +211,8 @@ const CartSummary = ({
 				type="button"
 				onClick={handleCheckout}
 				className={cn(
-					"w-full py-4 px-6 bg-black hover:bg-black/85 text-white font-semibold flex items-center justify-center gap-3 transition cursor-pointer shadow-md group",
-					square ? "rounded-none" : "rounded-full",
+					"w-full py-4 px-6 bg-amber-600 hover:bg-amber-700 text-white font-semibold flex items-center justify-center gap-3 transition cursor-pointer shadow-md group",
+					square ? "rounded-none" : "rounded-lg",
 				)}
 			>
 				<span className="text-base font-medium">{t("checkout")}</span>

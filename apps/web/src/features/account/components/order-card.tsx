@@ -48,7 +48,7 @@ const statusStyles = {
 	},
 	processing: {
 		label: "En préparation",
-		color: "bg-blue-50 text-blue-700 border-blue-200",
+		color: "bg-amber-50 text-amber-700 border-blue-200",
 		dot: "bg-blue-500",
 	},
 	shipped: {

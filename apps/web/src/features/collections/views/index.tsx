@@ -113,7 +113,7 @@ export const CollectionViews = () => {
 
 	const formattedTitle =
 		data?.categoryName || (slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : "Collection");
-	const heroImage = data?.categoryImage || "/collections/banner-mode.jpg";
+	const heroImage = data?.categoryImage || "/home/supplements-hero-colorful.jpg";
 	const products = data?.products ?? [];
 	const hasMore = data?.meta.hasNext ?? false;
 
@@ -136,13 +136,13 @@ export const CollectionViews = () => {
 					{formattedTitle}
 				</h1>
 				<p className="text-[1.5rem] text-[#666666]">
-					Découvrez notre sélection {formattedTitle} et plongez dans nos pièces les plus populaires !
+					Découvrez notre sélection {formattedTitle} et nos produits les plus populaires !
 				</p>
 			</div>
 
-			{/* Knitwear Texture Hero Banner */}
+			{/* Bannière de catégorie */}
 			<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 py-4">
-				<div className="relative w-full h-[260px] sm:h-[340px] rounded-[2.6rem] overflow-hidden">
+				<div className="relative w-full h-[260px] sm:h-[340px] rounded-2xl overflow-hidden">
 					<Image
 						src={heroImage}
 						alt={formattedTitle}
@@ -160,31 +160,30 @@ export const CollectionViews = () => {
 				</div>
 			</section>
 
-			{/* Toolbar & Filters */}
+			{/* Toolbar compacte : Filtre | N produits | Trier */}
 			<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
 				<div className="flex flex-wrap items-center gap-4 justify-between border-b border-neutral-200 pb-6">
-					{/* Filter toggle + search : un seul contrôle visuel */}
-					<div className="flex items-stretch flex-1 min-w-[240px] max-w-lg">
+					<div className="flex flex-wrap gap-3 items-center">
 						<button
 							onClick={() => setSidebarOpen((prev) => !prev)}
-							className={`flex items-center gap-2 px-4 py-2.5 rounded-l-full rounded-r-none border border-r-0 transition-all text-[1.4rem] font-medium shrink-0 ${
+							className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all text-[1.4rem] font-medium shrink-0 ${
 								sidebarOpen
-									? "bg-black text-white border-black"
-									: "border-neutral-300 text-black hover:border-black"
+									? "bg-amber-600 text-white border-amber-600"
+									: "border-neutral-300 text-black hover:border-amber-600"
 							} cursor-pointer`}
-							aria-label="Toggle filter sidebar"
+							aria-label="Afficher/masquer les filtres"
 						>
 							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
 								<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
 							</svg>
-							<span>Filtrer</span>
+							<span>Filtre</span>
 						</button>
 
-						<div className="relative flex-1 min-w-[160px]">
+						<div className="relative w-[220px] max-w-full">
 							<svg
-								className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
-								width="16"
-								height="16"
+								className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
+								width="14"
+								height="14"
 								viewBox="0 0 24 24"
 								fill="none"
 								stroke="currentColor"
@@ -198,27 +197,29 @@ export const CollectionViews = () => {
 								placeholder="Rechercher..."
 								value={searchDraft}
 								onChange={(e) => setSearchDraft(e.target.value)}
-								className="w-full pl-11 pr-4 py-2.5 rounded-r-full rounded-l-none border border-l-0 border-neutral-200 text-[1.4rem] outline-none focus:border-black transition-colors"
+								className="py-2.5 pr-3 pl-9 w-full text-[1.3rem] rounded-lg border outline-none transition-colors border-neutral-200 focus:border-amber-600"
 							/>
 						</div>
+
+						<span className="text-[1.3rem] text-neutral-500 whitespace-nowrap">
+							{data?.meta.total ?? 0} produits
+						</span>
 					</div>
 
-					<div className="flex items-center gap-3">
-						<select
-							value={selectedSortValue}
-							onChange={(e) => {
-								const option = SORT_OPTIONS.find((o) => o.value === e.target.value);
-								if (option) setSort(option.sort, option.order);
-							}}
-							className="px-4 py-2.5 rounded-full border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-black"
-						>
-							{SORT_OPTIONS.map((option) => (
-								<option key={option.value} value={option.value}>
-									{option.label}
-								</option>
-							))}
-						</select>
-					</div>
+					<select
+						value={selectedSortValue}
+						onChange={(e) => {
+							const option = SORT_OPTIONS.find((o) => o.value === e.target.value);
+							if (option) setSort(option.sort, option.order);
+						}}
+						className="px-4 py-2.5 rounded-lg border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-amber-600"
+					>
+						{SORT_OPTIONS.map((option) => (
+							<option key={option.value} value={option.value}>
+								{option.label}
+							</option>
+						))}
+					</select>
 				</div>
 			</section>
 
@@ -267,7 +268,7 @@ export const CollectionViews = () => {
 								</p>
 								<button
 									onClick={resetAllFilters}
-									className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-black text-white font-semibold rounded-full hover:bg-neutral-800 transition shadow-lg group text-sm sm:text-base cursor-pointer"
+									className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-amber-600 text-white font-semibold rounded-lg hover:bg-amber-700 transition shadow-lg group text-sm sm:text-base cursor-pointer"
 								>
 									<span>Réinitialiser les filtres</span>
 									<ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1 text-white" />
@@ -296,9 +297,9 @@ export const CollectionViews = () => {
 							<div className="flex justify-center pt-8">
 								<button
 									onClick={() => setLimit((prev) => prev + PAGE_SIZE)}
-									className="inline-flex items-center px-10 py-3 text-sm font-medium text-white bg-black rounded-full transition-colors hover:bg-neutral-800 cursor-pointer"
+									className="inline-flex items-center px-10 py-3 text-sm font-medium text-white bg-amber-600 rounded-lg transition-colors hover:bg-amber-700 cursor-pointer"
 								>
-									See More
+									Voir plus
 								</button>
 							</div>
 						)}
@@ -306,13 +307,13 @@ export const CollectionViews = () => {
 				</div>
 			</section>
 
-			{/* Stratosphere CTA Banner */}
+			{/* Bandeau de fin */}
 			<PhotoOverlayBanner
-				image="/banner/banner4.jpg"
-				title="Let's Take Your Fashion to The Stratosphere"
-				subtitle="Ready to elevate your style? Let's launch your fashion into the stratosphere with bold choices and unique trends!"
+				image="/home/supplements-hero-blue-powder.jpg"
+				title="Votre bien-être, notre priorité"
+				subtitle="Formules testées en laboratoire, ingrédients sélectionnés avec soin pour accompagner votre routine santé au quotidien."
 				cta={{
-					label: "Get Started Now",
+					label: "Découvrir la boutique",
 					href: "/collections",
 				}}
 				contained={true}

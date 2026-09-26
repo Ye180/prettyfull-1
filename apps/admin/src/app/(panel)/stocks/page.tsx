@@ -141,7 +141,7 @@ const StocksContent = () => {
 		<>
 			<PageHeader
 				title="Stocks"
-				description="Quantités au niveau le plus fin : variante et taille, ou produit s'il n'a pas de déclinaison."
+				description="Quantités au niveau le plus fin : variante et format, ou produit s'il n'a pas de déclinaison."
 				actions={
 					<Link
 						href="/stocks/mouvements"

@@ -1,63 +1,82 @@
-import React from "react";
+"use client";
+
+import { useGetHighlights } from "../api/medusa/get-highlights";
+
+const ICONS: Record<string, React.ReactNode> = {
+	lab: (
+		<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+			<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+		</svg>
+	),
+	leaf: (
+		<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+			<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+			<circle cx="9" cy="7" r="4" />
+			<path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+			<path d="M16 3.13a4 4 0 0 1 0 7.75" />
+		</svg>
+	),
+	shield: (
+		<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+			<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+			<path d="m9 12 2 2 4-4" />
+		</svg>
+	),
+};
+
+const DEFAULT_ICON = (
+	<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+		<circle cx="12" cy="12" r="9" />
+		<path d="M12 8v4l3 2" />
+	</svg>
+);
+
+const DEFAULT_FEATURES = [
+	{
+		icon: "lab",
+		title: "Testé en Laboratoire",
+		description:
+			"Chaque formule est analysée par un laboratoire indépendant pour garantir sa pureté, son dosage exact et sa sécurité, lot après lot.",
+	},
+	{
+		icon: "leaf",
+		title: "Sans OGM et Végétalien",
+		description:
+			"Ingrédients naturels, sans OGM, sans gluten ajouté et formules végétaliennes disponibles sur toute la gamme.",
+	},
+	{
+		icon: "shield",
+		title: "Satisfaction Garantie",
+		description:
+			"30 jours pour changer d'avis. Notre équipe reste à votre écoute pour vous accompagner dans votre routine bien-être.",
+	},
+];
 
 export const CustomerExperienceSection = () => {
-	const features = [
-		{
-			title: "Support Rapide et Attentionné",
-			description:
-				"Notre équipe répond rapidement et avec bienveillance, pour une expérience fluide et agréable. Vos besoins sont notre priorité, à chaque étape.",
-			icon: (
-				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-					<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-				</svg>
-			),
-		},
-		{
-			title: "De Nouvelles Pièces Chaque Semaine",
-			description:
-				"Découvrez nos nouveautés dès leur mise en ligne ! Chaque pièce est pensée pour apporter une touche fraîche à votre style. Restez à l'affût des dernières arrivées.",
-			icon: (
-				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-					<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-					<circle cx="9" cy="7" r="4" />
-					<path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-					<path d="M16 3.13a4 4 0 0 1 0 7.75" />
-				</svg>
-			),
-		},
-		{
-			title: "Satisfaction Garantie",
-			description:
-				"Notre équipe est à votre écoute pour garantir votre satisfaction, avec réactivité et bienveillance. Votre expérience est notre priorité.",
-			icon: (
-				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-					<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-					<path d="m9 12 2 2 4-4" />
-				</svg>
-			),
-		},
-	];
+	const { data: highlights } = useGetHighlights("home_trust");
+
+	const features = highlights && highlights.length > 0 ? highlights : DEFAULT_FEATURES;
 
 	return (
-		<section className="w-full bg-[#070707] text-white py-24 my-12">
+		<section className="w-full bg-[#141210] text-white py-14 my-6">
 			<div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
 				{/* Section Header */}
-				<div className="max-w-2xl mx-auto text-center space-y-4 pb-16">
+				<div className="max-w-2xl mx-auto text-center space-y-4 pb-10">
 					<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
-						Une Expérience Client Exceptionnelle
+						Une exigence de qualité à chaque étape
 					</h2>
 					<p className="text-[1.5rem] sm:text-[1.6rem] text-white/70 leading-relaxed font-light">
-						Nous nous engageons à offrir une expérience qui dépasse vos attentes et
-						rend chaque interaction mémorable.
+						De la sélection des ingrédients au service après-vente, nous mettons
+						votre santé et votre confiance au centre de chaque détail.
 					</p>
 				</div>
 
 				{/* 3 Columns */}
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-12">
 					{features.map((feature, idx) => (
 						<div key={idx} className="flex flex-col items-start space-y-5">
-							<div className="w-14 h-14 rounded-full bg-white text-black flex items-center justify-center shadow-lg">
-								{feature.icon}
+							<div className="w-14 h-14 rounded-full bg-amber-600 text-white flex items-center justify-center shadow-lg">
+								{ICONS[feature.icon] ?? DEFAULT_ICON}
 							</div>
 							<h3 className="text-[1.8rem] font-bold text-white tracking-tight">
 								{feature.title}

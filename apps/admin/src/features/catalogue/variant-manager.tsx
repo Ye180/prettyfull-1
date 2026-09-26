@@ -19,10 +19,10 @@ import { IconEdit, IconPlus, IconTrash } from "@/components/icons";
 import { ImageUploadList } from "@/components/ui/image-upload";
 
 /**
- * Gestion incrémentale des variantes et des tailles d'un produit existant.
+ * Gestion incrémentale des variantes et des formats d'un produit existant.
  *
  * L'écran s'adapte au régime du produit (§2.2) : un produit simple ne propose
- * jamais d'ajouter une variante, un produit à variantes n'expose de tailles
+ * jamais d'ajouter une variante, un produit à variantes n'expose de formats
  * qu'au niveau des coloris. La règle est donc rendue impossible à enfreindre
  * depuis l'interface, en plus d'être refusée par l'API.
  */
@@ -128,7 +128,7 @@ export const VariantManager = ({
 			refresh();
 			setSizeDialog(null);
 			setSizeDraft({ label: "", quantity: "0" });
-			notify("Taille ajoutée.");
+			notify("Format ajouté.");
 		},
 		onError: (error) => notifyError(error, "Ajout impossible."),
 	});
@@ -138,7 +138,7 @@ export const VariantManager = ({
 			api.delete(`/api/admin/products/${product.id}/sizes/${sizeId}`),
 		onSuccess: () => {
 			refresh();
-			notify("Taille retirée.");
+			notify("Format retiré.");
 		},
 		onError: (error) => notifyError(error, "Suppression impossible."),
 	});
@@ -147,11 +147,11 @@ export const VariantManager = ({
 		<>
 			<Card>
 				<CardHeader
-					title={product.kind === "variant" ? "Variantes de couleur" : "Tailles"}
+					title={product.kind === "variant" ? "Variantes de couleur" : "Formats"}
 					description={
 						product.kind === "variant"
-							? "Chaque coloris porte sa galerie, ses tailles et son stock."
-							: "Les tailles de ce produit simple. Sans aucune taille, le stock est porté par le produit."
+							? "Chaque coloris porte sa galerie, ses formats et son stock."
+							: "Les formats de ce produit simple. Sans aucun format, le stock est porté par le produit."
 					}
 					action={
 						!disabled &&
@@ -163,7 +163,7 @@ export const VariantManager = ({
 						) : (
 							<Button size="sm" onClick={() => setSizeDialog({ variantId: null })}>
 								<IconPlus width={14} height={14} />
-								Taille
+								Format
 							</Button>
 						))
 					}
@@ -199,7 +199,7 @@ export const VariantManager = ({
 												onClick={() => setSizeDialog({ variantId: variant.id })}
 											>
 												<IconPlus width={14} height={14} />
-												Taille
+												Format
 											</Button>
 											<Button
 												size="sm"
@@ -227,7 +227,7 @@ export const VariantManager = ({
 														type="button"
 														onClick={() => removeSize.mutate(size.id)}
 														className="text-subtle hover:text-danger"
-														aria-label={`Retirer la taille ${size.label}`}
+														aria-label={`Retirer le format ${size.label}`}
 													>
 														<IconTrash width={12} height={12} />
 													</button>
@@ -255,7 +255,7 @@ export const VariantManager = ({
 										type="button"
 										onClick={() => removeSize.mutate(size.id)}
 										className="text-subtle hover:text-danger"
-										aria-label={`Retirer la taille ${size.label}`}
+										aria-label={`Retirer le format ${size.label}`}
 									>
 										<IconTrash width={13} height={13} />
 									</button>
@@ -265,7 +265,7 @@ export const VariantManager = ({
 					</div>
 				) : (
 					<p className="px-4 py-6 text-center text-[13px] text-muted">
-						Ce produit n’a aucune taille : son stock est géré au niveau du produit.
+						Ce produit n’a aucun format : son stock est géré au niveau du produit.
 					</p>
 				)}
 			</Card>
@@ -332,7 +332,7 @@ export const VariantManager = ({
 						/>
 					</Field>
 
-					<Field label="Stock initial" hint="Vous pourrez ensuite lui ajouter des tailles.">
+					<Field label="Stock initial" hint="Vous pourrez ensuite lui ajouter des formats.">
 						<Input
 							inputMode="numeric"
 							value={variantDraft.quantity}
@@ -409,7 +409,7 @@ export const VariantManager = ({
 			<Dialog
 				open={sizeDialog !== null}
 				onClose={() => setSizeDialog(null)}
-				title="Ajouter une taille"
+				title="Ajouter un format"
 				footer={
 					<>
 						<Button onClick={() => setSizeDialog(null)}>Annuler</Button>
@@ -430,7 +430,7 @@ export const VariantManager = ({
 							autoFocus
 							value={sizeDraft.label}
 							onChange={(event) => setSizeDraft({ ...sizeDraft, label: event.target.value })}
-							placeholder="XL"
+							placeholder="500 mg"
 						/>
 					</Field>
 

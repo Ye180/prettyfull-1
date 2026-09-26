@@ -72,9 +72,11 @@ function DrawerContent({
 				)}
 				{...props}
 			>
-				<DialogTitle className="text-center text-[3.2rem]! py-4">
-					{title}
-				</DialogTitle>
+				{title ? (
+					<DialogTitle className="text-center text-[3.2rem]! py-4">
+						{title}
+					</DialogTitle>
+				) : null}
 				<div className=" mx-auto mt-4 hidden h-fit w-[100px] shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block bg-background" />
 				{children}
 			</DrawerPrimitive.Content>

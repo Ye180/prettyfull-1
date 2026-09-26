@@ -4,7 +4,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| MONALISA DESIGN SYSTEM & TYPOGRAPHY SCALING
+| DESIGN SYSTEM & TYPOGRAPHY SCALING
 | Base rem technique: 62.5% (1rem = 10px) desktop, 56.25% (1rem = 9px) mobile
 |--------------------------------------------------------------------------
 */
@@ -14,10 +14,19 @@
 		"Manrope Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		sans-serif;
 	--font-display: "Bebas Neue", sans-serif;
-	--color-monalisa-black: #080808;
-	--color-monalisa-card: #f8f8f8;
-	--color-monalisa-border: #e8e8e8;
-	--color-monalisa-muted: #6f6f6f;
+	--color-ink: #080808;
+	--color-surface-card: #f8f8f8;
+	--color-surface-border: #e8e8e8;
+	--color-surface-muted: #6f6f6f;
+
+	/* Identité "wellness" (vitamines & compléments) : doré chaleureux en
+	 * accent principal sur fond blanc, vert menthe en accent secondaire
+	 * pour les badges naturels/bio. */
+	--color-brand: #d97706;
+	--color-brand-dark: #b45309;
+	--color-brand-soft: #fffbeb;
+	--color-brand-mint: #10b981;
+	--color-brand-mint-soft: #ecfdf5;
 }
 
 html {
@@ -53,7 +62,7 @@ html {
 		-moz-osx-font-smoothing: grayscale;
 	}
 
-	/* Headings: Manrope geometric sans with tight tracking matching Monalisa mockups */
+	/* Headings: Manrope geometric sans with tight tracking */
 	h1,
 	h2,
 	h3,
@@ -114,41 +123,6 @@ html {
 		font-family: inherit;
 		font-size: 1.4rem;
 	}
-}
-
-/* Monalisa Pill Buttons & Interactive Elements */
-.btn-pill {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: 0.8rem;
-	border-radius: 9999px;
-	padding: 1rem 2.4rem;
-	font-size: 1.4rem;
-	font-weight: 500;
-	transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-	cursor: pointer;
-}
-
-.btn-pill-dark {
-	background-color: #080808;
-	color: #ffffff;
-	border: 1px solid #080808;
-}
-.btn-pill-dark:hover {
-	background-color: #222222;
-	transform: translateY(-1px);
-}
-
-.btn-pill-light {
-	background-color: #ffffff;
-	color: #080808;
-	border: 1px solid #e5e7eb;
-}
-.btn-pill-light:hover {
-	background-color: #f9fafb;
-	border-color: #d1d5db;
-	transform: translateY(-1px);
 }
 
 /* Custom Scrollbars */

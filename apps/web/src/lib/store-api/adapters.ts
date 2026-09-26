@@ -238,6 +238,7 @@ export const toStoreCategory = (
 		id: category.id,
 		name: category.name,
 		handle: category.slug,
+		description: category.description,
 		metadata,
 		// Deux entrées attendues par la page d'accueil : la bannière large en
 		// premier (desktop), la vignette ensuite (mobile). Quand une seule est

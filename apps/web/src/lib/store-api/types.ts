@@ -80,6 +80,7 @@ export interface StoreCategory {
 	id: string;
 	name: string;
 	handle: string;
+	description?: string | null;
 	metadata?: Record<string, unknown>;
 	product_category_image?: StoreCategoryImage[];
 	category_children?: StoreCategory[];

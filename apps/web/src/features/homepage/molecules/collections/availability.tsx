@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const OPTIONS = ["In Stock", "Pre-Order", "All"] as const;
+const OPTIONS = ["En stock", "Précommande", "Tout"] as const;
 
 /**
  * Section "Availability" - radio group présentationnel (pas de filtrage
@@ -9,7 +9,7 @@ const OPTIONS = ["In Stock", "Pre-Order", "All"] as const;
  */
 const Availability = () => {
 	const [selected, setSelected] =
-		useState<(typeof OPTIONS)[number]>("In Stock");
+		useState<(typeof OPTIONS)[number]>("En stock");
 
 	return (
 		<div className="space-y-3">

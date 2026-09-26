@@ -1,9 +1,9 @@
 import { Checkbox } from "@prettyfull/ui";
 
-const items = ["Oversized", "Regular", "Slim", "Relaxed"];
+const items = ["Énergie", "Immunité", "Sommeil", "Digestion", "Sport"];
 
 /**
- * Section "Fit" (renommée sémantiquement depuis "Adjust") - présentationnel.
+ * Section "Objectif santé" (renommée depuis "Fit"/"Adjust") - présentationnel.
  */
 const Adjust = () => {
 	return (

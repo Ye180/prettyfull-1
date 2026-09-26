@@ -219,6 +219,79 @@ export declare const bannerListQuerySchema: z.ZodObject<{
         archived: "archived";
     }>>;
 }, z.core.$strip>;
+/**
+ * `sectionKey` regroupe les entrées d'un même bloc affiché sur le storefront
+ * (ex. `home_trust`) - même principe que `featuredEntryInputSchema.sectionKey`.
+ */
+export declare const contentHighlightInputSchema: z.ZodObject<{
+    icon: z.ZodString;
+    title: z.ZodString;
+    description: z.ZodString;
+    sectionKey: z.ZodString;
+    position: z.ZodDefault<z.ZodNumber>;
+    status: z.ZodDefault<z.ZodEnum<{
+        draft: "draft";
+        published: "published";
+        archived: "archived";
+    }>>;
+    translations: z.ZodOptional<z.ZodRecord<z.ZodEnum<{
+        fr: "fr";
+        en: "en";
+    }> & z.core.$partial, z.ZodRecord<z.ZodString, z.ZodString>>>;
+}, z.core.$strip>;
+export type ContentHighlightInput = z.infer<typeof contentHighlightInputSchema>;
+export declare const updateContentHighlightSchema: z.ZodObject<{
+    icon: z.ZodOptional<z.ZodString>;
+    title: z.ZodOptional<z.ZodString>;
+    description: z.ZodOptional<z.ZodString>;
+    sectionKey: z.ZodOptional<z.ZodString>;
+    position: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
+    status: z.ZodOptional<z.ZodDefault<z.ZodEnum<{
+        draft: "draft";
+        published: "published";
+        archived: "archived";
+    }>>>;
+    translations: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodEnum<{
+        fr: "fr";
+        en: "en";
+    }> & z.core.$partial, z.ZodRecord<z.ZodString, z.ZodString>>>>;
+}, z.core.$strip>;
+export type UpdateContentHighlightInput = z.infer<typeof updateContentHighlightSchema>;
+export declare const contentHighlightSchema: z.ZodObject<{
+    id: z.ZodUUID;
+    icon: z.ZodString;
+    title: z.ZodString;
+    description: z.ZodString;
+    sectionKey: z.ZodString;
+    position: z.ZodNumber;
+    status: z.ZodEnum<{
+        draft: "draft";
+        published: "published";
+        archived: "archived";
+    }>;
+    translations: z.ZodOptional<z.ZodRecord<z.ZodEnum<{
+        fr: "fr";
+        en: "en";
+    }> & z.core.$partial, z.ZodRecord<z.ZodString, z.ZodString>>>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, z.core.$strip>;
+export type ContentHighlight = z.infer<typeof contentHighlightSchema>;
+export declare const contentHighlightListQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodCoercedNumber<unknown>>;
+    limit: z.ZodDefault<z.ZodCoercedNumber<unknown>>;
+    sort: z.ZodOptional<z.ZodString>;
+    order: z.ZodDefault<z.ZodEnum<{
+        asc: "asc";
+        desc: "desc";
+    }>>;
+    sectionKey: z.ZodOptional<z.ZodString>;
+    status: z.ZodOptional<z.ZodEnum<{
+        draft: "draft";
+        published: "published";
+        archived: "archived";
+    }>>;
+}, z.core.$strip>;
 export declare const staticPageListQuerySchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodCoercedNumber<unknown>>;
     limit: z.ZodDefault<z.ZodCoercedNumber<unknown>>;

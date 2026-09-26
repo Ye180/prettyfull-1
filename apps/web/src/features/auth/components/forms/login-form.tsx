@@ -57,8 +57,8 @@ export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
 					<div className="mb-16">
 						<h3>Bon retour sur PrettyFull</h3>
 						<p className="text-neutral-500">
-							Connectez-vous à votre compte pour découvrir les dernières
-							tendances mode
+							Connectez-vous à votre compte pour retrouver vos compléments
+							et suivre vos commandes
 						</p>
 					</div>
 					<div className="space-y-8">

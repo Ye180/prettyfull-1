@@ -10,7 +10,7 @@ export const DataRule: FaqItem[] = [
 		title: "ARTICLES EN PRÉCOMMANDE / ACHAT GROUPÉ",
 		category: "Commandes",
 		description:
-			"Certains articles sont fabriqués ou confectionnés sur mesure et sont proposés en précommande. Une fois la commande validée, aucun remboursement ni annulation n'est possible sur ces articles. Retrouvez le détail de cette politique dans nos Conditions Générales de Vente. Merci de vérifier votre colis dès sa réception et de nous contacter immédiatement si l'article est défectueux, endommagé ou ne correspond pas à votre commande, afin que nous puissions étudier la situation et trouver une solution rapidement.",
+			"Certains produits sont en rupture temporaire et proposés en précommande en attendant le réapprovisionnement. Une fois la commande validée, aucune annulation n'est possible sur ces produits. Retrouvez le détail de cette politique dans nos Conditions Générales de Vente. Merci de vérifier votre colis dès sa réception et de nous contacter immédiatement si le produit est défectueux, endommagé ou ne correspond pas à votre commande, afin que nous puissions étudier la situation et trouver une solution rapidement.",
 	},
 	{
 		title: "COMMENT SUIVRE MA COMMANDE ?",
@@ -52,13 +52,13 @@ export const DataRule: FaqItem[] = [
 		title: "DOMMAGES ET PROBLÈMES CONSTATÉS",
 		category: "Retours & Échanges",
 		description:
-			"En raison de la nature des processus de fabrication utilisés, de légères imperfections peuvent subsister sur le produit final. Sont considérés comme défauts mineurs : de petites marques de finition, de légères traces sur les finitions ou de petits accrocs. Sont considérés comme défauts majeurs : de larges rayures ou déformations visibles, des éléments cassés ou manquants, ou la réception d'un article différent de celui commandé. Dans ce dernier cas, contactez-nous immédiatement pour un échange ou un remboursement.",
+			"En raison de la nature des produits, de légères variations d'aspect (étiquette, packaging) peuvent subsister sans affecter la qualité du produit. Sont considérés comme défauts majeurs : un emballage descellé ou endommagé à la réception, une date de péremption dépassée, ou la réception d'un produit différent de celui commandé. Dans ce dernier cas, contactez-nous immédiatement pour un échange ou un remboursement.",
 	},
 	{
 		title: "EXCEPTIONS / ARTICLES NON REMBOURSABLES",
 		category: "Retours & Échanges",
 		description:
-			"Certains articles ne peuvent pas faire l'objet d'un retour, notamment les produits personnalisés (commandes spéciales ou articles réalisés sur mesure), les articles soldés ou les cartes cadeaux. Pour toute question concernant un article spécifique, n'hésitez pas à nous contacter.",
+			"Certains produits ne peuvent pas faire l'objet d'un retour, notamment les produits dont l'emballage a été ouvert (raisons d'hygiène et de sécurité sanitaire), les articles soldés ou les cartes cadeaux. Pour toute question concernant un produit spécifique, n'hésitez pas à nous contacter.",
 	},
 	{
 		title: "COMMENT DÉMARRER UN RETOUR ?",
@@ -67,16 +67,16 @@ export const DataRule: FaqItem[] = [
 			"Rendez-vous dans « Mes commandes », sélectionnez l'article concerné et suivez les étapes du formulaire de retour. Une étiquette prépayée vous sera envoyée par e-mail sous 24h.",
 	},
 	{
-		title: "COMMENT CHOISIR MA TAILLE ?",
-		category: "Produits & Tailles",
+		title: "COMMENT CHOISIR MON FORMAT / DOSAGE ?",
+		category: "Produits & Dosages",
 		description:
-			"Chaque fiche produit propose un guide des tailles détaillé avec les mesures en centimètres. En cas de doute entre deux tailles, nous recommandons généralement de prendre la taille au-dessus.",
+			"Chaque fiche produit indique la posologie recommandée et les informations nutritionnelles détaillées. En cas de doute sur le dosage adapté à votre situation, nous vous recommandons de consulter un professionnel de santé.",
 	},
 	{
-		title: "LES COULEURS SONT-ELLES FIDÈLES AUX PHOTOS ?",
-		category: "Produits & Tailles",
+		title: "LE PACKAGING EST-IL FIDÈLE AUX PHOTOS ?",
+		category: "Produits & Dosages",
 		description:
-			"Nous ajustons nos photos pour rester au plus proche de la réalité, mais un léger écart peut subsister selon le réglage de votre écran. N'hésitez pas à nous écrire pour toute précision sur un coloris.",
+			"Nous ajustons nos photos pour rester au plus proche de la réalité, mais un léger écart peut subsister selon le réglage de votre écran ou une évolution mineure du packaging fournisseur. N'hésitez pas à nous écrire pour toute précision sur un produit.",
 	},
 	{
 		title: "QUELS MOYENS DE PAIEMENT ACCEPTEZ-VOUS ?",

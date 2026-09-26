@@ -34,7 +34,7 @@ const CheckoutSummary = ({ currency }: { currency: string }) => {
 	const total = subtotal + shipping + taxes;
 
 	return (
-		<div className="px-8 py-6 w-full bg-white rounded-4xl">
+		<div className="px-8 py-6 w-full bg-white rounded-xl">
 			{/* SECTION: Produits visuels */}
 			<div className="flex flex-col pb-8 space-y-10">
 				{items.map((item) => (
@@ -45,7 +45,6 @@ const CheckoutSummary = ({ currency }: { currency: string }) => {
 							name: item.product.name,
 							description: item.product.description || "",
 							price: item.unitPrice?.amount ?? item.product.price?.amount ?? 0,
-							size: Object.values(item.selectedVariants || {}).join(" / "),
 							image: item.product.image || "",
 							quantity: item.quantity,
 						}}

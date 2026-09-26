@@ -55,7 +55,7 @@ export const BestSellingSection = () => {
 				category: product.collection?.title ?? "",
 				price: product.variants[0]?.calculated_price?.calculated_amount ?? 0,
 				compareAtPrice: product.variants[0]?.calculated_price?.original_amount,
-				image: getMediaUrl(product.thumbnail) || "/assets/product_2.jpg",
+				image: getMediaUrl(product.thumbnail) || "/products/multivitamin.jpg",
 				variantCount: countDistinctColors(product),
 			})),
 		[rawProducts],
@@ -93,23 +93,23 @@ export const BestSellingSection = () => {
 	).slice(0, 6);
 
 	return (
-		<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+		<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
 			{/* En-tête */}
 			<div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8">
 				<div className="max-w-xl">
 					<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#080808]">
-						Explorez Notre Collection de Meilleures Ventes
+						Nos best-sellers santé & bien-être
 					</h2>
 				</div>
 
 				<div className="flex flex-col sm:flex-row sm:items-center gap-4 max-w-md">
 					<p className="text-[1.4rem] text-[#666666] leading-relaxed">
-						Découvrez et plongez dans nos catégories les plus populaires dont
-						tout le monde parle !
+						Vitamines, protéines et compléments plébiscités par notre
+						communauté pour leur qualité et leur efficacité.
 					</p>
 					<Link
 						href="/collections"
-						className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white text-[1.4rem] font-medium rounded-full whitespace-nowrap hover:bg-[#222] transition-all self-start shadow"
+						className="inline-flex items-center gap-2 px-6 py-3 bg-amber-600 text-white text-[1.4rem] font-medium rounded-lg whitespace-nowrap hover:bg-amber-700 transition-all self-start shadow"
 					>
 						<span>Achetez maintenant</span>
 						<svg
@@ -136,10 +136,10 @@ export const BestSellingSection = () => {
 						<button
 							key={cat}
 							onClick={() => setActiveCategory(cat)}
-							className={`px-6 py-2.5 rounded-full text-[1.4rem] font-medium whitespace-nowrap transition-all ${
+							className={`px-5 py-2 rounded-lg text-[1.4rem] font-medium whitespace-nowrap transition-all ${
 								isActive
-									? "bg-black text-white shadow"
-									: "bg-transparent text-[#222222] border border-[#E5E7EB] hover:border-black"
+									? "bg-amber-600 text-white shadow"
+									: "bg-transparent text-[#222222] border border-[#E5E7EB] hover:border-amber-600"
 							} cursor-pointer`}
 						>
 							{cat}
@@ -149,11 +149,11 @@ export const BestSellingSection = () => {
 			</div>
 
 			{/* Grille de produits */}
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-4">
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
 				{isLoading
 					? Array.from({ length: 6 }, (_, i) => (
 							<div key={i} className="space-y-4 animate-pulse">
-								<div className="w-full bg-gray-200 rounded-[2.2rem] aspect-[1/1.12]" />
+								<div className="w-full bg-gray-200 rounded-lg aspect-[1/1.12]" />
 								<div className="w-3/4 h-6 bg-gray-200 rounded" />
 								<div className="w-1/3 h-6 bg-gray-300 rounded" />
 							</div>
@@ -168,7 +168,7 @@ export const BestSellingSection = () => {
 									href={PRODUCT_PATHS.productDetail(product.handle)}
 									className="group flex flex-col space-y-4"
 								>
-									<div className="relative w-full aspect-[1/1.12] bg-[#F7F7F7] rounded-[2.2rem] overflow-hidden transition-all duration-300 group-hover:shadow-md">
+									<div className="relative w-full aspect-[1/1.12] bg-[#F7F7F7] rounded-lg overflow-hidden transition-all duration-300 group-hover:shadow-md">
 										<Image
 											src={product.image}
 											alt={product.name}
@@ -185,7 +185,7 @@ export const BestSellingSection = () => {
 												{product.name}{" "}
 												{product.variantCount > 1 && (
 													<span className="font-normal text-[#777777] text-[1.4rem]">
-														({product.variantCount} coloris)
+														({product.variantCount} options)
 													</span>
 												)}
 											</h3>

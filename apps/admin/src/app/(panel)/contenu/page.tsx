@@ -1,6 +1,6 @@
 "use client";
 
-import type { Banner, Paginated, StaticPage } from "@prettyfull/contracts";
+import type { Banner, ContentHighlight, Paginated, StaticPage } from "@prettyfull/contracts";
 import { BANNER_PLACEMENTS, PERMISSIONS, UPLOAD_ENDPOINTS } from "@prettyfull/contracts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -51,6 +51,16 @@ interface PageDraft {
 	status: "draft" | "published" | "archived";
 }
 
+interface HighlightDraft {
+	id?: string;
+	icon: string;
+	title: string;
+	description: string;
+	sectionKey: string;
+	status: "draft" | "published" | "archived";
+	position: string;
+}
+
 const ContentPage = () => {
 	const queryClient = useQueryClient();
 	const { can } = useAuth();
@@ -59,7 +69,8 @@ const ContentPage = () => {
 
 	const [bannerDraft, setBannerDraft] = useState<BannerDraft | null>(null);
 	const [pageDraft, setPageDraft] = useState<PageDraft | null>(null);
-	const [toDelete, setToDelete] = useState<{ kind: "banner" | "page"; id: string; label: string } | null>(null);
+	const [highlightDraft, setHighlightDraft] = useState<HighlightDraft | null>(null);
+	const [toDelete, setToDelete] = useState<{ kind: "banner" | "page" | "highlight"; id: string; label: string } | null>(null);
 
 	const { data: banners, isLoading: loadingBanners } = useQuery({
 		queryKey: ["banners"],
@@ -69,6 +80,11 @@ const ContentPage = () => {
 	const { data: pages } = useQuery({
 		queryKey: ["pages"],
 		queryFn: () => api.get<Paginated<StaticPage>>("/api/admin/pages?limit=50"),
+	});
+
+	const { data: highlights, isLoading: loadingHighlights } = useQuery({
+		queryKey: ["highlights"],
+		queryFn: () => api.get<Paginated<ContentHighlight>>("/api/admin/highlights?limit=50"),
 	});
 
 	const refresh = (key: string) => {
@@ -122,15 +138,46 @@ const ContentPage = () => {
 		onError: (error) => notifyError(error, "Enregistrement impossible."),
 	});
 
+	const saveHighlight = useMutation({
+		mutationFn: () => {
+			const payload = {
+				icon: highlightDraft!.icon.trim(),
+				title: highlightDraft!.title.trim(),
+				description: highlightDraft!.description.trim(),
+				sectionKey: highlightDraft!.sectionKey.trim(),
+				status: highlightDraft!.status,
+				position: Number(highlightDraft!.position) || 0,
+			};
+
+			return highlightDraft!.id
+				? api.patch(`/api/admin/highlights/${highlightDraft!.id}`, payload)
+				: api.post("/api/admin/highlights", payload);
+		},
+		onSuccess: () => {
+			refresh("highlights");
+			notify(highlightDraft?.id ? "Bloc mis à jour." : "Bloc créé.");
+			setHighlightDraft(null);
+		},
+		onError: (error) => notifyError(error, "Enregistrement impossible."),
+	});
+
+	const DELETE_ENDPOINTS = {
+		banner: "banners",
+		page: "pages",
+		highlight: "highlights",
+	} as const;
+
 	const remove = useMutation({
 		mutationFn: () =>
-			api.delete(
-				toDelete!.kind === "banner"
-					? `/api/admin/banners/${toDelete!.id}`
-					: `/api/admin/pages/${toDelete!.id}`,
-			),
+			api.delete(`/api/admin/${DELETE_ENDPOINTS[toDelete!.kind]}/${toDelete!.id}`),
 		onSuccess: () => {
-			refresh(toDelete!.kind === "banner" ? "banners" : "pages");
+			refresh(
+				toDelete!.kind === "banner"
+					? "banners"
+					: toDelete!.kind === "page"
+						? "pages"
+						: "highlights",
+			);
 			notify("Élément supprimé.");
 			setToDelete(null);
 		},
@@ -332,6 +379,98 @@ const ContentPage = () => {
 				</ul>
 			</Card>
 
+			<Card className="mt-4">
+				<CardHeader
+					title="Blocs de mise en avant"
+					description="Badges de confiance, arguments qualité, etc. Regroupés par section (ex. « home_trust »)."
+					action={
+						writable && (
+							<Button
+								size="sm"
+								variant="primary"
+								onClick={() =>
+									setHighlightDraft({
+										icon: "",
+										title: "",
+										description: "",
+										sectionKey: "home_trust",
+										status: "draft",
+										position: "0",
+									})
+								}
+							>
+								<IconPlus width={14} height={14} />
+								Bloc
+							</Button>
+						)
+					}
+				/>
+
+				{loadingHighlights ? (
+					<Spinner />
+				) : (highlights?.data ?? []).length === 0 ? (
+					<p className="px-4 py-8 text-center text-[13px] text-muted">
+						Aucun bloc. La page d’accueil affichera son contenu par défaut.
+					</p>
+				) : (
+					<ul className="divide-y divide-[var(--border)]">
+						{(highlights?.data ?? []).map((highlight) => (
+							<li key={highlight.id} className="flex items-center gap-3 px-4 py-3">
+								<div className="min-w-0 flex-1">
+									<p className="truncate text-[13px] font-medium text-ink">
+										{highlight.title}
+									</p>
+									<p className="truncate text-[12px] text-subtle">
+										{highlight.sectionKey} · {highlight.icon}
+									</p>
+								</div>
+
+								<Badge tone={contentStatusTone(highlight.status)}>
+									{CONTENT_STATUS_LABELS[highlight.status]}
+								</Badge>
+
+								{writable && (
+									<>
+										<Button
+											size="sm"
+											variant="ghost"
+											aria-label="Modifier"
+											onClick={() =>
+												setHighlightDraft({
+													id: highlight.id,
+													icon: highlight.icon,
+													title: highlight.title,
+													description: highlight.description,
+													sectionKey: highlight.sectionKey,
+													status: highlight.status,
+													position: String(highlight.position),
+												})
+											}
+										>
+											<IconEdit width={15} height={15} />
+										</Button>
+										<Button
+											size="sm"
+											variant="ghost"
+											aria-label="Supprimer"
+											onClick={() =>
+												setToDelete({
+													kind: "highlight",
+													id: highlight.id,
+													label: highlight.title,
+												})
+											}
+										>
+											<IconTrash width={15} height={15} />
+										</Button>
+									</>
+								)}
+							</li>
+						))}
+					</ul>
+				)}
+			</Card>
+
 			<Dialog
 				open={bannerDraft !== null}
 				onClose={() => setBannerDraft(null)}
@@ -520,6 +659,106 @@ const ContentPage = () => {
 								]}
 							/>
 						</Field>
+					</div>
+				)}
+			</Dialog>
+
+			<Dialog
+				open={highlightDraft !== null}
+				onClose={() => setHighlightDraft(null)}
+				title={highlightDraft?.id ? "Modifier le bloc" : "Nouveau bloc"}
+				size="md"
+				footer={
+					<>
+						<Button onClick={() => setHighlightDraft(null)}>Annuler</Button>
+						<Button
+							variant="primary"
+							onClick={() => saveHighlight.mutate()}
+							loading={saveHighlight.isPending}
+							disabled={
+								!highlightDraft?.title.trim() ||
+								!highlightDraft?.description.trim() ||
+								!highlightDraft?.sectionKey.trim()
+							}
+						>
+							Enregistrer
+						</Button>
+					</>
+				}
+			>
+				{highlightDraft && (
+					<div className="flex flex-col gap-4">
+						<div className="grid gap-4 sm:grid-cols-2">
+							<Field label="Icône" hint="Identifiant résolu côté storefront (ex. lab, leaf, shield).">
+								<Input
+									value={highlightDraft.icon}
+									onChange={(event) =>
+										setHighlightDraft({ ...highlightDraft, icon: event.target.value })
+									}
+									placeholder="lab"
+								/>
+							</Field>
+
+							<Field label="Section" hint="Regroupe les blocs affichés ensemble (ex. home_trust).">
+								<Input
+									value={highlightDraft.sectionKey}
+									onChange={(event) =>
+										setHighlightDraft({ ...highlightDraft, sectionKey: event.target.value })
+									}
+									placeholder="home_trust"
+								/>
+							</Field>
+						</div>
+
+						<Field label="Titre" required>
+							<Input
+								autoFocus
+								value={highlightDraft.title}
+								onChange={(event) =>
+									setHighlightDraft({ ...highlightDraft, title: event.target.value })
+								}
+							/>
+						</Field>
+
+						<Field label="Description" required>
+							<Textarea
+								rows={3}
+								value={highlightDraft.description}
+								onChange={(event) =>
+									setHighlightDraft({ ...highlightDraft, description: event.target.value })
+								}
+							/>
+						</Field>
+
+						<div className="grid gap-4 sm:grid-cols-2">
+							<Field label="Position">
+								<Input
+									type="number"
+									min={0}
+									value={highlightDraft.position}
+									onChange={(event) =>
+										setHighlightDraft({ ...highlightDraft, position: event.target.value })
+									}
+								/>
+							</Field>
+
+							<Field label="Statut">
+								<Select
+									value={highlightDraft.status}
+									onChange={(event) =>
+										setHighlightDraft({
+											...highlightDraft,
+											status: event.target.value as HighlightDraft["status"],
+										})
+									}
+									options={[
+										{ value: "draft", label: "Brouillon" },
+										{ value: "published", label: "Publiée" },
+										{ value: "archived", label: "Archivée" },
+									]}
+								/>
+							</Field>
+						</div>
 					</div>
 				)}
 			</Dialog>
