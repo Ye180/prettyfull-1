@@ -18,14 +18,11 @@ const HomeView = () => {
 			{/* 1. Hero Section */}
 			<HeroBanner />
 
-			{/* 1b. Trust badges */}
-			<TrustBadgesSection />
-
-			{/* 2. Explore Our Best Selling Product Collection */}
-			<BestSellingSection />
-
-			{/* 2b. Grille "Shop New Products" (2 grandes + 3 petites tuiles) */}
+			{/* 1b. Grille "Shop New Products" (2 grandes + 3 petites tuiles) */}
 			<ShopNewProducts />
+
+			{/* 1c. Trust badges */}
+			<TrustBadgesSection />
 
 			{/* 3. We Deliver Exceptional Customer Experiences (Dark Section) */}
 			<CustomerExperienceSection />
@@ -35,6 +32,9 @@ const HomeView = () => {
 
 			{/* 5. Product Recommendations (Editorial Articles / Stories) */}
 			<ProductRecommendations />
+
+			{/* 2. Explore Our Best Selling Product Collection */}
+			<BestSellingSection />
 
 			{/* 6. Stratosphere Call-To-Action Banner */}
 			<PhotoOverlayBanner

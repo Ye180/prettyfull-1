@@ -4,6 +4,7 @@ import { useRegionStore } from "@/stores/useRegion";
 import { Checkbox } from "@prettyfull/ui";
 import { useCartStore, type CartItem } from "@prettyfull/store";
 import { cn } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
 import { formatCurrency_FR } from "../../../../../../../packages/utils/lib/format-curency";
@@ -23,6 +24,7 @@ const CartItems = ({
 	onToggleItem,
 	square,
 }: CartItemsProps) => {
+	const t = useTranslations("Cart.items");
 	const removeItem = useCartStore((state) => state.removeItem);
 	const regions = useRegionStore((state) => state.region);
 	const currency = regions?.currency_code === "xof" ? "FCFA" : "$";
@@ -51,13 +53,13 @@ const CartItems = ({
 					</svg>
 				</div>
 				<span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
-					Panier vide
+					{t("emptyBadge")}
 				</span>
 				<h3 className="mt-3 text-xl font-bold text-gray-900">
-					Votre panier est vide
+					{t("emptyTitle")}
 				</h3>
 				<p className="mt-2 max-w-xs text-sm text-gray-500">
-					Ajoutez des articles pour les retrouver ici.
+					{t("emptyDescription")}
 				</p>
 			</div>
 		);
@@ -85,7 +87,7 @@ const CartItems = ({
 									)}
 									checked={selectedIds?.has(item.productId) ?? false}
 									onCheckedChange={() => onToggleItem(item.productId)}
-									aria-label={`Sélectionner ${item.product.name}`}
+									aria-label={t("selectItemAria", { name: item.product.name })}
 								/>
 							</div>
 						)}
@@ -129,7 +131,7 @@ const CartItems = ({
 						<button
 							type="button"
 							onClick={() => removeItem(item.productId)}
-							aria-label={`Retirer ${item.product.name}`}
+							aria-label={t("removeItemAria", { name: item.product.name })}
 							className={cn(
 								"absolute top-6 right-0 p-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer",
 								square ? "rounded-none" : "rounded-full",

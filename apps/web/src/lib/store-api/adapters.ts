@@ -27,6 +27,31 @@ import type {
 const OPTION_COLOR = "Color";
 const OPTION_SIZE = "Size";
 
+/**
+ * Locale courante côté client, lue directement dans le cookie `NEXT_LOCALE`
+ * (celui qu'écrit le sélecteur de langue et que lit `i18n/request.ts` côté
+ * serveur) - ces adaptateurs tournent dans des `queryFn` sans accès aux hooks
+ * React, donc pas de `useLocale()` ici.
+ */
+const getClientLocale = (): "fr" | "en" => {
+	if (typeof document === "undefined") return "fr";
+	const match = document.cookie.match(/(?:^|; )NEXT_LOCALE=([^;]+)/);
+	return match?.[1] === "en" ? "en" : "fr";
+};
+
+/** Nom/titre localisé : l'anglais s'il existe et qu'on est en `en`, le français sinon (langue pivot). */
+const localizedText = (
+	base: string,
+	translations: { en?: Record<string, string> } | undefined,
+	field: string,
+): string => {
+	if (getClientLocale() === "en") {
+		const translated = translations?.en?.[field];
+		if (translated) return translated;
+	}
+	return base;
+};
+
 /** Prix effectif : cascade taille → variante → produit, comme côté API. */
 const priceFor = (
 	product: Product,
@@ -197,9 +222,13 @@ export const toStoreProduct = (product: Product): StoreProduct => {
 
 	return {
 		id: product.id,
-		title: product.name,
+		title: localizedText(product.name, product.translations, "name"),
 		handle: product.slug,
-		description: product.shortDescription ?? product.longDescription ?? "",
+		description: localizedText(
+			product.shortDescription ?? product.longDescription ?? "",
+			product.translations,
+			"shortDescription",
+		),
 		thumbnail: product.images[0]?.url ?? "",
 		images: product.images.map((image) => ({ id: image.id, url: image.url })),
 		collection: primaryCategory
@@ -236,9 +265,11 @@ export const toStoreCategory = (
 
 	return {
 		id: category.id,
-		name: category.name,
+		name: localizedText(category.name, category.translations, "name"),
 		handle: category.slug,
-		description: category.description,
+		description: category.description
+			? localizedText(category.description, category.translations, "description")
+			: category.description,
 		metadata,
 		// Deux entrées attendues par la page d'accueil : la bannière large en
 		// premier (desktop), la vignette ensuite (mobile). Quand une seule est

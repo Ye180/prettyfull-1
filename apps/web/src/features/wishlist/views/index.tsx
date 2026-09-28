@@ -3,10 +3,12 @@
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
 import { useWishlistStore } from "@prettyfull/store";
 import { formatCurrency_FR } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
 const WishlistView = () => {
+	const t = useTranslations("Wishlist");
 	const items = useWishlistStore((state) => state.items);
 	const removeItem = useWishlistStore((state) => state.removeItem);
 
@@ -15,7 +17,7 @@ const WishlistView = () => {
 			<div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex flex-wrap gap-4 justify-between items-center pb-6">
 					<h1 className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl text-gray-950">
-						Mes préférences
+						{t("pageTitle")}
 						<span className="font-medium text-gray-400">({items.length})</span>
 					</h1>
 				</div>
@@ -58,7 +60,7 @@ const WishlistView = () => {
 									<button
 										type="button"
 										onClick={() => removeItem(item.productId)}
-										aria-label={`Retirer ${item.product.name}`}
+										aria-label={t("removeAria", { name: item.product.name })}
 										className="p-2 text-rose-500 rounded-full transition cursor-pointer hover:text-rose-600 hover:bg-rose-50"
 									>
 										<svg
@@ -82,17 +84,16 @@ const WishlistView = () => {
 							♡
 						</div>
 						<h2 className="mb-2 text-2xl font-bold text-gray-900">
-							Votre liste d'envies est actuellement vide.
+							{t("emptyTitle")}
 						</h2>
 						<p className="mb-8 leading-relaxed text-gray-500">
-							Enregistrez les pièces que vous aimez et retrouvez-les ici dès que
-							vous êtes prêt.
+							{t("emptyDescription")}
 						</p>
 						<Link
 							href="/collections"
 							className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-full transition shadow-sm"
 						>
-							<span>Explorer les collections</span>
+							<span>{t("exploreCollections")}</span>
 							<ArrowRightIcon className="w-4 h-4" />
 						</Link>
 					</div>

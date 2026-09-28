@@ -1,8 +1,10 @@
 "use client";
 
+import { QuantitySelector } from "@/features/cart/components/molecules/quantity-selector";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
 import { useCartStore, type CartItem } from "@prettyfull/store";
 import { formatCurrency_FR } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 interface MiniCartItemProps {
@@ -12,11 +14,11 @@ interface MiniCartItemProps {
 
 /**
  * Ligne de panier façon carte flottante (référence client) : image, nom,
- * prix, stepper en pastille numérique avec chevrons empilés - propre au
- * tiroir panier, distinct du rendu tabulaire de `CartItems` sur /cart.
+ * prix, et le même stepper -/+ que sur /cart (`QuantitySelector`) - distinct
+ * du rendu tabulaire de `CartItems` sur /cart.
  */
 export const MiniCartItem = ({ item, currency }: MiniCartItemProps) => {
-	const updateQuantity = useCartStore((state) => state.updateQuantity);
+	const t = useTranslations("Header.cart");
 	const removeItem = useCartStore((state) => state.removeItem);
 
 	const unitPrice = item.unitPrice?.amount ?? item.product.price?.amount ?? 0;
@@ -46,37 +48,15 @@ export const MiniCartItem = ({ item, currency }: MiniCartItemProps) => {
 				</div>
 
 				<div className="flex justify-between items-end mt-3">
-					<div className="flex items-center h-9 rounded-md border border-gray-300">
-						<span className="flex justify-center items-center w-9 text-sm font-medium border-r border-gray-300">
-							{item.quantity}
-						</span>
-						<div className="flex flex-col">
-							<button
-								type="button"
-								aria-label="Augmenter la quantité"
-								onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-								className="flex justify-center items-center w-6 h-[17px] cursor-pointer hover:bg-gray-50"
-							>
-								<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-									<polyline points="6 15 12 9 18 15" />
-								</svg>
-							</button>
-							<button
-								type="button"
-								aria-label="Diminuer la quantité"
-								onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-								className="flex justify-center items-center w-6 h-[17px] border-t border-gray-300 cursor-pointer hover:bg-gray-50"
-							>
-								<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-									<polyline points="6 9 12 15 18 9" />
-								</svg>
-							</button>
-						</div>
-					</div>
+					<QuantitySelector
+						productId={item.productId}
+						initialQuantity={item.quantity}
+						square
+					/>
 
 					<button
 						type="button"
-						aria-label={`Retirer ${item.product.name}`}
+						aria-label={t("removeItem", { name: item.product.name })}
 						onClick={() => removeItem(item.productId)}
 						className="p-2 text-gray-400 rounded-md transition-colors cursor-pointer hover:text-red-500 hover:bg-red-50"
 					>

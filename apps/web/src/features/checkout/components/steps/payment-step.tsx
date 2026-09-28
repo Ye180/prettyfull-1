@@ -2,6 +2,7 @@
 
 import { Button, Input } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useGetPaymentProviders } from "../../api/get-payment-providers";
 import { useInitPaymentSession } from "../../api/init-payment-session";
@@ -25,6 +26,7 @@ export function PaymentStep({
 	regionId,
 	onComplete,
 }: PaymentStepProps) {
+	const t = useTranslations("CheckoutPage.payment");
 	const { goToStep, isStepCompleted, isStepActive } = useCheckoutStep();
 	const { selectedPaymentProviderId, setSelectedPaymentProviderId } =
 		useCheckoutStore();
@@ -71,15 +73,11 @@ export function PaymentStep({
 			onComplete?.(selectedMethod);
 		} catch (error: any) {
 			console.error("Failed to initialize payment session:", error);
-			const errorMessage =
-				error?.message ||
-				"Impossible d'initialiser le paiement. Veuillez réessayer.";
+			const errorMessage = error?.message || t("initError");
 
 			// Check if it's the payment collection error
 			if (errorMessage.includes("No payment collection")) {
-				setError(
-					"La collection de paiement n'a pas été créée. Veuillez retourner à l'étape de livraison et sélectionner à nouveau votre méthode de livraison.",
-				);
+				setError(t("paymentCollectionError"));
 			} else {
 				setError(errorMessage);
 			}
@@ -119,7 +117,7 @@ export function PaymentStep({
 		if (provider.name) return provider.name;
 
 		const fallback: Record<string, string> = {
-			manual: "Paiement à la livraison",
+			manual: t("codLabel"),
 			wave: "Wave",
 		};
 		return fallback[provider.id] || provider.id;
@@ -152,7 +150,7 @@ export function PaymentStep({
 						},
 					)}
 				>
-					Paiement
+					{t("title")}
 					{isCompleted && (
 						<svg
 							className="w-8 h-8 text-green-600"
@@ -173,7 +171,7 @@ export function PaymentStep({
 						onClick={handleEdit}
 						className="px-6 py-2 text-sm text-dark w-fit"
 					>
-						Modifier
+						{t("edit")}
 					</Button>
 				)}
 			</div>
@@ -181,7 +179,7 @@ export function PaymentStep({
 			{/* Content */}
 			{isOpen && canAccess ? (
 				<div className="space-y-6">
-					<p className="text-sm text-gray-600">Sélectionnez votre méthode de paiement</p>
+					<p className="text-sm text-gray-600">{t("selectMethod")}</p>
 
 					{/* Error Message */}
 					{error && (
@@ -192,7 +190,7 @@ export function PaymentStep({
 
 					{/* Payment Methods */}
 					{providersLoading ? (
-						<p className="text-sm text-gray-500">Chargement des méthodes de paiement...</p>
+						<p className="text-sm text-gray-500">{t("loadingMethods")}</p>
 					) : (
 						<div className="space-y-8">
 							{paymentProviders?.map((provider: any) => (
@@ -225,11 +223,10 @@ export function PaymentStep({
 					{isSystemProvider && (
 						<div className="p-4 space-y-2 text-sm bg-green-50 rounded-lg border border-green-200">
 							<p className="font-medium text-green-800">
-								Paiement à la livraison
+								{t("codLabel")}
 							</p>
 							<p className="text-green-700">
-								Vous paierez en espèces ou par mobile money au moment de la
-								livraison. Aucun paiement en ligne requis.
+								{t("codDescription")}
 							</p>
 						</div>
 					)}
@@ -239,7 +236,7 @@ export function PaymentStep({
 						<div className="p-4 space-y-4 bg-gray-50 rounded-lg">
 							<div>
 								<label className="block mb-2 text-sm font-medium">
-									Numéro de carte
+									{t("cardNumber")}
 								</label>
 								<Input
 									value={cardNumber}
@@ -254,7 +251,7 @@ export function PaymentStep({
 
 							<div>
 								<label className="block mb-2 text-sm font-medium">
-									Nom sur la carte
+									{t("cardName")}
 								</label>
 								<Input
 									value={cardName}
@@ -267,7 +264,7 @@ export function PaymentStep({
 							<div className="grid grid-cols-2 gap-4">
 								<div>
 									<label className="block mb-2 text-sm font-medium">
-										Date d'expiration
+										{t("expiryDate")}
 									</label>
 									<Input
 										value={expiryDate}
@@ -280,7 +277,7 @@ export function PaymentStep({
 									/>
 								</div>
 								<div>
-									<label className="block mb-2 text-sm font-medium">CVV</label>
+									<label className="block mb-2 text-sm font-medium">{t("cvv")}</label>
 									<Input
 										value={cvv}
 										onChange={(e) =>
@@ -301,14 +298,14 @@ export function PaymentStep({
 						className="py-6 w-full"
 						disabled={!canSubmit || isLoading || !cartId}
 					>
-						{isLoading ? "Traitement..." : "Vérifier la commande"}
+						{isLoading ? t("processing") : t("reviewOrder")}
 					</Button>
 				</div>
 			) : isCompleted ? (
 				/* Summary when completed */
 				<div className="text-sm text-gray-600">
 					<p>
-						Méthode de paiement :{" "}
+						{t("paymentMethodLabel")}{" "}
 						{selectedMethod
 							? getProviderName(
 									paymentProviders?.find((p: any) => p.id === selectedMethod) ?? {
@@ -318,12 +315,12 @@ export function PaymentStep({
 							: ""}
 					</p>
 					{isStripeProvider && cardNumber && (
-						<p>Carte se terminant par {cardNumber.slice(-4)}</p>
+						<p>{t("cardEndingIn", { digits: cardNumber.slice(-4) })}</p>
 					)}
 				</div>
 			) : !canAccess ? (
 				<p className="text-sm text-gray-400">
-					Complétez l'étape précédente pour continuer
+					{t("completePreviousStep")}
 				</p>
 			) : null}
 

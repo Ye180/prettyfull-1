@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRegionStore } from "@/stores/useRegion";
 import { Button, Skeleton } from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -153,44 +154,45 @@ type OrderStatus =
 
 const statusConfig: Record<
 	OrderStatus,
-	{ label: string; color: string; dot: string; step: number }
+	{ color: string; dot: string; step: number }
 > = {
 	pending: {
-		label: "En attente",
 		color: "bg-yellow-50 text-yellow-700 border-yellow-200",
 		dot: "bg-yellow-500",
 		step: 0,
 	},
 	processing: {
-		label: "En préparation",
 		color: "bg-amber-50 text-amber-700 border-blue-200",
 		dot: "bg-blue-500",
 		step: 1,
 	},
 	shipped: {
-		label: "Expédié",
 		color: "bg-indigo-50 text-indigo-700 border-indigo-200",
 		dot: "bg-indigo-500",
 		step: 2,
 	},
 	delivered: {
-		label: "Livré",
 		color: "bg-emerald-50 text-emerald-700 border-emerald-200",
 		dot: "bg-emerald-500",
 		step: 3,
 	},
 	refunded: {
-		label: "Remboursé",
 		color: "bg-purple-50 text-purple-700 border-purple-200",
 		dot: "bg-purple-500",
 		step: -1,
 	},
 	cancelled: {
-		label: "Annulé",
 		color: "bg-red-50 text-red-700 border-red-200",
 		dot: "bg-red-500",
 		step: -1,
 	},
+};
+
+const GENERIC_VARIANT_TITLES = ["default variant", "default", "default title"];
+
+const isGenericVariantTitle = (title?: string) => {
+	if (!title) return true;
+	return GENERIC_VARIANT_TITLES.includes(title.trim().toLowerCase());
 };
 
 const mapFulfillmentStatus = (status: string): OrderStatus => {
@@ -210,36 +212,46 @@ const mapFulfillmentStatus = (status: string): OrderStatus => {
 	}
 };
 
-const mapPaymentStatus = (status: string): string => {
+type PaymentStatusKey =
+	| "paid"
+	| "pending"
+	| "awaiting"
+	| "refunded"
+	| "partiallyRefunded"
+	| "cancelled";
+
+const mapPaymentStatusKey = (status: string): PaymentStatusKey | null => {
 	switch (status) {
 		case "captured":
-			return "Payé";
+			return "paid";
 		case "not_paid":
-			return "En attente";
+			return "pending";
 		case "awaiting":
-			return "En cours";
+			return "awaiting";
 		case "refunded":
-			return "Remboursé";
+			return "refunded";
 		case "partially_refunded":
-			return "Partiellement remboursé";
+			return "partiallyRefunded";
 		case "canceled":
-			return "Annulé";
+			return "cancelled";
 		default:
-			return status || "-";
+			return null;
 	}
 };
 
 // ─── Timeline Component ───────────────────────────────────────────────────────
 
-const timelineSteps = [
-	{ label: "Commande confirmée", icon: CheckCircleIcon },
-	{ label: "En préparation", icon: PackageIcon },
-	{ label: "Expédiée", icon: TruckIcon },
-	{ label: "Livrée", icon: CheckCircleIcon },
-];
-
 const OrderTimeline = ({ currentStep }: { currentStep: number }) => {
+	const t = useTranslations("Account");
+
 	if (currentStep < 0) return null; // cancelled
+
+	const timelineSteps = [
+		{ label: t("orderDetail.timeline.confirmed"), icon: CheckCircleIcon },
+		{ label: t("orderDetail.timeline.processing"), icon: PackageIcon },
+		{ label: t("orderDetail.timeline.shipped"), icon: TruckIcon },
+		{ label: t("orderDetail.timeline.delivered"), icon: CheckCircleIcon },
+	];
 
 	return (
 		<div className="flex items-center w-full">
@@ -291,6 +303,7 @@ const OrderTimeline = ({ currentStep }: { currentStep: number }) => {
 // ─── Main Page Component ──────────────────────────────────────────────────────
 
 export default function OrderDetailPage() {
+	const t = useTranslations("Account");
 	const params = useParams();
 	const router = useRouter();
 	const orderId = params.id as string;
@@ -322,7 +335,7 @@ export default function OrderDetailPage() {
 			});
 			setShowCancelConfirm(false);
 		} else {
-			setCancelError(result.error || "Une erreur est survenue");
+			setCancelError(result.error || t("orderDetail.cancelError"));
 		}
 		setIsCancelling(false);
 	};
@@ -356,21 +369,21 @@ export default function OrderDetailPage() {
 					className="flex gap-2 items-center text-sm text-gray-600 transition-colors hover:text-black cursor-pointer"
 				>
 					<ArrowLeftIcon className="w-4 h-4" />
-					Retour
+					{t("orderDetail.notFound.back")}
 				</button>
 				<div className="flex flex-col items-center p-12 text-center bg-white rounded-2xl border border-gray-200">
 					<div className="flex justify-center items-center mb-4 w-16 h-16 bg-red-50 rounded-full">
 						<PackageIcon className="w-8 h-8 text-red-400" />
 					</div>
 					<h3 className="text-[1.5rem] font-semibold text-gray-900 tracking-wide">
-						Commande introuvable
+						{t("orderDetail.notFound.title")}
 					</h3>
 					<p className="mx-auto mt-2 mb-6 max-w-sm text-gray-500">
-						Impossible de récupérer les détails de cette commande.
+						{t("orderDetail.notFound.description")}
 					</p>
 					<Link href="/account/orders">
 						<Button className="px-8 text-white bg-amber-600 rounded-lg hover:bg-amber-700">
-							Voir mes commandes
+							{t("orderDetail.notFound.viewOrders")}
 						</Button>
 					</Link>
 				</div>
@@ -393,7 +406,11 @@ export default function OrderDetailPage() {
 		? "refunded"
 		: fulfillmentStatus;
 	const status = statusConfig[effectiveStatus];
-	const paymentLabel = mapPaymentStatus(paymentStatus);
+	const statusLabel = t(`orders.status.${effectiveStatus}`);
+	const paymentStatusKey = mapPaymentStatusKey(paymentStatus);
+	const paymentLabel = paymentStatusKey
+		? t(`orderDetail.payment.${paymentStatusKey}`)
+		: paymentStatus || "-";
 
 	const formattedDate = new Date(orderData.created_at).toLocaleDateString(
 		"fr-FR",
@@ -433,11 +450,10 @@ export default function OrderDetailPage() {
 				<div className="flex fixed inset-0 z-50 justify-center items-center backdrop-blur-sm bg-black/40">
 					<div className="p-6 mx-4 space-y-4 w-full max-w-sm bg-white rounded-2xl shadow-xl">
 						<h3 className="text-lg font-semibold text-gray-900">
-							Annuler cette commande ?
+							{t("orderDetail.cancelModal.title")}
 						</h3>
 						<p className="text-sm text-gray-500">
-							Cette action est irréversible. Une fois annulée, la commande ne
-							pourra pas être réactivée.
+							{t("orderDetail.cancelModal.description")}
 						</p>
 						{cancelError && (
 							<p className="px-3 py-2 text-sm text-red-600 bg-red-50 rounded-lg">
@@ -450,14 +466,16 @@ export default function OrderDetailPage() {
 								disabled={isCancelling}
 								className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 							>
-								Conserver la commande
+								{t("orderDetail.cancelModal.keep")}
 							</button>
 							<button
 								onClick={handleCancelOrder}
 								disabled={isCancelling}
 								className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 							>
-								{isCancelling ? "Annulation..." : "Oui, annuler"}
+								{isCancelling
+									? t("orderDetail.cancelModal.cancelling")
+									: t("orderDetail.cancelModal.confirm")}
 							</button>
 						</div>
 					</div>
@@ -470,14 +488,14 @@ export default function OrderDetailPage() {
 					className="flex gap-2 items-center text-sm text-gray-500 transition-colors hover:text-black cursor-pointer"
 				>
 					<ArrowLeftIcon className="w-4 h-4" />
-					Retour aux commandes
+					{t("orderDetail.back")}
 				</button>
 
 				<div className="flex flex-col gap-4 justify-between sm:flex-row sm:items-center">
 					<div className="space-y-1">
 						<div className="flex gap-3 items-center">
 							<h1 className="text-3xl! font-bold tracking-tight text-gray-900">
-								Commande n°{orderData.display_id}
+								{t("orderDetail.orderNumber", { id: orderData.display_id })}
 							</h1>
 							<span
 								className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${status.color}`}
@@ -485,12 +503,14 @@ export default function OrderDetailPage() {
 								<span
 									className={`h-1.5 w-1.5 rounded-full ${status.dot} animate-pulse`}
 								/>
-								{status.label}
+								{statusLabel}
 							</span>
 						</div>
 						<div className="flex gap-2 items-center text-sm text-gray-500">
 							<ClockIcon className="w-4 h-4" />
-							<span>Passée le {formattedDateTime}</span>
+							<span>
+								{t("orderDetail.placedOn", { date: formattedDateTime })}
+							</span>
 						</div>
 					</div>
 
@@ -500,7 +520,7 @@ export default function OrderDetailPage() {
 							className="flex gap-2 items-center self-start px-4 py-2 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg border border-gray-200 transition-all hover:bg-gray-100 cursor-pointer"
 						>
 							<CopyIcon className="w-3.5 h-3.5" />
-							{copied ? "Copié !" : "Copier l'ID"}
+							{copied ? t("orderDetail.copied") : t("orderDetail.copyId")}
 						</button>
 						{isCancellable && (
 							<button
@@ -523,7 +543,7 @@ export default function OrderDetailPage() {
 										d="M6 18L18 6M6 6l12 12"
 									/>
 								</svg>
-								Annuler la commande
+								{t("orderDetail.cancelOrder")}
 							</button>
 						)}
 					</div>
@@ -555,9 +575,11 @@ export default function OrderDetailPage() {
 						</svg>
 					</div>
 					<div>
-						<p className="font-semibold text-purple-800">Commande remboursée</p>
+						<p className="font-semibold text-purple-800">
+							{t("orderDetail.refunded.title")}
+						</p>
 						<p className="text-sm text-purple-600">
-							Cette commande a été remboursée.
+							{t("orderDetail.refunded.description")}
 						</p>
 					</div>
 				</div>
@@ -581,9 +603,11 @@ export default function OrderDetailPage() {
 						</svg>
 					</div>
 					<div>
-						<p className="font-semibold text-red-800">Commande annulée</p>
+						<p className="font-semibold text-red-800">
+							{t("orderDetail.cancelled.title")}
+						</p>
 						<p className="text-sm text-red-600">
-							Cette commande a été annulée.
+							{t("orderDetail.cancelled.description")}
 						</p>
 					</div>
 				</div>
@@ -595,7 +619,7 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center mb-2">
 						<PackageIcon className="w-4 h-4 text-gray-400" />
 						<p className="text-xs font-medium tracking-wider text-gray-500 uppercase">
-							Commande
+							{t("orderDetail.infoCards.order")}
 						</p>
 					</div>
 					<p className="text-[1.5rem] font-bold text-gray-900">
@@ -607,7 +631,7 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center mb-2">
 						<ClockIcon className="w-4 h-4 text-gray-400" />
 						<p className="text-xs font-medium tracking-wider text-gray-500 uppercase">
-							Date
+							{t("orderDetail.infoCards.date")}
 						</p>
 					</div>
 					<p className="text-[1.5rem] font-bold text-gray-900">
@@ -619,7 +643,7 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center mb-2">
 						<CreditCardIcon className="w-4 h-4 text-gray-400" />
 						<p className="text-xs font-medium tracking-wider text-gray-500 uppercase">
-							Paiement
+							{t("orderDetail.infoCards.payment")}
 						</p>
 					</div>
 					<p className="text-[1.5rem] font-bold text-gray-900">
@@ -631,7 +655,7 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center mb-2">
 						<CreditCardIcon className="w-4 h-4 text-gray-400" />
 						<p className="text-xs font-medium tracking-wider text-gray-500 uppercase">
-							Total
+							{t("orderDetail.infoCards.total")}
 						</p>
 					</div>
 					<p className="text-[1.5rem] font-bold text-gray-900">
@@ -644,7 +668,7 @@ export default function OrderDetailPage() {
 			<div className="bg-white rounded-xl border border-gray-200">
 				<div className="flex justify-between items-center p-6 border-b border-gray-100">
 					<h2 className="text-[2.2rem]! font-semibold text-gray-900 tracking-wide">
-						Articles ({items.length})
+						{t("orderDetail.items.title", { count: items.length })}
 					</h2>
 				</div>
 
@@ -658,7 +682,7 @@ export default function OrderDetailPage() {
 								<div className="overflow-hidden w-20 h-24 bg-gray-100 rounded-lg border border-gray-200 shrink-0">
 									<Image
 										src={item.thumbnail + "?view=1"}
-										alt={item.product_title || "Produit"}
+										alt={item.product_title || t("orders.product")}
 										width={80}
 										height={96}
 										className="object-fill object-top"
@@ -671,13 +695,13 @@ export default function OrderDetailPage() {
 								<p className="font-medium text-gray-900 truncate">
 									{item.product_title}
 								</p>
-								{item.variant_title && (
-									<p className="mt-1 text-sm text-gray-500 uppercase">
-										{item.variant_title}
+								{!isGenericVariantTitle(item.variant_title) && (
+									<p className="mt-1 text-sm text-gray-500">
+										{t("orderDetail.items.variantLabel")} {item.variant_title}
 									</p>
 								)}
 								<p className="mt-1 text-sm text-gray-400">
-									Qté : {item.quantity}
+									{t("orderDetail.items.quantity", { quantity: item.quantity })}
 								</p>
 							</div>
 
@@ -687,7 +711,9 @@ export default function OrderDetailPage() {
 								</p>
 								{item.quantity > 1 && (
 									<p className="text-xs text-gray-400">
-										{formatCurrency_FR(item.unit_price, currency)} / unité
+										{t("orderDetail.items.perUnit", {
+											price: formatCurrency_FR(item.unit_price, currency),
+										})}
 									</p>
 								)}
 							</div>
@@ -703,7 +729,7 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center p-6 border-b border-gray-100">
 						<MapPinIcon className="w-8 h-8 text-gray-400" />
 						<h2 className="text-[2.2rem]! font-semibold  text-gray-900 tracking-wide">
-							Adresse de livraison
+							{t("orderDetail.shippingAddress.title")}
 						</h2>
 					</div>
 					<div className="p-6">
@@ -722,12 +748,16 @@ export default function OrderDetailPage() {
 								<p>{shippingAddress.country_code?.toUpperCase()}</p>
 								{shippingAddress.phone && (
 									<p className="pt-2 text-gray-500">
-										Tél: {shippingAddress.phone}
+										{t("orderDetail.shippingAddress.phone", {
+											phone: shippingAddress.phone,
+										})}
 									</p>
 								)}
 							</div>
 						) : (
-							<p className="text-sm text-gray-400">Aucune adresse fournie</p>
+							<p className="text-sm text-gray-400">
+								{t("orderDetail.shippingAddress.empty")}
+							</p>
 						)}
 					</div>
 				</div>
@@ -737,12 +767,12 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center p-6 border-b border-gray-100">
 						<CreditCardIcon className="w-8 h-8 text-gray-400" />
 						<h2 className="text-[2.2rem]!  font-semibold text-gray-900 tracking-wide">
-							Récapitulatif
+							{t("orderDetail.summary.title")}
 						</h2>
 					</div>
 					<div className="p-6 space-y-4">
 						<div className="flex justify-between text-sm text-gray-600">
-							<span>Sous-total</span>
+							<span>{t("orderDetail.summary.subtotal")}</span>
 							<span>{formatCurrency_FR(subtotal, currency)}</span>
 						</div>
 
@@ -750,11 +780,11 @@ export default function OrderDetailPage() {
 							<div className="flex justify-between text-sm text-gray-600">
 								<span className="flex items-center gap-1.5">
 									<TruckIcon className="w-6 h-6" />
-									Livraison
+									{t("orderDetail.summary.shipping")}
 								</span>
 								<span>
 									{shippingTotal === 0
-										? "Gratuite"
+										? t("orderDetail.summary.free")
 										: formatCurrency_FR(shippingTotal, currency)}
 								</span>
 							</div>
@@ -762,31 +792,35 @@ export default function OrderDetailPage() {
 
 						{!shippingMethods.length && (
 							<div className="flex justify-between text-sm text-gray-600">
-								<span>Livraison</span>
+								<span>{t("orderDetail.summary.shipping")}</span>
 								<span>
 									{shippingTotal === 0
-										? "Gratuite"
+										? t("orderDetail.summary.free")
 										: formatCurrency_FR(shippingTotal, currency)}
 								</span>
 							</div>
 						)}
 
 						<div className="flex justify-between text-sm text-gray-600">
-							<span>Taxes</span>
+							<span>{t("orderDetail.summary.tax")}</span>
 							<span>{formatCurrency_FR(taxTotal, currency)}</span>
 						</div>
 
 						{discountTotal > 0 && (
 							<div className="flex justify-between text-sm text-green-600">
 								<span>
-									Remise{orderData.discount_code ? ` (${orderData.discount_code})` : ""}
+									{orderData.discount_code
+										? t("orderDetail.summary.discountWithCode", {
+												code: orderData.discount_code,
+											})
+										: t("orderDetail.summary.discount")}
 								</span>
 								<span>-{formatCurrency_FR(discountTotal, currency)}</span>
 							</div>
 						)}
 
 						<div className="flex justify-between pt-4 text-[2.2rem]! font-bold text-gray-900 border-t border-gray-200">
-							<span>Total</span>
+							<span>{t("orderDetail.summary.total")}</span>
 							<span>{formatCurrency_FR(total, currency)}</span>
 						</div>
 					</div>
@@ -799,7 +833,7 @@ export default function OrderDetailPage() {
 					<div className="flex gap-2 items-center p-6 border-b border-gray-100">
 						<TruckIcon className="w-8 h-8 text-gray-400" />
 						<h2 className="text-[2.2rem]!  font-semibold text-gray-900 tracking-wide">
-							Mode de livraison
+							{t("orderDetail.shippingMethod.title")}
 						</h2>
 					</div>
 					<div className="p-6">
@@ -807,12 +841,14 @@ export default function OrderDetailPage() {
 							<div key={index} className="flex justify-between items-center">
 								<div>
 									<p className="font-medium text-gray-900">
-										{method.name || method.shipping_option?.name || "Standard"}
+										{method.name ||
+											method.shipping_option?.name ||
+											t("orderDetail.shippingMethod.standard")}
 									</p>
 								</div>
 								<p className="font-medium text-gray-900">
 									{method.amount === 0
-										? "Gratuit"
+										? t("orderDetail.shippingMethod.free")
 										: formatCurrency_FR(method.amount ?? 0, currency)}
 								</p>
 							</div>
@@ -828,12 +864,12 @@ export default function OrderDetailPage() {
 						variant="outline"
 						className="w-full rounded-lg border-gray-300 hover:bg-amber-600 hover:text-white hover:border-amber-600"
 					>
-						Voir toutes les commandes
+						{t("orderDetail.actions.viewAllOrders")}
 					</Button>
 				</Link>
 				<Link href="/" className="flex-1">
 					<Button className="w-full text-white bg-amber-600 rounded-lg hover:bg-amber-700">
-						Continuer mes achats
+						{t("orderDetail.actions.continueShopping")}
 					</Button>
 				</Link>
 			</div>

@@ -2,6 +2,7 @@
 
 import { useRegionStore } from "@/stores/useRegion";
 import { useCartStore } from "@prettyfull/store";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import CheckoutSummary from "../components/organims/checkout-summary";
@@ -14,6 +15,7 @@ import {
 import { useCheckoutStep } from "../hooks/use-checkout-step";
 
 const CheckoutView = () => {
+	const t = useTranslations("CheckoutPage.page");
 	const router = useRouter();
 	const items = useCartStore((state) => state.items);
 	const { goToNextStep } = useCheckoutStep();
@@ -37,7 +39,7 @@ const CheckoutView = () => {
 		<main className="pt-6 pb-28 w-full min-h-screen text-gray-900 bg-white sm:pt-10">
 			<div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
 				<h1 className="pb-4 mb-8 font-sans text-3xl font-extrabold tracking-tight border-b border-gray-100 sm:text-4xl md:text-5xl text-gray-950">
-					Checkout
+					{t("title")}
 				</h1>
 
 				{/*

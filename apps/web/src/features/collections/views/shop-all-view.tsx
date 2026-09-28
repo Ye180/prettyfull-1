@@ -8,7 +8,7 @@ import ProductCardSkeleton from "@/shared/components/organims/product-loading";
 import { useRegionStore } from "@/stores/useRegion";
 import { CardProduct, GridCardProduct } from "@prettyfull/ui";
 import { AnimatePresence, motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -33,6 +33,12 @@ export const ShopAllView = () => {
 	const { data: promoBanners } = useCollectionBanners("collection_promo");
 	const { data: footerBanners } = useCollectionBanners("collection_footer");
 	const tHero = useTranslations("HomePage.hero");
+	const t = useTranslations("CollectionPage.page");
+	const locale = useLocale();
+	// Les bannières CMS (Admin > Contenu) n'ont pas de champ `translations` :
+	// leur texte est saisi en français uniquement, donc on ne les utilise que
+	// pour ce locale - les autres retombent sur les clés `t()`/`tHero()`.
+	const useCmsCopy = locale === "fr";
 
 	const {
 		q,
@@ -132,20 +138,18 @@ export const ShopAllView = () => {
 	const hasMore = data?.meta.hasNext ?? false;
 
 	const SORT_OPTIONS = [
-		{ value: "createdAt:desc", label: "Nouveautés", sort: "createdAt" as const, order: "desc" as const },
-		{ value: "basePrice:asc", label: "Prix croissant", sort: "basePrice" as const, order: "asc" as const },
-		{ value: "basePrice:desc", label: "Prix décroissant", sort: "basePrice" as const, order: "desc" as const },
-		{ value: "name:asc", label: "Nom (A → Z)", sort: "name" as const, order: "asc" as const },
+		{ value: "createdAt:desc", label: t("sort.newest"), sort: "createdAt" as const, order: "desc" as const },
+		{ value: "basePrice:asc", label: t("sort.priceAsc"), sort: "basePrice" as const, order: "asc" as const },
+		{ value: "basePrice:desc", label: t("sort.priceDesc"), sort: "basePrice" as const, order: "desc" as const },
+		{ value: "name:asc", label: t("sort.nameAsc"), sort: "name" as const, order: "asc" as const },
 	];
 	const selectedSortValue = `${sort}:${order}`;
 
 	const heroBanner = heroBanners?.[0];
 	const heroImage = heroBanner?.image || "/home/supplements-hero-flatlay.jpg";
-	const heroTitle = heroBanner?.title || "Toute notre gamme bien-être";
-	const heroSubtitle =
-		heroBanner?.subtitle ||
-		"Vitamines, minéraux et compléments testés en laboratoire pour votre routine santé au quotidien.";
-	const heroCta = heroBanner?.cta || tHero("ctaButton");
+	const heroTitle = (useCmsCopy && heroBanner?.title) || tHero("title");
+	const heroSubtitle = (useCmsCopy && heroBanner?.subtitle) || tHero("subtitle");
+	const heroCta = (useCmsCopy && heroBanner?.cta) || tHero("ctaButton");
 	const heroLink = heroBanner?.link || "#catalog-grid";
 
 	const promos = (promoBanners ?? []).slice(0, 2);
@@ -213,7 +217,7 @@ export const ShopAllView = () => {
 							>
 								<Image
 									src={promo.image}
-									alt={promo.title || "Promotion"}
+									alt={promo.title || t("promoImageAlt")}
 									fill
 									sizes="(max-width: 768px) 100vw, 50vw"
 									className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -231,7 +235,7 @@ export const ShopAllView = () => {
 											href={promo.link}
 											className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black text-[1.3rem] font-medium rounded-lg self-start hover:bg-white/90 transition-all mt-2"
 										>
-											<span>{promo.cta || "Découvrir"}</span>
+											<span>{promo.cta || t("promoCta")}</span>
 											<svg
 												width="14"
 												height="14"
@@ -257,7 +261,7 @@ export const ShopAllView = () => {
 				<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
 					<div className="flex justify-between items-center pb-8">
 						<h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#080808]">
-							Acheter par catégorie
+							{t("categoryHeading")}
 						</h2>
 					</div>
 
@@ -283,7 +287,7 @@ export const ShopAllView = () => {
 										href={COLLECTION_PATHS.collectionDetail(category.handle)}
 										className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-[1.2rem] font-medium rounded-lg self-start hover:bg-white/90 transition-all"
 									>
-										<span>Voir la catégorie</span>
+										<span>{t("viewCategory")}</span>
 										<svg
 											width="13"
 											height="13"
@@ -317,7 +321,7 @@ export const ShopAllView = () => {
 									? "bg-amber-600 text-white border-amber-600"
 									: "border-neutral-300 text-black hover:border-amber-600"
 							} cursor-pointer`}
-							aria-label="Afficher/masquer les filtres"
+							aria-label={t("filterToggleAriaLabel")}
 						>
 							<svg
 								width="16"
@@ -329,7 +333,7 @@ export const ShopAllView = () => {
 							>
 								<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
 							</svg>
-							<span>Filtre</span>
+							<span>{t("filterButtonLabel")}</span>
 						</button>
 
 						<div className="relative w-[220px] max-w-full">
@@ -347,7 +351,7 @@ export const ShopAllView = () => {
 							</svg>
 							<input
 								type="text"
-								placeholder="Rechercher..."
+								placeholder={t("searchPlaceholder")}
 								value={searchDraft}
 								onChange={(e) => setSearchDraft(e.target.value)}
 								className="py-2.5 pr-3 pl-9 w-full text-[1.3rem] rounded-lg border outline-none transition-colors border-neutral-200 focus:border-amber-600"
@@ -355,7 +359,7 @@ export const ShopAllView = () => {
 						</div>
 
 						<span className="text-[1.3rem] text-neutral-500 whitespace-nowrap">
-							{data?.meta.total ?? 0} produits
+							{t("resultsCount", { count: data?.meta.total ?? 0 })}
 						</span>
 					</div>
 
@@ -426,19 +430,19 @@ export const ShopAllView = () => {
 									</svg>
 								</div>
 								<span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
-									Aucun résultat
+									{t("emptyEyebrow")}
 								</span>
 								<h2 className="mt-3 text-2xl font-bold text-gray-900 sm:text-3xl">
-									Aucun produit ne correspond à votre recherche
+									{t("emptyHeading")}
 								</h2>
 								<p className="mt-2 max-w-md text-gray-500">
-									Essayez d&apos;ajuster vos filtres ou votre recherche.
+									{t("emptyBody")}
 								</p>
 								<button
 									onClick={resetAllFilters}
 									className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-black text-white font-semibold rounded-lg hover:bg-neutral-800 transition shadow-lg group text-sm sm:text-base cursor-pointer"
 								>
-									<span>Réinitialiser les filtres</span>
+									<span>{t("emptyReset")}</span>
 									<ArrowRightIcon className="w-4 h-4 text-white transition-transform group-hover:translate-x-1" />
 								</button>
 							</div>
@@ -468,7 +472,7 @@ export const ShopAllView = () => {
 									onClick={() => setLimit((prev) => prev + PAGE_SIZE)}
 									className="inline-flex items-center px-10 py-3 text-sm font-medium text-white bg-amber-600 rounded-lg transition-colors hover:bg-amber-700 cursor-pointer"
 								>
-									Voir plus
+									{t("loadMore")}
 								</button>
 							</div>
 						)}
@@ -479,13 +483,10 @@ export const ShopAllView = () => {
 			{/* 6. Bandeau de fin - piloté depuis Admin > Contenu (bannière "collection_footer") */}
 			<PhotoOverlayBanner
 				image={footerBanner?.image || "/home/supplements-hero-lifestyle.jpg"}
-				title={footerBanner?.title || "Votre bien-être, notre priorité"}
-				subtitle={
-					footerBanner?.subtitle ||
-					"Formules testées en laboratoire, ingrédients sélectionnés avec soin pour accompagner votre routine santé au quotidien."
-				}
+				title={(useCmsCopy && footerBanner?.title) || t("footerTitle")}
+				subtitle={(useCmsCopy && footerBanner?.subtitle) || t("footerSubtitle")}
 				cta={{
-					label: footerBanner?.cta || "Découvrir la boutique",
+					label: (useCmsCopy && footerBanner?.cta) || t("footerCta"),
 					href: footerBanner?.link || "/collections",
 				}}
 				contained={true}

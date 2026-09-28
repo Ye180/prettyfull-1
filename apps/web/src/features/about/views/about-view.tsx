@@ -1,90 +1,87 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import PhotoOverlayBanner from "@/shared/components/organims/photo-overlay-banner";
 
-const PILLARS = [
+type Translate = (key: string) => string;
+
+const getPillars = (t: Translate) => [
 	{
-		title: "Notre Positionnement",
-		description:
-			"Nous privilégions des formules simples et transparentes, dosées avec précision, pour un bien-être qui s'inscrit dans la durée.",
+		title: t("pillars.pillar1.title"),
+		description: t("pillars.pillar1.description"),
 	},
 	{
-		title: "Notre Philosophie",
-		description:
-			"Nous existons pour simplifier votre routine santé au quotidien, avec des compléments essentiels et de qualité pour chaque étape de votre vie.",
+		title: t("pillars.pillar2.title"),
+		description: t("pillars.pillar2.description"),
 	},
 	{
-		title: "Notre Mission",
-		description:
-			"Choix de confiance pour les foyers d'Abidjan et d'ailleurs, notre marque prend soin de votre santé grâce à des formules pensées avec soin.",
+		title: t("pillars.pillar3.title"),
+		description: t("pillars.pillar3.description"),
 	},
 ];
 
-const TEXTURE_POINTS = [
+const getTexturePoints = (t: Translate) => [
 	{
 		number: "01",
-		title: "Une sélection d'ingrédients",
-		description:
-			"Des actifs choisis pour leur pureté, leur biodisponibilité et leur origine tracée, du fournisseur jusqu'à la gélule.",
+		title: t("texture.points.point1.title"),
+		description: t("texture.points.point1.description"),
 	},
 	{
 		number: "02",
-		title: "Des dosages précis",
-		description:
-			"Chaque formule est calibrée pour respecter les apports recommandés, sans sous-dosage ni excès inutile.",
+		title: t("texture.points.point2.title"),
+		description: t("texture.points.point2.description"),
 	},
 	{
 		number: "03",
-		title: "Un contrôle rigoureux",
-		description:
-			"Analyses en laboratoire indépendant, lot après lot, pour des compléments qui tiennent leurs promesses.",
+		title: t("texture.points.point3.title"),
+		description: t("texture.points.point3.description"),
 	},
 ];
 
-const RESPONSIBILITY_POINTS = [
+const getResponsibilityPoints = (t: Translate) => [
 	{
-		title: "Des ingrédients responsables",
-		description:
-			"Nous privilégions autant que possible des filières durables et des emballages recyclables, pour réduire l'empreinte de chaque gamme.",
+		title: t("responsibility.items.item1.title"),
+		description: t("responsibility.items.item1.description"),
 	},
 	{
-		title: "La qualité avant le volume",
-		description:
-			"Notre approche privilégie l'efficacité et la pureté, pour des formules pensées pour durer plutôt que pour l'effet de mode.",
+		title: t("responsibility.items.item2.title"),
+		description: t("responsibility.items.item2.description"),
 	},
 	{
-		title: "Des formules durables",
-		description:
-			"Nous préférons proposer moins de références, mais des références de qualité, qui restent pertinentes au-delà des tendances passagères.",
+		title: t("responsibility.items.item3.title"),
+		description: t("responsibility.items.item3.description"),
 	},
 ];
 
-const TESTIMONIALS = [
+const getTestimonials = (t: Translate) => [
 	{
-		quote:
-			"Je sens vraiment la différence depuis que j'ai commencé la multivitamine, et la livraison à Abidjan a été plus rapide que prévu. Je prépare déjà ma prochaine commande.",
+		quote: t("testimonials.testimonial1.quote"),
 		author: "Aïcha K.",
-		role: "Cliente à Abidjan",
+		role: t("testimonials.testimonial1.role"),
 		avatar: "/products/multivitamin.jpg",
 	},
 	{
-		quote:
-			"Des dosages clairs et des gélules faciles à prendre. PrettyFull est devenu mon adresse santé du quotidien.",
+		quote: t("testimonials.testimonial2.quote"),
 		author: "Fatou D.",
-		role: "Cliente à Cocody",
+		role: t("testimonials.testimonial2.role"),
 		avatar: "/products/omega3-capsules.jpg",
 	},
 	{
-		quote:
-			"Un service client réactif et des compléments qui tiennent leurs promesses. Exactement ce que je cherchais.",
+		quote: t("testimonials.testimonial3.quote"),
 		author: "Aminata S.",
-		role: "Cliente à Yopougon",
+		role: t("testimonials.testimonial3.role"),
 		avatar: "/products/gummies.jpg",
 	},
 ];
 
 const AboutView = () => {
+	const t = useTranslations("AboutPage");
+	const pillars = getPillars(t);
+	const texturePoints = getTexturePoints(t);
+	const responsibilityPoints = getResponsibilityPoints(t);
+	const testimonials = getTestimonials(t);
+
 	return (
 		<main className="w-full min-h-screen bg-white text-gray-900 pb-20">
 			{/* SECTION 1: HERO */}
@@ -92,7 +89,7 @@ const AboutView = () => {
 				<div className="relative w-full h-[520px] sm:h-[640px] md:h-[720px] rounded-3xl overflow-hidden shadow-sm">
 					<Image
 						src="/home/supplements-hero-lifestyle.jpg"
-						alt="PrettyFull, vitamines et compléments depuis Abidjan"
+						alt={t("hero.imageAlt")}
 						fill
 						priority
 						sizes="100vw"
@@ -102,15 +99,13 @@ const AboutView = () => {
 
 					<div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-12 md:p-16 max-w-4xl text-white space-y-4">
 						<span className="inline-block text-xs sm:text-sm uppercase tracking-widest text-gray-300 font-semibold">
-							Notre histoire
+							{t("hero.eyebrow")}
 						</span>
 						<h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold font-sans tracking-tight leading-tight">
-							Des compléments pensés depuis Abidjan
+							{t("hero.title")}
 						</h1>
 						<p className="text-base sm:text-xl text-gray-200 font-light leading-relaxed max-w-2xl">
-							PrettyFull réunit une sélection de vitamines et compléments choisis un à un : des
-							ingrédients de qualité, des dosages testés en laboratoire, et des lots
-							volontairement limités pour rester frais.
+							{t("hero.subtitle")}
 						</p>
 					</div>
 				</div>
@@ -119,7 +114,7 @@ const AboutView = () => {
 			{/* SECTION 2: 3 BRAND PILLARS */}
 			<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
-					{PILLARS.map((pillar, idx) => (
+					{pillars.map((pillar, idx) => (
 						<div
 							key={pillar.title}
 							className="p-8 sm:p-10 rounded-3xl bg-[#F9FAFB] border border-gray-150/80 hover:border-black/20 transition duration-300 space-y-4 flex flex-col justify-between"
@@ -153,7 +148,7 @@ const AboutView = () => {
 						<div className="relative w-full h-[450px] sm:h-[550px] rounded-3xl overflow-hidden shadow-md">
 							<Image
 								src="/home/supplements-hero-colorful.jpg"
-								alt="Ingrédients et formules PrettyFull"
+								alt={t("texture.imageAlt")}
 								fill
 								sizes="(max-width: 1024px) 100vw, 45vw"
 								className="object-cover"
@@ -165,15 +160,15 @@ const AboutView = () => {
 					<div className="lg:col-span-7 space-y-8">
 						<div className="space-y-3">
 							<span className="text-xs uppercase tracking-widest font-semibold text-gray-400">
-								Savoir-faire
+								{t("texture.eyebrow")}
 							</span>
 							<h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-sans tracking-tight text-gray-950 leading-tight">
-								Des formules choisies avec soin
+								{t("texture.title")}
 							</h2>
 						</div>
 
 						<div className="space-y-6 divide-y divide-gray-150">
-							{TEXTURE_POINTS.map((pt) => (
+							{texturePoints.map((pt) => (
 								<div key={pt.number} className="pt-6 first:pt-0 space-y-2">
 									<div className="flex items-center gap-3">
 										<span className="text-xs font-mono font-bold text-gray-400">
@@ -200,19 +195,18 @@ const AboutView = () => {
 					<div className="lg:col-span-7 space-y-8 order-2 lg:order-1">
 						<div className="space-y-4">
 							<span className="text-xs uppercase tracking-widest font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-								Engagement responsable
+								{t("responsibility.badge")}
 							</span>
 							<h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-sans tracking-tight text-gray-950 leading-tight">
-								Une responsabilité environnementale qui compte pour nous
+								{t("responsibility.title")}
 							</h2>
 							<p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-								Nous croyons en un impact positif à travers une production réfléchie et des
-								pratiques d'approvisionnement plus responsables.
+								{t("responsibility.subtitle")}
 							</p>
 						</div>
 
 						<div className="space-y-6 divide-y divide-gray-150">
-							{RESPONSIBILITY_POINTS.map((item) => (
+							{responsibilityPoints.map((item) => (
 								<div key={item.title} className="pt-6 first:pt-0 space-y-2">
 									<div className="flex items-center gap-2">
 										<span className="w-2 h-2 rounded-full bg-black inline-block" />
@@ -233,7 +227,7 @@ const AboutView = () => {
 						<div className="relative w-full h-[480px] sm:h-[580px] rounded-3xl overflow-hidden shadow-md">
 							<Image
 								src="/category/category-wellness.jpg"
-								alt="Sourcing responsable PrettyFull"
+								alt={t("responsibility.imageAlt")}
 								fill
 								sizes="(max-width: 1024px) 100vw, 45vw"
 								className="object-cover"
@@ -247,20 +241,20 @@ const AboutView = () => {
 			<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-gray-100">
 				<div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
 					<span className="text-xs uppercase tracking-widest font-semibold text-gray-400">
-						La parole à nos clientes
+						{t("testimonials.eyebrow")}
 					</span>
 					<h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-sans tracking-tight text-gray-950">
-						Adoré par nos clientes
+						{t("testimonials.title")}
 					</h2>
 					<p className="text-sm sm:text-base text-gray-500">
-						Les expériences de celles qui intègrent PrettyFull à leur routine santé.
+						{t("testimonials.subtitle")}
 					</p>
 				</div>
 
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-					{TESTIMONIALS.map((t) => (
+					{testimonials.map((testimonial) => (
 						<div
-							key={t.author}
+							key={testimonial.author}
 							className="p-8 sm:p-9 rounded-3xl bg-[#F9FAFB] border border-gray-150/80 flex flex-col justify-between space-y-6 hover:shadow-sm transition"
 						>
 							<div className="space-y-4">
@@ -268,15 +262,15 @@ const AboutView = () => {
 									{"★".repeat(5)}
 								</div>
 								<p className="text-sm sm:text-base text-gray-700 leading-relaxed italic">
-									&ldquo;{t.quote}&rdquo;
+									&ldquo;{testimonial.quote}&rdquo;
 								</p>
 							</div>
 
 							<div className="flex items-center gap-4 pt-4 border-t border-gray-200/60">
 								<div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-200">
 									<Image
-										src={t.avatar}
-										alt={t.author}
+										src={testimonial.avatar}
+										alt={testimonial.author}
 										fill
 										sizes="48px"
 										className="object-cover"
@@ -284,9 +278,9 @@ const AboutView = () => {
 								</div>
 								<div>
 									<h4 className="font-bold text-sm text-gray-950 font-sans">
-										{t.author}
+										{testimonial.author}
 									</h4>
-									<p className="text-xs text-gray-500">{t.role}</p>
+									<p className="text-xs text-gray-500">{testimonial.role}</p>
 								</div>
 							</div>
 						</div>
@@ -298,9 +292,9 @@ const AboutView = () => {
 			<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-8">
 				<PhotoOverlayBanner
 					image="/home/supplements-hero-colorful.jpg"
-					title="Votre bien-être, notre priorité"
-					subtitle="Prêt à prendre soin de vous ? Découvrez notre gamme et nos formules signature."
-					cta={{ label: "Découvrir la boutique", href: "/collections" }}
+					title={t("finalBanner.title")}
+					subtitle={t("finalBanner.subtitle")}
+					cta={{ label: t("finalBanner.cta"), href: "/collections" }}
 					contained={false}
 				/>
 			</section>

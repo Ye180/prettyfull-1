@@ -1,7 +1,12 @@
+"use client";
+
 import { SOCIALS_DATA_FOOTER } from "@/lib/utils/constants/constants";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 const DescriptionFooter = () => {
+	const t = useTranslations("Footer");
+
 	return (
 		<div className="flex flex-col space-y-6 text-[1.4rem] lg:col-span-1">
 			{/* Socials - circular outline buttons */}
@@ -19,7 +24,7 @@ const DescriptionFooter = () => {
 			</div>
 
 			<p className="w-full text-white/70 leading-relaxed text-[1.4rem]">
-				Rue des Jardins, Cocody, Abidjan, Côte d'Ivoire
+				{t("address")}
 			</p>
 			<p className="text-white/70 text-[1.4rem]">contact@prettyfull.shop</p>
 			<p className="text-white/70 text-[1.4rem]">+225 07 08 09 10 11</p>

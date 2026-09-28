@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useGetHighlights } from "../api/medusa/get-highlights";
 
 const ICONS: Record<string, React.ReactNode> = {
@@ -31,29 +32,33 @@ const DEFAULT_ICON = (
 	</svg>
 );
 
-const DEFAULT_FEATURES = [
+const DEFAULT_FEATURE_KEYS = [
 	{
 		icon: "lab",
-		title: "Testé en Laboratoire",
-		description:
-			"Chaque formule est analysée par un laboratoire indépendant pour garantir sa pureté, son dosage exact et sa sécurité, lot après lot.",
+		titleKey: "labTestedTitle",
+		descriptionKey: "labTestedDescription",
 	},
 	{
 		icon: "leaf",
-		title: "Sans OGM et Végétalien",
-		description:
-			"Ingrédients naturels, sans OGM, sans gluten ajouté et formules végétaliennes disponibles sur toute la gamme.",
+		titleKey: "nonGmoTitle",
+		descriptionKey: "nonGmoDescription",
 	},
 	{
 		icon: "shield",
-		title: "Satisfaction Garantie",
-		description:
-			"30 jours pour changer d'avis. Notre équipe reste à votre écoute pour vous accompagner dans votre routine bien-être.",
+		titleKey: "guaranteeTitle",
+		descriptionKey: "guaranteeDescription",
 	},
 ];
 
 export const CustomerExperienceSection = () => {
+	const t = useTranslations("HomePage.customerExperience");
 	const { data: highlights } = useGetHighlights("home_trust");
+
+	const DEFAULT_FEATURES = DEFAULT_FEATURE_KEYS.map((feature) => ({
+		icon: feature.icon,
+		title: t(feature.titleKey),
+		description: t(feature.descriptionKey),
+	}));
 
 	const features = highlights && highlights.length > 0 ? highlights : DEFAULT_FEATURES;
 
@@ -63,11 +68,10 @@ export const CustomerExperienceSection = () => {
 				{/* Section Header */}
 				<div className="max-w-2xl mx-auto text-center space-y-4 pb-10">
 					<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
-						Une exigence de qualité à chaque étape
+						{t("title")}
 					</h2>
 					<p className="text-[1.5rem] sm:text-[1.6rem] text-white/70 leading-relaxed font-light">
-						De la sélection des ingrédients au service après-vente, nous mettons
-						votre santé et votre confiance au centre de chaque détail.
+						{t("subtitle")}
 					</p>
 				</div>
 

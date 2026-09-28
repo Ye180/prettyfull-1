@@ -31,7 +31,7 @@ const NavCategoryBar = ({ main_category = [] }: NavCategoryBarProps) => {
 	];
 
 	return (
-		<nav className="hidden overflow-x-auto justify-center items-center pt-3 pb-4 text-[1.2rem] font-semibold tracking-widest uppercase border-t border-gray-100 md:flex gap-x-10 scrollbar-hide">
+		<nav className="hidden overflow-x-auto justify-center items-center pt-3 pb-4 text-[1.5rem] font-semibold tracking-widest uppercase border-t border-gray-100 md:flex gap-x-10 scrollbar-hide">
 			{navLinks.map((link) => {
 				const isActive = pathname === link.href;
 				return (

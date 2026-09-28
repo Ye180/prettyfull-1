@@ -65,7 +65,7 @@ const Filter = ({
 					<DosageFormat />
 				</div>
 				<div className="pt-8">
-					<h4 className={sectionTitleClass}>Prix</h4>
+					<h4 className={sectionTitleClass}>{t("price")}</h4>
 					<Prize
 						key={priceResetKey}
 						minPrice={priceDraft.min}
@@ -78,15 +78,15 @@ const Filter = ({
 					<Flavors />
 				</div>
 				<div className="pt-8">
-					<h4 className={sectionTitleClass}>Objectif santé</h4>
+					<h4 className={sectionTitleClass}>{t("adjust")}</h4>
 					<Adjust />
 				</div>
 				<div className="pt-8">
-					<h4 className={sectionTitleClass}>Régime alimentaire</h4>
+					<h4 className={sectionTitleClass}>{t("dietaryRegime")}</h4>
 					<DietaryRegime />
 				</div>
 				<div className="pt-8">
-					<h4 className={sectionTitleClass}>Disponibilité</h4>
+					<h4 className={sectionTitleClass}>{t("availability")}</h4>
 					<Availability />
 				</div>
 			</div>

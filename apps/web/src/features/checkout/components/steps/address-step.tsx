@@ -12,6 +12,7 @@ import {
 	Input,
 } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import InputSelect from "../../../../../../../packages/ui/src/input-select";
@@ -42,6 +43,7 @@ interface AddressStepProps {
 }
 
 export function AddressStep({ cartId, onComplete }: AddressStepProps) {
+	const t = useTranslations("CheckoutPage.address");
 	const { goToStep, isStepCompleted, isStepActive } = useCheckoutStep();
 	const { setShippingAddress, setSameBillingAddress, shippingAddress } =
 		useCheckoutStore();
@@ -108,10 +110,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 			onComplete?.(addressData);
 		} catch (error: any) {
 			console.error("Failed to update address:", error);
-			setError(
-				error?.message ||
-					"Impossible de mettre à jour l'adresse. Veuillez réessayer.",
-			);
+			setError(error?.message || t("updateError"));
 		} finally {
 			setIsLoading(false);
 		}
@@ -161,7 +160,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 						},
 					)}
 				>
-					Adresse de livraison
+					{t("title")}
 					{isCompleted && (
 						<svg
 							className="w-8 h-8 text-green-600"
@@ -182,7 +181,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 						onClick={handleEdit}
 						className="px-6 py-2 text-sm text-dark w-fit"
 					>
-						Modifier
+						{t("edit")}
 					</Button>
 				)}
 			</div>
@@ -203,20 +202,20 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							control={form.control}
 							name="email"
 							rules={{
-								required: "Email requis",
+								required: t("emailRequired"),
 								pattern: {
 									value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-									message: "Email invalide",
+									message: t("emailInvalid"),
 								},
 							}}
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>E-mail</FormLabel>
+									<FormLabel>{t("email")}</FormLabel>
 									<FormControl>
 										<Input
 											{...field}
 											type="email"
-											placeholder="votre@email.com"
+											placeholder={t("emailPlaceholder")}
 											className={classNameInput}
 										/>
 									</FormControl>
@@ -230,14 +229,14 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							<FormField
 								control={form.control}
 								name="firstName"
-								rules={{ required: "Prénom requis" }}
+								rules={{ required: t("firstNameRequired") }}
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Prénom</FormLabel>
+										<FormLabel>{t("firstName")}</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
-												placeholder="Prénom"
+												placeholder={t("firstName")}
 												className={classNameInput}
 											/>
 										</FormControl>
@@ -249,14 +248,14 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							<FormField
 								control={form.control}
 								name="lastName"
-								rules={{ required: "Nom requis" }}
+								rules={{ required: t("lastNameRequired") }}
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Nom</FormLabel>
+										<FormLabel>{t("lastName")}</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
-												placeholder="Nom"
+												placeholder={t("lastName")}
 												className={classNameInput}
 											/>
 										</FormControl>
@@ -272,11 +271,11 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							name="company"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Société (optionnel)</FormLabel>
+									<FormLabel>{t("companyOptional")}</FormLabel>
 									<FormControl>
 										<Input
 											{...field}
-											placeholder="Nom de la société"
+											placeholder={t("companyPlaceholder")}
 											className={classNameInput}
 										/>
 									</FormControl>
@@ -289,14 +288,14 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 						<FormField
 							control={form.control}
 							name="address"
-							rules={{ required: "Adresse requise" }}
+							rules={{ required: t("addressRequired") }}
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Adresse</FormLabel>
+									<FormLabel>{t("address")}</FormLabel>
 									<FormControl>
 										<Input
 											{...field}
-											placeholder="Adresse postale"
+											placeholder={t("addressPlaceholder")}
 											className={classNameInput}
 										/>
 									</FormControl>
@@ -311,11 +310,11 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							name="address2"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Appartement, étage, etc. (optionnel)</FormLabel>
+									<FormLabel>{t("address2Optional")}</FormLabel>
 									<FormControl>
 										<Input
 											{...field}
-											placeholder="Appartement, étage, etc."
+											placeholder={t("address2Placeholder")}
 											className={classNameInput}
 										/>
 									</FormControl>
@@ -329,14 +328,14 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							<FormField
 								control={form.control}
 								name="postCode"
-								rules={{ required: "Code postal requis" }}
+								rules={{ required: t("postCodeRequired") }}
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Code postal</FormLabel>
+										<FormLabel>{t("postCode")}</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
-												placeholder="Code postal"
+												placeholder={t("postCode")}
 												className={classNameInput}
 											/>
 										</FormControl>
@@ -348,14 +347,14 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							<FormField
 								control={form.control}
 								name="city"
-								rules={{ required: "Ville requise" }}
+								rules={{ required: t("cityRequired") }}
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Ville</FormLabel>
+										<FormLabel>{t("city")}</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
-												placeholder="Ville"
+												placeholder={t("city")}
 												className={classNameInput}
 											/>
 										</FormControl>
@@ -370,14 +369,14 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							<FormField
 								control={form.control}
 								name="region"
-								rules={{ required: "Région requise" }}
+								rules={{ required: t("regionRequired") }}
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Région / Province</FormLabel>
+										<FormLabel>{t("region")}</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
-												placeholder="Région / Province"
+												placeholder={t("region")}
 												className={classNameInput}
 											/>
 										</FormControl>
@@ -389,13 +388,13 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							<FormField
 								control={form.control}
 								name="country"
-								rules={{ required: "Pays requis" }}
+								rules={{ required: t("countryRequired") }}
 								render={({ field }) => (
 									<FormItem>
 										<FormControl>
 											<InputSelect
-												label="Pays"
-												placeholder="Sélectionner un pays"
+												label={t("country")}
+												placeholder={t("countryPlaceholder")}
 												classNameSelect="py-2"
 												items={countries}
 												onChange={(value: string) =>
@@ -415,15 +414,15 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 						<FormField
 							control={form.control}
 							name="phone"
-							rules={{ required: "Téléphone requis" }}
+							rules={{ required: t("phoneRequired") }}
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Téléphone</FormLabel>
+									<FormLabel>{t("phone")}</FormLabel>
 									<FormControl>
 										<Input
 											{...field}
 											type="tel"
-											placeholder="+237 6XX XXX XXX"
+											placeholder={t("phonePlaceholder")}
 											className={classNameInput}
 										/>
 									</FormControl>
@@ -440,7 +439,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 								onCheckedChange={(checked) => setSameBilling(checked === true)}
 							/>
 							<label htmlFor="sameBilling" className="text-sm">
-								L'adresse de facturation est la même que l'adresse de livraison
+								{t("sameBillingLabel")}
 							</label>
 						</div>
 
@@ -450,7 +449,7 @@ export function AddressStep({ cartId, onComplete }: AddressStepProps) {
 							className="py-6 mt-6 w-full"
 							disabled={isLoading || !cartId}
 						>
-							{isLoading ? "Enregistrement..." : "Continuer vers la livraison"}
+							{isLoading ? t("saving") : t("continueToDelivery")}
 						</Button>
 					</form>
 				</Form>

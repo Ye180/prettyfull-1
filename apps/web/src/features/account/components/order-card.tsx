@@ -2,6 +2,7 @@
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
 import { formatCurrency_FR } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -42,34 +43,32 @@ interface OrderCardProps {
 
 const statusStyles = {
 	pending: {
-		label: "En attente",
 		color: "bg-yellow-50 text-yellow-700 border-yellow-200",
 		dot: "bg-yellow-500",
 	},
 	processing: {
-		label: "En préparation",
 		color: "bg-amber-50 text-amber-700 border-blue-200",
 		dot: "bg-blue-500",
 	},
 	shipped: {
-		label: "Expédié",
 		color: "bg-indigo-50 text-indigo-700 border-indigo-200",
 		dot: "bg-indigo-500",
 	},
 	delivered: {
-		label: "Livré",
 		color: "bg-emerald-50 text-emerald-700 border-emerald-200",
 		dot: "bg-emerald-500",
 	},
 	cancelled: {
-		label: "Annulé",
 		color: "bg-red-50 text-red-700 border-red-200",
 		dot: "bg-red-500",
 	},
 };
 
 export const OrderCard = ({ order }: OrderCardProps) => {
-	const status = statusStyles[order.status] || statusStyles.pending;
+	const t = useTranslations("Account");
+	const statusKey = statusStyles[order.status] ? order.status : "pending";
+	const status = statusStyles[statusKey];
+	const statusLabel = t(`orders.status.${statusKey}`);
 
 	const date = new Date(order.createdAt).toLocaleDateString("fr-FR", {
 		day: "numeric",
@@ -83,7 +82,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 				<div className="space-y-3">
 					<div className="flex gap-3 items-center">
 						<p className="font-semibold text-gray-900 text-md!">
-							Commande{" "}
+							{t("orderCard.orderLabel")}{" "}
 							<span className="text-md! text-gray-500">#{order.displayId}</span>
 						</p>
 
@@ -93,7 +92,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 							<span
 								className={`h-1.5 w-1.5 rounded-full ${status.dot} animate-pulse`}
 							/>
-							{status.label}
+							{statusLabel}
 						</span>
 					</div>
 
@@ -108,7 +107,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 						{formatCurrency_FR(order.total, order.currency)}
 					</p>
 					<p className="mt-1 text-sm font-medium text-gray-500">
-						{order.items.length} article{order.items.length > 1 ? "s" : ""}
+						{t("orderCard.itemCount", { count: order.items.length })}
 					</p>
 				</div>
 			</div>
@@ -144,7 +143,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 					href={`/account/orders/${order.id}`}
 					className="flex items-center text-sm font-semibold text-gray-600 transition-colors group/link hover:text-black"
 				>
-					Order details
+					{t("orderCard.viewDetails")}
 					<ArrowRightIcon className="ml-2 w-4 h-4 opacity-0 transition-all duration-200 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0" />
 				</Link>
 

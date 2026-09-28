@@ -125,7 +125,7 @@ const SearchBar = ({ className, onNavigate, variant = "default" }: SearchBarProp
 				{!isMinimal && (
 					<button
 						type="submit"
-						aria-label="Rechercher"
+						aria-label={t("searchAriaLabel")}
 						className="flex justify-center items-center w-11 h-11 text-white bg-amber-600 rounded-r-lg transition-colors cursor-pointer shrink-0 hover:bg-amber-700"
 					>
 						<Search className="w-4 h-4" />
@@ -142,20 +142,20 @@ const SearchBar = ({ className, onNavigate, variant = "default" }: SearchBarProp
 				>
 					{!hasResults && !isFetching && (
 						<div className="p-6 text-center text-[1.3rem] text-gray-500">
-							Aucun résultat pour « {debouncedQuery} »
+							{t("noResultsFor", { query: debouncedQuery })}
 						</div>
 					)}
 
 					{isFetching && !hasResults && (
 						<div className="p-6 text-center text-[1.3rem] text-gray-500">
-							Recherche en cours...
+							{t("searching")}
 						</div>
 					)}
 
 					{filteredCategories.length > 0 && (
 						<div className="px-6 py-5 border-b border-gray-100">
 							<p className="pb-3 text-[1.2rem] font-bold tracking-wider text-gray-900">
-								Catégories populaires
+								{t("popularCategories")}
 							</p>
 							<div className="flex flex-wrap gap-2">
 								{filteredCategories.map((cat: any) => (
@@ -176,9 +176,9 @@ const SearchBar = ({ className, onNavigate, variant = "default" }: SearchBarProp
 						<div className="px-6 py-5">
 							{(() => {
 								const columns: { title: string; items: any[] }[] = [
-									{ title: "Meilleurs résultats", items: products.slice(0, 4) },
-									{ title: "Tendances", items: products.slice(4, 8) },
-									{ title: "Vous pourriez aimer", items: products.slice(8, 12) },
+									{ title: t("topResults"), items: products.slice(0, 4) },
+									{ title: t("trending"), items: products.slice(4, 8) },
+									{ title: t("youMayLike"), items: products.slice(8, 12) },
 								].filter((col) => col.items.length > 0);
 
 								return (

@@ -62,7 +62,7 @@ const NavDropdown = ({
 							<Link
 								key={child.handle}
 								href={buildChildHref(child.handle)}
-								className="block px-4 py-2 text-[1.3rem] text-gray-700 transition-colors hover:bg-gray-50 hover:text-black"
+								className="block px-4 py-2 text-[1.4rem] text-gray-700 transition-colors hover:bg-gray-50 hover:text-black"
 								onClick={() => setOpen(false)}
 							>
 								{child.name}

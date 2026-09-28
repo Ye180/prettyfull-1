@@ -16,15 +16,17 @@ const protectedRoutes = ["/account", "/wishlist", "/checkout"];
 const authRoutes = ["/login", "/create-account"];
 
 /**
- * Détecte la présence d'un token de session Better Auth.
- * En production, le cookie peut être préfixé par `__Secure-`, on teste les deux
- * afin de ne jamais rediriger par erreur un utilisateur connecté.
+ * Détecte la présence du cookie de rafraîchissement du storefront.
+ *
+ * `pf_store_refresh` est le cookie httpOnly posé par le backend (voir
+ * `apps/backend/src/lib/cookies.ts`) lors du login/register/refresh - ce
+ * proxy vérifiait auparavant `better-auth.session_token`, un nom hérité
+ * d'une lib d'auth abandonnée que le backend ne pose jamais, ce qui faisait
+ * traiter toute cliente connectée comme anonyme (boucle de redirection vers
+ * `/login`).
  */
 function hasSession(request: NextRequest): boolean {
-  return Boolean(
-    request.cookies.get("better-auth.session_token")?.value ||
-      request.cookies.get("__Secure-better-auth.session_token")?.value,
-  );
+  return Boolean(request.cookies.get("pf_store_refresh")?.value);
 }
 
 export function proxy(request: NextRequest) {

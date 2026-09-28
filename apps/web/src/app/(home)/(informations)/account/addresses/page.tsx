@@ -16,6 +16,7 @@ import {
 	DialogTitle,
 	Input,
 } from "@prettyfull/ui";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -155,6 +156,7 @@ const AddressCard = ({
 	onDelete: (id: string) => void;
 	isDeleting: boolean;
 }) => {
+	const t = useTranslations("Account.addresses");
 	const isDefault = address.is_default_shipping || address.is_default_billing;
 
 	return (
@@ -163,7 +165,7 @@ const AddressCard = ({
 				<div className="flex gap-1.5 items-center mb-4">
 					<StarIcon className="w-4 h-4 text-amber-500" />
 					<span className="text-xs font-semibold tracking-wider text-amber-600 uppercase">
-						Par défaut
+						{t("default")}
 					</span>
 				</div>
 			)}
@@ -181,7 +183,7 @@ const AddressCard = ({
 				{address.province && <p>{address.province}</p>}
 				<p className="uppercase">{address.country_code}</p>
 				{address.phone && (
-					<p className="pt-2 text-gray-400">Tél: {address.phone}</p>
+					<p className="pt-2 text-gray-400">{t("phonePrefix")} {address.phone}</p>
 				)}
 			</div>
 
@@ -191,7 +193,7 @@ const AddressCard = ({
 					className="flex gap-1.5 items-center px-4 py-2 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg transition-all hover:bg-gray-100 hover:text-black text-[1.3rem] cursor-pointer"
 				>
 					<PencilIcon className="w-3.5 h-3.5" />
-					Modifier
+					{t("edit")}
 				</button>
 				<button
 					onClick={() => onDelete(address.id)}
@@ -199,7 +201,7 @@ const AddressCard = ({
 					className="flex gap-1.5 items-center px-4 py-2 text-xs font-medium text-red-600 rounded-lg transition-all hover:bg-red-50 disabled:opacity-50 text-[1.3rem] cursor-pointer"
 				>
 					<TrashIcon className="w-3.5 h-3.5" />
-					{isDeleting ? "Suppression..." : "Supprimer"}
+					{isDeleting ? t("deleting") : t("delete")}
 				</button>
 			</div>
 		</div>
@@ -221,6 +223,7 @@ const AddressFormModal = ({
 	onSave: (data: AddressFormData) => Promise<void>;
 	isSaving: boolean;
 }) => {
+	const t = useTranslations("Account.addresses");
 	const [form, setForm] = useState<AddressFormData>(emptyForm);
 	const [errors, setErrors] = useState<
 		Partial<Record<keyof AddressFormData, string>>
@@ -266,12 +269,13 @@ const AddressFormModal = ({
 
 	const validate = (): boolean => {
 		const newErrors: Partial<Record<keyof AddressFormData, string>> = {};
-		if (!form.first_name.trim()) newErrors.first_name = "Requis";
-		if (!form.last_name.trim()) newErrors.last_name = "Requis";
-		if (!form.address_1.trim()) newErrors.address_1 = "Requis";
-		if (!form.city.trim()) newErrors.city = "Requis";
-		if (!form.postal_code.trim()) newErrors.postal_code = "Requis";
-		if (!form.country_code.trim()) newErrors.country_code = "Requis";
+		const required = t("required");
+		if (!form.first_name.trim()) newErrors.first_name = required;
+		if (!form.last_name.trim()) newErrors.last_name = required;
+		if (!form.address_1.trim()) newErrors.address_1 = required;
+		if (!form.city.trim()) newErrors.city = required;
+		if (!form.postal_code.trim()) newErrors.postal_code = required;
+		if (!form.country_code.trim()) newErrors.country_code = required;
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
 	};
@@ -287,19 +291,19 @@ const AddressFormModal = ({
 			<DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto py-10">
 				<DialogHeader>
 					<DialogTitle className="text-[2.4rem]! lg:text-[3.4rem]! font-bold tracking-wide">
-						{editingAddress ? "Modifier l'adresse" : "Nouvelle adresse"}
+						{editingAddress ? t("editAddressTitle") : t("newAddressTitle")}
 					</DialogTitle>
 					<DialogDescription className="text-gray-500">
 						{editingAddress
-							? "Modifiez les informations de votre adresse."
-							: "Ajoutez une nouvelle adresse de livraison."}
+							? t("editAddressDescription")
+							: t("newAddressDescription")}
 					</DialogDescription>
 				</DialogHeader>
 
 				<form onSubmit={handleSubmit} className="mt-6 space-y-5">
 					<div className="grid grid-cols-2 gap-4">
 						<Input
-							label="Prénom"
+							label={t("firstName")}
 							placeholder="Jean"
 							className="px-4 h-20 label:text-[1rem]"
 							value={form.first_name}
@@ -307,7 +311,7 @@ const AddressFormModal = ({
 							errorMessage={errors.first_name}
 						/>
 						<Input
-							label="Nom"
+							label={t("lastName")}
 							placeholder="Dupont"
 							className="px-4 h-20"
 							value={form.last_name}
@@ -317,15 +321,15 @@ const AddressFormModal = ({
 					</div>
 
 					<Input
-						label="Entreprise"
-						placeholder="Optionnel"
+						label={t("company")}
+						placeholder={t("optional")}
 						className="px-4 h-20"
 						value={form.company}
 						onChange={handleChange("company")}
 					/>
 
 					<Input
-						label="Adresse"
+						label={t("address")}
 						placeholder="123 Rue de la Paix"
 						className="px-4 h-20"
 						value={form.address_1}
@@ -334,8 +338,8 @@ const AddressFormModal = ({
 					/>
 
 					<Input
-						label="Complément d'adresse"
-						placeholder="Appartement, étage... (optionnel)"
+						label={t("address2")}
+						placeholder={t("address2Placeholder")}
 						className="px-4 h-20"
 						value={form.address_2}
 						onChange={handleChange("address_2")}
@@ -343,7 +347,7 @@ const AddressFormModal = ({
 
 					<div className="grid grid-cols-2 gap-4">
 						<Input
-							label="Ville"
+							label={t("city")}
 							placeholder="Paris"
 							className="px-4 h-20"
 							value={form.city}
@@ -351,7 +355,7 @@ const AddressFormModal = ({
 							errorMessage={errors.city}
 						/>
 						<Input
-							label="Code postal"
+							label={t("postalCode")}
 							placeholder="75001"
 							className="px-4 h-20"
 							value={form.postal_code}
@@ -362,14 +366,14 @@ const AddressFormModal = ({
 
 					<div className="grid grid-cols-2 gap-4">
 						<Input
-							label="Région / Province"
-							placeholder="Île-de-France (optionnel)"
+							label={t("region")}
+							placeholder={t("regionPlaceholder")}
 							className="px-4 h-20"
 							value={form.province}
 							onChange={handleChange("province")}
 						/>
 						<Input
-							label="Code pays"
+							label={t("countryCode")}
 							placeholder="fr"
 							className="px-4 h-20"
 							value={form.country_code}
@@ -379,8 +383,8 @@ const AddressFormModal = ({
 					</div>
 
 					<Input
-						label="Téléphone"
-						placeholder="+33 6 12 34 56 78 (optionnel)"
+						label={t("phone")}
+						placeholder={t("phonePlaceholder")}
 						className="px-4 h-20"
 						value={form.phone}
 						onChange={handleChange("phone")}
@@ -393,7 +397,7 @@ const AddressFormModal = ({
 							className="rounded-full border-gray-300"
 							onClick={() => onOpenChange(false)}
 						>
-							Annuler
+							{t("cancel")}
 						</Button>
 						<Button
 							type="submit"
@@ -401,10 +405,10 @@ const AddressFormModal = ({
 							disabled={isSaving}
 						>
 							{isSaving
-								? "Enregistrement..."
+								? t("saving")
 								: editingAddress
-									? "Mettre à jour"
-									: "Ajouter l'adresse"}
+									? t("update")
+									: t("addAddress")}
 						</Button>
 					</div>
 				</form>
@@ -425,37 +429,39 @@ const DeleteConfirmModal = ({
 	onOpenChange: (open: boolean) => void;
 	onConfirm: () => void;
 	isDeleting: boolean;
-}) => (
-	<Dialog open={open} onOpenChange={onOpenChange}>
-		<DialogContent className="sm:max-w-[420px]">
-			<DialogHeader className="space-y-4">
-				<DialogTitle className="text-[2.7rem]! font-bold tracking-wide">
-					Supprimer l&apos;adresse
-				</DialogTitle>
-				<DialogDescription className="text-gray-500">
-					Êtes-vous sûr de vouloir supprimer cette adresse ? Cette action est
-					irréversible.
-				</DialogDescription>
-			</DialogHeader>
-			<div className="flex gap-3 justify-end pt-4">
-				<Button
-					variant="outline"
-					className="rounded-full border-gray-300"
-					onClick={() => onOpenChange(false)}
-				>
-					Annuler
-				</Button>
-				<Button
-					className="font-semibold text-white bg-red-600 rounded-full"
-					onClick={onConfirm}
-					disabled={isDeleting}
-				>
-					{isDeleting ? "Suppression..." : "Supprimer"}
-				</Button>
-			</div>
-		</DialogContent>
-	</Dialog>
-);
+}) => {
+	const t = useTranslations("Account.addresses");
+	return (
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent className="sm:max-w-[420px]">
+				<DialogHeader className="space-y-4">
+					<DialogTitle className="text-[2.7rem]! font-bold tracking-wide">
+						{t("deleteAddressTitle")}
+					</DialogTitle>
+					<DialogDescription className="text-gray-500">
+						{t("deleteAddressConfirm")}
+					</DialogDescription>
+				</DialogHeader>
+				<div className="flex gap-3 justify-end pt-4">
+					<Button
+						variant="outline"
+						className="rounded-full border-gray-300"
+						onClick={() => onOpenChange(false)}
+					>
+						{t("cancel")}
+					</Button>
+					<Button
+						className="font-semibold text-white bg-red-600 rounded-full"
+						onClick={onConfirm}
+						disabled={isDeleting}
+					>
+						{isDeleting ? t("deleting") : t("delete")}
+					</Button>
+				</div>
+			</DialogContent>
+		</Dialog>
+	);
+};
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
@@ -509,6 +515,7 @@ const toApiAddress = (data: AddressFormData) => ({
 });
 
 export default function AddressesPage() {
+	const t = useTranslations("Account.addresses");
 	const queryClient = useQueryClient();
 
 	const { data: remoteAddresses } = useQuery({
@@ -557,10 +564,10 @@ export default function AddressesPage() {
 		try {
 			if (editingAddress) {
 				await updateAddress(editingAddress.id, toApiAddress(data));
-				showSuccess("Adresse mise à jour !");
+				showSuccess(t("addressUpdated"));
 			} else {
 				await createAddress(toApiAddress(data));
-				showSuccess("Adresse ajoutée !");
+				showSuccess(t("addressAdded"));
 			}
 
 			await refreshAddresses();
@@ -569,7 +576,7 @@ export default function AddressesPage() {
 			// La modale reste ouverte : la saisie n'est pas perdue et peut être
 			// corrigée à partir du message de l'API.
 			showSuccess(
-				error instanceof Error ? error.message : "Enregistrement impossible.",
+				error instanceof Error ? error.message : t("saveError"),
 			);
 		} finally {
 			setIsSaving(false);
@@ -590,10 +597,10 @@ export default function AddressesPage() {
 		try {
 			await deleteAddress(deletingAddressId);
 			await refreshAddresses();
-			showSuccess("Adresse supprimée !");
+			showSuccess(t("addressDeleted"));
 		} catch (error) {
 			showSuccess(
-				error instanceof Error ? error.message : "Suppression impossible.",
+				error instanceof Error ? error.message : t("deleteError"),
 			);
 		} finally {
 			setShowDeleteModal(false);
@@ -610,10 +617,10 @@ export default function AddressesPage() {
 			<div className="flex flex-col gap-8 justify-between sm:flex-row sm:items-center">
 				<div>
 					<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-						Mes adresses
+						{t("pageTitle")}
 					</h2>
 					<p className="mt-1 text-gray-500">
-						Gérez vos adresses de livraison et de facturation.
+						{t("pageSubtitle")}
 					</p>
 				</div>
 				<Button
@@ -621,7 +628,7 @@ export default function AddressesPage() {
 					className="flex gap-2 items-center self-start px-8 text-white bg-black rounded-full max-md:py-4 hover:bg-gray-800 w-fit"
 				>
 					<PlusIcon className="size-10" />
-					Ajouter une adresse
+					{t("addAddress")}
 				</Button>
 			</div>
 
@@ -667,7 +674,7 @@ export default function AddressesPage() {
 							<PlusIcon className="w-6 h-6 text-gray-400 group-hover:text-gray-600" />
 						</div>
 						<span className="text-sm font-medium text-gray-500 group-hover:text-gray-700">
-							Ajouter une adresse
+							{t("addAddress")}
 						</span>
 					</button>
 				</div>
@@ -677,17 +684,17 @@ export default function AddressesPage() {
 						<MapPinIcon className="w-8 h-8 text-gray-400" />
 					</div>
 					<h3 className="text-lg font-semibold text-gray-900">
-						Aucune adresse enregistrée
+						{t("noAddressTitle")}
 					</h3>
 					<p className="mx-auto mt-2 mb-8 max-w-sm text-gray-500">
-						Ajoutez votre première adresse pour faciliter vos prochaines commandes.
+						{t("noAddressDescription")}
 					</p>
 					<Button
 						onClick={handleOpenAdd}
 						className="flex gap-2 items-center text-white bg-black rounded-full hover:bg-gray-800"
 					>
 						<PlusIcon className="w-4 h-4" />
-						Ajouter une adresse
+						{t("addAddress")}
 					</Button>
 				</div>
 			)}
@@ -699,12 +706,8 @@ export default function AddressesPage() {
 						<span className="text-xs font-bold text-gray-600">?</span>
 					</div>
 					<div className="text-sm text-gray-600">
-						<p className="font-medium text-gray-900">Astuce</p>
-						<p>
-							Votre première adresse est automatiquement utilisée comme adresse
-							par défaut lors du paiement. Vous pouvez la modifier au moment de
-							finaliser votre commande.
-						</p>
+						<p className="font-medium text-gray-900">{t("tip")}</p>
+						<p>{t("tipDescription")}</p>
 					</div>
 				</div>
 			)}

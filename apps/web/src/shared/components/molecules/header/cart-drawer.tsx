@@ -14,6 +14,7 @@ import {
 } from "@prettyfull/ui";
 import { useCartStore } from "@prettyfull/store";
 import { formatCurrency_FR } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
@@ -26,6 +27,7 @@ import MiniCartItem from "./mini-cart-item";
  * fini le tableau dense.
  */
 const CartDrawer = () => {
+	const t = useTranslations("Header.cart");
 	const [open, setOpen] = useState(false);
 	const [isDesktop, setIsDesktop] = useState(false);
 	const router = useRouter();
@@ -52,7 +54,7 @@ const CartDrawer = () => {
 		<Drawer direction={isDesktop ? "right" : "bottom"} open={open} onOpenChange={setOpen}>
 			<DrawerTrigger
 				className="relative flex focus:outline-none cursor-pointer hover:opacity-70 transition-opacity"
-				aria-label="Voir le panier"
+				aria-label={t("ariaViewCart")}
 			>
 				<Cart className="w-[20px] h-[20px]" />
 				{itemCount > 0 && (
@@ -66,9 +68,9 @@ const CartDrawer = () => {
 				className="flex! flex-col w-full sm:max-w-md! max-h-[85vh] rounded-none! border-t-0!"
 			>
 				<div className="flex justify-between items-center px-6 py-5 border-b border-gray-100 shrink-0">
-					<h2 className="text-2xl font-semibold text-gray-900">Panier</h2>
+					<h2 className="text-2xl font-semibold text-gray-900">{t("title")}</h2>
 					<DrawerClose
-						aria-label="Fermer"
+						aria-label={t("ariaClose")}
 						className="p-1 text-gray-500 rounded-md cursor-pointer hover:bg-gray-100 hover:text-black"
 					>
 						<CloseIcon className="w-6 h-6" />
@@ -81,9 +83,9 @@ const CartDrawer = () => {
 							<div className="flex justify-center items-center mb-6 w-16 h-16 bg-gray-100 rounded-full">
 								<Cart className="w-6 h-6 text-gray-400" />
 							</div>
-							<h3 className="text-xl font-bold text-gray-900">Votre panier est vide</h3>
+							<h3 className="text-xl font-bold text-gray-900">{t("emptyTitle")}</h3>
 							<p className="mt-2 max-w-xs text-sm text-gray-500">
-								Ajoutez des articles pour les retrouver ici.
+								{t("emptyDescription")}
 							</p>
 						</div>
 					) : (
@@ -96,14 +98,14 @@ const CartDrawer = () => {
 				{items.length > 0 && (
 					<DrawerFooter className="border-t border-gray-100">
 						<div className="flex justify-between items-center mb-1 text-base font-semibold text-gray-900">
-							<span>Sous-total</span>
+							<span>{t("subtotal")}</span>
 							<span>{formatCurrency_FR(subtotal, currency)}</span>
 						</div>
 						<p className="mb-3 text-xs text-gray-500">
-							Livraison et taxes calculées à l&apos;étape suivante.
+							{t("shippingNote")}
 						</p>
 						<Button shape="square" fullWidth onClick={goToCart}>
-							Voir le panier
+							{t("viewCartButton")}
 						</Button>
 					</DrawerFooter>
 				)}

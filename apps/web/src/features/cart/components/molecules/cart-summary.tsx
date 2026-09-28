@@ -65,15 +65,15 @@ const CartSummary = ({
 			setDiscountAmount(cart.discountTotal);
 
 			if (cart.discountCode) {
-				toast.success(`Code promo « ${cart.discountCode} » appliqué.`);
+				toast.success(t("couponApplied", { code: cart.discountCode }));
 			} else {
-				toast.info("Ce code ne s'applique pas à votre panier actuel.");
+				toast.info(t("couponNotApplicable"));
 			}
 		} catch (error) {
 			toast.error(
 				error instanceof StoreApiError
 					? error.message
-					: "Impossible d'appliquer ce code promo.",
+					: t("couponApplyError"),
 			);
 		} finally {
 			setIsApplying(false);
@@ -91,7 +91,7 @@ const CartSummary = ({
 			toast.error(
 				error instanceof StoreApiError
 					? error.message
-					: "Impossible de retirer ce code promo.",
+					: t("couponRemoveError"),
 			);
 		} finally {
 			setIsApplying(false);
@@ -111,7 +111,7 @@ const CartSummary = ({
 		>
 			<div className="text-center pb-2">
 				<p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-					Prix total
+					{t("totalPrize")}
 				</p>
 				<p className="mt-2 text-4xl md:text-5xl font-extrabold text-gray-950 font-sans tracking-tight">
 					{formatCurrency_FR(finalTotal > 0 ? finalTotal : total, currency)}
@@ -130,7 +130,7 @@ const CartSummary = ({
 
 				{appliedCode && (
 					<div className="flex justify-between items-center text-gray-600">
-						<span>Réduction ({appliedCode})</span>
+						<span>{t("discount", { code: appliedCode })}</span>
 						<span className="font-semibold text-rose-500">
 							-{formatCurrency_FR(discountAmount, currency)}
 						</span>
@@ -140,7 +140,7 @@ const CartSummary = ({
 				<div className="flex justify-between items-center text-gray-600">
 					<span>{t("shipping")}</span>
 					<span className="font-semibold text-gray-900">
-						{shipping > 0 ? formatCurrency_FR(shipping, currency) : "Gratuit"}
+						{shipping > 0 ? formatCurrency_FR(shipping, currency) : t("free")}
 					</span>
 				</div>
 
@@ -175,7 +175,7 @@ const CartSummary = ({
 							disabled={isApplying}
 							className="text-gray-400 hover:text-black transition disabled:opacity-50 cursor-pointer"
 						>
-							Retirer
+							{t("remove")}
 						</button>
 					</div>
 				) : (

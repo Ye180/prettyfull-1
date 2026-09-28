@@ -14,8 +14,8 @@ const Header = ({ main_category }: { main_category?: StoreCategory[] }) => {
 			<div className="hidden justify-center items-center px-4 py-2 w-full text-[1.2rem] font-medium text-white bg-amber-600 sm:flex">
 				Livraison gratuite dès 25 000 FCFA d&apos;achat
 			</div>
-			<div className="max-w-[150rem] mx-auto px-3 pt-3 pb-3 sm:px-4 lg:px-6">
-				<div className="px-3 bg-white rounded-2xl border border-gray-100 shadow-xs sm:px-5">
+			<div className="px-3 pt-3 pb-3 w-full sm:px-4 lg:px-6 xl:px-10">
+				<div className="px-3 bg-white rounded-lg border border-gray-200 sm:px-5">
 					<NavBarHeaders main_category={categories} />
 				</div>
 			</div>

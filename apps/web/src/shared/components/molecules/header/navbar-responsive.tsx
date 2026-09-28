@@ -4,11 +4,13 @@ import { NAV_INFO_LINKS } from "@/lib/utils/constants/header";
 import type { StoreCategory } from "@/lib/store-api/types";
 import type { User as UserProfile } from "@prettyfull/contracts";
 import { Logo, LogOut, ScrollArea, Skeleton, User } from "@prettyfull/ui";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import { CurrencySelector } from "./currency-selector";
+import { LanguageToggle } from "./language-toggle";
 import SearchBar from "./search-bar";
 
 const NavbarResponsive = ({
@@ -24,6 +26,7 @@ const NavbarResponsive = ({
 	profile?: UserProfile;
 	onLogout: () => void;
 }) => {
+	const t = useTranslations("Header.nav");
 	const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
 	const toggleExpanded = (handle: string) => {
@@ -39,7 +42,7 @@ const NavbarResponsive = ({
 		<div className="fixed inset-0 z-40 flex justify-end">
 			{/* Backdrop - desktop only, mobile stays full-bleed */}
 			<button
-				aria-label="Fermer le menu"
+				aria-label={t("closeMenu")}
 				onClick={close}
 				className="hidden md:block absolute inset-0 bg-black/40 cursor-pointer"
 			/>
@@ -52,6 +55,7 @@ const NavbarResponsive = ({
 					</Link>
 
 					<div className="flex gap-2 items-center">
+						<LanguageToggle />
 						<div className="">
 							<CurrencySelector />
 						</div>
@@ -60,7 +64,7 @@ const NavbarResponsive = ({
 						<button
 							onClick={close}
 							className="p-2 text-gray-600 cursor-pointer hover:text-black focus:outline-none"
-							aria-label="Fermer le menu"
+							aria-label={t("closeMenu")}
 						>
 							<CloseIcon className="w-10 h-10" />
 						</button>
@@ -80,7 +84,7 @@ const NavbarResponsive = ({
 							onClick={close}
 							className="text-[1.5rem] w-full py-3 px-3 hover:bg-gray-50 rounded-md font-semibold text-gray-900 transition-colors"
 						>
-							Accueil
+							{t("home")}
 						</Link>
 
 						{main_category ? (
@@ -102,7 +106,11 @@ const NavbarResponsive = ({
 												<button
 													type="button"
 													onClick={() => toggleExpanded(cat.handle)}
-													aria-label={`${isOpen ? "Réduire" : "Voir"} les sous-catégories de ${cat.name}`}
+													aria-label={
+												isOpen
+													? t("collapseSubcategoriesOf", { name: cat.name })
+													: t("expandSubcategoriesOf", { name: cat.name })
+											}
 													className="p-3 text-gray-500 cursor-pointer hover:text-black"
 												>
 													<svg
@@ -162,7 +170,7 @@ const NavbarResponsive = ({
 									className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-black px-3 py-3 text-[1.4rem] font-medium text-white transition-colors hover:bg-gray-800 cursor-pointer"
 								>
 									<LogOut className="w-[20px] h-[20px]" />
-									Déconnexion
+									{t("logout")}
 								</button>
 							</>
 						) : (
@@ -171,13 +179,13 @@ const NavbarResponsive = ({
 									onClick={() => onOpenAuth("login")}
 									className="flex-1 rounded-lg border border-gray-200 px-3 py-3 text-[1.4rem] font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-black cursor-pointer"
 								>
-									Connexion
+									{t("login")}
 								</button>
 								<button
 									onClick={() => onOpenAuth("register")}
 									className="flex-1 rounded-lg bg-black px-3 py-3 text-[1.4rem] font-medium text-white transition-colors hover:bg-gray-800 cursor-pointer"
 								>
-									S&apos;inscrire
+									{t("register")}
 								</button>
 							</>
 						)}
@@ -195,7 +203,7 @@ const NavbarResponsive = ({
 								onClick={close}
 								className="w-full rounded-md px-3 py-3 text-[1.4rem] font-normal text-gray-500 transition-colors hover:bg-gray-50 hover:text-black"
 							>
-								{link.label}
+								{t(`info.${link.key}`)}
 							</Link>
 						))}
 					</div>

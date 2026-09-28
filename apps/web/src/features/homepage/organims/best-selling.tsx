@@ -8,11 +8,10 @@ import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
 import { useRegionStore } from "@/stores/useRegion";
 import { useWishlistStore } from "@prettyfull/store";
 import { formatCurrency_FR, getMediaUrl } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-
-const ALL_LABEL = "Toute la collection";
 
 /**
  * Nombre de coloris distincts d'un produit brut.
@@ -37,6 +36,8 @@ const countDistinctColors = (product: {
 };
 
 export const BestSellingSection = () => {
+	const t = useTranslations("HomePage.bestSelling");
+	const ALL_LABEL = t("allLabel");
 	const [activeCategory, setActiveCategory] = useState(ALL_LABEL);
 	const { data: rawProducts, isLoading } = useGetBestSellingProducts();
 	const { data: categories } = useGetShopCategories();
@@ -63,7 +64,7 @@ export const BestSellingSection = () => {
 
 	const categoryTabs = useMemo(
 		() => [ALL_LABEL, ...(categories ?? []).map((c) => c.name)],
-		[categories],
+		[categories, ALL_LABEL],
 	);
 
 	const toggleWishlist = (
@@ -98,20 +99,19 @@ export const BestSellingSection = () => {
 			<div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8">
 				<div className="max-w-xl">
 					<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#080808]">
-						Nos best-sellers santé & bien-être
+						{t("title")}
 					</h2>
 				</div>
 
 				<div className="flex flex-col sm:flex-row sm:items-center gap-4 max-w-md">
 					<p className="text-[1.4rem] text-[#666666] leading-relaxed">
-						Vitamines, protéines et compléments plébiscités par notre
-						communauté pour leur qualité et leur efficacité.
+						{t("subtitle")}
 					</p>
 					<Link
 						href="/collections"
 						className="inline-flex items-center gap-2 px-6 py-3 bg-amber-600 text-white text-[1.4rem] font-medium rounded-lg whitespace-nowrap hover:bg-amber-700 transition-all self-start shadow"
 					>
-						<span>Achetez maintenant</span>
+						<span>{t("ctaButton")}</span>
 						<svg
 							width="16"
 							height="16"
@@ -148,11 +148,14 @@ export const BestSellingSection = () => {
 				})}
 			</div>
 
-			{/* Grille de produits */}
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+			{/* Grille de produits - carousel horizontal au scroll sur mobile, grille à partir de sm */}
+			<div className="flex overflow-x-auto gap-4 pt-4 pb-2 snap-x snap-mandatory scrollbar-hide sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:pb-0 sm:snap-none lg:grid-cols-3">
 				{isLoading
 					? Array.from({ length: 6 }, (_, i) => (
-							<div key={i} className="space-y-4 animate-pulse">
+							<div
+								key={i}
+								className="shrink-0 w-[75%] space-y-4 animate-pulse sm:w-auto sm:shrink"
+							>
 								<div className="w-full bg-gray-200 rounded-lg aspect-[1/1.12]" />
 								<div className="w-3/4 h-6 bg-gray-200 rounded" />
 								<div className="w-1/3 h-6 bg-gray-300 rounded" />
@@ -166,7 +169,7 @@ export const BestSellingSection = () => {
 								<Link
 									key={product.id}
 									href={PRODUCT_PATHS.productDetail(product.handle)}
-									className="group flex flex-col space-y-4"
+									className="group flex flex-col shrink-0 space-y-4 w-[75%] snap-start sm:w-auto sm:shrink"
 								>
 									<div className="relative w-full aspect-[1/1.12] bg-[#F7F7F7] rounded-lg overflow-hidden transition-all duration-300 group-hover:shadow-md">
 										<Image
@@ -185,7 +188,7 @@ export const BestSellingSection = () => {
 												{product.name}{" "}
 												{product.variantCount > 1 && (
 													<span className="font-normal text-[#777777] text-[1.4rem]">
-														({product.variantCount} options)
+														{t("optionsCount", { count: product.variantCount })}
 													</span>
 												)}
 											</h3>
@@ -207,7 +210,7 @@ export const BestSellingSection = () => {
 
 										<button
 											onClick={(e) => toggleWishlist(product, e)}
-											aria-label="Ajouter aux favoris"
+											aria-label={t("addToWishlist")}
 											className="p-2 text-[#222222] hover:text-black transition-colors cursor-pointer"
 										>
 											<svg

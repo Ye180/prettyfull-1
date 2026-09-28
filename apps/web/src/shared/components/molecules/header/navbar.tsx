@@ -1,17 +1,19 @@
 "use client";
 
-import { AuthModal, type AuthMode } from "@/features/auth/components";
 import { useLogout } from "@/features/auth/api/logout";
+import { AuthModal, type AuthMode } from "@/features/auth/components";
 import { paths } from "@/lib/routes/paths-en";
 import { fetchProfile } from "@/lib/store-api";
 import type { StoreCategory } from "@/lib/store-api/types";
 import { LogOut, User } from "@prettyfull/ui";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import CartDrawer from "./cart-drawer";
 import { CurrencySelector } from "./currency-selector";
+import { LanguageToggle } from "./language-toggle";
 import NavCategoryBar from "./nav-category-bar";
 import NavbarResponsive from "./navbar-responsive";
 import SearchBar from "./search-bar";
@@ -22,6 +24,7 @@ export interface NavBarHeadersProps {
 }
 
 const NavBarHeaders = ({ main_category = [] }: NavBarHeadersProps) => {
+	const t = useTranslations("Header.nav");
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [authMode, setAuthMode] = useState<AuthMode | null>(null);
 
@@ -42,12 +45,12 @@ const NavBarHeaders = ({ main_category = [] }: NavBarHeadersProps) => {
 		<>
 			<div className="flex flex-col w-full">
 				{/* Row 1 : burger+recherche (gauche), logo (centre), actions (droite) */}
-				<div className="grid grid-cols-[auto_1fr_auto] gap-4 items-center py-5 sm:py-6">
+				<div className="grid grid-cols-[auto_1fr_auto] gap-4 items-center py-5 sm:py-6 ">
 					<div className="flex gap-3 items-center">
 						<button
 							onClick={() => setIsMobileMenuOpen(true)}
-							className="p-2 -ml-2 text-black hover:opacity-70 transition-opacity cursor-pointer md:hidden"
-							aria-label="Ouvrir le menu"
+							className="p-2 -ml-2 text-black transition-opacity cursor-pointer hover:opacity-70 md:hidden"
+							aria-label={t("openMenu")}
 						>
 							<svg
 								width="24"
@@ -65,7 +68,7 @@ const NavBarHeaders = ({ main_category = [] }: NavBarHeadersProps) => {
 						</button>
 
 						{/* Recherche - desktop uniquement, la version mobile vit dans le drawer */}
-						<div className="hidden md:block w-[14rem] lg:w-[18rem]">
+						<div className="hidden w-64 md:block lg:w-104 xl:w-xs">
 							<SearchBar variant="minimal" />
 						</div>
 					</div>
@@ -73,7 +76,7 @@ const NavBarHeaders = ({ main_category = [] }: NavBarHeadersProps) => {
 					<Link
 						href="/"
 						className="flex justify-self-center items-center p-1 transition-opacity hover:opacity-80"
-						aria-label="Prettyfull Accueil"
+						aria-label={t("homeAriaLabel")}
 					>
 						<Image
 							src="/assets/logo.png"
@@ -86,7 +89,8 @@ const NavBarHeaders = ({ main_category = [] }: NavBarHeadersProps) => {
 					</Link>
 
 					{/* Actions - droite */}
-					<div className="flex items-center justify-end space-x-6 text-[1.4rem] font-medium">
+					<div className="flex items-center justify-end space-x-6 text-[1.5rem] font-medium">
+						<LanguageToggle />
 						<div className="max-lg:hidden">
 							<CurrencySelector />
 						</div>
@@ -108,7 +112,7 @@ const NavBarHeaders = ({ main_category = [] }: NavBarHeadersProps) => {
 										className="flex items-center gap-1.5 text-[#111111] hover:text-black transition-colors cursor-pointer"
 									>
 										<LogOut className="w-[20px] h-[20px]" />
-										Déconnexion
+										{t("logout")}
 									</button>
 								</>
 							) : (
@@ -117,13 +121,13 @@ const NavBarHeaders = ({ main_category = [] }: NavBarHeadersProps) => {
 										onClick={() => openAuth("login")}
 										className="text-[#111111] hover:text-black transition-colors cursor-pointer"
 									>
-										Connexion
+										{t("login")}
 									</button>
 									<button
 										onClick={() => openAuth("register")}
 										className="text-[#111111] hover:text-black transition-colors cursor-pointer"
 									>
-										S&apos;inscrire
+										{t("register")}
 									</button>
 								</>
 							)}

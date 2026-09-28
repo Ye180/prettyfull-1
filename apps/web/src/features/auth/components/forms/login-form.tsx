@@ -3,6 +3,7 @@
 import { StoreApiError } from "@/lib/store-api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, toast } from "@prettyfull/ui";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
@@ -19,9 +20,12 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
+	const t = useTranslations("Auth.login");
 	const router = useRouter();
 
-	const [callbackUrl] = useQueryState("callbackUrl");
+	// Nom du paramètre posé par `proxy.ts` quand il bounce une route protégée
+	// (`/account`, `/wishlist`, `/checkout`) vers `/login`.
+	const [callbackUrl] = useQueryState("redirect");
 
 	const {
 		register,
@@ -43,9 +47,7 @@ export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
 			}
 		} catch (error) {
 			toast.error(
-				error instanceof StoreApiError
-					? error.message
-					: "Connexion impossible. Veuillez réessayer.",
+				error instanceof StoreApiError ? error.message : t("error"),
 			);
 		}
 	};
@@ -53,29 +55,33 @@ export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
 	return (
 		<Flex settings={{ justify: "center", isColumn: true }}>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<main className="space-y-12">
-					<div className="mb-16">
-						<h3>Bon retour sur PrettyFull</h3>
-						<p className="text-neutral-500">
-							Connectez-vous à votre compte pour retrouver vos compléments
-							et suivre vos commandes
-						</p>
+				<main className="space-y-8">
+					<div className="mb-8">
+						<h3 className="text-[2.6rem]!">{t("title")}</h3>
+						<p className="text-neutral-500">{t("subtitle")}</p>
 					</div>
-					<div className="space-y-8">
+					<div className="space-y-6">
 						<Input
-							label="E-mail"
+							label={t("email")}
 							{...register("email")}
 							errorMessage={errors.email?.message}
+							className="rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
 						/>
 						<Input
 							type="password"
-							label="Mot de passe"
+							label={t("password")}
 							{...register("password")}
 							errorMessage={errors.password?.message}
+							className="rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
 						/>
 					</div>
-					<Button type="submit" isLoading={loginMutation.isPending} fullWidth>
-						Connexion
+					<Button
+						type="submit"
+						isLoading={loginMutation.isPending}
+						fullWidth
+						className="bg-amber-600 hover:bg-amber-700"
+					>
+						{t("submit")}
 					</Button>
 				</main>
 				<header>
@@ -102,21 +108,24 @@ export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
 				<Flex
 					as="footer"
 					settings={{ isColumn: true, align: "center", spacing: "gap-10" }}
-					className="mt-[5.2rem]"
+					className="mt-10"
 				>
 					<p className="font-medium text-grey">
-						Vous n'avez pas de compte ?{" "}
+						{t("noAccount")}{" "}
 						{onSwitchMode ? (
 							<button
 								type="button"
 								onClick={onSwitchMode}
-								className="text-black underline cursor-pointer"
+								className="font-semibold text-amber-600 underline cursor-pointer"
 							>
-								Créer un compte
+								{t("register")}
 							</button>
 						) : (
-							<Link href="/create-account" className="text-black underline">
-								Créer un compte
+							<Link
+								href="/create-account"
+								className="font-semibold text-amber-600 underline"
+							>
+								{t("register")}
 							</Link>
 						)}
 					</p>

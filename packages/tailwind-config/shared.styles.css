@@ -1,5 +1,13 @@
 /* tailwind.css */
 
+/* Satoshi (police principale) + Clash Display (grands titres) - pas
+ * disponibles sur Fontsource, servies via le CDN officiel Fontshare.
+ * Doit rester le tout premier import du fichier : une fois les imports
+ * de packages locaux (fontsource) inlinés par le bundler, un @import
+ * placé après eux violerait la règle CSS "@import doit précéder toute
+ * autre règle". */
+@import url("https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&f[]=clash-display@500,600,700&display=swap");
+
 /*
 |--------------------------------------------------------------------------
 | 1. Import Tailwind's base, components, and utilities , font.
@@ -107,8 +115,8 @@
   | Typography
   |----------------------------------
   */
-	--font-family-sans: "Manrope Variable", system-ui, sans-serif;
-	--font-family-heading: "Bebas Neue", sans-serif;
+	--font-family-sans: "Satoshi", "Manrope Variable", system-ui, sans-serif;
+	--font-family-heading: "Clash Display", "Satoshi", sans-serif;
 	/*
   |----------------------------------
   | Border Radius

@@ -9,11 +9,14 @@ import {
 	Search,
 } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import { useFaqFilters } from "../hooks/use-faq-filters";
 
 const Content = () => {
+	const t = useTranslations("FaqPage");
 	const {
 		categories,
+		categoryLabel,
 		selectedCategory,
 		setSelectedCategory,
 		searchQuery,
@@ -28,11 +31,15 @@ const Content = () => {
 			{/* Top Hero Banner */}
 			<PhotoOverlayBanner
 				image="/category/category-principale.jpg"
-				imageAlt="Assistance PrettyFull"
+				imageAlt={t("banner.imageAlt")}
 				height="lg"
-				topLabels={["Centre d'aide", "Réponses rapides", "Service client"]}
-				title="Comment pouvons-nous vous aider ?"
-				subtitle="Trouvez rapidement des réponses à vos questions sur les commandes, la livraison, les retours et nos produits."
+				topLabels={[
+					t("banner.topLabel1"),
+					t("banner.topLabel2"),
+					t("banner.topLabel3"),
+				]}
+				title={t("banner.title")}
+				subtitle={t("banner.subtitle")}
 				titleAlign="bottom-left"
 			/>
 
@@ -43,10 +50,10 @@ const Content = () => {
 					<div className="space-y-8 lg:col-span-4">
 						<div className="space-y-3">
 							<span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
-								Assistance
+								{t("sidebar.eyebrow")}
 							</span>
 							<h2 className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-950">
-								Parcourir les questions
+								{t("sidebar.title")}
 							</h2>
 						</div>
 
@@ -57,7 +64,7 @@ const Content = () => {
 								type="search"
 								value={searchQuery}
 								onChange={(event) => setSearchQuery(event.target.value)}
-								placeholder="Rechercher..."
+								placeholder={t("sidebar.searchPlaceholder")}
 								className="py-3.5 pr-4 pl-11 w-full text-sm bg-[#F9FAFB] rounded-full border border-gray-200 outline-none placeholder:text-gray-400 focus:border-black transition font-medium"
 							/>
 						</div>
@@ -65,7 +72,7 @@ const Content = () => {
 						{/* Category Pills */}
 						<div className="space-y-2">
 							<p className="text-xs font-semibold tracking-wider text-gray-500 uppercase">
-								Catégories
+								{t("sidebar.categoriesLabel")}
 							</p>
 							<div className="flex flex-wrap gap-2 pt-1">
 								<button
@@ -78,7 +85,7 @@ const Content = () => {
 											: "border-gray-200 bg-white text-gray-700 hover:border-gray-300",
 									)}
 								>
-									Tous les sujets
+									{t("sidebar.allCategories")}
 								</button>
 								{categories.map((category) => {
 									const isActive = selectedCategory === category;
@@ -96,7 +103,7 @@ const Content = () => {
 													: "text-gray-700 bg-white border-gray-200 hover:border-gray-300",
 											)}
 										>
-											{category}
+											{categoryLabel(category)}
 										</button>
 									);
 								})}
@@ -129,8 +136,7 @@ const Content = () => {
 
 							{visibleItems.length === 0 && (
 								<div className="p-12 text-center text-gray-500 bg-gray-50 rounded-2xl border border-gray-200">
-									Aucun résultat pour «&nbsp;{searchQuery}&nbsp;». Essayez une
-									autre recherche ou sélectionnez une catégorie.
+									{t("noResults", { query: searchQuery })}
 								</div>
 							)}
 						</Accordion>
@@ -142,7 +148,7 @@ const Content = () => {
 									onClick={loadMore}
 									className="px-8 py-3.5 text-sm font-semibold rounded-full border border-gray-300 bg-white hover:bg-gray-50 text-gray-900 transition-colors shadow-xs cursor-pointer"
 								>
-									Voir plus...
+									{t("loadMore")}
 								</button>
 							</div>
 						)}
@@ -153,9 +159,9 @@ const Content = () => {
 			{/* Bottom Stratosphere Banner */}
 			<PhotoOverlayBanner
 				image="/home/sublime-1.jpg"
-				title="Sublimez votre style"
-				subtitle="Prêt à passer au niveau supérieur ? Découvrez nos pièces phares et osez de nouvelles associations."
-				cta={{ label: "Découvrir la boutique", href: "/collections" }}
+				title={t("bottomBanner.title")}
+				subtitle={t("bottomBanner.subtitle")}
+				cta={{ label: t("bottomBanner.cta"), href: "/collections" }}
 			/>
 		</div>
 	);
