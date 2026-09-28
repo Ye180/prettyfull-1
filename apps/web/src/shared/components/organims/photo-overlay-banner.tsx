@@ -37,7 +37,7 @@ export const PhotoOverlayBanner = ({
 	const content = (
 		<div
 			className={`relative w-full overflow-hidden ${heightClasses} ${
-				contained ? "rounded-[2.4rem]" : ""
+				contained ? "rounded-2xl" : ""
 			} ${className}`}
 		>
 			<Image

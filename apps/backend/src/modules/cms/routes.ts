@@ -5,7 +5,10 @@ import {
 	bannerListQuerySchema,
 	contactMessageInputSchema,
 	contactMessageListQuerySchema,
+	contentHighlightInputSchema,
+	contentHighlightListQuerySchema,
 	updateContactMessageSchema,
+	updateContentHighlightSchema,
 	featuredEntryInputSchema,
 	staticPageInputSchema,
 	staticPageListQuerySchema,
@@ -200,6 +203,71 @@ adminCmsRoutes.delete(
 	},
 );
 
+// --- Blocs de mise en avant --------------------------------------------------
+
+adminCmsRoutes.get(
+	"/highlights",
+	requirePermission(PERMISSIONS.content.read),
+	validate("query", contentHighlightListQuerySchema),
+	async (c) => c.json(await service.listContentHighlights(c.req.valid("query"))),
+);
+
+adminCmsRoutes.post(
+	"/highlights",
+	requirePermission(PERMISSIONS.content.write),
+	validate("json", contentHighlightInputSchema),
+	async (c) => {
+		const created = await service.createContentHighlight(c.req.valid("json"));
+
+		await recordAudit(c, {
+			action: "highlight.created",
+			resourceType: "content_highlight",
+			resourceId: created.id,
+			changes: { sectionKey: created.sectionKey, title: created.title },
+		});
+
+		return c.json(created, 201);
+	},
+);
+
+adminCmsRoutes.patch(
+	"/highlights/:id",
+	requirePermission(PERMISSIONS.content.write),
+	validate("param", idParam),
+	validate("json", updateContentHighlightSchema),
+	async (c) => {
+		const { id } = c.req.valid("param");
+		const updated = await service.updateContentHighlight(id, c.req.valid("json"));
+
+		await recordAudit(c, {
+			action: "highlight.updated",
+			resourceType: "content_highlight",
+			resourceId: id,
+			changes: c.req.valid("json"),
+		});
+
+		return c.json(updated);
+	},
+);
+
+adminCmsRoutes.delete(
+	"/highlights/:id",
+	requirePermission(PERMISSIONS.content.write),
+	validate("param", idParam),
+	async (c) => {
+		const { id } = c.req.valid("param");
+		await service.deleteContentHighlight(id);
+
+		await recordAudit(c, {
+			action: "highlight.deleted",
+			resourceType: "content_highlight",
+			resourceId: id,
+		});
+
+		return c.json({ success: true });
+	},
+);
+
 // --- Messages de contact ---------------------------------------------------
 
 adminCmsRoutes.get(
@@ -253,6 +321,13 @@ storeCmsRoutes.get(
 		c.json(
 			await service.listFeaturedEntries(c.req.valid("query").sectionKey, { resolve: true }),
 		),
+);
+
+storeCmsRoutes.get(
+	"/highlights",
+	validate("query", z.object({ sectionKey: z.string().min(1).max(64) })),
+	async (c) =>
+		c.json(await service.listPublicContentHighlights(c.req.valid("query").sectionKey)),
 );
 
 /**

@@ -4,10 +4,12 @@ import { ArrowRightIcon } from "@/components/icons/arrow-icon";
 import CartContent from "@/features/cart/components/organims/cart-content";
 import { useCartStore } from "@prettyfull/store";
 import { Checkbox } from "@prettyfull/ui";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 
 const CartView = () => {
+	const t = useTranslations("Cart.page");
 	const items = useCartStore((state) => state.items);
 	const clearCart = useCartStore((state) => state.clearCart);
 	const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -41,7 +43,7 @@ const CartView = () => {
 				{/* Title */}
 				<div className="flex flex-wrap gap-4 justify-between items-center pb-6">
 					<h1 className="font-sans text-xl font-extrabold tracking-tight sm:text-2xl md:text-5xl text-gray-950">
-						Mon panier{" "}
+						{t("title")}{" "}
 						<span className="font-medium text-gray-400">
 							({totalItemCount || items.length})
 						</span>
@@ -56,11 +58,11 @@ const CartView = () => {
 								<Checkbox
 									checked={allSelected}
 									onCheckedChange={toggleAll}
-									aria-label="Tout sélectionner"
+									aria-label={t("selectAllAria")}
 									className="rounded"
 								/>
 								<span className="text-sm font-medium text-gray-800 sm:text-base">
-									Tout sélectionner
+									{t("selectAll")}
 								</span>
 							</label>
 							<button
@@ -68,7 +70,7 @@ const CartView = () => {
 								onClick={clearCart}
 								className="text-sm font-semibold text-rose-500 transition cursor-pointer sm:text-base hover:text-rose-600"
 							>
-								Tout supprimer
+								{t("removeAll")}
 							</button>
 						</div>
 
@@ -79,11 +81,7 @@ const CartView = () => {
 							onToggleItem={toggleItem}
 							itemsFooter={
 								<div className="pt-4 mt-8 text-xs leading-relaxed text-gray-500 border-t border-gray-100 sm:text-sm">
-									<p>
-										Les frais de livraison sont calculés au moment du paiement.
-										Vous pouvez modifier la quantité ou retirer des articles
-										avant de confirmer votre commande.
-									</p>
+									<p>{t("shippingNote")}</p>
 								</div>
 							}
 						/>
@@ -95,19 +93,17 @@ const CartView = () => {
 							🛍️
 						</div>
 						<h2 className="mb-2 text-2xl font-bold text-gray-900">
-							Votre panier est actuellement vide
+							{t("emptyTitle")}
 						</h2>
 						<p className="mb-8 leading-relaxed text-gray-500">
-							Découvrez nos silhouettes sélectionnées, nos mailles intemporelles
-							et nos pièces contemporaines pensées pour un quotidien tout en
-							légèreté.
+							{t("emptyDescription")}
 						</p>
 						<div className="flex flex-col gap-4 justify-center w-full sm:flex-row">
 							<Link
 								href="/collections"
-								className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-full transition shadow-sm"
+								className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-full transition shadow-sm"
 							>
-								<span>Découvrir les collections</span>
+								<span>{t("discoverCta")}</span>
 								<ArrowRightIcon className="w-4 h-4" />
 							</Link>
 						</div>

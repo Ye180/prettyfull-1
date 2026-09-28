@@ -1,7 +1,7 @@
-import MonalisaAboutView from "./monalisa-about-view";
+import AboutView from "./about-view";
 
 const AboutViews = () => {
-	return <MonalisaAboutView />;
+	return <AboutView />;
 };
 
 export default AboutViews;

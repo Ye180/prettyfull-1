@@ -14,6 +14,7 @@ import { ProductGalleryNew } from "../components/organims/product-gallery-new";
 import { ProductInfosNew } from "../components/organims/product-infos-new";
 import ProductSuggestion from "../components/organims/product-suggestion";
 import Reviews from "../components/organims/reviews";
+import SupplementFacts from "../components/organims/supplement-facts";
 import { useAddToCart } from "../hooks/use-add-to-cart";
 import { useProductReviews } from "../hooks/use-product-reviews";
 import { useProductVariants } from "../hooks/use-product-variants";
@@ -40,11 +41,7 @@ export default function ProductViews() {
 		colorVariants,
 		availableSizes,
 		currentImages,
-		availableColors,
-		colorSwatches,
 		productPrice,
-		handleColorChange,
-		handleSizeChange,
 	} = useProductVariants(product);
 
 	const currencyCode = useRegionStore((state) => state.region?.currency_code);
@@ -103,8 +100,8 @@ export default function ProductViews() {
 		return (
 			<div className="px-4 py-12 mx-auto space-y-6 max-w-400 sm:px-6 lg:px-8">
 				<div className="flex flex-col gap-8 md:flex-row md:gap-10">
-					<Skeleton className="w-full rounded-3xl md:flex-1 md:max-w-220 aspect-4/5" />
-					<Skeleton className="w-full rounded-2xl md:w-100 h-140" />
+					<Skeleton className="w-full rounded-md md:flex-1 md:max-w-220 aspect-4/5" />
+					<Skeleton className="w-full rounded-md md:w-100 h-140" />
 				</div>
 			</div>
 		);
@@ -139,7 +136,7 @@ export default function ProductViews() {
 				</p>
 				<Link
 					href="/collections"
-					className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-black text-white font-semibold rounded-full hover:bg-neutral-800 transition shadow-lg group text-sm sm:text-base"
+					className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-black text-white font-semibold rounded-md hover:bg-neutral-800 transition shadow-lg group text-sm sm:text-base"
 				>
 					<span>Retour à la boutique</span>
 					<ArrowRightIcon className="w-4 h-4 text-white transition-transform group-hover:translate-x-1" />
@@ -150,14 +147,31 @@ export default function ProductViews() {
 
 	return (
 		<div className="px-4 py-8 mx-auto max-w-400 sm:px-6 lg:px-8">
+			{/* Fil d'Ariane */}
+			<nav className="flex gap-2 items-center pb-6 text-[1.3rem] text-neutral-500">
+				<Link href="/" className="transition-colors hover:text-black">
+					Accueil
+				</Link>
+				<span>/</span>
+				{product.collection?.title && (
+					<>
+						<span>{product.collection.title}</span>
+						<span>/</span>
+					</>
+				)}
+				<span className="text-black">{product.title}</span>
+			</nav>
+
 			<div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-10">
-				<ProductGalleryNew
-					className="md:flex-1 md:max-w-220"
-					images={currentImages}
-					title={product.title}
-					activeImage={activeImage}
-					setActiveImage={setActiveImage}
-				/>
+				<div className="md:flex-1 md:max-w-220">
+					<ProductGalleryNew
+						images={currentImages}
+						title={product.title}
+						activeImage={activeImage}
+						setActiveImage={setActiveImage}
+					/>
+					<SupplementFacts />
+				</div>
 				<ProductInfosNew
 					productName={product.title}
 					productCategory={product.collection?.title ?? ""}
@@ -165,13 +179,6 @@ export default function ProductViews() {
 						currentVariant?.calculated_price.calculated_amount ?? productPrice
 					}
 					originalPrice={currentVariant?.calculated_price.original_amount}
-					colors={availableColors}
-					colorSwatches={colorSwatches}
-					sizes={availableSizes}
-					selectedColor={selectedColor}
-					selectedSize={selectedSize}
-					onColorChange={handleColorChange}
-					onSizeChange={handleSizeChange}
 					onAddToCart={handleAddToCart}
 					onAddToWishlist={handleAddToWishlist}
 					isWishlisted={isWishlisted}

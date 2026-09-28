@@ -200,7 +200,7 @@ export const RefundDialog = ({
 						rows={2}
 						value={reason}
 						onChange={(event) => setReason(event.target.value)}
-						placeholder="Article retourné, taille non adaptée"
+						placeholder="Article retourné, format non adapté"
 					/>
 				</Field>
 			</div>

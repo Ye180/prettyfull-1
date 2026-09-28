@@ -50,35 +50,35 @@ export const BOX_DATA_SECOND: BoxTypes[] = [
 
 export const FOOTER_DATA = [
       {
-            title: "Produits",
+            titleKey: "productsTitle",
             links: [
-                  { label: "Robes", url: "/collections/robes" },
-                  { label: "Hauts", url: "/collections/hauts" },
-                  { label: "Ensembles", url: "/collections/ensembles" },
-                  { label: "Accessoires", url: "/collections/accessoires" },
+                  { labelKey: "vitamins", url: "/collections/vitamines" },
+                  { labelKey: "minerals", url: "/collections/mineraux" },
+                  { labelKey: "proteins", url: "/collections/proteines" },
+                  { labelKey: "wellness", url: "/collections/bien_etre" },
             ],
       },
       {
-            title: "Aide",
+            titleKey: "helpTitle",
             links: [
-                  { label: "Questions fréquentes", url: paths.faq },
-                  { label: "Livraison & retours", url: paths.shippingReturn },
-                  { label: "Suivre ma commande", url: paths.account },
-                  { label: "Nous contacter", url: paths.contact },
+                  { labelKey: "faq", url: paths.faq },
+                  { labelKey: "shippingReturns", url: paths.shippingReturn },
+                  { labelKey: "trackOrder", url: paths.account },
+                  { labelKey: "contactUs", url: paths.contact },
             ],
       },
       {
-            title: "À propos",
+            titleKey: "aboutTitle",
             links: [
-                  { label: "Notre histoire", url: paths.about },
-                  { label: "Contact", url: paths.contact },
+                  { labelKey: "ourStory", url: paths.about },
+                  { labelKey: "contact", url: paths.contact },
             ],
       },
       {
-            title: "Mentions légales",
+            titleKey: "legalTitle",
             links: [
-                  { label: "Conditions générales de vente", url: paths.terms },
-                  { label: "Livraison & retours", url: paths.shippingReturn },
+                  { labelKey: "termsLink", url: paths.terms },
+                  { labelKey: "shippingReturns", url: paths.shippingReturn },
             ],
       },
 ];

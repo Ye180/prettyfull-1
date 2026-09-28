@@ -1,5 +1,12 @@
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { DataRule, type FaqItem } from "../data";
+import {
+	FAQ_CATEGORY_KEYS,
+	getFaqCategoryLabel,
+	getFaqItems,
+	type FaqCategoryKey,
+	type FaqItem,
+} from "../data";
 
 const PAGE_SIZE = 6;
 
@@ -8,20 +15,25 @@ const PAGE_SIZE = 6;
  * (data/index.tsx) - pas besoin de query params ni de debounce.
  */
 export const useFaqFilters = () => {
+	const t = useTranslations("FaqPage");
+	const dataRule = useMemo(() => getFaqItems(t), [t]);
+
 	const categories = useMemo(
-		() => Array.from(new Set(DataRule.map((item) => item.category))),
-		[],
+		() =>
+			FAQ_CATEGORY_KEYS.filter((category) =>
+				dataRule.some((item) => item.category === category),
+			),
+		[dataRule],
 	);
 
-	const [selectedCategory, setSelectedCategoryState] = useState<
-		string | null
-	>(null);
+	const [selectedCategory, setSelectedCategoryState] =
+		useState<FaqCategoryKey | null>(null);
 	const [searchQuery, setSearchQueryState] = useState("");
 	const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
 	const items = useMemo<FaqItem[]>(() => {
 		const query = searchQuery.trim().toLowerCase();
-		return DataRule.filter((item) => {
+		return dataRule.filter((item) => {
 			const matchesCategory =
 				!selectedCategory || item.category === selectedCategory;
 			const matchesQuery =
@@ -30,9 +42,9 @@ export const useFaqFilters = () => {
 				item.description.toLowerCase().includes(query);
 			return matchesCategory && matchesQuery;
 		});
-	}, [selectedCategory, searchQuery]);
+	}, [dataRule, selectedCategory, searchQuery]);
 
-	const setSelectedCategory = (category: string | null) => {
+	const setSelectedCategory = (category: FaqCategoryKey | null) => {
 		setSelectedCategoryState(category);
 		setVisibleCount(PAGE_SIZE);
 	};
@@ -46,9 +58,13 @@ export const useFaqFilters = () => {
 	const hasMore = visibleCount < items.length;
 	const loadMore = () => setVisibleCount((count) => count + PAGE_SIZE);
 
+	const categoryLabel = (category: FaqCategoryKey) =>
+		getFaqCategoryLabel(t, category);
+
 	return {
 		items,
 		categories,
+		categoryLabel,
 		selectedCategory,
 		setSelectedCategory,
 		searchQuery,

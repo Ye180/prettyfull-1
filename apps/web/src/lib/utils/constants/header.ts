@@ -17,7 +17,7 @@ export const NAV_USER_LINKS = [
  * d'une source unique.
  */
 export const NAV_INFO_LINKS = [
-      { label: "À propos", href: paths.about },
-      { label: "Contact", href: paths.contact },
-      { label: "FAQ", href: paths.faq },
-];
+      { key: "about", href: paths.about },
+      { key: "contact", href: paths.contact },
+      { key: "faq", href: paths.faq },
+] as const;

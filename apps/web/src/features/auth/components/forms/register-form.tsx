@@ -4,6 +4,7 @@ import { EyesClosed, EyesOpen } from "@/components/icons/eyes-icon";
 import { StoreApiError } from "@/lib/store-api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, toast } from "@prettyfull/ui";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -26,6 +27,7 @@ export function RegisterForm({
 	onSuccess,
 	onSwitchMode,
 }: RegisterFormProps = {}) {
+	const t = useTranslations("Auth.register");
 	const router = useRouter();
 
 	const {
@@ -42,7 +44,7 @@ export function RegisterForm({
 	const onSubmit = async (data: RegisterFormData) => {
 		try {
 			await registerMutation.mutateAsync(data);
-			toast.success("Compte créé, bienvenue !");
+			toast.success(t("accountCreated"));
 			if (onSuccess) {
 				onSuccess();
 			} else {
@@ -50,9 +52,7 @@ export function RegisterForm({
 			}
 		} catch (error) {
 			toast.error(
-				error instanceof StoreApiError
-					? error.message
-					: "Inscription impossible. Veuillez réessayer.",
+				error instanceof StoreApiError ? error.message : t("registerError"),
 			);
 		}
 	};
@@ -60,35 +60,37 @@ export function RegisterForm({
 	return (
 		<Flex settings={{ justify: "center", isColumn: true }}>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<main className="space-y-12">
-					<h3>Créer un compte</h3>
-					<div className="grid grid-cols-2 gap-8">
+				<main className="space-y-8">
+					<h3 className="text-[2.6rem]!">{t("title")}</h3>
+					<div className="grid grid-cols-2 gap-6">
 						<Input
-							label="Prénom"
+							label={t("firstName")}
 							{...register("firstName")}
 							errorMessage={errors.firstName?.message}
-							className="h-fit"
+							className="h-fit rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
 						/>
 						<Input
-							label="Nom"
+							label={t("lastName")}
 							{...register("lastName")}
 							errorMessage={errors.lastName?.message}
-							className="h-fit"
+							className="h-fit rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
 						/>
 						<div className="col-span-2">
 							<Input
-								label="E-mail"
+								label={t("email")}
 								type="email"
 								{...register("email")}
 								errorMessage={errors.email?.message}
+								className="rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
 							/>
 						</div>
 						<div className="relative col-span-2">
 							<Input
-								label="Mot de passe"
+								label={t("password")}
 								type={showPassword ? "text" : "password"}
 								{...register("password")}
 								errorMessage={errors.password?.message}
+								className="rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
 							/>
 							{showPassword ? (
 								<span
@@ -120,28 +122,32 @@ export function RegisterForm({
 				<Flex
 					as="footer"
 					settings={{ isColumn: true, align: "center", spacing: "gap-10" }}
-					className="mt-[5.2rem]"
+					className="mt-10"
 				>
 					<Button
 						type="submit"
 						isLoading={registerMutation.isPending}
 						fullWidth
+						className="bg-amber-600 hover:bg-amber-700"
 					>
-						Créer un compte
+						{t("submit")}
 					</Button>
 					<p className="font-medium text-grey">
-						Vous avez déjà un compte ?{" "}
+						{t("alreadyHaveAccount")}{" "}
 						{onSwitchMode ? (
 							<button
 								type="button"
 								onClick={onSwitchMode}
-								className="text-black underline cursor-pointer"
+								className="font-semibold text-amber-600 underline cursor-pointer"
 							>
-								Connexion
+								{t("login")}
 							</button>
 						) : (
-							<Link href="/login" className="text-black underline">
-								Connexion
+							<Link
+								href="/login"
+								className="font-semibold text-amber-600 underline"
+							>
+								{t("login")}
 							</Link>
 						)}
 					</p>

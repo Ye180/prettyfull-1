@@ -11,22 +11,11 @@ import {
 	Wallet,
 } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-// Types pour les devises
-type Currency = {
-	code: string;
-	symbol: string;
-	name: string;
-};
-
-// Données statiques
-const CURRENCIES: Currency[] = [
-	{ code: "USD", symbol: "$", name: "US Dollar" },
-	{ code: "XOF", symbol: "CFA", name: "Franc CFA" },
-];
-
 export function CurrencySelector() {
+	const t = useTranslations("Header.currencyLanguage");
 	const setCurrentRegion = useRegionStore((state) => state.setRegion);
 
 	const { data: regions, isLoading: regionsLoading } = useGetRegion();
@@ -80,8 +69,8 @@ export function CurrencySelector() {
 			<CustomModal
 				open={open}
 				onClose={onClose}
-				title="Préférences"
-				description="Choisissez votre devise"
+				title={t("title")}
+				description={t("description")}
 				// close={true}
 				className="!w-[95vw] lg:!w-[40vw] p-0 overflow-hidden"
 				titleClassName="text-[1.8rem]! lg:text-[2.2rem]! font-bold"
@@ -95,7 +84,7 @@ export function CurrencySelector() {
 						<div className="flex gap-2 items-center">
 							<Wallet className="text-gray-600 size-5" />
 							<h3 className="text-[2rem]! tracking-wider font-semibold! text-gray-800">
-								Devise
+								{t("currencyLabel")}
 							</h3>
 						</div>
 						<div className="grid grid-cols-2 gap-3">
@@ -155,7 +144,7 @@ export function CurrencySelector() {
 						onClick={handleApply}
 						className="w-full py-8! mt-4 text-[1.4rem] font-semibold text-white bg-black rounded-xl hover:bg-gray-800 transition-colors duration-200 active:scale-[0.98]"
 					>
-						Appliquer les préférences
+						{t("applyButton")}
 					</Button>
 				</div>
 			</CustomModal>

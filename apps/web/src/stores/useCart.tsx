@@ -1,7 +1,14 @@
 import { useCartStore } from "@prettyfull/store";
 
 export const useCart = () => {
-	const { items, setCart, addItem, removeItem, clearCart } = useCartStore();
+	// Sélecteurs individuels : on ne se réabonne que sur le champ concerné.
+	// Les actions zustand sont stables, les sélectionner une à une ne provoque
+	// aucun rendu superflu (contrairement à la déstructuration du store entier).
+	const items = useCartStore((state) => state.items);
+	const setCart = useCartStore((state) => state.setCart);
+	const addItem = useCartStore((state) => state.addItem);
+	const removeItem = useCartStore((state) => state.removeItem);
+	const clearCart = useCartStore((state) => state.clearCart);
 
 	const total = items.reduce((acc, item) => {
 		const candidate = item.unitPrice?.amount ?? (item.product as any)?.price;

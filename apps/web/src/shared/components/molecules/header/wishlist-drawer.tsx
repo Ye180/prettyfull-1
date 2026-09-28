@@ -10,6 +10,7 @@ import {
 } from "@prettyfull/ui";
 import { useWishlistStore } from "@prettyfull/store";
 import { formatCurrency_FR } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
@@ -17,6 +18,7 @@ import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon
 import Image from "next/image";
 
 const WishlistDrawer = () => {
+	const t = useTranslations("Header.wishlist");
 	const [open, setOpen] = useState(false);
 	const router = useRouter();
 	const items = useWishlistStore((state) => state.items);
@@ -31,7 +33,7 @@ const WishlistDrawer = () => {
 		<Drawer direction="bottom" open={open} onOpenChange={setOpen}>
 			<DrawerTrigger
 				className="relative flex focus:outline-none cursor-pointer hover:opacity-70 transition-opacity"
-				aria-label="Voir ma liste de souhaits"
+				aria-label={t("ariaView")}
 			>
 				<Heart className="w-[20px] h-[20px] text-[#262626]" />
 				{items.length > 0 && (
@@ -42,7 +44,7 @@ const WishlistDrawer = () => {
 			</DrawerTrigger>
 
 			<DrawerContent
-				title="Liste de souhaits"
+				title={t("title")}
 				className="h-[85vh]! sm:h-[60vh]! md:h-[50vh]! rounded-none! border-t-0!"
 			>
 				<div className="flex-1 min-h-0 overflow-y-auto px-6">
@@ -52,13 +54,13 @@ const WishlistDrawer = () => {
 								<Heart className="w-6 h-6 text-gray-400" />
 							</div>
 							<span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
-								Liste vide
+								{t("emptyBadge")}
 							</span>
 							<h3 className="mt-3 text-xl font-bold text-gray-900">
-								Votre liste de souhaits est vide
+								{t("emptyTitle")}
 							</h3>
 							<p className="mt-2 max-w-xs text-sm text-gray-500">
-								Ajoutez vos coups de cœur pour les retrouver ici.
+								{t("emptyDescription")}
 							</p>
 						</div>
 					) : (
@@ -96,7 +98,7 @@ const WishlistDrawer = () => {
 										<button
 											type="button"
 											onClick={() => removeItem(item.productId)}
-											aria-label={`Retirer ${item.product.name}`}
+											aria-label={t("removeItem", { name: item.product.name })}
 											className="self-start p-1 -ml-1 text-rose-500 hover:text-rose-600 cursor-pointer"
 										>
 											<TrashIcon size={16} />
@@ -109,7 +111,7 @@ const WishlistDrawer = () => {
 				</div>
 				<DrawerFooter>
 					<Button variant="default" shape="square" fullWidth onClick={goToWishlist}>
-						<span className="text-base font-semibold">Voir ma liste de souhaits</span>
+						<span className="text-base font-semibold">{t("viewButton")}</span>
 					</Button>
 				</DrawerFooter>
 			</DrawerContent>

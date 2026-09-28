@@ -4,6 +4,7 @@ import type {
 	Banner,
 	ContactMessageInput,
 	CategoryNode,
+	ContentHighlight,
 	FeaturedEntry,
 	Order,
 	Paginated,
@@ -168,6 +169,9 @@ export const fetchBanners = async (placement?: string) => {
 	const banners = await storeApi.get<Banner[]>(`/api/store/banners${toQuery({ placement })}`);
 	return banners.map(toStoreBanner);
 };
+
+export const fetchHighlights = async (sectionKey: string): Promise<ContentHighlight[]> =>
+	storeApi.get<ContentHighlight[]>(`/api/store/highlights${toQuery({ sectionKey })}`);
 
 export const fetchStaticPage = async (slug: string): Promise<StaticPage | null> => {
 	try {

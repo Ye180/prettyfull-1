@@ -4,6 +4,7 @@ import { useRegionStore } from "@/stores/useRegion";
 import { Checkbox } from "@prettyfull/ui";
 import { useCartStore, type CartItem } from "@prettyfull/store";
 import { cn } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
 import { formatCurrency_FR } from "../../../../../../../packages/utils/lib/format-curency";
@@ -23,6 +24,7 @@ const CartItems = ({
 	onToggleItem,
 	square,
 }: CartItemsProps) => {
+	const t = useTranslations("Cart.items");
 	const removeItem = useCartStore((state) => state.removeItem);
 	const regions = useRegionStore((state) => state.region);
 	const currency = regions?.currency_code === "xof" ? "FCFA" : "$";
@@ -51,13 +53,13 @@ const CartItems = ({
 					</svg>
 				</div>
 				<span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
-					Panier vide
+					{t("emptyBadge")}
 				</span>
 				<h3 className="mt-3 text-xl font-bold text-gray-900">
-					Votre panier est vide
+					{t("emptyTitle")}
 				</h3>
 				<p className="mt-2 max-w-xs text-sm text-gray-500">
-					Ajoutez des articles pour les retrouver ici.
+					{t("emptyDescription")}
 				</p>
 			</div>
 		);
@@ -67,18 +69,6 @@ const CartItems = ({
 		<div className="divide-y divide-gray-100">
 			{items.map((item) => {
 				const imageSrc = item.product.image || "/assets/product5.webp";
-				const variantEntries = Object.entries(item.selectedVariants || {});
-				const colorEntry = variantEntries.find(([key]) =>
-					/color|couleur/i.test(key),
-				);
-				const sizeEntry = variantEntries.find(([key]) =>
-					/size|taille/i.test(key),
-				);
-
-				// fallback color & size if not present in variant
-				const colorName = colorEntry ? colorEntry[1] : "Maroon";
-				const sizeName = sizeEntry ? sizeEntry[1] : "M";
-
 				const unitPrice =
 					item.unitPrice?.amount ?? item.product.price?.amount ?? 250;
 				const itemTotal = unitPrice * item.quantity;
@@ -97,7 +87,7 @@ const CartItems = ({
 									)}
 									checked={selectedIds?.has(item.productId) ?? false}
 									onCheckedChange={() => onToggleItem(item.productId)}
-									aria-label={`Sélectionner ${item.product.name}`}
+									aria-label={t("selectItemAria", { name: item.product.name })}
 								/>
 							</div>
 						)}
@@ -105,7 +95,7 @@ const CartItems = ({
 						<div
 							className={cn(
 								"relative w-24 h-24 sm:w-28 sm:h-28 bg-[#F4F4F5] overflow-hidden shrink-0 border border-gray-150/60",
-								square ? "rounded-none" : "rounded-2xl",
+								square ? "rounded-none" : "rounded-lg",
 							)}
 						>
 							<Image
@@ -121,59 +111,8 @@ const CartItems = ({
 						<div className="flex flex-col flex-1 min-w-0 pr-8">
 							<div className="flex flex-col gap-1">
 								<h3 className="text-base sm:text-lg font-semibold text-gray-950 font-sans tracking-tight line-clamp-1">
-									{item.product.name}{" "}
-									<span className="text-sm font-normal text-gray-400">
-										(20 articles)
-									</span>
+									{item.product.name}
 								</h3>
-
-								{/* Color and Size attributes */}
-								<div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-gray-500 mt-1">
-									<div className="flex items-center gap-1.5">
-										<span>couleur :</span>
-										<span
-											className={cn(
-												"inline-flex items-center gap-1 px-2.5 py-0.5 border border-gray-200 bg-white text-gray-700 font-medium text-xs",
-												square ? "rounded-none" : "rounded-full",
-											)}
-										>
-											<span
-												className={cn(
-													"w-2.5 h-2.5 inline-block",
-													square ? "rounded-none" : "rounded-full",
-												)}
-												style={{
-													backgroundColor: colorName
-														.toLowerCase()
-														.includes("maroon")
-														? "#800000"
-														: colorName.toLowerCase().includes("olive")
-															? "#556B2F"
-															: colorName.toLowerCase().includes("black")
-																? "#111827"
-																: colorName.toLowerCase().includes("burgundy")
-																	? "#800020"
-																	: "#6B7280",
-												}}
-											/>
-											{colorName}
-										</span>
-									</div>
-
-									<span className="text-gray-300">|</span>
-
-									<div className="flex items-center gap-1.5">
-										<span>taille :</span>
-										<span
-											className={cn(
-												"inline-flex items-center justify-center w-6 h-6 bg-black text-white font-semibold text-xs",
-												square ? "rounded-none" : "rounded-full",
-											)}
-										>
-											{sizeName}
-										</span>
-									</div>
-								</div>
 							</div>
 
 							{/* Price and Quantity Selector */}
@@ -192,7 +131,7 @@ const CartItems = ({
 						<button
 							type="button"
 							onClick={() => removeItem(item.productId)}
-							aria-label={`Retirer ${item.product.name}`}
+							aria-label={t("removeItemAria", { name: item.product.name })}
 							className={cn(
 								"absolute top-6 right-0 p-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer",
 								square ? "rounded-none" : "rounded-full",

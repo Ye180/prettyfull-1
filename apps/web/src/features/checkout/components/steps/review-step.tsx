@@ -60,9 +60,7 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 			// son message est bien plus actionnable qu'un texte générique.
 			console.error("Échec du passage en commande :", err);
 			setError(
-				err instanceof Error
-					? err.message
-					: "La commande n'a pas pu être passée. Réessayez.",
+				err instanceof Error ? err.message : t("placeOrderError"),
 			);
 		} finally {
 			setIsLoading(false);
@@ -81,25 +79,22 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 						}
 					)}
 				>
-					Récapitulatif
+					{t("title")}
 				</h2>
 			</div>
 
 			{/* Content */}
 			{isOpen && canAccess ? (
 				<div className="space-y-6">
-					<p className="text-sm text-gray-600">
-						Veuillez vérifier votre commande avant de la valider
-					</p>
+					<p className="text-sm text-gray-600">{t("reviewIntro")}</p>
 
 					{/* Order Items Summary */}
-					<div className="p-8 space-y-4 bg-gray-50 rounded-3xl">
+					<div className="p-8 space-y-4 bg-gray-50 rounded-xl">
 						<h3 className="flex flex-row font-medium gap-x-2 items-center text-2xl! tracking-wider">
-							Articles de la commande ({items.length})
+							{t("itemsCount", { count: items.length })}
 						</h3>
 						<div className="space-y-4">
 							{items.map((item) => {
-								const variantLabel = Object.values(item.selectedVariants || {}).join(" / ");
 								const unitPrice = item.unitPrice?.amount ?? item.product.price?.amount ?? 0;
 								return (
 									<div
@@ -107,14 +102,14 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 										className="flex justify-between items-center text-sm"
 									>
 										<div className="flex gap-4 items-center">
-											<div className="overflow-y-hidden w-32 rounded-2xl h-38">
+											<div className="overflow-y-hidden w-32 rounded-lg h-38">
 												{item.product.image && (
 													<Image
 														src={item.product.image}
 														alt={item.product.name}
 														width={100}
 														height={100}
-														className="object-cover w-32 h-38 rounded-2xl"
+														className="object-cover w-32 h-38 rounded-lg"
 													unoptimized
 													/>
 												)}
@@ -123,7 +118,7 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 											<div className="space-y-4">
 												<p className="font-medium">{item.product.name}</p>
 												<p className="font-semibold text-gray-500">
-													{variantLabel || "Unique"} × {item.quantity}
+													× {item.quantity}
 												</p>
 											</div>
 										</div>
@@ -164,9 +159,7 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 							id="terms"
 						/>
 						<label htmlFor="terms" className="text-sm text-gray-600">
-							En cliquant sur le bouton Passer la commande, vous confirmez avoir
-							lu, compris et accepté nos Conditions d'utilisation, nos Conditions
-							de vente et notre Politique de retour.
+							{t("termsText")}
 						</label>
 					</div>
 
@@ -177,12 +170,12 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 						className="py-6 w-full"
 						disabled={!termsAccepted || isLoading || !cartId}
 					>
-						{isLoading ? "Passage de la commande..." : "Passer la commande"}
+						{isLoading ? t("placingOrder") : t("placeOrder")}
 					</Button>
 				</div>
 			) : !canAccess ? (
 				<p className="text-sm text-gray-400">
-					Complétez les étapes précédentes pour continuer
+					{t("completePreviousSteps")}
 				</p>
 			) : null}
 		</div>

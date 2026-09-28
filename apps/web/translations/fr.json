@@ -1,176 +1,1057 @@
 {
-	"headerResponsive": {
-		"setting": "Réglage"
-	},
-	"HomePage": {
-		"header": {
-			"placeholder": "Rechercher des produits..."
-		},
-		"hero": {
-			"eyebrowLeft": "Tous les styles",
-			"eyebrowCenter": "Tout acheter",
-			"eyebrowRight": "Tenue du quotidien",
-			"title": "Essentiels Mi-Saison",
-			"subtitle": "Des silhouettes douces et des indispensables modernes pour tous les jours.",
-			"ctaButton": "Achetez maintenant"
-		},
-		"promoDuo": {
-			"saleTitle": "Soldes Mi-Saison",
-			"saleSubtitle": "Jusqu'à 40% sur une sélection",
-			"saleCta": "Voir les soldes",
-			"knitwearTitle": "Maille du quotidien",
-			"knitwearSubtitle": "Des pièces légères pour chaque jour",
-			"knitwearCta": "Découvrir"
-		},
-		"shopByCollection": {
-			"title": "Acheter par Collection",
-			"jacket": "Veste",
-			"tshirts": "T-Shirts",
-			"shorts": "Shorts",
-			"ctaButton": "Voir la Collection"
-		},
-		"news": {
-			"title": "Nouveautés",
-			"viewAll": "Voir tout"
-		},
-		"bestSelling": {
-			"title": "Découvrez Notre Collection de Meilleures Ventes",
-			"subtitle": "Découvrez et plongez dans nos catégories les plus populaires dont tout le monde parle !",
-			"ctaButton": "Achetez maintenant",
-			"allLabel": "Toute la collection"
-		},
-		"containers": {
-			"paragraph1": "Nous nous engageons à vous offrir une expérience de shopping fluide et agréable."
-		},
-		"collection": {
-			"title": "Collection Femme : élégance réinventée",
-			"subtitle": "Restez à la mode avec notre nouvelle sélection de styles modernes, conçus juste pour vous.",
-			"deal": "Deal de la semaine",
-			"ctaButton": "Lancez-vous"
-		},
-		"trendReport": {
-			"title": "Le Rapport sur les Tendances",
-			"viewAll": "Voir tout"
-		},
-		"recommendation": {
-			"title": "RECOMMANDEZ POUR VOUS",
-			"forYou": "Pour toi",
-			"woman": "Femme",
-			"men": "Homme",
-			"accessory": "Accessoires"
-		},
-		"howItWorks": {
-			"title": "Commandez en 3 étapes",
-			"description": "De votre écran à votre porte, à Abidjan.",
-			"step1Title": "Parcourez",
-			"step1Description": "Explorez la collection et choisissez vos favoris.",
-			"step2Title": "Commandez",
-			"step2Description": "Payez en toute sécurité en quelques clics.",
-			"step3Title": "Nous livrons à Abidjan",
-			"step3Description": "Votre commande est préparée et livrée directement chez vous."
-		},
-		"trust": {
-			"title": "Adoré par nos clientes",
-			"quote": "La qualité est encore meilleure qu'en photo, et la livraison à Abidjan a été plus rapide que prévu. Je prépare déjà ma prochaine commande.",
-			"author": "Aïcha K.",
-			"role": "Cliente vérifiée"
-		},
-		"features": {
-			"title": "Nous Offrons des Expériences Client Exceptionnelles",
-			"description": "Nous nous engageons à offrir des expériences client exceptionnelles qui dépassent les attentes et rendent chaque interaction mémorable.",
-			"paymentTitle": "Paiement sécurisé",
-			"paymentDescription": "Vos transactions sont chiffrées et protégées.",
-			"deliveryTitle": "Livraison à Abidjan",
-			"deliveryDescription": "Expédition rapide et suivie, directement chez vous.",
-			"returnsTitle": "Retours simplifiés",
-			"returnsDescription": "Pas la bonne taille ? Retournez-la sans tracas."
-		},
-		"finalCta": {
-			"title": "Propulsez Votre Style Vers de Nouveaux Sommets",
-			"subtitle": "Prêt à sublimer votre style ? Lancez votre mode vers de nouveaux sommets avec des choix audacieux et des pièces uniques.",
-			"ctaButton": "Commencer"
-		},
-		"featuredProduct": {
-			"label": "Nouvelle collection",
-			"addToCart": "Ajouter au panier"
-		}
-	},
-	"CollectionPage": {
-		"filters": {
-			"sort_by": "Trier par",
-			"type_clothes": "Types de vêtements",
-			"colors": "Couleurs",
-			"adjust": "Ajuster",
-			"taille": "Taille",
-			"clear": "Effacer",
-			"apply": "Appliquer"
-		}
-	},
-	"Cart": {
-		"product": {
-			"title": "Panier"
-		},
-		"summary": {
-			"title": "Résumé",
-			"totalPrize": "Prix total",
-			"subtotal": "Sous-total",
-			"shipping": "Frais de port",
-			"taxes": "Estimation des droits et taxes",
-			"total": "Total",
-			"checkout": "Passer à la caisse",
-			"apply": "Appliquer",
-			"couponsCode": "Code promo",
-			"couponPlaceholder": "Entrer le code",
-			"couponComingSoon": "Coupons bientôt disponibles"
-		}
-	},
-	"Wishlist": {
-		"title": "Liste de souhaits"
-	},
-	"CheckoutPage": {
-		"checkoutForm": {
-			"labelName": "Nom",
-			"labelEmail": "Email",
-			"labelMethod": "Comment souhaitez-vous recevoir votre commande ?",
-			"placeholderMethod": "Entrez votre méthode de livraison...",
-			"labelAddress": "Entrer votre numero, nom et adresse",
-			"placeholderNumber": "Entrez votre numéro de téléphone...",
-			"placeholderLastName": "Entrez votre nom et prénom...",
-			"placeholderAddress": "Entrez votre adresse...",
-			"labelPostCode": "Entrer votre code postal",
-			"placeholderPostCode": "Entrez votre code postal...",
-			"labelCity": "Entrer votre ville",
-			"placeholderCity": "Entrez votre ville...",
-			"labelCountry": "Entrer votre pays",
-			"placeholderCountry": "Entrez votre pays...",
-			"labelState": "Entrer votre région",
-			"placeholderState": "Entrez votre région...",
-			"description": "* Pour la livraison, vous pouvez saisir votre adresse de maniére précise."
-		},
-		"infosCheckout": {
-			"save": "Enregistrer cette adresse dans mon profil",
-			"favorite": "Faites de ceci mon adresse préférée",
-			"termes": "Termes et Conditions",
-			"accept": "J'ai lu et j'accepte les termes et conditions",
-			"ctaButton": "Procéder au paiement"
-		},
-		"features": {
-			"delivery": "Livraison",
-			"shipping": "Expédition",
-			"billing": "Facturation",
-			"payment": "Paiement",
-			"data": "Nous mettons un point d'honneur à soigner chaque étape de votre commande, du choix de la pièce jusqu'à la livraison."
-		},
-		"items": {
-			"color": "Couleur",
-			"size": "Taille"
-		},
-		"summary": {
-			"title": "Résumé",
-			"subtotal": "Sous-total",
-			"shipping": "Frais de livraison",
-			"taxes": "Droits et taxes estimés",
-			"total": "Total"
-		}
-	}
+  "headerResponsive": {
+    "setting": "Réglage"
+  },
+  "Header": {
+    "currencyLanguage": {
+      "title": "Devise",
+      "description": "Choisissez votre devise d'affichage.",
+      "currencyLabel": "Devise",
+      "applyButton": "Appliquer"
+    },
+    "nav": {
+      "openMenu": "Ouvrir le menu",
+      "homeAriaLabel": "Retour à l'accueil",
+      "logout": "Déconnexion",
+      "login": "Connexion",
+      "register": "S'inscrire",
+      "closeMenu": "Fermer le menu",
+      "home": "Accueil",
+      "collapseSubcategoriesOf": "Masquer les sous-catégories de {name}",
+      "expandSubcategoriesOf": "Afficher les sous-catégories de {name}",
+      "info": {
+        "about": "À propos",
+        "contact": "Contact",
+        "faq": "FAQ"
+      }
+    },
+    "cart": {
+      "ariaViewCart": "Voir le panier",
+      "title": "Votre panier",
+      "ariaClose": "Fermer",
+      "emptyTitle": "Votre panier est vide",
+      "emptyDescription": "Parcourez notre gamme et ajoutez vos produits bien-être préférés.",
+      "subtotal": "Sous-total",
+      "shippingNote": "Frais de livraison calculés à la caisse.",
+      "viewCartButton": "Voir le panier",
+      "increaseQuantity": "Augmenter la quantité",
+      "decreaseQuantity": "Diminuer la quantité",
+      "removeItem": "Retirer {name} du panier"
+    },
+    "wishlist": {
+      "ariaView": "Voir la liste de souhaits",
+      "title": "Votre liste de souhaits",
+      "emptyBadge": "Liste vide",
+      "emptyTitle": "Votre liste de souhaits est vide",
+      "emptyDescription": "Ajoutez vos produits préférés pour les retrouver facilement.",
+      "removeItem": "Retirer {name} de la liste de souhaits",
+      "viewButton": "Voir la liste de souhaits"
+    }
+  },
+  "Footer": {
+    "copyright": "© 2026 Prettyfull. Tous droits réservés.",
+    "termsLink": "Conditions générales",
+    "shippingReturns": "Livraison & Retours",
+    "address": "Abidjan, Cocody Angré, Côte d'Ivoire",
+    "productsTitle": "Produits",
+    "helpTitle": "Aide",
+    "aboutTitle": "À propos",
+    "legalTitle": "Informations légales",
+    "vitamins": "Vitamines",
+    "minerals": "Minéraux",
+    "proteins": "Protéines",
+    "wellness": "Bien-être",
+    "faq": "FAQ",
+    "trackOrder": "Suivre ma commande",
+    "contactUs": "Nous contacter",
+    "ourStory": "Notre histoire",
+    "contact": "Contact"
+  },
+  "HomePage": {
+    "header": {
+      "placeholder": "Rechercher des produits...",
+      "searchAriaLabel": "Rechercher",
+      "noResultsFor": "Aucun résultat pour « {query} »",
+      "searching": "Recherche en cours...",
+      "popularCategories": "Catégories populaires",
+      "topResults": "Meilleurs résultats",
+      "trending": "Tendances",
+      "youMayLike": "Vous aimerez aussi"
+    },
+    "hero": {
+      "eyebrowLeft": "Testé en laboratoire",
+      "eyebrowCenter": "Livraison rapide",
+      "eyebrowRight": "Qualité garantie",
+      "title": "Toute notre gamme bien-être",
+      "subtitle": "Vitamines, minéraux et compléments testés en laboratoire pour votre routine santé au quotidien.",
+      "ctaButton": "Achetez maintenant"
+    },
+    "promoDuo": {
+      "saleTitle": "Soldes Mi-Saison",
+      "saleSubtitle": "Jusqu'à 40% sur une sélection",
+      "saleCta": "Voir les soldes",
+      "knitwearTitle": "Maille du quotidien",
+      "knitwearSubtitle": "Des pièces légères pour chaque jour",
+      "knitwearCta": "Découvrir"
+    },
+    "shopByCollection": {
+      "title": "Acheter par Collection",
+      "jacket": "Veste",
+      "tshirts": "T-Shirts",
+      "shorts": "Shorts",
+      "ctaButton": "Voir la Collection"
+    },
+    "news": {
+      "title": "Nouveautés",
+      "viewAll": "Voir tout"
+    },
+    "shopNewProducts": {
+      "title": "Découvrez nos nouveautés",
+      "discover": "Découvrir"
+    },
+    "bestSelling": {
+      "title": "Découvrez Notre Collection de Meilleures Ventes",
+      "subtitle": "Découvrez et plongez dans nos catégories les plus populaires dont tout le monde parle !",
+      "ctaButton": "Achetez maintenant",
+      "allLabel": "Toute la collection",
+      "addToWishlist": "Ajouter à la liste de souhaits",
+      "optionsCount": "({count} options)"
+    },
+    "customerExperience": {
+      "title": "Formulé pour votre bien-être",
+      "subtitle": "Des ingrédients rigoureusement sélectionnés et des formules pensées pour accompagner votre santé au quotidien.",
+      "labTestedTitle": "Testé en laboratoire",
+      "labTestedDescription": "Chaque lot est analysé par des laboratoires indépendants pour garantir sa pureté et son efficacité.",
+      "nonGmoTitle": "Sans OGM",
+      "nonGmoDescription": "Des ingrédients naturels, sans organismes génétiquement modifiés, sélectionnés avec soin.",
+      "guaranteeTitle": "Satisfait ou remboursé",
+      "guaranteeDescription": "Nous garantissons la qualité de nos produits, remboursés si vous n'êtes pas satisfait."
+    },
+    "heroBanner": {
+      "title": "Votre bien-être commence ici",
+      "subtitle": "Découvrez notre gamme de vitamines et compléments alimentaires, formulés pour accompagner votre vie active à Abidjan.",
+      "ctaButton": "Découvrir la boutique"
+    },
+    "trustBadges": {
+      "eyebrow": "Nos engagements qualité",
+      "title": "Pensés pour votre bien-être",
+      "nonGmo": "Sans OGM",
+      "glutenFree": "Sans gluten",
+      "vegan": "Vegan",
+      "vegetarian": "Végétarien",
+      "natural": "100% naturel"
+    },
+    "containers": {
+      "paragraph1": "Nous nous engageons à vous offrir une expérience de shopping fluide et agréable."
+    },
+    "collection": {
+      "title": "Collection Femme : élégance réinventée",
+      "subtitle": "Restez à la mode avec notre nouvelle sélection de styles modernes, conçus juste pour vous.",
+      "deal": "Deal de la semaine",
+      "ctaButton": "Lancez-vous"
+    },
+    "trendReport": {
+      "title": "Le Rapport sur les Tendances",
+      "viewAll": "Voir tout"
+    },
+    "recommendation": {
+      "title": "RECOMMANDEZ POUR VOUS",
+      "forYou": "Pour toi",
+      "woman": "Femme",
+      "men": "Homme",
+      "accessory": "Accessoires"
+    },
+    "howItWorks": {
+      "title": "Commandez en 3 étapes",
+      "description": "De votre écran à votre porte, à Abidjan.",
+      "step1Title": "Parcourez",
+      "step1Description": "Explorez la collection et choisissez vos favoris.",
+      "step2Title": "Commandez",
+      "step2Description": "Payez en toute sécurité en quelques clics.",
+      "step3Title": "Nous livrons à Abidjan",
+      "step3Description": "Votre commande est préparée et livrée directement chez vous."
+    },
+    "trust": {
+      "title": "Adoré par nos clientes",
+      "quote": "La qualité est encore meilleure qu'en photo, et la livraison à Abidjan a été plus rapide que prévu. Je prépare déjà ma prochaine commande.",
+      "author": "Aïcha K.",
+      "role": "Cliente vérifiée"
+    },
+    "features": {
+      "title": "Nous Offrons des Expériences Client Exceptionnelles",
+      "description": "Nous nous engageons à offrir des expériences client exceptionnelles qui dépassent les attentes et rendent chaque interaction mémorable.",
+      "paymentTitle": "Paiement sécurisé",
+      "paymentDescription": "Vos transactions sont chiffrées et protégées.",
+      "deliveryTitle": "Livraison à Abidjan",
+      "deliveryDescription": "Expédition rapide et suivie, directement chez vous.",
+      "returnsTitle": "Retours simplifiés",
+      "returnsDescription": "Pas la bonne taille ? Retournez-la sans tracas."
+    },
+    "finalCta": {
+      "title": "Propulsez Votre Style Vers de Nouveaux Sommets",
+      "subtitle": "Prêt à sublimer votre style ? Lancez votre mode vers de nouveaux sommets avec des choix audacieux et des pièces uniques.",
+      "ctaButton": "Commencer"
+    },
+    "featuredProduct": {
+      "label": "Nouvelle collection",
+      "addToCart": "Ajouter au panier"
+    }
+  },
+  "AboutPage": {
+    "hero": {
+      "eyebrow": "Notre histoire",
+      "title": "Des compléments pensés depuis Abidjan",
+      "subtitle": "PrettyFull réunit une sélection de vitamines et compléments choisis un à un : des ingrédients de qualité, des dosages testés en laboratoire, et des lots volontairement limités pour rester frais.",
+      "imageAlt": "PrettyFull, vitamines et compléments depuis Abidjan"
+    },
+    "pillars": {
+      "pillar1": {
+        "title": "Notre Positionnement",
+        "description": "Nous privilégions des formules simples et transparentes, dosées avec précision, pour un bien-être qui s'inscrit dans la durée."
+      },
+      "pillar2": {
+        "title": "Notre Philosophie",
+        "description": "Nous existons pour simplifier votre routine santé au quotidien, avec des compléments essentiels et de qualité pour chaque étape de votre vie."
+      },
+      "pillar3": {
+        "title": "Notre Mission",
+        "description": "Choix de confiance pour les foyers d'Abidjan et d'ailleurs, notre marque prend soin de votre santé grâce à des formules pensées avec soin."
+      }
+    },
+    "texture": {
+      "eyebrow": "Savoir-faire",
+      "title": "Des formules choisies avec soin",
+      "imageAlt": "Ingrédients et formules PrettyFull",
+      "points": {
+        "point1": {
+          "title": "Une sélection d'ingrédients",
+          "description": "Des actifs choisis pour leur pureté, leur biodisponibilité et leur origine tracée, du fournisseur jusqu'à la gélule."
+        },
+        "point2": {
+          "title": "Des dosages précis",
+          "description": "Chaque formule est calibrée pour respecter les apports recommandés, sans sous-dosage ni excès inutile."
+        },
+        "point3": {
+          "title": "Un contrôle rigoureux",
+          "description": "Analyses en laboratoire indépendant, lot après lot, pour des compléments qui tiennent leurs promesses."
+        }
+      }
+    },
+    "responsibility": {
+      "badge": "Engagement responsable",
+      "title": "Une responsabilité environnementale qui compte pour nous",
+      "subtitle": "Nous croyons en un impact positif à travers une production réfléchie et des pratiques d'approvisionnement plus responsables.",
+      "imageAlt": "Sourcing responsable PrettyFull",
+      "items": {
+        "item1": {
+          "title": "Des ingrédients responsables",
+          "description": "Nous privilégions autant que possible des filières durables et des emballages recyclables, pour réduire l'empreinte de chaque gamme."
+        },
+        "item2": {
+          "title": "La qualité avant le volume",
+          "description": "Notre approche privilégie l'efficacité et la pureté, pour des formules pensées pour durer plutôt que pour l'effet de mode."
+        },
+        "item3": {
+          "title": "Des formules durables",
+          "description": "Nous préférons proposer moins de références, mais des références de qualité, qui restent pertinentes au-delà des tendances passagères."
+        }
+      }
+    },
+    "testimonials": {
+      "eyebrow": "La parole à nos clientes",
+      "title": "Adoré par nos clientes",
+      "subtitle": "Les expériences de celles qui intègrent PrettyFull à leur routine santé.",
+      "testimonial1": {
+        "quote": "Je sens vraiment la différence depuis que j'ai commencé la multivitamine, et la livraison à Abidjan a été plus rapide que prévu. Je prépare déjà ma prochaine commande.",
+        "role": "Cliente à Abidjan"
+      },
+      "testimonial2": {
+        "quote": "Des dosages clairs et des gélules faciles à prendre. PrettyFull est devenu mon adresse santé du quotidien.",
+        "role": "Cliente à Cocody"
+      },
+      "testimonial3": {
+        "quote": "Un service client réactif et des compléments qui tiennent leurs promesses. Exactement ce que je cherchais.",
+        "role": "Cliente à Yopougon"
+      }
+    },
+    "finalBanner": {
+      "title": "Votre bien-être, notre priorité",
+      "subtitle": "Prêt à prendre soin de vous ? Découvrez notre gamme et nos formules signature.",
+      "cta": "Découvrir la boutique"
+    }
+  },
+  "ProductPage": {
+    "reviews": {
+      "photoAlt": "Photo partagée par un client",
+      "heading": "Avis clients",
+      "countLabel": "Basé sur {count, plural, one {# avis} other {# avis}}",
+      "noReviewsYet": "Aucun avis pour le moment",
+      "writeReview": "Laisser un avis",
+      "emptyEyebrow": "Premier avis",
+      "emptyTitle": "Soyez la première personne à donner votre avis",
+      "emptyDescription": "Vos avis aident notre communauté à choisir les compléments qui leur conviennent le mieux.",
+      "writeFirstReview": "Donner le premier avis",
+      "loadMore": "Voir plus d'avis"
+    },
+    "suggestions": {
+      "heading": "Complétez votre routine bien-être",
+      "loadMore": "Voir toute la collection"
+    }
+  },
+  "CollectionPage": {
+    "filters": {
+      "sort_by": "Trier par",
+      "type_clothes": "Catégories",
+      "colors": "Saveurs",
+      "adjust": "Objectif santé",
+      "taille": "Format",
+      "clear": "Effacer",
+      "apply": "Appliquer",
+      "title": "Filtres",
+      "loading": "Chargement…",
+      "noSizes": "Aucun format disponible",
+      "price": "Prix",
+      "priceMinPlaceholder": "Minimum",
+      "priceMaxPlaceholder": "Maximum",
+      "currency": "FCFA",
+      "flavor": "Saveurs",
+      "noFlavors": "Aucune saveur disponible",
+      "availability": "Disponibilité",
+      "availabilityAll": "Tous les produits",
+      "availabilityInStock": "En stock",
+      "availabilityOnSale": "En promotion",
+      "dietaryRegime": "Régime alimentaire"
+    },
+    "page": {
+      "promoCta": "Découvrir",
+      "categoryHeading": "Acheter par catégorie",
+      "viewCategory": "Voir la catégorie",
+      "filterToggleAriaLabel": "Afficher/masquer les filtres",
+      "filterButtonLabel": "Filtre",
+      "searchPlaceholder": "Rechercher...",
+      "resultsCount": "{count} produits",
+      "emptyEyebrow": "Aucun résultat",
+      "emptyHeading": "Aucun produit ne correspond à votre recherche",
+      "emptyBody": "Essayez d'ajuster vos filtres ou votre recherche.",
+      "emptyReset": "Réinitialiser les filtres",
+      "loadMore": "Voir plus",
+      "footerTitle": "Votre bien-être, notre priorité",
+      "footerSubtitle": "Formules testées en laboratoire, ingrédients sélectionnés avec soin pour accompagner votre routine santé au quotidien.",
+      "footerCta": "Découvrir la boutique",
+      "promoImageAlt": "Promotion",
+      "sort": {
+        "newest": "Nouveautés",
+        "priceAsc": "Prix croissant",
+        "priceDesc": "Prix décroissant",
+        "nameAsc": "Nom (A → Z)"
+      }
+    }
+  },
+  "Cart": {
+    "product": {
+      "title": "Panier"
+    },
+    "summary": {
+      "title": "Résumé",
+      "totalPrize": "Prix total",
+      "subtotal": "Sous-total",
+      "shipping": "Frais de port",
+      "taxes": "Estimation des droits et taxes",
+      "total": "Total",
+      "checkout": "Passer à la caisse",
+      "apply": "Appliquer",
+      "couponsCode": "Code promo",
+      "couponPlaceholder": "Entrer le code",
+      "couponComingSoon": "Coupons bientôt disponibles",
+      "discount": "Réduction ({code})",
+      "free": "Gratuit",
+      "remove": "Retirer",
+      "couponApplied": "Code {code} appliqué",
+      "couponNotApplicable": "Ce code n'est pas applicable à votre panier",
+      "couponApplyError": "Impossible d'appliquer ce code. Veuillez réessayer.",
+      "couponRemoveError": "Impossible de retirer ce code. Veuillez réessayer."
+    },
+    "items": {
+      "emptyBadge": "Panier vide",
+      "emptyTitle": "Votre panier est vide",
+      "emptyDescription": "Ajoutez des articles pour les retrouver ici.",
+      "selectItemAria": "Sélectionner {name}",
+      "removeItemAria": "Retirer {name}"
+    },
+    "quantitySelector": {
+      "decreaseAria": "Diminuer la quantité",
+      "increaseAria": "Augmenter la quantité"
+    },
+    "page": {
+      "title": "Mon panier",
+      "selectAllAria": "Tout sélectionner",
+      "selectAll": "Tout sélectionner",
+      "removeAll": "Tout supprimer",
+      "shippingNote": "Les frais de livraison sont calculés au moment du paiement. Vous pouvez modifier la quantité ou retirer des articles avant de confirmer votre commande.",
+      "emptyTitle": "Votre panier est actuellement vide",
+      "emptyDescription": "Découvrez nos vitamines et compléments sélectionnés, testés en laboratoire et pensés pour accompagner votre routine santé au quotidien.",
+      "discoverCta": "Découvrir les collections"
+    }
+  },
+  "Wishlist": {
+    "title": "Liste de souhaits",
+    "pageTitle": "Liste de souhaits",
+    "removeAria": "Retirer {name} de la liste de souhaits",
+    "emptyTitle": "Votre liste de souhaits est vide",
+    "emptyDescription": "Enregistrez vos compléments préférés ici pour les retrouver facilement plus tard.",
+    "exploreCollections": "Découvrir nos collections"
+  },
+  "Account": {
+    "layout": { "title": "Mon compte" },
+    "menu": {
+      "overview": "Aperçu",
+      "myOrders": "Mes commandes",
+      "addresses": "Mes adresses",
+      "wishlist": "Liste de souhaits",
+      "myAccount": "Mon compte",
+      "managePreferences": "Gérez vos informations et préférences",
+      "logout": "Se déconnecter"
+    },
+    "addresses": {
+      "default": "Par défaut",
+      "phonePrefix": "Tél. :",
+      "edit": "Modifier",
+      "deleting": "Suppression...",
+      "delete": "Supprimer",
+      "editAddressTitle": "Modifier l'adresse",
+      "newAddressTitle": "Nouvelle adresse",
+      "editAddressDescription": "Mettez à jour les informations de cette adresse.",
+      "newAddressDescription": "Ajoutez une nouvelle adresse de livraison à votre compte.",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "company": "Entreprise",
+      "optional": "Optionnel",
+      "address": "Adresse",
+      "address2": "Complément d'adresse",
+      "address2Placeholder": "Appartement, étage, bâtiment...",
+      "city": "Ville",
+      "postalCode": "Code postal",
+      "region": "Région",
+      "regionPlaceholder": "Ex : Abidjan",
+      "countryCode": "Pays",
+      "phone": "Téléphone",
+      "phonePlaceholder": "+225 07 00 00 00 00",
+      "cancel": "Annuler",
+      "saving": "Enregistrement...",
+      "update": "Mettre à jour",
+      "addAddress": "Ajouter une adresse",
+      "required": "Ce champ est requis",
+      "deleteAddressTitle": "Supprimer cette adresse ?",
+      "deleteAddressConfirm": "Cette action est irréversible. L'adresse sera définitivement supprimée de votre compte.",
+      "addressUpdated": "Adresse mise à jour avec succès.",
+      "addressAdded": "Adresse ajoutée avec succès.",
+      "saveError": "Impossible d'enregistrer l'adresse. Veuillez réessayer.",
+      "addressDeleted": "Adresse supprimée.",
+      "deleteError": "Impossible de supprimer l'adresse. Veuillez réessayer.",
+      "pageTitle": "Mes adresses",
+      "pageSubtitle": "Gérez vos adresses de livraison et de facturation.",
+      "noAddressTitle": "Aucune adresse enregistrée",
+      "noAddressDescription": "Ajoutez une adresse pour accélérer vos prochaines commandes.",
+      "tip": "Astuce",
+      "tipDescription": "Définissez une adresse par défaut pour gagner du temps au moment de valider votre commande."
+    },
+    "orders": {
+      "product": "Produit",
+      "pageTitle": "Mes commandes",
+      "pageSubtitle": "Suivez l'état de vos commandes et retrouvez votre historique d'achats.",
+      "loadError": "Impossible de charger vos commandes. Veuillez réessayer.",
+      "noOrderTitle": "Aucune commande pour le moment",
+      "noOrderDescription": "Découvrez nos compléments alimentaires et passez votre première commande.",
+      "startShopping": "Commencer mes achats",
+      "status": {
+        "pending": "En attente",
+        "processing": "En préparation",
+        "shipped": "Expédié",
+        "delivered": "Livré",
+        "cancelled": "Annulé",
+        "refunded": "Remboursé"
+      }
+    },
+    "orderCard": {
+      "orderLabel": "Commande",
+      "itemCount": "{count, plural, one {# article} other {# articles}}",
+      "viewDetails": "Voir les détails"
+    },
+    "orderDetail": {
+      "back": "Retour aux commandes",
+      "notFound": {
+        "back": "Retour",
+        "title": "Commande introuvable",
+        "description": "Impossible de récupérer les détails de cette commande.",
+        "viewOrders": "Voir mes commandes"
+      },
+      "cancelModal": {
+        "title": "Annuler cette commande ?",
+        "description": "Cette action est irréversible. Une fois annulée, la commande ne pourra pas être réactivée.",
+        "keep": "Conserver la commande",
+        "confirm": "Oui, annuler",
+        "cancelling": "Annulation..."
+      },
+      "cancelError": "Une erreur est survenue",
+      "orderNumber": "Commande n°{id}",
+      "placedOn": "Passée le {date}",
+      "copyId": "Copier l'ID",
+      "copied": "Copié !",
+      "cancelOrder": "Annuler la commande",
+      "refunded": {
+        "title": "Commande remboursée",
+        "description": "Cette commande a été remboursée."
+      },
+      "cancelled": {
+        "title": "Commande annulée",
+        "description": "Cette commande a été annulée."
+      },
+      "timeline": {
+        "confirmed": "Commande confirmée",
+        "processing": "En préparation",
+        "shipped": "Expédiée",
+        "delivered": "Livrée"
+      },
+      "infoCards": {
+        "order": "Commande",
+        "date": "Date",
+        "payment": "Paiement",
+        "total": "Total"
+      },
+      "payment": {
+        "paid": "Payé",
+        "pending": "En attente",
+        "awaiting": "En cours",
+        "refunded": "Remboursé",
+        "partiallyRefunded": "Partiellement remboursé",
+        "cancelled": "Annulé"
+      },
+      "items": {
+        "title": "Articles ({count})",
+        "variantLabel": "Format :",
+        "quantity": "Qté : {quantity}",
+        "perUnit": "{price} / unité"
+      },
+      "shippingAddress": {
+        "title": "Adresse de livraison",
+        "phone": "Tél: {phone}",
+        "empty": "Aucune adresse fournie"
+      },
+      "summary": {
+        "title": "Récapitulatif",
+        "subtotal": "Sous-total",
+        "shipping": "Livraison",
+        "free": "Gratuite",
+        "tax": "Taxes",
+        "discount": "Remise",
+        "discountWithCode": "Remise ({code})",
+        "total": "Total"
+      },
+      "shippingMethod": {
+        "title": "Mode de livraison",
+        "standard": "Standard",
+        "free": "Gratuit"
+      },
+      "actions": {
+        "viewAllOrders": "Voir toutes les commandes",
+        "continueShopping": "Continuer mes achats"
+      }
+    },
+    "overview": {
+      "greeting": "Ravi de vous revoir, {name}.",
+      "needHelp": "Besoin d'aide ?",
+      "stats": {
+        "orders": "Commandes",
+        "wishlist": "Liste de souhaits",
+        "addresses": "Adresses"
+      },
+      "lastOrder": {
+        "title": "Dernière commande",
+        "empty": "Aucune commande",
+        "orderNumber": "Commande n°{id}",
+        "viewOrders": "Voir les commandes"
+      },
+      "defaultAddress": {
+        "title": "Adresse par défaut",
+        "empty": "Aucune adresse enregistrée",
+        "viewAddresses": "Voir les adresses"
+      },
+      "personalInfo": {
+        "title": "Informations personnelles",
+        "subtitle": "Mettez à jour vos informations de connexion.",
+        "firstName": "Prénom",
+        "firstNamePlaceholder": "Saisissez votre prénom",
+        "lastName": "Nom",
+        "lastNamePlaceholder": "Saisissez votre nom",
+        "email": "E-mail",
+        "emailPlaceholder": "exemple@gmail.com",
+        "phone": "Téléphone",
+        "save": "Enregistrer",
+        "saving": "Enregistrement...",
+        "saveSuccess": "Profil mis à jour !",
+        "saveError": "Enregistrement impossible."
+      }
+    }
+  },
+  "Auth": {
+    "modal": {
+      "loginTitle": "Connexion",
+      "registerTitle": "Créer un compte",
+      "tabLogin": "Connexion",
+      "tabRegister": "Inscription",
+      "panelHeadline": "Votre bien-être, une priorité au quotidien",
+      "benefit1": "Livraison gratuite dès 25 000 FCFA",
+      "benefit2": "Formules testées en laboratoire",
+      "benefit3": "Suivi de commandes et offres réservées aux membres"
+    },
+    "register": {
+      "accountCreated": "Votre compte a été créé avec succès.",
+      "registerError": "Impossible de créer le compte. Veuillez réessayer.",
+      "title": "Créer un compte",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "Créer mon compte",
+      "alreadyHaveAccount": "Vous avez déjà un compte ?",
+      "login": "Se connecter"
+    },
+    "login": {
+      "error": "Connexion impossible. Veuillez réessayer.",
+      "title": "Bon retour sur PrettyFull",
+      "subtitle": "Connectez-vous à votre compte pour retrouver vos compléments et suivre vos commandes",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "Connexion",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "register": "Créer un compte"
+    }
+  },
+  "OrderConfirmation": {
+    "notFoundBadge": "Introuvable",
+    "notFoundTitle": "Commande introuvable",
+    "notFoundDescription": "Nous n'avons pas pu retrouver cette commande. Vérifiez le lien reçu par e-mail ou consultez votre historique.",
+    "myOrders": "Mes commandes",
+    "backToHome": "Retour à l'accueil",
+    "thankYou": "Merci pour votre commande !",
+    "orderReceived": "Votre commande a bien été reçue",
+    "variantLabel": "Format :",
+    "confirmationSentTo": "Un e-mail de confirmation a été envoyé à",
+    "orderId": "Commande n°{id}",
+    "quantity": "Quantité",
+    "paymentMethodDetail": "Détail du paiement",
+    "status": "Statut :",
+    "cancelled": "Annulée",
+    "confirmed": "Confirmée",
+    "receipt": "Reçu :",
+    "sentViaEmailTo": "Envoyé par e-mail à {email}",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "free": "Gratuite",
+    "tax": "Taxes",
+    "total": "Total",
+    "trackYourOrder": "Suivre ma commande",
+    "backToHomePage": "Retour à l'accueil",
+    "continueShopping": "Continuer mes achats"
+  },
+  "ContactPage": {
+    "hero": { "eyebrow": "Contact", "title": "Parlons-en" },
+    "form": {
+      "title": "Envoyez-nous un message",
+      "description": "Une question sur un produit, votre commande ou une livraison ? Notre équipe vous répond sous 24h ouvrées.",
+      "honeypotLabel": "Site web",
+      "nameLabel": "Nom complet",
+      "namePlaceholder": "Votre nom et prénom",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "vous@exemple.com",
+      "phoneLabel": "Téléphone",
+      "subjectLabel": "Sujet",
+      "subjectPlaceholder": "Choisissez un sujet",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Décrivez-nous votre demande...",
+      "sendError": "Une erreur est survenue lors de l'envoi. Veuillez réessayer.",
+      "responseTime": "Réponse sous 24h ouvrées.",
+      "sending": "Envoi en cours...",
+      "submit": "Envoyer le message"
+    },
+    "success": {
+      "title": "Message envoyé",
+      "description": "Merci de nous avoir contactés. Notre équipe vous répondra dans les meilleurs délais.",
+      "newMessage": "Envoyer un nouveau message"
+    },
+    "info": {
+      "title": "Nos coordonnées",
+      "emailLabel": "E-mail",
+      "phoneLabel": "Téléphone",
+      "addressLabel": "Adresse"
+    },
+    "address": {
+      "line1": "Cocody, Riviera",
+      "city": "Abidjan",
+      "country": "Côte d'Ivoire"
+    },
+    "hours": {
+      "title": "Horaires",
+      "weekdays": "Lundi - Vendredi",
+      "weekdaysTime": "8h00 - 18h00",
+      "saturday": "Samedi",
+      "saturdayTime": "9h00 - 15h00",
+      "sunday": "Dimanche",
+      "sundayTime": "Fermé"
+    },
+    "quickAnswers": { "title": "Réponses rapides" },
+    "subjects": {
+      "subject1": "Question sur une commande",
+      "subject2": "Question sur un produit",
+      "subject3": "Livraison et suivi",
+      "subject4": "Retour ou remboursement",
+      "subject5": "Paiement et Mobile Money",
+      "subject6": "Autre demande"
+    },
+    "shortcuts": {
+      "shortcut1": {
+        "title": "Suivre ma commande",
+        "description": "Consultez le statut et l'historique de vos commandes directement depuis votre compte.",
+        "cta": "Voir mes commandes"
+      },
+      "shortcut2": {
+        "title": "Livraison et retours",
+        "description": "Délais de livraison, zones couvertes et conditions de retour.",
+        "cta": "Voir les modalités"
+      },
+      "shortcut3": {
+        "title": "Questions fréquentes",
+        "description": "Les réponses aux questions les plus posées sur nos produits et commandes.",
+        "cta": "Consulter la FAQ"
+      }
+    }
+  },
+  "CheckoutPage": {
+    "page": {
+      "title": "Finaliser ma commande"
+    },
+    "address": {
+      "title": "Adresse de livraison",
+      "edit": "Modifier",
+      "updateError": "Impossible de mettre à jour l'adresse. Veuillez réessayer.",
+      "email": "Email",
+      "emailPlaceholder": "vous@exemple.com",
+      "emailRequired": "L'email est requis",
+      "emailInvalid": "Veuillez saisir un email valide",
+      "firstName": "Prénom",
+      "firstNameRequired": "Le prénom est requis",
+      "lastName": "Nom",
+      "lastNameRequired": "Le nom est requis",
+      "companyOptional": "Entreprise (facultatif)",
+      "companyPlaceholder": "Nom de l'entreprise",
+      "address": "Adresse",
+      "addressPlaceholder": "Numéro, rue, quartier...",
+      "addressRequired": "L'adresse est requise",
+      "address2Optional": "Complément d'adresse (facultatif)",
+      "address2Placeholder": "Appartement, étage, repère...",
+      "postCode": "Code postal",
+      "postCodeRequired": "Le code postal est requis",
+      "city": "Ville",
+      "cityRequired": "La ville est requise",
+      "region": "Région",
+      "regionRequired": "La région est requise",
+      "country": "Pays",
+      "countryPlaceholder": "Sélectionnez votre pays",
+      "countryRequired": "Le pays est requis",
+      "phone": "Téléphone",
+      "phonePlaceholder": "Ex : 07 00 00 00 00",
+      "phoneRequired": "Le téléphone est requis",
+      "sameBillingLabel": "Utiliser cette adresse comme adresse de facturation",
+      "saving": "Enregistrement...",
+      "continueToDelivery": "Continuer vers la livraison"
+    },
+    "delivery": {
+      "title": "Livraison",
+      "edit": "Modifier",
+      "setMethodError": "Impossible d'enregistrer le mode de livraison. Veuillez réessayer.",
+      "selectPreferredMethod": "Choisissez votre mode de livraison préféré",
+      "loadOptionsError": "Impossible de charger les options de livraison.",
+      "loadingOptions": "Chargement des options de livraison...",
+      "loadOptionsErrorDetailed": "Une erreur est survenue lors du chargement des options de livraison. Veuillez rafraîchir la page.",
+      "noOptionsAvailable": "Aucune option de livraison disponible pour cette adresse.",
+      "standardShipping": "Livraison standard",
+      "free": "Gratuit",
+      "processing": "Traitement en cours...",
+      "continueToPayment": "Continuer vers le paiement",
+      "methodSelected": "Mode de livraison sélectionné",
+      "completePreviousStep": "Complétez l'étape précédente pour continuer"
+    },
+    "payment": {
+      "title": "Paiement",
+      "edit": "Modifier",
+      "initError": "Impossible d'initialiser le paiement. Veuillez réessayer.",
+      "paymentCollectionError": "Une erreur est survenue lors de la préparation du paiement. Veuillez rafraîchir la page et réessayer.",
+      "codLabel": "Paiement à la livraison",
+      "selectMethod": "Choisissez votre moyen de paiement",
+      "loadingMethods": "Chargement des moyens de paiement...",
+      "codDescription": "Payez en espèces ou par Mobile Money directement à la réception de votre commande.",
+      "cardNumber": "Numéro de carte",
+      "cardName": "Nom sur la carte",
+      "expiryDate": "Date d'expiration",
+      "cvv": "CVV",
+      "processing": "Traitement en cours...",
+      "reviewOrder": "Vérifier la commande",
+      "paymentMethodLabel": "Moyen de paiement :",
+      "cardEndingIn": "Carte se terminant par {digits}",
+      "completePreviousStep": "Complétez l'étape précédente pour continuer"
+    },
+    "checkoutForm": {
+      "labelName": "Nom",
+      "labelEmail": "Email",
+      "labelMethod": "Comment souhaitez-vous recevoir votre commande ?",
+      "placeholderMethod": "Entrez votre méthode de livraison...",
+      "labelAddress": "Entrer votre numero, nom et adresse",
+      "placeholderNumber": "Entrez votre numéro de téléphone...",
+      "placeholderLastName": "Entrez votre nom et prénom...",
+      "placeholderAddress": "Entrez votre adresse...",
+      "labelPostCode": "Entrer votre code postal",
+      "placeholderPostCode": "Entrez votre code postal...",
+      "labelCity": "Entrer votre ville",
+      "placeholderCity": "Entrez votre ville...",
+      "labelCountry": "Entrer votre pays",
+      "placeholderCountry": "Entrez votre pays...",
+      "labelState": "Entrer votre région",
+      "placeholderState": "Entrez votre région...",
+      "description": "* Pour la livraison, vous pouvez saisir votre adresse de maniére précise."
+    },
+    "infosCheckout": {
+      "save": "Enregistrer cette adresse dans mon profil",
+      "favorite": "Faites de ceci mon adresse préférée",
+      "termes": "Termes et Conditions",
+      "accept": "J'ai lu et j'accepte les termes et conditions",
+      "ctaButton": "Procéder au paiement"
+    },
+    "features": {
+      "delivery": "Livraison",
+      "shipping": "Expédition",
+      "billing": "Facturation",
+      "payment": "Paiement",
+      "data": "Nous mettons un point d'honneur à soigner chaque étape de votre commande, du choix de la pièce jusqu'à la livraison."
+    },
+    "summary": {
+      "title": "Résumé",
+      "subtotal": "Sous-total",
+      "shipping": "Frais de livraison",
+      "taxes": "Droits et taxes estimés",
+      "total": "Total",
+      "reviewIntro": "Vérifiez votre commande avant de la valider",
+      "itemsCount": "Articles de la commande ({count})",
+      "termsText": "En cliquant sur le bouton Passer la commande, vous confirmez avoir lu, compris et accepté nos Conditions d'utilisation, nos Conditions de vente et notre Politique de retour.",
+      "placingOrder": "Passage de la commande...",
+      "placeOrder": "Passer la commande",
+      "completePreviousSteps": "Complétez les étapes précédentes pour continuer",
+      "placeOrderError": "La commande n'a pas pu être passée. Réessayez.",
+      "unitPriceLabel": "Prix unitaire"
+    }
+  },
+  "FaqPage": {
+    "banner": {
+      "imageAlt": "Personne consultant les questions fréquentes PrettyFull",
+      "topLabel1": "Aide",
+      "topLabel2": "Support",
+      "topLabel3": "Questions fréquentes",
+      "title": "Foire Aux Questions",
+      "subtitle": "Toutes les réponses sur vos commandes, la livraison et nos produits."
+    },
+    "sidebar": {
+      "eyebrow": "Besoin d'aide ?",
+      "title": "Comment pouvons-nous vous aider ?",
+      "searchPlaceholder": "Rechercher une question...",
+      "categoriesLabel": "Catégories",
+      "allCategories": "Toutes"
+    },
+    "categories": {
+      "orders": "Commandes",
+      "shipping": "Livraison",
+      "returns": "Retours & Échanges",
+      "products": "Produits & Dosages",
+      "payments": "Paiements",
+      "account": "Compte"
+    },
+    "items": {
+      "item1": {
+        "title": "ARTICLES EN PRÉCOMMANDE / ACHAT GROUPÉ",
+        "description": "Certains produits sont en rupture temporaire et proposés en précommande en attendant le réapprovisionnement. Une fois la commande validée, aucune annulation n'est possible sur ces produits. Retrouvez le détail de cette politique dans nos Conditions Générales de Vente. Merci de vérifier votre colis dès sa réception et de nous contacter immédiatement si le produit est défectueux, endommagé ou ne correspond pas à votre commande, afin que nous puissions étudier la situation et trouver une solution rapidement."
+      },
+      "item2": {
+        "title": "COMMENT SUIVRE MA COMMANDE ?",
+        "description": "Dès l'expédition de votre commande, vous recevez un e-mail contenant un lien de suivi. Vous pouvez également retrouver ce lien à tout moment dans la section « Mes commandes » de votre compte."
+      },
+      "item3": {
+        "title": "PUIS-JE MODIFIER OU ANNULER MA COMMANDE ?",
+        "description": "Contactez-nous le plus rapidement possible après validation de votre commande. Tant qu'elle n'est pas encore préparée pour expédition, nous pouvons modifier l'adresse, la taille ou annuler la commande."
+      },
+      "item4": {
+        "title": "QUELS SONT LES DÉLAIS DE LIVRAISON ?",
+        "description": "Les commandes sont expédiées sous 2 à 5 jours ouvrés. Comptez ensuite 2 à 4 jours ouvrés pour une livraison standard en France métropolitaine, et 5 à 10 jours ouvrés pour les livraisons internationales."
+      },
+      "item5": {
+        "title": "LIVREZ-VOUS À L'INTERNATIONAL ?",
+        "description": "Oui, nous livrons dans la majorité des pays d'Europe ainsi qu'en Amérique du Nord. Les frais de douane éventuels restent à la charge du destinataire selon la réglementation locale."
+      },
+      "item6": {
+        "title": "ARTICLES EN STOCK",
+        "description": "Les retours, échanges ou remplacements partiels (selon notre appréciation après examen du problème) sont possibles dans un délai de 30 jours après l'achat, uniquement pour les défauts majeurs ou non-conformités (les défauts mineurs ne sont pas concernés). Consultez ci-dessous la définition d'un défaut majeur."
+      },
+      "item7": {
+        "title": "ÉCHANGES",
+        "description": "Le moyen le plus rapide d'obtenir l'article souhaité est de nous retourner celui que vous possédez puis, une fois le retour accepté, de passer une nouvelle commande séparée pour le nouvel article. Les frais d'expédition du retour restent à votre charge. Nous ne pouvons garantir la bonne réception de votre colis retourné : nous vous recommandons donc d'utiliser un mode d'envoi avec suivi et assurance."
+      },
+      "item8": {
+        "title": "DOMMAGES ET PROBLÈMES CONSTATÉS",
+        "description": "En raison de la nature des produits, de légères variations d'aspect (étiquette, packaging) peuvent subsister sans affecter la qualité du produit. Sont considérés comme défauts majeurs : un emballage descellé ou endommagé à la réception, une date de péremption dépassée, ou la réception d'un produit différent de celui commandé. Dans ce dernier cas, contactez-nous immédiatement pour un échange ou un remboursement."
+      },
+      "item9": {
+        "title": "EXCEPTIONS / ARTICLES NON REMBOURSABLES",
+        "description": "Certains produits ne peuvent pas faire l'objet d'un retour, notamment les produits dont l'emballage a été ouvert (raisons d'hygiène et de sécurité sanitaire), les articles soldés ou les cartes cadeaux. Pour toute question concernant un produit spécifique, n'hésitez pas à nous contacter."
+      },
+      "item10": {
+        "title": "COMMENT DÉMARRER UN RETOUR ?",
+        "description": "Rendez-vous dans « Mes commandes », sélectionnez l'article concerné et suivez les étapes du formulaire de retour. Une étiquette prépayée vous sera envoyée par e-mail sous 24h."
+      },
+      "item11": {
+        "title": "COMMENT CHOISIR MON FORMAT / DOSAGE ?",
+        "description": "Chaque fiche produit indique la posologie recommandée et les informations nutritionnelles détaillées. En cas de doute sur le dosage adapté à votre situation, nous vous recommandons de consulter un professionnel de santé."
+      },
+      "item12": {
+        "title": "LE PACKAGING EST-IL FIDÈLE AUX PHOTOS ?",
+        "description": "Nous ajustons nos photos pour rester au plus proche de la réalité, mais un léger écart peut subsister selon le réglage de votre écran ou une évolution mineure du packaging fournisseur. N'hésitez pas à nous écrire pour toute précision sur un produit."
+      },
+      "item13": {
+        "title": "QUELS MOYENS DE PAIEMENT ACCEPTEZ-VOUS ?",
+        "description": "Nous acceptons les cartes bancaires (Visa, Mastercard, Amex), PayPal ainsi que le paiement en plusieurs fois selon le montant de votre panier."
+      },
+      "item14": {
+        "title": "MES DONNÉES BANCAIRES SONT-ELLES SÉCURISÉES ?",
+        "description": "Oui, tous les paiements sont traités par un prestataire certifié PCI-DSS. Nous ne stockons jamais vos coordonnées bancaires sur nos serveurs."
+      },
+      "item15": {
+        "title": "COMMENT RÉINITIALISER MON MOT DE PASSE ?",
+        "description": "Depuis la page de connexion, cliquez sur « Mot de passe oublié » et suivez les instructions envoyées par e-mail pour en choisir un nouveau."
+      },
+      "item16": {
+        "title": "COMMENT SUPPRIMER MON COMPTE ?",
+        "description": "Envoyez-nous une demande depuis la page Contact avec l'adresse e-mail associée à votre compte. La suppression est effective sous 48h conformément au RGPD."
+      }
+    },
+    "noResults": "Aucun résultat pour « {query} »",
+    "loadMore": "Voir plus",
+    "productFaqTitle": "Questions fréquentes",
+    "bottomBanner": {
+      "title": "Une autre question ?",
+      "subtitle": "Notre service client est là pour vous accompagner.",
+      "cta": "Découvrir la boutique"
+    }
+  },
+  "ShippingReturnPage": {
+    "pageTitle": "Livraison et Retours",
+    "items": {
+      "zones": {
+        "title": "ZONES DE LIVRAISON",
+        "description": "PrettyFull livre partout à Abidjan (Cocody, Marcory, Yopougon, Plateau, Riviera et autres communes) ainsi que dans les principales villes de l'intérieur de la Côte d'Ivoire (Bouaké, Yamoussoukro, San-Pédro, Korhogo, Abengourou, entre autres). Une livraison régionale vers certains pays de la zone UEMOA (Sénégal, Burkina Faso, Mali, Togo, Bénin) est également possible sur demande ; contactez notre service client pour vérifier la disponibilité et les frais applicables à votre destination."
+      },
+      "delays": {
+        "title": "DÉLAIS DE LIVRAISON",
+        "description": "Les commandes sont préparées sous 24 à 48h ouvrées. Comptez ensuite 24 à 72h pour une livraison à Abidjan, et 3 à 7 jours ouvrés pour les autres villes de Côte d'Ivoire. Pour les livraisons régionales (zone UEMOA), le délai est généralement compris entre 5 et 10 jours ouvrés selon le pays de destination et le transporteur utilisé. Ces délais sont indicatifs et peuvent varier en période de forte affluence (fêtes de fin d'année, soldes) ou en cas d'article en précommande."
+      },
+      "fees": {
+        "title": "FRAIS DE LIVRAISON",
+        "description": "Les frais de livraison sont calculés en fonction de la zone géographique et affichés avant la validation finale de la commande, directement sur la page de paiement. La livraison est offerte à Abidjan à partir d'un montant minimum d'achat indiqué sur le site au moment de la commande. Pour les livraisons à l'intérieur du pays et à l'international, un forfait est appliqué selon la ville ou le pays de destination."
+      },
+      "tracking": {
+        "title": "SUIVI DE COMMANDE",
+        "description": "Dès la prise en charge de votre colis par notre livreur ou notre transporteur partenaire, vous recevez une notification (SMS, WhatsApp ou e-mail) contenant les coordonnées du livreur ou un lien de suivi selon le mode de livraison choisi. Vous pouvez également suivre l'état de votre commande à tout moment depuis la section « Mes commandes » de votre compte client."
+      },
+      "damagedParcel": {
+        "title": "COLIS ENDOMMAGÉ, INCOMPLET OU NON CONFORME",
+        "description": "Nous vous recommandons de vérifier votre colis dès sa réception, si possible en présence du livreur. Si un article arrive endommagé, incomplet ou ne correspond pas à votre commande, contactez notre service client dans un délai de 48h suivant la réception, en joignant des photos du produit et de l'emballage. Après vérification, nous procédons à un échange, une réparation ou un remboursement, sans frais supplémentaires pour vous."
+      },
+      "returnWindow": {
+        "title": "DÉLAI DE RETOUR ET D'ÉCHANGE",
+        "description": "Vous disposez d'un délai de 14 jours à compter de la réception de votre commande pour demander un retour ou un échange. Passé ce délai, aucune demande ne pourra être acceptée, sauf en cas de défaut de fabrication constaté ultérieurement. Pour initier un retour, contactez notre service client via la page Contact ou depuis votre espace « Mes commandes » en précisant le motif de votre demande."
+      },
+      "returnConditions": {
+        "title": "CONDITIONS DE RETOUR DES PRODUITS",
+        "description": "Pour être accepté, un produit retourné doit être dans son emballage d'origine, scellé et non ouvert, avec l'ensemble de ses étiquettes et notices. Pour des raisons d'hygiène et de sécurité sanitaire, tout produit dont l'emballage a été ouvert, descellé ou dont le film de protection a été retiré ne peut pas être repris, sauf défaut de fabrication avéré constaté à l'ouverture."
+      },
+      "refund": {
+        "title": "MODALITÉS DE REMBOURSEMENT",
+        "description": "Une fois l'article retourné reçu et contrôlé par notre équipe, vous recevez une confirmation de la validation ou du refus du retour. En cas de retour accepté, le remboursement est effectué sous 5 à 10 jours ouvrés sur le même moyen de paiement utilisé lors de l'achat (Mobile Money, carte bancaire) ou sous forme d'avoir à valoir sur une prochaine commande, selon votre préférence. Les frais de livraison initiaux ne sont remboursés qu'en cas de défaut ou d'erreur imputable à PrettyFull."
+      },
+      "nonReturnable": {
+        "title": "PRODUITS NON RETOURNABLES",
+        "description": "Pour des raisons d'hygiène et de sécurité sanitaire, tout complément alimentaire, vitamine ou produit de bien-être dont l'emballage a été ouvert ne peut ni être retourné ni échangé, sauf défaut de fabrication avéré. Il en va de même pour les articles en promotion signalés comme « vente finale » et les cartes cadeaux. Ces exclusions sont indiquées sur la fiche produit lorsqu'elles s'appliquent."
+      },
+      "exchange": {
+        "title": "ÉCHANGE DE FORMAT OU DE SAVEUR",
+        "description": "Si le produit reçu ne vous convient pas en format ou en saveur et que son emballage est resté scellé, un échange est possible dans les mêmes délais et conditions que pour un retour classique, sous réserve de disponibilité du produit de remplacement. Si le produit souhaité n'est plus disponible, nous vous proposons un remboursement ou un avoir. Les frais de renvoi du nouveau produit sont à notre charge lorsque l'échange résulte d'une erreur de notre part, et restent à la charge du Client dans les autres cas."
+      }
+    }
+  },
+  "TermsPage": {
+    "pageTitle": "Conditions Générales de Vente",
+    "items": {
+      "purpose": {
+        "title": "1. OBJET",
+        "description": "Les présentes Conditions Générales de Vente (CGV) régissent l'ensemble des ventes de vitamines, compléments alimentaires et produits de bien-être réalisées sur le site PrettyFull par toute personne physique ou morale (« le Client ») souhaitant procéder à un achat via notre boutique en ligne. Toute commande passée sur le site implique l'acceptation pleine et entière des présentes CGV, sans réserve. PrettyFull se réserve le droit de modifier ces conditions à tout moment ; la version applicable est celle en vigueur au jour de la commande."
+      },
+      "products": {
+        "title": "2. PRODUITS ET DISPONIBILITÉ",
+        "description": "Les produits proposés à la vente sont ceux figurant sur le site au jour de la consultation, dans la limite des stocks disponibles. Chaque produit est présenté avec une description, des photographies et les informations nutritionnelles disponibles, destinées à informer le Client le plus fidèlement possible. En cas d'indisponibilité d'un produit après commande, le Client en sera informé dans les meilleurs délais et pourra choisir entre un remboursement intégral, un produit de remplacement ou l'attente du réapprovisionnement."
+      },
+      "prices": {
+        "title": "3. PRIX ET MONNAIE",
+        "description": "Tous les prix affichés sur le site sont exprimés en Francs CFA (FCFA / XOF), toutes taxes comprises, hors frais de livraison qui sont précisés avant la validation finale de la commande. PrettyFull se réserve le droit de modifier ses prix à tout moment, étant entendu que le prix applicable à une commande est celui en vigueur au moment de sa validation par le Client."
+      },
+      "payment": {
+        "title": "4. MOYENS DE PAIEMENT",
+        "description": "Le règlement des commandes peut s'effectuer par Mobile Money (Wave, Orange Money, MTN Money, Moov Money), par carte bancaire (Visa, Mastercard) via notre prestataire de paiement sécurisé, ou en paiement à la livraison (« cash on delivery ») selon la zone de livraison et les modalités indiquées lors du passage de commande. La commande n'est définitivement validée qu'après confirmation du paiement ou, pour le paiement à la livraison, après confirmation téléphonique par notre équipe."
+      },
+      "orderValidation": {
+        "title": "5. VALIDATION DE LA COMMANDE",
+        "description": "Toute commande passée sur le site fait l'objet d'un récapitulatif (produits, formats, saveurs, prix, adresse de livraison) que le Client doit vérifier avant validation. Une fois la commande confirmée, un e-mail et/ou un message récapitulatif est envoyé au Client. PrettyFull se réserve le droit d'annuler ou de refuser toute commande d'un Client avec lequel existerait un litige relatif au paiement d'une commande antérieure, ou en cas de doute raisonnable sur la validité de la commande."
+      },
+      "delivery": {
+        "title": "6. LIVRAISON",
+        "description": "PrettyFull livre à Abidjan et dans les principales villes de Côte d'Ivoire, ainsi que, selon les cas, dans certains pays de la zone UEMOA. Les délais et frais de livraison applicables à chaque commande sont communiqués avant la validation du paiement et détaillés dans notre rubrique « Livraison et Retours ». Le Client s'engage à fournir une adresse de livraison exacte et un numéro de téléphone joignable ; PrettyFull ne saurait être tenue responsable d'un retard ou d'une non-livraison résultant d'une erreur d'adresse fournie par le Client."
+      },
+      "withdrawal": {
+        "title": "7. DROIT DE RÉTRACTATION",
+        "description": "Hors produits personnalisés, vendus en précommande, ou dont l'emballage a été ouvert pour des raisons d'hygiène et de sécurité sanitaire, le Client dispose d'un délai pour changer d'avis et demander un retour ou un échange, dans les conditions et délais précisés dans notre politique de Livraison et Retours. Le produit doit alors être retourné dans son état d'origine, emballage scellé et non ouvert, avec ses étiquettes."
+      },
+      "returns": {
+        "title": "8. RETOURS, ÉCHANGES ET REMBOURSEMENTS",
+        "description": "Les modalités précises de retour, d'échange et de remboursement (délais, articles exclus, procédure et frais éventuels) sont détaillées dans notre page dédiée « Livraison et Retours », qui fait partie intégrante des présentes CGV. Tout remboursement est effectué sur le même moyen de paiement que celui utilisé lors de l'achat, sauf accord contraire avec le Client."
+      },
+      "warranty": {
+        "title": "9. GARANTIE ET CONFORMITÉ",
+        "description": "PrettyFull s'engage à livrer des produits conformes à leur description et exempts de défaut de fabrication. Si un produit présente un défaut majeur (emballage endommagé ou descellé à la livraison, produit périmé, erreur de référence) constaté à la réception, le Client doit le signaler à notre service client dans les meilleurs délais, photographies à l'appui, afin qu'une solution (échange, remboursement) soit proposée sans frais supplémentaires pour le Client."
+      },
+      "personalData": {
+        "title": "10. DONNÉES PERSONNELLES",
+        "description": "Les informations personnelles collectées lors de la commande (identité, coordonnées, adresse de livraison, historique d'achats) sont utilisées exclusivement pour le traitement et le suivi des commandes ainsi que, avec le consentement du Client, à des fins de communication commerciale. Ces données ne sont ni vendues ni cédées à des tiers non impliqués dans l'exécution de la commande (transporteur, prestataire de paiement). Conformément à la réglementation applicable en matière de protection des données personnelles, le Client dispose d'un droit d'accès, de rectification et de suppression de ses données, qu'il peut exercer en nous contactant via la page Contact du site."
+      },
+      "intellectualProperty": {
+        "title": "11. PROPRIÉTÉ INTELLECTUELLE",
+        "description": "L'ensemble des éléments du site PrettyFull (logo, charte graphique, photographies de produits, textes, mise en page) est protégé par le droit de la propriété intellectuelle et demeure la propriété exclusive de PrettyFull. Toute reproduction, représentation ou exploitation, totale ou partielle, de ces éléments sans autorisation écrite préalable est strictement interdite."
+      },
+      "liability": {
+        "title": "12. RESPONSABILITÉ",
+        "description": "PrettyFull ne saurait être tenue responsable des dommages résultant d'une utilisation du site non conforme à sa destination, d'une intrusion frauduleuse, d'un cas de force majeure, ou de tout dysfonctionnement du réseau internet ou des opérateurs de paiement Mobile Money indépendant de sa volonté. Les photographies illustrant les produits sont les plus fidèles possibles mais ne peuvent assurer une similitude parfaite avec le produit reçu (packaging, teinte), en raison des variations d'affichage selon les écrans."
+      },
+      "healthWarnings": {
+        "title": "13. AVERTISSEMENTS ET INFORMATIONS SANITAIRES",
+        "description": "Les compléments alimentaires ne se substituent pas à une alimentation variée et équilibrée ni à un mode de vie sain, et ne doivent pas être utilisés comme substitut. Respectez la dose journalière indiquée sur l'étiquette du produit ; ne pas dépasser la dose recommandée sans avis médical. Tenir hors de portée des jeunes enfants. Il est conseillé de demander l'avis d'un professionnel de santé avant toute prise, notamment en cas de grossesse, d'allaitement, de traitement médical en cours ou de pathologie particulière. En cas de réaction indésirable, cessez la prise du produit et consultez un professionnel de santé."
+      },
+      "jurisdiction": {
+        "title": "14. DROIT APPLICABLE ET LITIGES",
+        "description": "Les présentes Conditions Générales de Vente sont soumises au droit ivoirien. En cas de litige relatif à l'interprétation ou à l'exécution d'une commande, le Client est invité à contacter en priorité notre service client afin de rechercher une solution amiable. À défaut d'accord amiable, les tribunaux compétents de Côte d'Ivoire seront seuls compétents pour connaître du litige."
+      }
+    }
+  }
 }

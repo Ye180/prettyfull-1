@@ -1,17 +1,26 @@
-import { DataRule } from "@/features/faq/data";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@prettyfull/ui";
+"use client";
+
+import { getFaqItems } from "@/features/faq/data";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@prettyfull/ui";
+import { useTranslations } from "next-intl";
 
 /**
  * Mini-FAQ PDP : sous-ensemble statique du contenu FAQ existant (pas de
  * duplication de texte), même pattern visuel que l'accordéon de la page FAQ
  * (ligne active en fond noir).
  */
-const PDP_FAQ_ITEMS = DataRule.slice(0, 4);
-
 export function ProductFaq() {
+	const t = useTranslations("FaqPage");
+	const PDP_FAQ_ITEMS = getFaqItems(t).slice(0, 4);
+
 	return (
 		<div className="py-9">
-			<h2 className="mb-8 text-3xl font-bebas-neue">Questions fréquentes</h2>
+			<h2 className="mb-8 text-3xl font-bebas-neue">{t("productFaqTitle")}</h2>
 			<Accordion type="single" collapsible className="flex flex-col gap-3 w-full">
 				{PDP_FAQ_ITEMS.map((item) => (
 					<AccordionItem

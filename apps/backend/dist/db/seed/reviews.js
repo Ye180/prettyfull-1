@@ -6,38 +6,32 @@ import * as t from "../schema/index.js";
  */
 const SAMPLE_REVIEWS = [
     {
-        productSlug: "robe-cocktail-satinee",
+        productSlug: "multivitamine-quotidienne",
         rating: 5,
         authorName: "Aminata S.",
         authorEmail: "aminata@example.com",
-        body: "Tissu magnifique, coupe parfaite. Je l'ai portée pour un mariage et j'ai reçu beaucoup de compliments.",
-        photoUrls: [
-            "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600",
-        ],
+        body: "Je sens vraiment la différence depuis que j'ai commencé la multivitamine. Facile à avaler et sans arrière-goût.",
     },
     {
-        productSlug: "robe-cocktail-satinee",
+        productSlug: "multivitamine-quotidienne",
         rating: 4,
         authorName: "Fatou D.",
         authorEmail: "fatou@example.com",
-        body: "Très jolie robe, taille un peu grand donc je recommande de prendre une taille en dessous.",
+        body: "Bon produit, dosage clair. J'aurais aimé un format plus grand.",
     },
     {
-        productSlug: "blazer-structure",
+        productSlug: "proteine-whey-chocolat",
         rating: 5,
         authorName: "Mariam B.",
         authorEmail: "mariam@example.com",
-        body: "Qualité au rendez-vous, tombe parfaitement. Livraison rapide à Abidjan.",
-        photoUrls: [
-            "https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=600",
-        ],
+        body: "Excellent goût chocolat, se mélange bien sans grumeaux. Livraison rapide à Abidjan.",
     },
     {
-        productSlug: "jean-slim-delave",
+        productSlug: "omega-3-huile-de-poisson",
         rating: 4,
         authorName: "Ibrahim T.",
         authorEmail: "ibrahim@example.com",
-        body: "Bon rapport qualité-prix, surtout avec la réduction. Denim confortable.",
+        body: "Bon rapport qualité-prix, surtout avec la réduction. Gélules faciles à avaler.",
     },
 ];
 export const seedReviews = async (productIdBySlug) => {

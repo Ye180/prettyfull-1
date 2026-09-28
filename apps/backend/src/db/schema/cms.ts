@@ -120,6 +120,39 @@ export const featuredEntries = pgTable(
 );
 
 /**
+ * Bloc textuel illustré d'une section de la page d'accueil (badges de
+ * confiance, arguments qualité, etc.) - §2.6.
+ *
+ * `sectionKey` regroupe les entrées d'un même bloc (ex. `home_trust`), sur le
+ * même principe que `featuredEntries.sectionKey` : le back-office peut créer
+ * autant de groupes que nécessaire sans changement côté storefront, qui se
+ * contente d'afficher ce qui est publié pour la clé qu'il demande.
+ */
+export const contentHighlights = pgTable(
+	"content_highlights",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		/** Identifiant d'icône résolu côté storefront (ex. "lab", "leaf", "shield"). */
+		icon: varchar("icon", { length: 64 }).notNull(),
+		title: varchar("title", { length: 160 }).notNull(),
+		description: varchar("description", { length: 500 }).notNull(),
+		sectionKey: varchar("section_key", { length: 64 }).notNull(),
+		position: integer("position").notNull().default(0),
+		status: contentStatusEnum("status").notNull().default("draft"),
+		translations: jsonb("translations").$type<Translations>(),
+		createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+		updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+	},
+	(table) => [
+		index("content_highlights_section_idx").on(
+			table.sectionKey,
+			table.status,
+			table.position,
+		),
+	],
+);
+
+/**
  * Messages reçus via le formulaire de contact du storefront.
  *
  * Stockés plutôt qu'envoyés par courriel : aucun prestataire d'envoi n'est

@@ -4,6 +4,7 @@ import { useProductReviews } from "@/features/products/hooks/use-product-reviews
 import { useReviewForm } from "@/features/products/hooks/use-review-form";
 import { Button } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import DrawerReview from "../../../../../../../packages/ui/src/drawer-reviews";
 import { ReviewsOneItems } from "../molecules/reviews-items";
 
@@ -20,6 +21,7 @@ const Reviews = ({
 		productId,
 		submitReview,
 	);
+	const t = useTranslations("ProductPage.reviews");
 
 	return (
 		<div className={cn(className, "py-9")}>
@@ -28,7 +30,7 @@ const Reviews = ({
 				 * bars ni de carte "AI Reviews Summary" : aucune donnée backend pour
 				 * ces deux blocs, on les omet plutôt que de fabriquer des chiffres. */}
 				<div>
-					<h4 className="mb-2 text-3xl font-bebas-neue">Notes et avis</h4>
+					<h4 className="mb-2 text-3xl font-bebas-neue">{t("heading")}</h4>
 					<div className="flex gap-3 items-end">
 						<span className="text-6xl font-bold leading-none">
 							{summary.count > 0 ? summary.average.toFixed(1) : "-"}
@@ -37,8 +39,8 @@ const Reviews = ({
 					</div>
 					<span className="text-sm text-gray-500">
 						{summary.count > 0
-							? `${summary.count} avis`
-							: "Aucun avis pour l'instant"}
+							? t("countLabel", { count: summary.count })
+							: t("noReviewsYet")}
 					</span>
 				</div>
 				<DrawerReview
@@ -46,7 +48,7 @@ const Reviews = ({
 					onUploadPhotos={uploadPhotos}
 					isSubmitting={isSubmitting}
 					isUploading={isUploading}
-					triggerLabel="Écrire un avis"
+					triggerLabel={t("writeReview")}
 					triggerClassName="bg-primary text-white px-8 py-6 h-fit whitespace-nowrap text-base"
 				/>
 			</div>
@@ -68,21 +70,20 @@ const Reviews = ({
 							</svg>
 						</div>
 						<span className="text-xs font-semibold tracking-widest text-neutral-400 uppercase">
-							Aucun avis
+							{t("emptyEyebrow")}
 						</span>
 						<h3 className="mt-3 text-xl font-semibold text-[#080808]">
-							Aucun avis pour le moment
+							{t("emptyTitle")}
 						</h3>
 						<p className="mt-2 max-w-sm text-sm text-[#666666]">
-							Soyez la première personne à donner votre avis sur ce produit et
-							aidez les autres clientes à choisir.
+							{t("emptyDescription")}
 						</p>
 						<DrawerReview
 							onSubmit={onSubmit}
 							onUploadPhotos={uploadPhotos}
 							isSubmitting={isSubmitting}
 							isUploading={isUploading}
-							triggerLabel="Écrire le premier avis"
+							triggerLabel={t("writeFirstReview")}
 							triggerClassName="mt-6"
 						/>
 					</div>
@@ -101,7 +102,7 @@ const Reviews = ({
 					onClick={loadMore}
 					className="w-full sm:w-[90%] p-2 py-4 text-lg rounded-full cursor-pointer sm:ml-10 sm:mt-8 sm:flex max-sm:hidden"
 				>
-					Voir plus
+					{t("loadMore")}
 				</Button>
 			)}
 		</div>

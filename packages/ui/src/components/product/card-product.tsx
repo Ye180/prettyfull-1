@@ -1,29 +1,24 @@
 "use client";
 
 // =============================================================================
-// CardProduct : Carte produit principale avec sélection couleur/taille
+// CardProduct : Carte produit compacte, sans sélecteur de variante
 // =============================================================================
 
 import { cn, getMediaUrl } from "@prettyfull/utils";
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Image = NextImage as any;
 
 import { useCartStore } from "@prettyfull/store";
-import { ColorSelector } from "./color-selector";
 import { DiscountBadge, PriceBlock } from "./price-block";
-import { SizeSelector } from "./size-selector";
 import type { NormalizedCollectionProduct } from "./types";
 
 import { Button } from "../../button";
-import { AddToCardIcon } from "../../icons/add-cart.icon";
-import { CloseIcon as CloseIconImported } from "../../icons/close.icon";
 import { Heart } from "../../icons/heart.icon";
 import { toast } from "../toast/toaster";
-import { Drawer, DrawerClose, DrawerContent } from "../ui/drawer";
 
 // -----------------------------------------------------------------------------
 // Types
@@ -39,27 +34,6 @@ export interface CardProductProps {
 }
 
 // -----------------------------------------------------------------------------
-// Icône inline CloseIcon (desktop overlay uniquement)
-// -----------------------------------------------------------------------------
-
-const CloseIcon: React.FC<{ className?: string }> = ({ className }) => (
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		fill="none"
-		viewBox="0 0 24 24"
-		strokeWidth={1.5}
-		stroke="currentColor"
-		className={className}
-	>
-		<path
-			strokeLinecap="round"
-			strokeLinejoin="round"
-			d="M6 18 18 6M6 6l12 12"
-		/>
-	</svg>
-);
-
-// -----------------------------------------------------------------------------
 // Composant
 // -----------------------------------------------------------------------------
 
@@ -73,102 +47,60 @@ export const CardProduct: React.FC<CardProductProps> = ({
 
 	const currencySymbol = currencyCode === "xof" ? "FCFA" : "$";
 
-	// --- State ---
-	const [activeColorIndex, setActiveColorIndex] = useState(0);
-	const [selectedSize, setSelectedSize] = useState<string | null>(null);
-	const [showSizeSelector, setShowSizeSelector] = useState(false);
 	const [isImageLoading, setIsImageLoading] = useState(true);
-	const [isMobile, setIsMobile] = useState(false);
-
-	useEffect(() => {
-		const mq = window.matchMedia("(max-width: 767px)");
-		setIsMobile(mq.matches);
-		const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-		mq.addEventListener("change", handler);
-		return () => mq.removeEventListener("change", handler);
-	}, []);
 
 	const addItem = useCartStore((state) => state.addItem);
 
-	// --- Données dérivées ---
-	const activeColor = product?.colors[activeColorIndex];
-
-	const availableSizes = useMemo(() => activeColor?.sizes ?? [], [activeColor]);
-
-	const unavailableSizes = useMemo(
-		() =>
-			activeColor?.variants.filter((v) => !v.purchasable).map((v) => v.size) ??
-			[],
-		[activeColor],
-	);
+	// Un seul produit = une seule fiche : plus de choix couleur/taille côté
+	// storefront, on résout directement la première déclinaison achetable.
+	const defaultColor = product?.colors[0];
+	const defaultVariant =
+		defaultColor?.variants.find((v) => v.purchasable) ??
+		defaultColor?.variants[0];
 
 	// --- Handlers ---
 	const handleNavigate = useCallback(() => {
-		const handle = activeColor?.handle || product.collectionHandle;
+		const handle = defaultColor?.handle || product.collectionHandle;
 		router.push(`/products/${handle}`);
-	}, [activeColor?.handle, product.collectionHandle, router]);
-
-	const handleSelectColor = useCallback((index: number) => {
-		setActiveColorIndex(index);
-		setSelectedSize(null);
-		setIsImageLoading(true);
-	}, []);
-
-	const handleSelectSize = useCallback((size: string) => {
-		setSelectedSize(size);
-	}, []);
-
-	const handleToggleSizeSelector = useCallback((e: React.MouseEvent) => {
-		e.stopPropagation();
-		setShowSizeSelector((prev) => !prev);
-	}, []);
+	}, [defaultColor?.handle, product.collectionHandle, router]);
 
 	const handleAddToCart = useCallback(
-		(e: React.MouseEvent, size: string) => {
+		(e: React.MouseEvent) => {
 			e.stopPropagation();
 
-			if (!size) {
-				setShowSizeSelector(true);
-				return;
-			}
-
-			const matchingVariant = activeColor?.variants.find(
-				(variant) => variant.size === size,
-			);
-
-			if (!matchingVariant) {
-				toast.error("Taille non disponible", {
-					description: "Ce variant n'existe pas pour cette couleur.",
+			if (!defaultVariant) {
+				toast.error("Produit indisponible", {
+					description: "Ce produit n'est plus disponible.",
 				});
 				return;
 			}
 
-			if (!matchingVariant.purchasable) {
+			if (!defaultVariant.purchasable) {
 				toast.error("Rupture de stock", {
-					description: "Cette taille n'est plus disponible.",
+					description: "Ce produit n'est plus disponible.",
 				});
 				return;
 			}
 
 			addItem({
-				productId: matchingVariant.id,
+				productId: defaultVariant.id,
 				product: {
-					id: activeColor?.productId ?? matchingVariant.id,
-					name: product?.collectionTitle ?? activeColor?.title ?? "",
-					image: activeColor?.thumbnail,
+					id: defaultColor?.productId ?? defaultVariant.id,
+					name: product?.collectionTitle ?? defaultColor?.title ?? "",
+					image: defaultColor?.thumbnail,
 				},
 				quantity: 1,
-				selectedVariants: { size },
+				selectedVariants: {},
 				unitPrice: {
-					amount: matchingVariant.calculated_price?.calculated_amount ?? 0,
+					amount: defaultVariant.calculated_price?.calculated_amount ?? 0,
 					currency: currencyCode === "xof" ? "FCFA" : "USD",
 				},
 				// Triplet du point de stock : c'est lui, et non le libellé affiché, que
 				// le tunnel d'achat renvoie à l'API pour réserver la bonne déclinaison.
 				selection: {
-					productId: activeColor?.productId ?? matchingVariant.id,
-					variantId: matchingVariant.variantId ?? null,
-					sizeId: matchingVariant.sizeId ?? null,
+					productId: defaultColor?.productId ?? defaultVariant.id,
+					variantId: defaultVariant.variantId ?? null,
+					sizeId: defaultVariant.sizeId ?? null,
 				},
 			});
 
@@ -177,40 +109,40 @@ export const CardProduct: React.FC<CardProductProps> = ({
 					? `${product.collectionTitle} a été ajouté à votre panier.`
 					: "Votre article a été ajouté à votre panier.",
 			});
-			setShowSizeSelector(false);
 		},
-		[activeColor, product?.collectionTitle, addItem, currencyCode],
+		[
+			defaultColor,
+			defaultVariant,
+			product?.collectionTitle,
+			addItem,
+			currencyCode,
+		],
 	);
 
-	const handleCloseSizeSelector = useCallback((e: React.MouseEvent) => {
-		e.stopPropagation();
-		setShowSizeSelector(false);
-	}, []);
-
 	// --- Rendu conditionnel si pas de couleur ---
-	if (!activeColor) {
+	if (!defaultColor) {
 		return (
 			<article className={cn("w-full max-w-sm animate-pulse", className)}>
-				<div className="bg-gray-200 rounded-[2.2rem] aspect-3/4" />
+				<div className="bg-gray-200 rounded-lg aspect-3/4" />
 				<div className="mt-3 w-3/4 h-4 bg-gray-200 rounded" />
 				<div className="mt-2 w-1/2 h-4 bg-gray-200 rounded" />
 			</article>
 		);
 	}
 
-	const thumbnailSrc = getMediaUrl(activeColor.thumbnail);
+	const thumbnailSrc = getMediaUrl(defaultColor.thumbnail);
 
 	return (
 		<article className={cn("pb-4 space-y-3 w-full group", className)}>
 			{/* ===== Image principale ===== */}
 			<div
-				className="overflow-hidden relative bg-gray-50 rounded-[2.2rem] cursor-pointer"
+				className="overflow-hidden relative bg-gray-50 rounded-lg cursor-pointer"
 				onClick={handleNavigate}
 			>
 				<div className="relative w-full aspect-3/4">
 					<DiscountBadge
-						price={activeColor.price}
-						compareAtPrice={activeColor.compareAtPrice}
+						price={defaultColor.price}
+						compareAtPrice={defaultColor.compareAtPrice}
 						className="absolute top-3 left-3"
 					/>
 
@@ -222,7 +154,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 
 					<Image
 						src={thumbnailSrc}
-						alt={`${product.collectionTitle} - ${activeColor.label}`}
+						alt={`${product.collectionTitle} - ${defaultColor.label}`}
 						width={600}
 						height={800}
 						sizes="(max-width: 639px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -236,7 +168,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 						priority={priority}
 					/>
 
-					{/* Cœur wishlist - toujours visible */}
+					{/* Cœur wishlist */}
 					<button
 						type="button"
 						onClick={(e) => e.stopPropagation()}
@@ -245,124 +177,30 @@ export const CardProduct: React.FC<CardProductProps> = ({
 					>
 						<Heart className="w-4 h-4" />
 					</button>
-
-					{/* Bouton d'ajout au panier desktop (hover) */}
-					<div className="flex absolute inset-x-4 bottom-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-md:hidden">
-						<Button
-							type="button"
-							onClick={handleToggleSizeSelector}
-							className="px-4 py-3 w-full text-sm font-medium"
-						>
-							Ajouter au panier
-						</Button>
-					</div>
-
-					{/* Bouton mobile */}
-					<div className="flex absolute right-3 bottom-3 max-md:flex md:hidden">
-						<button
-							type="button"
-							onClick={handleToggleSizeSelector}
-							className="flex justify-center items-center w-9 h-9 bg-black rounded-full shadow-sm cursor-pointer"
-							aria-label="Ajouter au panier"
-						>
-							<AddToCardIcon className="w-4 h-4 text-white" />
-						</button>
-					</div>
-
-					{/* Sélecteur de taille Desktop (overlay) */}
-					{!isMobile && showSizeSelector && availableSizes.length > 0 && (
-						<div
-							className="absolute right-4 bottom-4 left-4 p-4 space-y-4 bg-white rounded-2xl shadow-xl lg:px-8 lg:py-5"
-							onClick={(e) => e.stopPropagation()}
-						>
-							<div className="flex justify-between items-center pb-4 mb-3">
-								<span className="text-sm font-semibold">Taille</span>
-								<button
-									type="button"
-									onClick={handleCloseSizeSelector}
-									className="text-gray-500 cursor-pointer hover:text-black"
-									aria-label="Fermer"
-								>
-									<CloseIcon className="w-8 h-8" />
-								</button>
-							</div>
-							<SizeSelector
-								sizes={availableSizes}
-								unavailableSizes={unavailableSizes}
-								selectedSize={selectedSize}
-								onChange={handleSelectSize}
-								onClick={(e, size) => handleAddToCart(e, size)}
-								compact
-							/>
-						</div>
-					)}
 				</div>
 			</div>
-
-			{/* Sélecteur de taille Mobile (drawer) */}
-			{isMobile && (
-				<Drawer open={showSizeSelector} onOpenChange={setShowSizeSelector}>
-					<DrawerContent
-						className="max-h-[80vh]"
-						onClick={(e) => e.stopPropagation()}
-					>
-						<div className="px-6 pb-4 h-[20vh]">
-							<div className="flex justify-between items-center pb-2 mb-6 border-b border-gray-200">
-								<h3 className="text-[2rem] font-semibold">
-									Sélectionnez une taille
-								</h3>
-								<DrawerClose asChild>
-									<button
-										type="button"
-										className="text-gray-500 cursor-pointer hover:text-black"
-										aria-label="Fermer"
-									>
-										<CloseIconImported className="w-8 h-8" />
-									</button>
-								</DrawerClose>
-							</div>
-							<SizeSelector
-								sizes={availableSizes}
-								unavailableSizes={unavailableSizes}
-								selectedSize={selectedSize}
-								onChange={handleSelectSize}
-								onClick={(e, size) => handleAddToCart(e, size)}
-								compact={false}
-							/>
-						</div>
-					</DrawerContent>
-				</Drawer>
-			)}
 
 			{/* ===== Infos produit ===== */}
 			<div className="space-y-1.5">
 				<h3 className="text-sm font-medium tracking-wide truncate line-clamp-1">
-					{activeColor?.title}
+					{defaultColor?.title}
 				</h3>
 
 				<PriceBlock
-					price={activeColor.price}
-					compareAtPrice={activeColor.compareAtPrice}
+					price={defaultColor.price}
+					compareAtPrice={defaultColor.compareAtPrice}
 					currencySymbol={currencySymbol}
 					className="flex gap-1 items-baseline"
 				/>
 
-				<ColorSelector
-					colors={product.colors}
-					activeIndex={activeColorIndex}
-					onChange={handleSelectColor}
-				/>
-
-				{availableSizes.length > 0 && (
-					<SizeSelector
-						sizes={availableSizes}
-						unavailableSizes={unavailableSizes}
-						selectedSize={selectedSize}
-						onChange={handleSelectSize}
-						onClick={(e, size) => handleAddToCart(e, size)}
-						compact
-					/>
-				)}
+				<Button
+					type="button"
+					variant="outline"
+					onClick={handleAddToCart}
+					className="py-2.5 text-xs font-semibold tracking-wide uppercase"
+				>
+					+ Ajouter
+				</Button>
 			</div>
 		</article>
 	);

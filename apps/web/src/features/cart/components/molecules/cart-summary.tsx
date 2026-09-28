@@ -65,15 +65,15 @@ const CartSummary = ({
 			setDiscountAmount(cart.discountTotal);
 
 			if (cart.discountCode) {
-				toast.success(`Code promo « ${cart.discountCode} » appliqué.`);
+				toast.success(t("couponApplied", { code: cart.discountCode }));
 			} else {
-				toast.info("Ce code ne s'applique pas à votre panier actuel.");
+				toast.info(t("couponNotApplicable"));
 			}
 		} catch (error) {
 			toast.error(
 				error instanceof StoreApiError
 					? error.message
-					: "Impossible d'appliquer ce code promo.",
+					: t("couponApplyError"),
 			);
 		} finally {
 			setIsApplying(false);
@@ -91,7 +91,7 @@ const CartSummary = ({
 			toast.error(
 				error instanceof StoreApiError
 					? error.message
-					: "Impossible de retirer ce code promo.",
+					: t("couponRemoveError"),
 			);
 		} finally {
 			setIsApplying(false);
@@ -106,12 +106,12 @@ const CartSummary = ({
 		<div
 			className={cn(
 				"p-7 md:p-8 bg-[#F9FAFB] border border-gray-100 shadow-sm",
-				square ? "rounded-none" : "rounded-3xl",
+				square ? "rounded-none" : "rounded-xl",
 			)}
 		>
 			<div className="text-center pb-2">
 				<p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-					Prix total
+					{t("totalPrize")}
 				</p>
 				<p className="mt-2 text-4xl md:text-5xl font-extrabold text-gray-950 font-sans tracking-tight">
 					{formatCurrency_FR(finalTotal > 0 ? finalTotal : total, currency)}
@@ -130,7 +130,7 @@ const CartSummary = ({
 
 				{appliedCode && (
 					<div className="flex justify-between items-center text-gray-600">
-						<span>Réduction ({appliedCode})</span>
+						<span>{t("discount", { code: appliedCode })}</span>
 						<span className="font-semibold text-rose-500">
 							-{formatCurrency_FR(discountAmount, currency)}
 						</span>
@@ -140,7 +140,7 @@ const CartSummary = ({
 				<div className="flex justify-between items-center text-gray-600">
 					<span>{t("shipping")}</span>
 					<span className="font-semibold text-gray-900">
-						{shipping > 0 ? formatCurrency_FR(shipping, currency) : "Gratuit"}
+						{shipping > 0 ? formatCurrency_FR(shipping, currency) : t("free")}
 					</span>
 				</div>
 
@@ -165,7 +165,7 @@ const CartSummary = ({
 					<div
 						className={cn(
 							"flex items-center justify-between gap-2.5 px-4 py-3 text-sm bg-white border border-gray-200 font-medium",
-							square ? "rounded-none" : "rounded-full",
+							square ? "rounded-none" : "rounded-lg",
 						)}
 					>
 						<span className="text-gray-900">{appliedCode}</span>
@@ -175,7 +175,7 @@ const CartSummary = ({
 							disabled={isApplying}
 							className="text-gray-400 hover:text-black transition disabled:opacity-50 cursor-pointer"
 						>
-							Retirer
+							{t("remove")}
 						</button>
 					</div>
 				) : (
@@ -189,7 +189,7 @@ const CartSummary = ({
 						disabled={isApplying}
 						className={cn(
 							"flex-1 px-4 py-3 text-sm bg-white border border-gray-200 focus:outline-none focus:border-black font-medium transition disabled:opacity-50",
-							square ? "rounded-none" : "rounded-full",
+							square ? "rounded-none" : "rounded-lg",
 						)}
 					/>
 					<button
@@ -197,8 +197,8 @@ const CartSummary = ({
 						onClick={() => void handleApplyCoupon()}
 						disabled={isApplying || !couponCode.trim()}
 						className={cn(
-							"px-6 py-3 text-sm font-semibold text-white bg-black hover:bg-black/85 transition cursor-pointer shadow-sm shrink-0 disabled:opacity-50 disabled:cursor-not-allowed",
-							square ? "rounded-none" : "rounded-full",
+							"px-6 py-3 text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition cursor-pointer shadow-sm shrink-0 disabled:opacity-50 disabled:cursor-not-allowed",
+							square ? "rounded-none" : "rounded-lg",
 						)}
 					>
 						{isApplying ? "…" : t("apply")}
@@ -211,8 +211,8 @@ const CartSummary = ({
 				type="button"
 				onClick={handleCheckout}
 				className={cn(
-					"w-full py-4 px-6 bg-black hover:bg-black/85 text-white font-semibold flex items-center justify-center gap-3 transition cursor-pointer shadow-md group",
-					square ? "rounded-none" : "rounded-full",
+					"w-full py-4 px-6 bg-amber-600 hover:bg-amber-700 text-white font-semibold flex items-center justify-center gap-3 transition cursor-pointer shadow-md group",
+					square ? "rounded-none" : "rounded-lg",
 				)}
 			>
 				<span className="text-base font-medium">{t("checkout")}</span>

@@ -40,7 +40,7 @@ app.use("*", bodyLimit({ maxSize: 2 * 1024 * 1024 }));
  * circulent en cookie `httpOnly`, jamais dans le corps des réponses.
  */
 app.use("*", cors({
-    origin: process.env.CORS_ORIGINS?.split(","),
+    origin: env.CORS_ORIGINS,
     credentials: true,
     allowHeaders: [
         "Content-Type",

@@ -2,7 +2,7 @@
 import { storeApi } from "@/lib/store-api";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { type PropsWithChildren, useEffect } from "react";
+import { useEffect, type PropsWithChildren } from "react";
 import { buildProvidersTree } from "../lib/provider-tree";
 import { queryConfig } from "../lib/react-query";
 

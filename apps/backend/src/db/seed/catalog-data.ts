@@ -1,9 +1,9 @@
 /**
  * Catalogue de démonstration.
  *
- * Repris à l'identique des données statiques du storefront
- * (`apps/web/src/lib/fake-data`) : mêmes catégories, mêmes produits, mêmes
- * visuels de `/public`. La bascule du storefront vers l'API réelle est donc
+ * Vitamines, minéraux et compléments alimentaires - mêmes visuels que ceux
+ * publiés dans `apps/web/public` (photographies sous licence Pexels, libres
+ * d'usage commercial). La bascule du storefront vers l'API réelle est donc
  * invisible à l'écran, ce qui rend toute régression facile à repérer.
  *
  * Les prix d'origine étaient exprimés en euros ; ils sont convertis en francs
@@ -27,91 +27,91 @@ export const SEED_ROOT_CATEGORY = {
 	slug: "boutique",
 	name: "Boutique",
 	nameEn: "Shop",
-	imageUrl: "/category/category-principale.jpg",
+	imageUrl: "/category/category-wellness.jpg",
 } as const;
 
 export const SEED_CATEGORIES: SeedCategory[] = [
 	{
-		slug: "robes",
-		name: "Robes",
-		nameEn: "Dresses",
-		imageUrl: "/category/category-principale.jpg",
+		slug: "vitamines",
+		name: "Vitamines",
+		nameEn: "Vitamins",
+		imageUrl: "/category/category-vitamins.jpg",
 		sectionKey: "third_section",
 	},
-	{ slug: "hauts", name: "Hauts", nameEn: "Tops", imageUrl: "/category/category1.jpg" },
 	{
-		slug: "ensembles",
-		name: "Ensembles",
-		nameEn: "Sets",
-		imageUrl: "/home/arrivals-1.jpg",
+		slug: "mineraux",
+		name: "Minéraux",
+		nameEn: "Minerals",
+		imageUrl: "/category/category-minerals.jpg",
+	},
+	{
+		slug: "proteines",
+		name: "Protéines",
+		nameEn: "Protein",
+		imageUrl: "/category/category-protein.jpg",
 		sectionKey: "sixth_section",
 	},
 	{
-		slug: "accessoires",
-		name: "Accessoires",
-		nameEn: "Accessories",
-		imageUrl: "/home/arrivals-2.jpg",
+		slug: "bien-etre",
+		name: "Bien-être",
+		nameEn: "Wellness",
+		imageUrl: "/category/category-wellness.jpg",
 	},
 	{
 		slug: "nouveautes",
 		name: "Nouveautés",
 		nameEn: "New Arrivals",
-		imageUrl: "/home/arrivals-3.jpg",
+		imageUrl: "/home/supplements-hero-colorful.jpg",
 		sectionKey: "eight_section",
 	},
-	{ slug: "soldes", name: "Soldes", nameEn: "Sale", imageUrl: "/home/arrivals-4.jpg" },
+	{ slug: "soldes", name: "Soldes", nameEn: "Sale", imageUrl: "/home/supplements-hero-blue-powder.jpg" },
 ];
 
 /**
  * Visuels déjà présents dans `apps/web/public`, piochés en rotation.
  *
- * Exclut volontairement `/banner/*.jpg` et `/assets/product_1.jpg` : ce sont
- * des gabarits marketing avec du texte (anglais, parfois une autre marque)
- * incrusté dans l'image elle-même, ou une déclinaison sous licence (NFL) -
- * inutilisables comme photo produit générique.
+ * Toutes des photographies de produits/compléments sous licence Pexels
+ * (usage commercial libre, aucune attribution requise) - voir le détail des
+ * sources dans le rapport de sourcing d'images de ce projet.
  */
 const IMAGE_POOL = [
-	"/home/arrivals-1.jpg",
-	"/home/arrivals-2.jpg",
-	"/home/arrivals-3.jpg",
-	"/home/arrivals-4.jpg",
-	"/home/commerce.jpg",
-	"/home/commerce1.jpg",
-	"/home/cover-box-3.jpg",
-	"/home/cover-box-7.jpg",
-	"/home/cover-box-second-3.jpg",
-	"/home/cover-box-second-4.jpg",
-	"/home/cover-box-second-5.jpg",
-	"/home/cover-desktop.jpg",
-	"/home/cover-desktop-1.jpg",
-	"/home/promotion.jpg",
-	"/collections/banner-mode.jpg",
-	"/assets/product_2.jpg",
-	"/assets/product5.webp",
-	"/products/lifestyle-dressing.jpg",
+	"/products/vitamin-c-bottle.jpg",
+	"/products/protein-powder.jpg",
+	"/products/omega3-capsules.jpg",
+	"/products/multivitamin.jpg",
+	"/products/probiotic.jpg",
+	"/products/magnesium.jpg",
+	"/products/gummies.jpg",
+	"/products/fish-oil.jpg",
+	"/products/capsules-bottle.jpg",
+	"/home/supplements-hero-blue-powder.jpg",
+	"/home/supplements-hero-colorful.jpg",
+	"/home/supplements-hero-flatlay.jpg",
 ];
 
 let imageCursor = 0;
 const nextImages = (count: number): string[] =>
 	Array.from({ length: count }, () => IMAGE_POOL[imageCursor++ % IMAGE_POOL.length]!);
 
+/** Teintes d'étiquette/packaging par saveur, pour la pastille du sélecteur. */
 export const COLOR_HEX: Record<string, string> = {
-	Noir: "#111111",
-	Beige: "#d9c7b0",
-	Bordeaux: "#6b1f2e",
-	Blanc: "#f5f5f0",
-	Kaki: "#6e6b4a",
+	Neutre: "#f5f5f0",
+	"Fruits rouges": "#b5324f",
+	Vanille: "#efe0c0",
+	Chocolat: "#5c3a21",
+	Tropical: "#f2a65a",
+	Citron: "#f4d35e",
 };
 
-const APPAREL_SIZES = ["S", "M", "L"];
-const APPAREL_COLORS = ["Noir", "Beige"];
+const FORMAT_OPTIONS = ["30 gélules", "60 gélules", "90 gélules"];
+const FORMAT_FLAVORS = ["Neutre", "Fruits rouges"];
 
 export interface SeedVariant {
 	name: string;
 	colorHex: string;
 	images: string[];
 	sizes: string[];
-	/** Stock par taille, aligné sur `sizes` ; sinon stock de la variante. */
+	/** Stock par format, aligné sur `sizes` ; sinon stock de la variante. */
 	quantities: number[];
 }
 
@@ -128,7 +128,7 @@ export interface SeedProduct {
 	tags: string[];
 	/** Produits `variant` uniquement. */
 	variants: SeedVariant[];
-	/** Produits `simple` avec tailles. */
+	/** Produits `simple` avec formats (30/60/90 gélules). */
 	sizes: { label: string; quantity: number }[];
 	/** Produits `simple` sans aucune déclinaison : stock porté par le produit. */
 	quantity?: number;
@@ -144,7 +144,7 @@ interface ProductSource {
 	price: number;
 	/** Remise affichée en prix barré, en pourcentage du prix de base. */
 	discountPercent?: number;
-	/** Par défaut : produit à variantes couleur × tailles vestimentaires. */
+	/** Par défaut : produit à variantes saveur × formats (nombre de gélules). */
 	model?: "apparel" | "colors-only" | "sizes-only" | "single";
 	colors?: string[];
 	tags?: string[];
@@ -156,71 +156,41 @@ interface ProductSource {
 }
 
 const SOURCES: ProductSource[] = [
-	// --- Robes ---------------------------------------------------------------
-	{ slug: "robe-cocktail-satinee", name: "Robe Cocktail Satinée", nameEn: "Satin Cocktail Dress", description: "Robe satinée mi-longue, coupe cintrée, idéale pour vos soirées.", categorySlug: "robes", price: 89, tags: ["soirée", "satin"], isFeatured: true },
-	{ slug: "robe-fleurie-ete", name: "Robe Fleurie Été", nameEn: "Summer Floral Dress", description: "Robe légère à motifs fleuris, parfaite pour la saison chaude.", categorySlug: "robes", price: 65, tags: ["été", "fleuri"] },
-	{ slug: "robe-longue-fluide", name: "Robe Longue Fluide", nameEn: "Long Flowy Dress", description: "Robe longue en tissu fluide, silhouette élégante et confortable.", categorySlug: "robes", price: 98, tags: ["élégant"], isFeatured: true },
+	// --- Vitamines -------------------------------------------------------------
+	{ slug: "multivitamine-quotidienne", name: "Multivitamine Quotidienne", nameEn: "Daily Multivitamin", description: "Formule complète de 12 vitamines et 8 minéraux essentiels, une gélule par jour.", categorySlug: "vitamines", price: 18, model: "single", tags: ["quotidien"], quantities: [24], isFeatured: true, heroImage: "/products/multivitamin.jpg" },
+	{ slug: "vitamine-c-1000", name: "Vitamine C 1000mg", nameEn: "Vitamin C 1000mg", description: "Vitamine C haute dose à libération prolongée, soutien du système immunitaire.", categorySlug: "vitamines", price: 14, model: "sizes-only", tags: ["immunité"], heroImage: "/products/vitamin-c-bottle.jpg" },
+	{ slug: "vitamine-d3-k2", name: "Vitamine D3 + K2", nameEn: "Vitamin D3 + K2", description: "Association D3/K2 pour la santé osseuse et l'absorption du calcium.", categorySlug: "vitamines", price: 16, model: "sizes-only", tags: ["os"] },
+	{ slug: "complexe-vitamine-b", name: "Complexe Vitamines B", nameEn: "Vitamin B Complex", description: "Les 8 vitamines B réunies pour soutenir l'énergie et le système nerveux.", categorySlug: "vitamines", price: 15, model: "single", tags: ["énergie"], quantities: [18] },
 
-	// --- Hauts ---------------------------------------------------------------
-	{ slug: "top-en-soie", name: "Top en Soie", nameEn: "Silk Top", description: "Haut en soie douce, coupe ajustée, à porter en toute occasion.", categorySlug: "hauts", price: 55, tags: ["soie"] },
-	// Produit simple à tailles : démontre le second régime du §2.2.
-	{ slug: "crop-top-cotele", name: "Crop Top Côtelé", nameEn: "Ribbed Crop Top", description: "Crop top côtelé stretch, parfait pour un look casual chic.", categorySlug: "hauts", price: 32, model: "sizes-only", tags: ["casual"], quantities: [3, 0, 14] },
-	{ slug: "chemise-oversize", name: "Chemise Oversize", nameEn: "Oversized Shirt", description: "Chemise oversize en coton, facile à assortir.", categorySlug: "hauts", price: 48, tags: ["coton"] },
+	// --- Minéraux ----------------------------------------------------------------
+	{ slug: "magnesium-marin", name: "Magnésium Marin", nameEn: "Marine Magnesium", description: "Magnésium marin hautement assimilable, pour la détente musculaire et nerveuse.", categorySlug: "mineraux", price: 17, model: "sizes-only", tags: ["détente"], isFeatured: true, heroImage: "/products/magnesium.jpg" },
+	{ slug: "zinc-cuivre", name: "Zinc & Cuivre", nameEn: "Zinc & Copper", description: "Association zinc/cuivre équilibrée, soutien du système immunitaire et de la peau.", categorySlug: "mineraux", price: 12, model: "single", tags: ["peau"], quantities: [16] },
+	{ slug: "fer-vitamine-c", name: "Fer + Vitamine C", nameEn: "Iron + Vitamin C", description: "Fer bisglycinate associé à la vitamine C pour une meilleure absorption.", categorySlug: "mineraux", price: 13, model: "single", tags: ["énergie"], quantities: [20] },
+	{ slug: "calcium-magnesium-d3", name: "Calcium Magnésium D3", nameEn: "Calcium Magnesium D3", description: "Trio calcium, magnésium et vitamine D3 pour la solidité osseuse au quotidien.", categorySlug: "mineraux", price: 16, model: "sizes-only", tags: ["os"] },
 
-	// --- Ensembles -----------------------------------------------------------
-	{ slug: "ensemble-tailleur", name: "Ensemble Tailleur", nameEn: "Tailored Set", description: "Ensemble blazer + pantalon assorti, coupe structurée.", categorySlug: "ensembles", price: 140, tags: ["tailleur"], isFeatured: true },
-	{ slug: "ensemble-jogging-chic", name: "Ensemble Jogging Chic", nameEn: "Chic Jogging Set", description: "Ensemble sweat + jogging en molleton doux.", categorySlug: "ensembles", price: 78, tags: ["confort"] },
-	{ slug: "ensemble-jupe-top", name: "Ensemble Jupe & Top", nameEn: "Skirt & Top Set", description: "Ensemble coordonné jupe midi et top assorti.", categorySlug: "ensembles", price: 92, tags: ["coordonné"] },
+	// --- Protéines -----------------------------------------------------------
+	{ slug: "proteine-whey-chocolat", name: "Protéine Whey", nameEn: "Whey Protein", description: "Whey isolate à haute teneur en protéines, pour la récupération musculaire.", categorySlug: "proteines", price: 42, model: "colors-only", colors: ["Chocolat", "Vanille"], tags: ["sport"], isFeatured: true, heroImage: "/products/protein-powder.jpg" },
+	{ slug: "proteine-vegetale", name: "Protéine Végétale", nameEn: "Plant Protein", description: "Mélange de protéines de pois et de riz, 100% végétal, sans lactose.", categorySlug: "proteines", price: 39, model: "colors-only", colors: ["Vanille", "Fruits rouges"], tags: ["végétal"] },
+	{ slug: "collagene-marin", name: "Collagène Marin", nameEn: "Marine Collagen", description: "Collagène hydrolysé d'origine marine, pour la peau et les articulations.", categorySlug: "proteines", price: 28, model: "sizes-only", tags: ["beauté"] },
+	{ slug: "bcaa-recuperation", name: "BCAA Récupération", nameEn: "BCAA Recovery", description: "Acides aminés essentiels ratio 2:1:1, pour limiter la fatigue musculaire.", categorySlug: "proteines", price: 24, model: "colors-only", colors: ["Tropical", "Citron"], tags: ["sport"] },
 
-	// --- Accessoires ---------------------------------------------------------
-	// Variantes couleur sans taille : le stock est porté par la variante.
-	{ slug: "sac-a-main-cuir", name: "Sac à Main Cuir", nameEn: "Leather Handbag", description: "Sac à main en cuir vegan, format quotidien.", categorySlug: "accessoires", price: 75, model: "colors-only", colors: ["Noir", "Beige"], tags: ["cuir"] },
-	{ slug: "foulard-imprime", name: "Foulard Imprimé", nameEn: "Printed Scarf", description: "Foulard en soie imprimée, accessoire polyvalent.", categorySlug: "accessoires", price: 28, model: "colors-only", colors: ["Bordeaux", "Blanc"], tags: ["soie"] },
-	// Produit sans aucune déclinaison : le stock est porté par le produit.
-	{ slug: "boucles-oreilles-dorees", name: "Boucles d'Oreilles Dorées", nameEn: "Gold Earrings", description: "Boucles d'oreilles plaquées or, finition brillante.", categorySlug: "accessoires", price: 22, model: "single", tags: ["bijou"], quantities: [4] },
+	// --- Bien-être -----------------------------------------------------------
+	{ slug: "omega-3-huile-de-poisson", name: "Oméga-3 Huile de Poisson", nameEn: "Omega-3 Fish Oil", description: "Huile de poisson riche en EPA/DHA, pour le cœur et la vision.", categorySlug: "bien-etre", price: 19, model: "sizes-only", tags: ["cœur"], isFeatured: true, heroImage: "/products/fish-oil.jpg" },
+	{ slug: "probiotique-10-souches", name: "Probiotique 10 Souches", nameEn: "10-Strain Probiotic", description: "10 souches probiotiques et 10 milliards d'UFC, pour le confort digestif.", categorySlug: "bien-etre", price: 22, model: "sizes-only", tags: ["digestion"], heroImage: "/products/probiotic.jpg" },
+	{ slug: "melatonine-sommeil", name: "Mélatonine Sommeil", nameEn: "Sleep Melatonin", description: "Mélatonine dosée avec précision, pour faciliter l'endormissement.", categorySlug: "bien-etre", price: 11, model: "single", tags: ["sommeil"], quantities: [30] },
+	{ slug: "curcuma-bioperine", name: "Curcuma & Bioperine", nameEn: "Turmeric & Bioperine", description: "Curcuma associé à la bioperine pour une meilleure biodisponibilité.", categorySlug: "bien-etre", price: 15, model: "single", tags: ["articulations"], quantities: [22] },
 
-	// --- Nouveautés ----------------------------------------------------------
-	{ slug: "blazer-structure", name: "Blazer Structuré", nameEn: "Structured Blazer", description: "Blazer à épaulettes, coupe droite, nouvelle collection.", categorySlug: "nouveautes", price: 110, tags: ["nouveauté"], isFeatured: true },
-	{ slug: "pantalon-taille-haute", name: "Pantalon Taille Haute", nameEn: "High-Waisted Pants", description: "Pantalon taille haute en tissu stretch, coupe droite.", categorySlug: "nouveautes", price: 62, tags: ["nouveauté"] },
-	{ slug: "manteau-long-laine", name: "Manteau Long Laine", nameEn: "Long Wool Coat", description: "Manteau long en laine mélangée, doublure intérieure.", categorySlug: "nouveautes", price: 158, tags: ["hiver", "laine"] },
+	// --- Nouveautés ------------------------------------------------------------
+	{ slug: "gummies-immunite", name: "Gummies Immunité", nameEn: "Immunity Gummies", description: "Vitamines C, D et zinc en gommes gourmandes, sans sucre ajouté.", categorySlug: "nouveautes", price: 20, tags: ["nouveauté", "gummies"], isFeatured: true, heroImage: "/products/gummies.jpg" },
+	{ slug: "gummies-cheveux-peau-ongles", name: "Gummies Cheveux Peau Ongles", nameEn: "Hair Skin Nails Gummies", description: "Biotine et vitamines en gommes pour la beauté des cheveux, de la peau et des ongles.", categorySlug: "nouveautes", price: 21, model: "colors-only", colors: ["Tropical", "Fruits rouges"], tags: ["nouveauté", "beauté"] },
+	{ slug: "ashwagandha-stress", name: "Ashwagandha Anti-Stress", nameEn: "Ashwagandha Stress Relief", description: "Extrait titré d'ashwagandha KSM-66, pour la gestion du stress au quotidien.", categorySlug: "nouveautes", price: 18, model: "single", tags: ["nouveauté", "stress"], quantities: [15], isFeatured: true, heroImage: "/home/supplements-hero-flatlay.jpg" },
+	{ slug: "biotine-5000", name: "Biotine 5000mcg", nameEn: "Biotin 5000mcg", description: "Biotine haute dose, pour la beauté des cheveux et des ongles.", categorySlug: "nouveautes", price: 13, model: "single", tags: ["nouveauté", "beauté"], quantities: [18] },
 
 	// --- Soldes --------------------------------------------------------------
-	{ slug: "jean-slim-delave", name: "Jean Slim Délavé", nameEn: "Faded Slim Jeans", description: "Jean slim délavé, coupe taille haute.", categorySlug: "soldes", price: 45, discountPercent: 30, tags: ["promo", "denim"] },
-	{ slug: "pull-en-maille", name: "Pull en Maille", nameEn: "Knit Sweater", description: "Pull en maille douce, coupe ample.", categorySlug: "soldes", price: 39, discountPercent: 25, tags: ["promo"] },
-	{ slug: "jupe-plissee", name: "Jupe Plissée", nameEn: "Pleated Skirt", description: "Jupe plissée midi, taille élastiquée.", categorySlug: "soldes", price: 35, discountPercent: 20, tags: ["promo"] },
-
-	// --- Robes (suite) ---------------------------------------------------------
-	{ slug: "robe-pailletee-soiree", name: "Robe Pailletée Soirée", nameEn: "Sequin Evening Dress", description: "Robe courte pailletée à bustier, parfaite pour les soirées et événements.", categorySlug: "robes", price: 135, tags: ["soirée", "paillettes"], isFeatured: true, heroImage: "/products/robe-pailletee-soiree.jpg" },
-	{ slug: "robe-lin-champetre", name: "Robe en Lin Champêtre", nameEn: "Countryside Linen Dress", description: "Robe longue en lin naturel, manches courtes et taille cintrée par un lien tressé.", categorySlug: "robes", price: 72, tags: ["été", "lin"], heroImage: "/products/robe-lin-champetre.jpg" },
-	{ slug: "robe-bustier-blanche", name: "Robe Bustier Blanche", nameEn: "White Bustier Dress", description: "Robe moulante bustier blanche, coupe seconde peau pour une silhouette affirmée.", categorySlug: "robes", price: 68, tags: ["soirée", "moulante"], heroImage: "/products/robe-bustier-blanche.jpg" },
-	{ slug: "robe-tunique-brodee", name: "Robe Tunique Brodée", nameEn: "Embroidered Tunic Dress", description: "Robe tunique blanche aux broderies fleuries et col perlé, inspirée des coupes traditionnelles.", categorySlug: "robes", price: 89, tags: ["brodé", "élégant"], heroImage: "/products/robe-tunique-brodee.jpg" },
-
-	// --- Hauts (suite) -----------------------------------------------------------
-	{ slug: "chemisier-satine-rose", name: "Chemisier Satiné", nameEn: "Satin Blouse", description: "Chemisier fluide en satin rose poudré, col chemise et manches amples.", categorySlug: "hauts", price: 58, tags: ["satin"], heroImage: "/products/chemisier-satine-rose.jpg" },
-	{ slug: "chemise-blanche-intemporelle", name: "Chemise Blanche Intemporelle", nameEn: "Timeless White Shirt", description: "Chemise blanche en coton, coupe classique à porter au bureau comme en ville.", categorySlug: "hauts", price: 45, tags: ["coton", "classique"], heroImage: "/products/chemise-blanche-intemporelle.jpg" },
-	{ slug: "pull-jacquard-multicolore", name: "Pull Jacquard Multicolore", nameEn: "Multicolor Jacquard Sweater", description: "Pull en maille jacquard à motifs graphiques, chaud et texturé pour l'hiver.", categorySlug: "hauts", price: 62, tags: ["hiver", "jacquard"], isFeatured: true, heroImage: "/products/pull-jacquard-multicolore.jpg" },
-	{ slug: "pull-col-roule-anthracite", name: "Pull Col Roulé Anthracite", nameEn: "Charcoal Turtleneck Sweater", description: "Pull col roulé en maille fine, coupe ajustée, essentiel de la garde-robe froide.", categorySlug: "hauts", price: 49, tags: ["hiver"], heroImage: "/products/pull-col-roule-anthracite.jpg" },
-
-	// --- Ensembles (suite) -------------------------------------------------------
-	{ slug: "tailleur-pantalon-rouge", name: "Tailleur Pantalon Rouge", nameEn: "Red Pantsuit", description: "Ensemble blazer et pantalon rouge coquelicot, coupe structurée pour un look affirmé.", categorySlug: "ensembles", price: 155, tags: ["tailleur", "soirée"], isFeatured: true, heroImage: "/products/tailleur-pantalon-rouge.jpg" },
-	{ slug: "tailleur-beige-ample", name: "Tailleur Beige Ample", nameEn: "Beige Relaxed Suit", description: "Ensemble blazer oversize et pantalon large beige, silhouette décontractée chic.", categorySlug: "ensembles", price: 132, tags: ["tailleur", "bureau"], heroImage: "/products/tailleur-beige-ample.jpg" },
-	{ slug: "blazer-imprime-oversize", name: "Blazer Imprimé Oversize", nameEn: "Oversized Printed Blazer", description: "Blazer long oversize à imprimé magazine, pièce statement à assortir avec un jean brut.", categorySlug: "ensembles", price: 98, tags: ["imprimé", "statement"], heroImage: "/products/blazer-imprime-oversize.jpg" },
-
-	// --- Accessoires (suite) -----------------------------------------------------
-	{ slug: "sac-besace-rose", name: "Sac Besace Rose Poudré", nameEn: "Powder Pink Crossbody Bag", description: "Sac besace en simili cuir rose poudré, format compact avec bandoulière ajustable.", categorySlug: "accessoires", price: 48, model: "colors-only", colors: ["Beige", "Noir"], tags: ["sac"], heroImage: "/products/sac-besace-rose.jpg" },
-	{ slug: "lunettes-soleil-retro", name: "Lunettes de Soleil Rétro", nameEn: "Retro Sunglasses", description: "Lunettes de soleil rondes à monture dorée, verres teintés effet vintage.", categorySlug: "accessoires", price: 26, model: "single", tags: ["lunettes"], quantities: [15], heroImage: "/products/lunettes-soleil-retro.jpg" },
-	{ slug: "lunettes-aviator-jaune", name: "Lunettes Aviator Teintées", nameEn: "Tinted Aviator Sunglasses", description: "Lunettes aviator à monture fine, verres jaunes pour un style affirmé.", categorySlug: "accessoires", price: 24, model: "single", tags: ["lunettes"], quantities: [12], heroImage: "/products/lunettes-aviator-jaune.jpg" },
-	{ slug: "parure-bijoux-doree", name: "Parure Bijoux Dorée", nameEn: "Gold Jewelry Set", description: "Parure trois pièces plaquée or : bague, bracelet chaîne et boucles d'oreilles assorties.", categorySlug: "accessoires", price: 42, model: "single", tags: ["bijou"], quantities: [8], isFeatured: true, heroImage: "/products/parure-bijoux-doree.jpg" },
-
-	// --- Nouveautés (suite) --------------------------------------------------------
-	{ slug: "blazer-noir-cintre", name: "Blazer Noir Cintré", nameEn: "Fitted Black Blazer", description: "Blazer noir cintré à revers, coupe droite pour un look bureau ou soirée.", categorySlug: "nouveautes", price: 105, tags: ["nouveauté", "bureau"], heroImage: "/products/blazer-noir-cintre.jpg" },
-	{ slug: "jean-large-taille-haute", name: "Jean Large Taille Haute", nameEn: "High-Waisted Wide Jeans", description: "Jean large taille haute en denim brut, coupe droite tendance.", categorySlug: "nouveautes", price: 58, tags: ["nouveauté", "denim"], heroImage: "/products/jean-large-taille-haute.jpg" },
-	{ slug: "manteau-court-laine-gris", name: "Manteau Court en Laine", nameEn: "Short Wool Coat", description: "Manteau court en laine mélangée grise, coupe croisée et col large.", categorySlug: "nouveautes", price: 128, tags: ["nouveauté", "hiver"], isFeatured: true, heroImage: "/products/manteau-court-laine-gris.jpg" },
-
-	// --- Soldes (suite) --------------------------------------------------------
-	{ slug: "pull-torsade-creme", name: "Pull Torsadé Crème", nameEn: "Cream Cable-Knit Sweater", description: "Pull à torsades en maille crème, coupe ample et confortable.", categorySlug: "soldes", price: 44, discountPercent: 25, tags: ["promo", "hiver"], heroImage: "/products/pull-torsade-creme.jpg" },
-	{ slug: "boucles-oreilles-perlees", name: "Boucles d'Oreilles Perlées", nameEn: "Pearl Earrings", description: "Boucles d'oreilles ornées de perles nacrées, finition dorée.", categorySlug: "soldes", price: 19, discountPercent: 30, model: "single", tags: ["promo", "bijou"], quantities: [10], heroImage: "/products/boucles-oreilles-perlees.jpg" },
-	{ slug: "pull-col-roule-blanc", name: "Pull Col Roulé Blanc", nameEn: "White Turtleneck Sweater", description: "Pull col roulé blanc en maille douce, coupe près du corps.", categorySlug: "soldes", price: 36, discountPercent: 20, tags: ["promo"], heroImage: "/products/pull-col-roule-blanc.jpg" },
+	{ slug: "pack-multivitamine-magnesium", name: "Pack Multivitamine + Magnésium", nameEn: "Multivitamin + Magnesium Pack", description: "Le duo multivitamine et magnésium marin, pour l'énergie et la détente.", categorySlug: "soldes", price: 30, discountPercent: 25, model: "single", tags: ["promo"], quantities: [12] },
+	{ slug: "vitamine-c-effervescente", name: "Vitamine C Effervescente", nameEn: "Effervescent Vitamin C", description: "Vitamine C en comprimés effervescents, saveur agrume.", categorySlug: "soldes", price: 12, discountPercent: 20, model: "single", tags: ["promo"], quantities: [20] },
+	{ slug: "omega3-format-familial", name: "Oméga-3 Format Familial", nameEn: "Omega-3 Family Size", description: "Le format économique de notre oméga-3 le plus vendu.", categorySlug: "soldes", price: 26, discountPercent: 30, model: "sizes-only", tags: ["promo"] },
+	{ slug: "collagene-marin-promo", name: "Collagène Marin Format Découverte", nameEn: "Marine Collagen Trial Size", description: "Le format découverte de notre collagène marin, saveur au choix.", categorySlug: "soldes", price: 20, discountPercent: 20, model: "colors-only", colors: ["Neutre", "Fruits rouges"], tags: ["promo"] },
 ];
 
 /** Quantités par défaut, variées pour rendre les écrans de stock parlants. */
@@ -259,20 +229,20 @@ export const SEED_PRODUCTS: SeedProduct[] = SOURCES.map((source, sourceIndex) =>
 	}
 
 	if (model === "sizes-only") {
-		const quantities = source.quantities ?? defaultQuantities(APPAREL_SIZES.length, sourceIndex);
+		const quantities = source.quantities ?? defaultQuantities(FORMAT_OPTIONS.length, sourceIndex);
 		return {
 			...base,
 			kind: "simple" as const,
 			variants: [],
-			sizes: APPAREL_SIZES.map((label, index) => ({
+			sizes: FORMAT_OPTIONS.map((label, index) => ({
 				label,
 				quantity: quantities[index] ?? 10,
 			})),
 		};
 	}
 
-	const colors = source.colors ?? APPAREL_COLORS;
-	const sizes = model === "colors-only" ? [] : APPAREL_SIZES;
+	const colors = source.colors ?? FORMAT_FLAVORS;
+	const sizes = model === "colors-only" ? [] : FORMAT_OPTIONS;
 
 	return {
 		...base,

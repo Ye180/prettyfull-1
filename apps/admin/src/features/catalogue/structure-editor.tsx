@@ -19,7 +19,7 @@ import { ImageUploadList } from "@/components/ui/image-upload";
  * produit. Passer de l'un à l'autre se fait en dupliquant.
  *
  * L'éditeur rend la règle de cohérence *visible* : choisir « à variantes »
- * masque les tailles de produit, et réciproquement. Le formulaire ne peut donc
+ * masque les formats de produit, et réciproquement. Le formulaire ne peut donc
  * pas construire un produit hybride, que l'API refuserait de toute façon.
  */
 
@@ -33,7 +33,7 @@ export interface VariantDraft {
 	colorHex: string;
 	imageUrls: string[];
 	sizes: SizeDraft[];
-	/** Utilisé uniquement quand la variante n'a aucune taille. */
+	/** Utilisé uniquement quand la variante n'a aucun format. */
 	quantity: string;
 }
 
@@ -41,7 +41,7 @@ export interface StructureState {
 	kind: ProductKind;
 	variants: VariantDraft[];
 	sizes: SizeDraft[];
-	/** Produit simple sans aucune taille : stock porté par le produit. */
+	/** Produit simple sans aucun format : stock porté par le produit. */
 	quantity: string;
 	images: string[];
 }
@@ -91,7 +91,7 @@ export const toStructurePayload = (state: StructureState) => {
 						position: sizePosition,
 						initialQuantity: Number(size.quantity) || 0,
 					})),
-				// Le stock de variante n'a de sens qu'en l'absence de tailles.
+				// Le stock de variante n'a de sens qu'en l'absence de formats.
 				...(variant.sizes.length === 0
 					? { initialQuantity: Number(variant.quantity) || 0 }
 					: {}),
@@ -128,7 +128,7 @@ const SizeRows = ({
 	<div className="flex flex-col gap-2">
 		{sizes.map((size, index) => (
 			<div key={index} className="flex items-end gap-2">
-				<Field label={index === 0 ? "Taille" : ""} className="flex-1">
+				<Field label={index === 0 ? "Format" : ""} className="flex-1">
 					<Input
 						value={size.label}
 						onChange={(event) =>
@@ -138,7 +138,7 @@ const SizeRows = ({
 								),
 							)
 						}
-						placeholder="M"
+						placeholder="500 mg"
 					/>
 				</Field>
 
@@ -161,7 +161,7 @@ const SizeRows = ({
 				<Button
 					variant="ghost"
 					onClick={() => onChange(sizes.filter((_, i) => i !== index))}
-					aria-label="Retirer la taille"
+					aria-label="Retirer le format"
 				>
 					<IconTrash width={16} height={16} />
 				</Button>
@@ -174,7 +174,7 @@ const SizeRows = ({
 			className="self-start"
 		>
 			<IconPlus width={14} height={14} />
-			Ajouter une taille
+			Ajouter un format
 		</Button>
 	</div>
 );
@@ -204,13 +204,13 @@ export const StructureEditor = ({
 								kind: "simple" as const,
 								title: "Produit simple",
 								detail:
-									"Tailles portées par le produit, ou aucune déclinaison.",
+									"Formats portés par le produit, ou aucune déclinaison.",
 							},
 							{
 								kind: "variant" as const,
 								title: "Produit à variantes",
 								detail:
-									"Un coloris par variante, avec ses photos et ses tailles.",
+									"Un coloris par variante, avec ses photos et ses formats.",
 							},
 						] satisfies { kind: ProductKind; title: string; detail: string }[]
 					).map((option) => (
@@ -254,7 +254,7 @@ export const StructureEditor = ({
 			{value.kind === "simple" ? (
 				<div className="flex flex-col gap-4">
 					<Field
-						label="Tailles"
+						label="Formats"
 						hint="Laissez vide si le produit n'a aucune déclinaison - le stock sera alors porté par le produit."
 					>
 						<SizeRows
@@ -370,7 +370,7 @@ export const StructureEditor = ({
 
 								<div className="mt-3">
 									<Checkbox
-										label="Ce coloris est décliné en tailles"
+										label="Ce coloris est décliné en formats"
 										checked={variant.sizes.length > 0}
 										onChange={(event) =>
 											set(

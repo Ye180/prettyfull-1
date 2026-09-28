@@ -29,7 +29,7 @@ interface SidebarFilterProps {
 	onClear: () => void;
 	/** Rayons proposés ; section masquée si vide (page déjà scopée à un rayon). */
 	categoryOptions?: CategoryOption[];
-	/** Tailles distinctes du catalogue regardé (§ `useCollectionFacets`). */
+	/** Formats distincts du catalogue regardé (§ `useCollectionFacets`). */
 	sizeOptions: string[];
 	/** Couleurs distinctes du catalogue regardé. */
 	colorOptions: ColorOption[];
@@ -71,7 +71,7 @@ export const SidebarFilter = ({
 					>
 						<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
 					</svg>
-					<h3 className="text-[1.8rem] font-bold text-black">Filtres</h3>
+					<h3 className="text-[1.8rem] font-bold text-black">{t("title")}</h3>
 				</div>
 				<button
 					onClick={onClear}
@@ -84,7 +84,7 @@ export const SidebarFilter = ({
 			{/* Category */}
 			{categoryOptions.length > 0 && (
 				<div className="space-y-3">
-					<h4 className="text-[1.5rem] font-semibold text-black">Catégorie</h4>
+					<h4 className="text-[1.5rem] font-semibold text-black">{t("type_clothes")}</h4>
 					<div className="space-y-2.5">
 						{categoryOptions.map((category) => {
 							const isChecked = filters.categorySlug === category.slug;
@@ -124,10 +124,10 @@ export const SidebarFilter = ({
 									key={size}
 									type="button"
 									onClick={() => onChange({ ...filters, sizes: toggleItem(filters.sizes, size) })}
-									className={`px-4 py-1.5 rounded-full border text-[1.3rem] font-medium transition-colors cursor-pointer ${
+									className={`px-4 py-1.5 rounded-md border text-[1.3rem] font-medium transition-colors cursor-pointer ${
 										isChecked
-											? "bg-black text-white border-black"
-											: "border-neutral-300 text-neutral-800 hover:border-black"
+											? "bg-amber-600 text-white border-amber-600"
+											: "border-neutral-300 text-neutral-800 hover:border-amber-600"
 									}`}
 								>
 									{size}
@@ -137,32 +137,32 @@ export const SidebarFilter = ({
 					</div>
 				) : (
 					<p className="text-[1.3rem] text-neutral-400">
-						{isLoadingFacets ? "Chargement…" : "Aucune taille disponible"}
+						{isLoadingFacets ? t("loading") : t("noSizes")}
 					</p>
 				)}
 			</div>
 
 			{/* Prix */}
 			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">Prix</h4>
+				<h4 className="text-[1.5rem] font-semibold text-black">{t("price")}</h4>
 				<div className="space-y-2">
-					<div className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200">
-						<span className="text-[1.3rem] text-neutral-500">FCFA</span>
+					<div className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-neutral-200">
+						<span className="text-[1.3rem] text-neutral-500">{t("currency")}</span>
 						<input
 							type="number"
 							min={0}
-							placeholder="Minimum"
+							placeholder={t("priceMinPlaceholder")}
 							value={filters.minPrice}
 							onChange={(e) => onChange({ ...filters, minPrice: e.target.value })}
 							className="w-full text-[1.4rem] bg-transparent outline-none placeholder:text-neutral-400"
 						/>
 					</div>
-					<div className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200">
-						<span className="text-[1.3rem] text-neutral-500">FCFA</span>
+					<div className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-neutral-200">
+						<span className="text-[1.3rem] text-neutral-500">{t("currency")}</span>
 						<input
 							type="number"
 							min={0}
-							placeholder="Maximum"
+							placeholder={t("priceMaxPlaceholder")}
 							value={filters.maxPrice}
 							onChange={(e) => onChange({ ...filters, maxPrice: e.target.value })}
 							className="w-full text-[1.4rem] bg-transparent outline-none placeholder:text-neutral-400"
@@ -171,9 +171,11 @@ export const SidebarFilter = ({
 				</div>
 			</div>
 
-			{/* Color */}
+			{/* Flavor swatches - couleurs représentatives des saveurs (variant.colorHex), pas un vrai
+			    sélecteur de couleur vêtement ; clé distincte de CollectionPage.filters.colors utilisée
+			    par le picker de saveurs présentationnel du drawer mobile (organims/apps/filter.tsx). */}
 			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">{t("colors")}</h4>
+				<h4 className="text-[1.5rem] font-semibold text-black">{t("flavor")}</h4>
 				{colorOptions.length > 0 ? (
 					<div className="flex items-center gap-2 flex-wrap">
 						{colorOptions.map((color) => {
@@ -183,8 +185,8 @@ export const SidebarFilter = ({
 									key={color.name}
 									type="button"
 									onClick={() => onChange({ ...filters, colors: toggleItem(filters.colors, color.name) })}
-									className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-[1.3rem] transition-colors cursor-pointer ${
-										isChecked ? "border-black bg-neutral-100" : "border-neutral-200 hover:border-black"
+									className={`flex items-center gap-2 px-3 py-1.5 rounded-md border text-[1.3rem] transition-colors cursor-pointer ${
+										isChecked ? "border-amber-600 bg-amber-50" : "border-neutral-200 hover:border-amber-600"
 									}`}
 								>
 									<span
@@ -198,14 +200,14 @@ export const SidebarFilter = ({
 					</div>
 				) : (
 					<p className="text-[1.3rem] text-neutral-400">
-						{isLoadingFacets ? "Chargement…" : "Aucune couleur disponible"}
+						{isLoadingFacets ? t("loading") : t("noFlavors")}
 					</p>
 				)}
 			</div>
 
 			{/* Availability */}
 			<div className="space-y-3">
-				<h4 className="text-[1.5rem] font-semibold text-black">Disponibilité</h4>
+				<h4 className="text-[1.5rem] font-semibold text-black">{t("availability")}</h4>
 				<div className="space-y-2.5">
 					<label className="flex items-center gap-3 cursor-pointer text-[1.4rem] text-neutral-800 hover:text-black select-none">
 						<input
@@ -215,7 +217,7 @@ export const SidebarFilter = ({
 							onChange={() => onChange({ ...filters, availability: "all" })}
 							className="w-4 h-4 accent-black"
 						/>
-						<span>Tous les produits</span>
+						<span>{t("availabilityAll")}</span>
 					</label>
 					<label className="flex items-center gap-3 cursor-pointer text-[1.4rem] text-neutral-800 hover:text-black select-none">
 						<input
@@ -225,7 +227,7 @@ export const SidebarFilter = ({
 							onChange={() => onChange({ ...filters, availability: "in_stock" })}
 							className="w-4 h-4 accent-black"
 						/>
-						<span>En stock</span>
+						<span>{t("availabilityInStock")}</span>
 					</label>
 					<label className="flex items-center gap-3 cursor-pointer text-[1.4rem] text-neutral-800 hover:text-black select-none">
 						<input
@@ -235,7 +237,7 @@ export const SidebarFilter = ({
 							onChange={() => onChange({ ...filters, availability: "on_sale" })}
 							className="w-4 h-4 accent-black"
 						/>
-						<span>En promotion</span>
+						<span>{t("availabilityOnSale")}</span>
 					</label>
 				</div>
 			</div>

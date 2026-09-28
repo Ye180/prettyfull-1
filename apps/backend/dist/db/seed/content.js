@@ -12,42 +12,42 @@ import { SEED_CATEGORIES } from "./catalog-data.js";
 export const seedContent = async (categoryIdBySlug, productIdBySlug) => {
     await db.insert(t.banners).values([
         {
-            title: "Nouvelle collection",
-            subtitle: "Des pièces pensées pour vous, disponibles dès maintenant.",
-            imageUrl: "/home/cover-desktop.jpg",
-            mobileImageUrl: "/home/cover-phone.jpg",
+            title: "Des compléments pensés pour votre santé",
+            subtitle: "Vitamines, minéraux et compléments naturels testés en laboratoire, disponibles dès maintenant.",
+            imageUrl: "/home/supplements-hero-lifestyle.jpg",
+            mobileImageUrl: "/home/supplements-hero-lifestyle.jpg",
             linkUrl: "/collections/nouveautes",
-            ctaLabel: "Découvrir",
+            ctaLabel: "Découvrir la gamme",
             placement: "home_hero",
             status: "published",
             position: 0,
             translations: {
-                en: { title: "New collection", ctaLabel: "Discover" },
+                en: { title: "Supplements designed for your health", ctaLabel: "Discover" },
             },
         },
         {
-            title: "Soldes jusqu'à -30 %",
-            subtitle: "Sélection limitée, pendant que les tailles sont encore là.",
-            imageUrl: "/home/cover-desktop-1.jpg",
+            title: "Votre bien-être, notre priorité",
+            subtitle: "Formules testées en laboratoire, ingrédients sélectionnés avec soin.",
+            imageUrl: "/home/supplements-hero-flatlay.jpg",
             linkUrl: "/collections/soldes",
             ctaLabel: "En profiter",
             placement: "home_promo",
             status: "published",
             position: 1,
-            translations: { en: { title: "Up to 30% off", ctaLabel: "Shop now" } },
+            translations: { en: { title: "Your wellness, our priority", ctaLabel: "Shop now" } },
         },
         {
-            title: "L'essentiel du vestiaire",
-            imageUrl: "/collections/banner-mode.jpg",
-            linkUrl: "/collections/ensembles",
+            title: "L'essentiel de votre routine santé",
+            imageUrl: "/home/supplements-hero-colorful.jpg",
+            linkUrl: "/collections/vitamines",
             placement: "home_secondary",
             status: "published",
             position: 2,
         },
         {
-            title: "New Season Essentials",
-            subtitle: "Soft silhouettes and modern staples for everyday wear.",
-            imageUrl: "/home/cover-desktop.jpg",
+            title: "Nos best-sellers santé & bien-être",
+            subtitle: "Vitamines, protéines et compléments plébiscités par notre communauté.",
+            imageUrl: "/home/supplements-hero-lifestyle.jpg",
             linkUrl: "#catalog-grid",
             ctaLabel: "Achetez maintenant",
             placement: "collection_top",
@@ -56,8 +56,8 @@ export const seedContent = async (categoryIdBySlug, productIdBySlug) => {
         },
         {
             title: "Soldes Mi-Saison",
-            subtitle: "Up to 40% off selected styles",
-            imageUrl: "/banner/banner6.jpg",
+            subtitle: "Jusqu'à -40% sur une sélection de compléments",
+            imageUrl: "/home/supplements-hero-blue-powder.jpg",
             linkUrl: "#catalog-grid",
             ctaLabel: "Voir les soldes",
             placement: "collection_promo",
@@ -65,21 +65,21 @@ export const seedContent = async (categoryIdBySlug, productIdBySlug) => {
             position: 0,
         },
         {
-            title: "Everyday Knitwear",
-            subtitle: "Lightweight layers you'll reach for daily",
-            imageUrl: "/home/cover-box.jpg",
+            title: "Formules Quotidiennes",
+            subtitle: "Des compléments légers à intégrer facilement chaque jour",
+            imageUrl: "/products/multivitamin.jpg",
             linkUrl: "#catalog-grid",
-            ctaLabel: "Explore",
+            ctaLabel: "Explorer",
             placement: "collection_promo",
             status: "published",
             position: 1,
         },
         {
-            title: "Let's Take Your Fashion to The Stratosphere",
-            subtitle: "Ready to elevate your style? Let's launch your fashion into the stratosphere with bold choices and unique trends!",
-            imageUrl: "/banner/banner4.jpg",
+            title: "Prêt à prendre soin de vous ?",
+            subtitle: "Découvrez notre gamme complète de vitamines et compléments, sélectionnés pour votre bien-être au quotidien.",
+            imageUrl: "/products/gummies.jpg",
             linkUrl: "/collections",
-            ctaLabel: "Get Started Now",
+            ctaLabel: "Découvrir la boutique",
             placement: "collection_footer",
             status: "published",
             position: 0,
@@ -125,7 +125,7 @@ export const seedContent = async (categoryIdBySlug, productIdBySlug) => {
                 "",
                 "## Retours",
                 "",
-                "Les articles peuvent être retournés sous 14 jours, non portés et dans leur emballage d'origine.",
+                "Les produits peuvent être retournés sous 14 jours, emballage scellé et non ouvert, pour des raisons d'hygiène et de sécurité sanitaire.",
             ].join("\n"),
             status: "published",
             publishedAt: now,
@@ -133,11 +133,11 @@ export const seedContent = async (categoryIdBySlug, productIdBySlug) => {
         {
             slug: "a-propos",
             title: "À propos de PrettyFull",
-            excerpt: "Une sélection de mode féminine pensée depuis Abidjan.",
+            excerpt: "Une sélection de vitamines et compléments pensée depuis Abidjan.",
             content: [
-                "PrettyFull réunit une sélection de pièces féminines choisies une à une :",
-                "des matières agréables, des coupes qui tiennent dans le temps, et des",
-                "quantités volontairement limitées.",
+                "PrettyFull réunit une sélection de vitamines et compléments choisis un à un :",
+                "des ingrédients de qualité, des dosages testés en laboratoire, et des",
+                "lots volontairement limités pour rester frais.",
                 "",
                 "La boutique est basée à Abidjan et livre dans toute l'Afrique de l'Ouest.",
             ].join("\n"),
@@ -163,10 +163,10 @@ export const seedContent = async (categoryIdBySlug, productIdBySlug) => {
     });
     // Produits vedettes de la vitrine d'accueil.
     const featuredProductSlugs = [
-        "robe-cocktail-satinee",
-        "robe-longue-fluide",
-        "ensemble-tailleur",
-        "blazer-structure",
+        "multivitamine-quotidienne",
+        "magnesium-marin",
+        "proteine-whey-chocolat",
+        "omega-3-huile-de-poisson",
     ];
     const productEntries = featuredProductSlugs.flatMap((slug, index) => {
         const productId = productIdBySlug.get(slug);
@@ -184,6 +184,32 @@ export const seedContent = async (categoryIdBySlug, productIdBySlug) => {
             : [];
     });
     await db.insert(t.featuredEntries).values([...categoryEntries, ...productEntries]);
-    console.log(`  contenu : 7 bannières, 3 pages statiques, ${categoryEntries.length + productEntries.length} mises en avant`);
+    await db.insert(t.contentHighlights).values([
+        {
+            icon: "lab",
+            title: "Testé en Laboratoire",
+            description: "Chaque formule est analysée par un laboratoire indépendant pour garantir sa pureté, son dosage exact et sa sécurité, lot après lot.",
+            sectionKey: "home_trust",
+            position: 0,
+            status: "published",
+        },
+        {
+            icon: "leaf",
+            title: "Sans OGM et Végétalien",
+            description: "Ingrédients naturels, sans OGM, sans gluten ajouté et formules végétaliennes disponibles sur toute la gamme.",
+            sectionKey: "home_trust",
+            position: 1,
+            status: "published",
+        },
+        {
+            icon: "shield",
+            title: "Satisfaction Garantie",
+            description: "30 jours pour changer d'avis. Notre équipe reste à votre écoute pour vous accompagner dans votre routine bien-être.",
+            sectionKey: "home_trust",
+            position: 2,
+            status: "published",
+        },
+    ]);
+    console.log(`  contenu : 7 bannières, 3 pages statiques, ${categoryEntries.length + productEntries.length} mises en avant, 3 blocs de confiance`);
 };
 //# sourceMappingURL=content.js.map

@@ -8,7 +8,7 @@ import ProductCardSkeleton from "@/shared/components/organims/product-loading";
 import { useRegionStore } from "@/stores/useRegion";
 import { CardProduct, GridCardProduct } from "@prettyfull/ui";
 import { AnimatePresence, motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -33,6 +33,12 @@ export const ShopAllView = () => {
 	const { data: promoBanners } = useCollectionBanners("collection_promo");
 	const { data: footerBanners } = useCollectionBanners("collection_footer");
 	const tHero = useTranslations("HomePage.hero");
+	const t = useTranslations("CollectionPage.page");
+	const locale = useLocale();
+	// Les bannières CMS (Admin > Contenu) n'ont pas de champ `translations` :
+	// leur texte est saisi en français uniquement, donc on ne les utilise que
+	// pour ce locale - les autres retombent sur les clés `t()`/`tHero()`.
+	const useCmsCopy = locale === "fr";
 
 	const {
 		q,
@@ -132,19 +138,18 @@ export const ShopAllView = () => {
 	const hasMore = data?.meta.hasNext ?? false;
 
 	const SORT_OPTIONS = [
-		{ value: "createdAt:desc", label: "Nouveautés", sort: "createdAt" as const, order: "desc" as const },
-		{ value: "basePrice:asc", label: "Prix croissant", sort: "basePrice" as const, order: "asc" as const },
-		{ value: "basePrice:desc", label: "Prix décroissant", sort: "basePrice" as const, order: "desc" as const },
-		{ value: "name:asc", label: "Nom (A → Z)", sort: "name" as const, order: "asc" as const },
+		{ value: "createdAt:desc", label: t("sort.newest"), sort: "createdAt" as const, order: "desc" as const },
+		{ value: "basePrice:asc", label: t("sort.priceAsc"), sort: "basePrice" as const, order: "asc" as const },
+		{ value: "basePrice:desc", label: t("sort.priceDesc"), sort: "basePrice" as const, order: "desc" as const },
+		{ value: "name:asc", label: t("sort.nameAsc"), sort: "name" as const, order: "asc" as const },
 	];
 	const selectedSortValue = `${sort}:${order}`;
 
 	const heroBanner = heroBanners?.[0];
-	const heroImage = heroBanner?.image || "/home/cover-desktop.jpg";
-	const heroTitle = heroBanner?.title || "New Season Essentials";
-	const heroSubtitle =
-		heroBanner?.subtitle || "Soft silhouettes and modern staples for everyday wear.";
-	const heroCta = heroBanner?.cta || tHero("ctaButton");
+	const heroImage = heroBanner?.image || "/home/supplements-hero-flatlay.jpg";
+	const heroTitle = (useCmsCopy && heroBanner?.title) || tHero("title");
+	const heroSubtitle = (useCmsCopy && heroBanner?.subtitle) || tHero("subtitle");
+	const heroCta = (useCmsCopy && heroBanner?.cta) || tHero("ctaButton");
 	const heroLink = heroBanner?.link || "#catalog-grid";
 
 	const promos = (promoBanners ?? []).slice(0, 2);
@@ -155,7 +160,7 @@ export const ShopAllView = () => {
 		<main className="pb-16 w-full bg-white">
 			{/* 1. Hero */}
 			<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
-				<div className="relative w-full min-h-[480px] lg:min-h-[520px] rounded-[2.6rem] overflow-hidden bg-[#888]">
+				<div className="relative w-full min-h-[480px] lg:min-h-[520px] rounded-2xl overflow-hidden bg-[#888]">
 					<Image
 						src={heroImage}
 						alt={heroTitle}
@@ -181,7 +186,7 @@ export const ShopAllView = () => {
 						<p className="text-[1.5rem] sm:text-[1.6rem] text-white/90">{heroSubtitle}</p>
 						<a
 							href={heroLink}
-							className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black text-[1.4rem] font-semibold rounded-full whitespace-nowrap hover:bg-neutral-100 transition-all self-start shadow"
+							className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black text-[1.4rem] font-semibold rounded-lg whitespace-nowrap hover:bg-neutral-100 transition-all self-start shadow"
 						>
 							<span>{heroCta}</span>
 							<svg
@@ -208,11 +213,11 @@ export const ShopAllView = () => {
 						{promos.map((promo) => (
 							<div
 								key={promo.id}
-								className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group"
+								className="relative w-full h-[280px] rounded-lg overflow-hidden group"
 							>
 								<Image
 									src={promo.image}
-									alt={promo.title || "Promotion"}
+									alt={promo.title || t("promoImageAlt")}
 									fill
 									sizes="(max-width: 768px) 100vw, 50vw"
 									className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -228,9 +233,9 @@ export const ShopAllView = () => {
 									{promo.link && (
 										<Link
 											href={promo.link}
-											className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black text-[1.3rem] font-medium rounded-full self-start hover:bg-white/90 transition-all mt-2"
+											className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black text-[1.3rem] font-medium rounded-lg self-start hover:bg-white/90 transition-all mt-2"
 										>
-											<span>{promo.cta || "Découvrir"}</span>
+											<span>{promo.cta || t("promoCta")}</span>
 											<svg
 												width="14"
 												height="14"
@@ -251,12 +256,12 @@ export const ShopAllView = () => {
 				</section>
 			)}
 
-			{/* 3. Shop by Collection - catégories marquées "Mise en avant" dans Admin > Catalogue */}
+			{/* 3. Acheter par catégorie - catégories marquées "Mise en avant" dans Admin > Catalogue */}
 			{featuredCategories.length > 0 && (
 				<section className="w-full max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
 					<div className="flex justify-between items-center pb-8">
 						<h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#080808]">
-							Shop by Collection
+							{t("categoryHeading")}
 						</h2>
 					</div>
 
@@ -264,7 +269,7 @@ export const ShopAllView = () => {
 						{featuredCategories.map((category) => (
 							<div
 								key={category.id}
-								className="relative w-full h-[280px] rounded-[2.2rem] overflow-hidden group"
+								className="relative w-full h-[280px] rounded-lg overflow-hidden group"
 							>
 								{imageUrlOf(category.image) && (
 									<Image
@@ -280,9 +285,9 @@ export const ShopAllView = () => {
 									<h3 className="text-2xl font-bold text-white">{category.name}</h3>
 									<Link
 										href={COLLECTION_PATHS.collectionDetail(category.handle)}
-										className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-[1.2rem] font-medium rounded-full self-start hover:bg-white/90 transition-all"
+										className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-[1.2rem] font-medium rounded-lg self-start hover:bg-white/90 transition-all"
 									>
-										<span>See Collection</span>
+										<span>{t("viewCategory")}</span>
 										<svg
 											width="13"
 											height="13"
@@ -302,22 +307,21 @@ export const ShopAllView = () => {
 				</section>
 			)}
 
-			{/* 4. Toolbar & Search Bar */}
+			{/* 4. Toolbar compacte : Filtre | N produits | Trier */}
 			<section
 				id="catalog-grid"
 				className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6"
 			>
 				<div className="flex flex-wrap gap-4 justify-between items-center pb-6 border-b border-neutral-200">
-					{/* Filter toggle + search : un seul contrôle visuel */}
-					<div className="flex items-stretch flex-1 min-w-[240px] max-w-lg">
+					<div className="flex flex-wrap gap-3 items-center">
 						<button
 							onClick={() => setSidebarOpen((prev) => !prev)}
-							className={`flex items-center gap-2 px-4 py-2.5 rounded-l-full rounded-r-none border border-r-0 transition-all text-[1.4rem] font-medium shrink-0 ${
+							className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all text-[1.4rem] font-medium shrink-0 ${
 								sidebarOpen
-									? "bg-black text-white border-black"
-									: "border-neutral-300 text-black hover:border-black"
+									? "bg-amber-600 text-white border-amber-600"
+									: "border-neutral-300 text-black hover:border-amber-600"
 							} cursor-pointer`}
-							aria-label="Toggle filter sidebar"
+							aria-label={t("filterToggleAriaLabel")}
 						>
 							<svg
 								width="16"
@@ -329,15 +333,14 @@ export const ShopAllView = () => {
 							>
 								<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
 							</svg>
-							<span>Filter</span>
+							<span>{t("filterButtonLabel")}</span>
 						</button>
 
-						{/* Search input */}
-						<div className="relative flex-1 min-w-[160px]">
+						<div className="relative w-[220px] max-w-full">
 							<svg
-								className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
-								width="16"
-								height="16"
+								className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
+								width="14"
+								height="14"
 								viewBox="0 0 24 24"
 								fill="none"
 								stroke="currentColor"
@@ -348,60 +351,33 @@ export const ShopAllView = () => {
 							</svg>
 							<input
 								type="text"
-								placeholder="Rechercher..."
+								placeholder={t("searchPlaceholder")}
 								value={searchDraft}
 								onChange={(e) => setSearchDraft(e.target.value)}
-								className="w-full pl-11 pr-4 py-2.5 rounded-r-full rounded-l-none border border-l-0 border-neutral-200 text-[1.4rem] outline-none focus:border-black transition-colors"
+								className="py-2.5 pr-3 pl-9 w-full text-[1.3rem] rounded-lg border outline-none transition-colors border-neutral-200 focus:border-amber-600"
 							/>
 						</div>
+
+						<span className="text-[1.3rem] text-neutral-500 whitespace-nowrap">
+							{t("resultsCount", { count: data?.meta.total ?? 0 })}
+						</span>
 					</div>
 
-					{/* Quick dropdown filters */}
-					<div className="flex flex-wrap gap-3 items-center">
-						{/* Category dropdown */}
-						<select
-							value={categorySlug}
-							onChange={(e) => setCategorySlug(e.target.value)}
-							className="px-4 py-2.5 rounded-full border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-black"
-						>
-							<option value="">Toutes les catégories</option>
-							{categories?.map((category) => (
-								<option key={category.id} value={category.handle}>
-									{category.name}
-								</option>
-							))}
-						</select>
-
-						{/* Size dropdown */}
-						<select
-							value={sizes[0] ?? ""}
-							onChange={(e) => setSizes(e.target.value ? [e.target.value] : [])}
-							className="px-4 py-2.5 rounded-full border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-black"
-						>
-							<option value="">Toutes tailles</option>
-							{facets?.sizes.map((size) => (
-								<option key={size} value={size}>
-									{size}
-								</option>
-							))}
-						</select>
-
-						{/* Sort dropdown */}
-						<select
-							value={selectedSortValue}
-							onChange={(e) => {
-								const option = SORT_OPTIONS.find((o) => o.value === e.target.value);
-								if (option) setSort(option.sort, option.order);
-							}}
-							className="px-4 py-2.5 rounded-full border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-black"
-						>
-							{SORT_OPTIONS.map((option) => (
-								<option key={option.value} value={option.value}>
-									{option.label}
-								</option>
-							))}
-						</select>
-					</div>
+					{/* Sort dropdown */}
+					<select
+						value={selectedSortValue}
+						onChange={(e) => {
+							const option = SORT_OPTIONS.find((o) => o.value === e.target.value);
+							if (option) setSort(option.sort, option.order);
+						}}
+						className="px-4 py-2.5 rounded-lg border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-amber-600"
+					>
+						{SORT_OPTIONS.map((option) => (
+							<option key={option.value} value={option.value}>
+								{option.label}
+							</option>
+						))}
+					</select>
 				</div>
 			</section>
 
@@ -454,19 +430,19 @@ export const ShopAllView = () => {
 									</svg>
 								</div>
 								<span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
-									Aucun résultat
+									{t("emptyEyebrow")}
 								</span>
 								<h2 className="mt-3 text-2xl font-bold text-gray-900 sm:text-3xl">
-									Aucun produit ne correspond à votre recherche
+									{t("emptyHeading")}
 								</h2>
 								<p className="mt-2 max-w-md text-gray-500">
-									Essayez d&apos;ajuster vos filtres ou votre recherche.
+									{t("emptyBody")}
 								</p>
 								<button
 									onClick={resetAllFilters}
-									className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-black text-white font-semibold rounded-full hover:bg-neutral-800 transition shadow-lg group text-sm sm:text-base cursor-pointer"
+									className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-black text-white font-semibold rounded-lg hover:bg-neutral-800 transition shadow-lg group text-sm sm:text-base cursor-pointer"
 								>
-									<span>Réinitialiser les filtres</span>
+									<span>{t("emptyReset")}</span>
 									<ArrowRightIcon className="w-4 h-4 text-white transition-transform group-hover:translate-x-1" />
 								</button>
 							</div>
@@ -494,9 +470,9 @@ export const ShopAllView = () => {
 							<div className="flex justify-center pt-8">
 								<button
 									onClick={() => setLimit((prev) => prev + PAGE_SIZE)}
-									className="inline-flex items-center px-10 py-3 text-sm font-medium text-white bg-black rounded-full transition-colors hover:bg-neutral-800 cursor-pointer"
+									className="inline-flex items-center px-10 py-3 text-sm font-medium text-white bg-amber-600 rounded-lg transition-colors hover:bg-amber-700 cursor-pointer"
 								>
-									See More
+									{t("loadMore")}
 								</button>
 							</div>
 						)}
@@ -506,14 +482,11 @@ export const ShopAllView = () => {
 
 			{/* 6. Bandeau de fin - piloté depuis Admin > Contenu (bannière "collection_footer") */}
 			<PhotoOverlayBanner
-				image={footerBanner?.image || "/banner/banner4.jpg"}
-				title={footerBanner?.title || "Let's Take Your Fashion to The Stratosphere"}
-				subtitle={
-					footerBanner?.subtitle ||
-					"Ready to elevate your style? Let's launch your fashion into the stratosphere with bold choices and unique trends!"
-				}
+				image={footerBanner?.image || "/home/supplements-hero-lifestyle.jpg"}
+				title={(useCmsCopy && footerBanner?.title) || t("footerTitle")}
+				subtitle={(useCmsCopy && footerBanner?.subtitle) || t("footerSubtitle")}
 				cta={{
-					label: footerBanner?.cta || "Get Started Now",
+					label: (useCmsCopy && footerBanner?.cta) || t("footerCta"),
 					href: footerBanner?.link || "/collections",
 				}}
 				contained={true}

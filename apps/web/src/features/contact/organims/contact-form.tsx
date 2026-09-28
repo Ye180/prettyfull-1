@@ -2,8 +2,9 @@
 
 import { StoreApiError, sendContactMessage } from "@/lib/store-api";
 import { useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
-import { SUBJECTS } from "../data";
+import { getSubjects } from "../data";
 
 /**
  * Formulaire de contact.
@@ -41,6 +42,8 @@ const FIELD_CLASS =
 	"focus:border-black focus:outline-none aria-[invalid=true]:border-red-500";
 
 const ContactForm = () => {
+	const t = useTranslations("ContactPage");
+	const SUBJECTS = getSubjects(t);
 	const [form, setForm] = useState<FormState>(EMPTY);
 	const [errors, setErrors] = useState<Record<string, string[]>>({});
 	const [sent, setSent] = useState(false);
@@ -108,12 +111,11 @@ const ContactForm = () => {
 				</span>
 
 				<h3 className="mb-4 font-bebas-neue text-[3.2rem]! leading-none tracking-wide uppercase">
-					Message envoyé
+					{t("success.title")}
 				</h3>
 
 				<p className="mx-auto max-w-[46ch] text-[1.6rem] font-light leading-relaxed text-neutral-600 font-manrope">
-					Nous vous répondons sous 24 heures ouvrées, à l’adresse que vous avez
-					indiquée.
+					{t("success.description")}
 				</p>
 
 				<button
@@ -121,7 +123,7 @@ const ContactForm = () => {
 					onClick={() => setSent(false)}
 					className="mt-10 text-[1.5rem] font-medium underline underline-offset-4 font-manrope hover:no-underline cursor-pointer"
 				>
-					Écrire un autre message
+					{t("success.newMessage")}
 				</button>
 			</div>
 		);
@@ -138,7 +140,7 @@ const ContactForm = () => {
 				className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
 				aria-hidden="true"
 			>
-				<label htmlFor="website">Ne pas remplir</label>
+				<label htmlFor="website">{t("form.honeypotLabel")}</label>
 				<input
 					id="website"
 					name="website"
@@ -156,7 +158,7 @@ const ContactForm = () => {
 						htmlFor="contact-name"
 						className="mb-3 block text-[1.4rem] font-medium uppercase tracking-wider font-manrope"
 					>
-						Nom <span className="text-red-600">*</span>
+						{t("form.nameLabel")} <span className="text-red-600">*</span>
 					</label>
 					<input
 						id="contact-name"
@@ -166,7 +168,7 @@ const ContactForm = () => {
 						value={form.name}
 						aria-invalid={Boolean(error("name"))}
 						onChange={(event) => set("name", event.target.value)}
-						placeholder="Aminata Sow"
+						placeholder={t("form.namePlaceholder")}
 						className={FIELD_CLASS}
 					/>
 					{error("name") && (
@@ -181,7 +183,7 @@ const ContactForm = () => {
 						htmlFor="contact-email"
 						className="mb-3 block text-[1.4rem] font-medium uppercase tracking-wider font-manrope"
 					>
-						E-mail <span className="text-red-600">*</span>
+						{t("form.emailLabel")} <span className="text-red-600">*</span>
 					</label>
 					<input
 						id="contact-email"
@@ -191,7 +193,7 @@ const ContactForm = () => {
 						value={form.email}
 						aria-invalid={Boolean(error("email"))}
 						onChange={(event) => set("email", event.target.value)}
-						placeholder="vous@exemple.com"
+						placeholder={t("form.emailPlaceholder")}
 						className={FIELD_CLASS}
 					/>
 					{error("email") && (
@@ -206,7 +208,7 @@ const ContactForm = () => {
 						htmlFor="contact-phone"
 						className="mb-3 block text-[1.4rem] font-medium uppercase tracking-wider font-manrope"
 					>
-						Téléphone
+						{t("form.phoneLabel")}
 					</label>
 					<input
 						id="contact-phone"
@@ -224,7 +226,7 @@ const ContactForm = () => {
 						htmlFor="contact-subject"
 						className="mb-3 block text-[1.4rem] font-medium uppercase tracking-wider font-manrope"
 					>
-						Sujet
+						{t("form.subjectLabel")}
 					</label>
 					<select
 						id="contact-subject"
@@ -232,7 +234,7 @@ const ContactForm = () => {
 						onChange={(event) => set("subject", event.target.value)}
 						className={`${FIELD_CLASS} cursor-pointer appearance-none`}
 					>
-						<option value="">Choisir un sujet…</option>
+						<option value="">{t("form.subjectPlaceholder")}</option>
 						{SUBJECTS.map((subject) => (
 							<option key={subject} value={subject}>
 								{subject}
@@ -247,7 +249,7 @@ const ContactForm = () => {
 					htmlFor="contact-message"
 					className="mb-3 block text-[1.4rem] font-medium uppercase tracking-wider font-manrope"
 				>
-					Message <span className="text-red-600">*</span>
+					{t("form.messageLabel")} <span className="text-red-600">*</span>
 				</label>
 				<textarea
 					id="contact-message"
@@ -256,7 +258,7 @@ const ContactForm = () => {
 					value={form.message}
 					aria-invalid={Boolean(error("message"))}
 					onChange={(event) => set("message", event.target.value)}
-					placeholder="Dites-nous en quoi nous pouvons vous aider."
+					placeholder={t("form.messagePlaceholder")}
 					className={`${FIELD_CLASS} resize-y`}
 				/>
 				{error("message") && (
@@ -273,13 +275,13 @@ const ContactForm = () => {
 				>
 					{send.error instanceof Error
 						? send.error.message
-						: "L'envoi a échoué. Réessayez dans un instant."}
+						: t("form.sendError")}
 				</p>
 			)}
 
 			<div className="flex flex-col gap-5 pt-2 sm:flex-row sm:items-center sm:justify-between">
 				<p className="text-[1.3rem] font-light text-neutral-500 font-manrope">
-					Réponse sous 24 h ouvrées.
+					{t("form.responseTime")}
 				</p>
 
 				<button
@@ -287,7 +289,7 @@ const ContactForm = () => {
 					disabled={send.isPending}
 					className="inline-flex items-center justify-center rounded-full bg-black px-12 py-5 text-[1.5rem] font-medium text-white transition-colors hover:bg-neutral-800 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 font-manrope"
 				>
-					{send.isPending ? "Envoi en cours…" : "Envoyer le message"}
+					{send.isPending ? t("form.sending") : t("form.submit")}
 				</button>
 			</div>
 		</form>

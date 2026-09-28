@@ -5,12 +5,21 @@ import { fetchOrderConfirmation } from "@/lib/store-api";
 import { Skeleton } from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
+const GENERIC_VARIANT_TITLES = ["default variant", "default", "default title"];
+
+const isGenericVariantTitle = (title?: string) => {
+	if (!title) return true;
+	return GENERIC_VARIANT_TITLES.includes(title.trim().toLowerCase());
+};
+
 const OrderConfirmationView = () => {
+	const t = useTranslations("OrderConfirmation");
 	const searchParams = useSearchParams();
 	const orderId = searchParams.get("order_id");
 	const token = searchParams.get("token");
@@ -40,27 +49,26 @@ const OrderConfirmationView = () => {
 						</svg>
 					</div>
 					<span className="text-xs uppercase tracking-widest font-semibold text-gray-400">
-						Confirmation introuvable
+						{t("notFoundBadge")}
 					</span>
 					<h1 className="mt-3 text-2xl font-bold text-gray-900">
-						Ce lien de confirmation n&apos;est plus valide
+						{t("notFoundTitle")}
 					</h1>
 					<p className="mt-2 text-gray-500">
-						Ce lien de confirmation est invalide ou a expiré. Retrouvez vos
-						commandes depuis votre compte.
+						{t("notFoundDescription")}
 					</p>
 					<div className="flex flex-col sm:flex-row gap-3 justify-center pt-6">
 						<Link
 							href="/account/orders"
 							className="px-6 py-3 bg-black text-white font-semibold rounded-full hover:bg-black/85 transition"
 						>
-							My Orders
+							{t("myOrders")}
 						</Link>
 						<Link
 							href="/"
 							className="px-6 py-3 bg-white border border-gray-300 text-gray-900 font-semibold rounded-full hover:bg-gray-50 transition"
 						>
-							Back to Home
+							{t("backToHome")}
 						</Link>
 					</div>
 				</div>
@@ -103,19 +111,19 @@ const OrderConfirmationView = () => {
 					</div>
 
 					<h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-sans tracking-tight text-gray-950">
-						Thank You!
+						{t("thankYou")}
 					</h1>
 					<p className="text-xl sm:text-2xl font-semibold text-gray-800 font-sans">
-						Your Order Has Been Received.
+						{t("orderReceived")}
 					</p>
 					<p className="text-sm sm:text-base text-gray-500 max-w-md mx-auto">
-						The order confirmation has been sent to{" "}
+						{t("confirmationSentTo")}{" "}
 						<span className="font-semibold text-gray-900 underline decoration-gray-300 underline-offset-4">
 							{order.email}
 						</span>
 					</p>
 					<p className="text-xs uppercase tracking-widest text-gray-400 font-semibold pt-1">
-						Order ID: #{order.display_id}
+						{t("orderId", { id: order.display_id })}
 					</p>
 				</div>
 
@@ -145,10 +153,16 @@ const OrderConfirmationView = () => {
 										{item.product_title}
 									</h3>
 									<div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-gray-500 mt-1.5">
-										<span>{item.variant_title}</span>
-										<span className="text-gray-300">|</span>
+										{!isGenericVariantTitle(item.variant_title) && (
+											<>
+												<span>
+													{t("variantLabel")} {item.variant_title}
+												</span>
+												<span className="text-gray-300">|</span>
+											</>
+										)}
 										<div>
-											<span>Quantity:</span>{" "}
+											<span>{t("quantity")}</span>{" "}
 											<span className="font-bold text-gray-800">{item.quantity}</span>
 										</div>
 									</div>
@@ -168,7 +182,7 @@ const OrderConfirmationView = () => {
 							onClick={() => setIsPaymentDetailOpen(!isPaymentDetailOpen)}
 							className="w-full flex items-center justify-between py-2 text-sm font-semibold text-gray-900 cursor-pointer group"
 						>
-							<span>Payment Method Detail</span>
+							<span>{t("paymentMethodDetail")}</span>
 							<span
 								className={`transform transition-transform text-gray-400 group-hover:text-gray-900 ${
 									isPaymentDetailOpen ? "rotate-180" : ""
@@ -181,12 +195,12 @@ const OrderConfirmationView = () => {
 						{isPaymentDetailOpen && (
 							<div className="p-4 mt-3 bg-white rounded-xl border border-gray-200 text-xs sm:text-sm text-gray-600 space-y-1">
 								<p>
-									<span className="font-medium text-gray-900">Status:</span>{" "}
-									{order.status === "canceled" ? "Cancelled" : "Confirmed"}
+									<span className="font-medium text-gray-900">{t("status")}</span>{" "}
+									{order.status === "canceled" ? t("cancelled") : t("confirmed")}
 								</p>
 								<p>
-									<span className="font-medium text-gray-900">Receipt:</span> Sent via
-									email to {order.email}
+									<span className="font-medium text-gray-900">{t("receipt")}</span>{" "}
+									{t("sentViaEmailTo", { email: order.email })}
 								</p>
 							</div>
 						)}
@@ -195,21 +209,21 @@ const OrderConfirmationView = () => {
 					{/* Cost Breakdown */}
 					<div className="pt-4 border-t border-gray-200/80 space-y-3 text-sm">
 						<div className="flex justify-between items-center text-gray-600">
-							<span>Subtotal</span>
+							<span>{t("subtotal")}</span>
 							<span className="font-semibold text-gray-900">
 								{formatCurrency_FR(order.subtotal, currency)}
 							</span>
 						</div>
 						<div className="flex justify-between items-center text-gray-600">
-							<span>Shipping</span>
+							<span>{t("shipping")}</span>
 							<span className="font-semibold text-gray-900">
 								{order.shipping_total === 0
-									? "Free"
+									? t("free")
 									: formatCurrency_FR(order.shipping_total, currency)}
 							</span>
 						</div>
 						<div className="flex justify-between items-center text-gray-600">
-							<span>Tax</span>
+							<span>{t("tax")}</span>
 							<span className="font-semibold text-gray-900">
 								{formatCurrency_FR(order.tax_total, currency)}
 							</span>
@@ -218,7 +232,7 @@ const OrderConfirmationView = () => {
 						<div className="w-full h-px bg-gray-200/80 my-2" />
 
 						<div className="flex justify-between items-center pt-1">
-							<span className="text-base font-bold text-gray-900">Total</span>
+							<span className="text-base font-bold text-gray-900">{t("total")}</span>
 							<span className="text-2xl sm:text-3xl font-extrabold text-gray-950 font-sans tracking-tight">
 								{formatCurrency_FR(order.total, currency)}
 							</span>
@@ -232,21 +246,21 @@ const OrderConfirmationView = () => {
 						href="/account/orders"
 						className="w-full sm:w-auto px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-full transition shadow-sm cursor-pointer text-sm sm:text-base text-center"
 					>
-						Track Your Order
+						{t("trackYourOrder")}
 					</Link>
 
 					<Link
 						href="/"
 						className="w-full sm:w-auto px-8 py-3.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-900 font-semibold rounded-full transition shadow-xs text-sm sm:text-base text-center"
 					>
-						Back to Home Page
+						{t("backToHomePage")}
 					</Link>
 
 					<Link
 						href="/collections"
 						className="w-full sm:w-auto px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-full transition shadow-sm text-sm sm:text-base text-center flex items-center justify-center gap-2"
 					>
-						<span>Continue Shopping</span>
+						<span>{t("continueShopping")}</span>
 						<ArrowRightIcon className="w-4 h-4" />
 					</Link>
 				</div>

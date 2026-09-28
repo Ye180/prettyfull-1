@@ -2,6 +2,7 @@
 
 import { Button } from "@prettyfull/ui";
 import { cn, formatCurrency_FR } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useGetShippingOptions } from "../../api/get-shipping-options";
 import { useSetShippingMethod } from "../../api/set-shipping-method";
@@ -14,6 +15,7 @@ interface DeliveryStepProps {
 }
 
 export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
+	const t = useTranslations("CheckoutPage.delivery");
 	const { goToStep, isStepCompleted, isStepActive } = useCheckoutStep();
 	const { selectedShippingOptionId, setSelectedShippingOptionId } =
 		useCheckoutStore();
@@ -54,10 +56,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 
 			onComplete?.(selectedOptionId);
 		} catch (error: any) {
-			setError(
-				error?.message ||
-					"Impossible de définir la méthode de livraison. Veuillez réessayer.",
-			);
+			setError(error?.message || t("setMethodError"));
 		} finally {
 			setIsLoading(false);
 		}
@@ -80,7 +79,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 						},
 					)}
 				>
-					Livraison
+					{t("title")}
 					{isCompleted && (
 						<svg
 							className="w-8 h-8 text-green-600"
@@ -102,7 +101,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 						onClick={handleEdit}
 						className="px-6 py-2 text-sm text-dark w-fit"
 					>
-						Modifier
+						{t("edit")}
 					</Button>
 				)}
 			</div>
@@ -111,27 +110,24 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 			{isOpen && canAccess ? (
 				<div className="space-y-4">
 					<p className="mb-4 text-sm text-gray-600">
-						Sélectionnez votre méthode de livraison préférée
+						{t("selectPreferredMethod")}
 					</p>
 
 					{(error || fetchError) && (
 						<div className="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg">
-							{error ||
-								"Erreur lors du chargement des options de livraison. Veuillez réessayer."}
+							{error || t("loadOptionsError")}
 						</div>
 					)}
 
 					{optionsLoading ? (
-						<p className="text-sm text-gray-500">Chargement des options de livraison...</p>
+						<p className="text-sm text-gray-500">{t("loadingOptions")}</p>
 					) : fetchError ? (
 						<div className="p-4 text-sm text-red-800 bg-red-100 rounded-lg">
-							Impossible de charger les options de livraison. Veuillez vérifier
-							votre connexion et réessayer.
+							{t("loadOptionsErrorDetailed")}
 						</div>
 					) : !shippingOptions || shippingOptions.length === 0 ? (
 						<div className="p-4 text-sm text-yellow-800 bg-yellow-100 rounded-lg">
-							Aucune option de livraison disponible pour votre panier. Veuillez
-							vérifier votre adresse de livraison.
+							{t("noOptionsAvailable")}
 						</div>
 					) : (
 						<div className="space-y-4">
@@ -156,11 +152,11 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 										/>
 										<div>
 											<p className="font-medium">{option.name}</p>
-											<p className="text-sm text-gray-500">Livraison standard</p>
+											<p className="text-sm text-gray-500">{t("standardShipping")}</p>
 										</div>
 									</div>
 									<span className="font-medium">
-										{option.amount ? formatCurrency_FR(option.amount) : "Gratuit"}
+										{option.amount ? formatCurrency_FR(option.amount) : t("free")}
 									</span>
 								</label>
 							))}
@@ -172,7 +168,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 						className="py-6 mt-6 w-full"
 						disabled={!selectedOptionId || isLoading || !cartId}
 					>
-						{isLoading ? "Traitement..." : "Continuer vers le paiement"}
+						{isLoading ? t("processing") : t("continueToPayment")}
 					</Button>
 				</div>
 			) : isCompleted ? (
@@ -181,20 +177,20 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 					{selectedShipping ? (
 						<>
 							<p className="font-medium">{selectedShipping.name}</p>
-							<p>Livraison standard</p>
+							<p>{t("standardShipping")}</p>
 							<p className="mt-1 font-medium">
 								{selectedShipping.amount
 									? formatCurrency_FR(selectedShipping.amount)
-									: "Gratuit"}
+									: t("free")}
 							</p>
 						</>
 					) : (
-						<p>Méthode de livraison sélectionnée</p>
+						<p>{t("methodSelected")}</p>
 					)}
 				</div>
 			) : !canAccess ? (
 				<p className="text-sm text-gray-400">
-					Complétez l'étape précédente pour continuer
+					{t("completePreviousStep")}
 				</p>
 			) : null}
 

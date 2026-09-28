@@ -4,6 +4,7 @@ import { useRelatedProducts } from "@/features/products/hooks/use-related-produc
 import SectionHeading from "@/shared/components/molecules/core/section-heading";
 import { useRegionStore } from "@/stores/useRegion";
 import { CardProduct, GridCardProduct } from "@prettyfull/ui";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Container from "../../../../../../../packages/ui/src/layouts/helpers/container";
 
@@ -21,6 +22,7 @@ const ProductSuggestion = ({
 		categorySlug,
 		excludeProductId,
 	);
+	const t = useTranslations("ProductPage.suggestions");
 
 	if (!isLoading && (!products || products.length === 0)) return null;
 
@@ -30,7 +32,7 @@ const ProductSuggestion = ({
 		// la page, sans aller jusqu'au bord de l'écran comme les sections d'accueil.
 		<div className="relative left-1/2 w-screen -translate-x-1/2">
 			<Container maxWidth="1900px" className="py-8 space-y-8">
-				<SectionHeading title="Tu peux aussi aimer" />
+				<SectionHeading title={t("heading")} />
 
 				<GridCardProduct action_grid className="max-sm:gap-y-8">
 					<>
@@ -57,7 +59,7 @@ const ProductSuggestion = ({
 						href="/collections"
 						className="inline-flex items-center px-8 py-3 text-sm font-medium text-white bg-black rounded-full transition-colors hover:bg-gray-800"
 					>
-						See More
+						{t("loadMore")}
 					</Link>
 				</div>
 			</Container>

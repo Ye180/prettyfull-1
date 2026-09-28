@@ -1,7 +1,13 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import Container from "../../../../../../packages/ui/src/layouts/helpers/container";
-import { DataRule } from "../data";
+import { getTermsItems } from "../data";
 
 const Content = () => {
+	const t = useTranslations("TermsPage");
+	const DataRule = getTermsItems(t);
+
 	return (
 		<Container
 			maxWidth="100vw"

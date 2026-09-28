@@ -6,6 +6,7 @@ import { fetchAddresses, fetchProfile, updateProfile } from "@/lib/store-api";
 import { useRegionStore } from "@/stores/useRegion";
 import { Button, Input, Skeleton } from "@prettyfull/ui";
 import { formatCurrency_FR } from "@prettyfull/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -37,19 +38,23 @@ const StatCard = ({ icon: Icon, label, value, href }: any) => (
 	</Link>
 );
 
-const statusLabels: Record<string, { label: string; className: string }> = {
+const statusLabels: Record<
+	string,
+	{ statusKey: string; className: string }
+> = {
 	not_fulfilled: {
-		label: "En préparation",
-		className: "bg-blue-100 text-blue-800",
+		statusKey: "processing",
+		className: "bg-blue-100 text-amber-700",
 	},
-	fulfilled: { label: "Livré", className: "bg-green-100 text-green-800" },
-	delivered: { label: "Livré", className: "bg-green-100 text-green-800" },
-	shipped: { label: "Expédié", className: "bg-indigo-100 text-indigo-800" },
-	canceled: { label: "Annulé", className: "bg-red-100 text-red-800" },
-	pending: { label: "En attente", className: "bg-yellow-100 text-yellow-800" },
+	fulfilled: { statusKey: "delivered", className: "bg-green-100 text-green-800" },
+	delivered: { statusKey: "delivered", className: "bg-green-100 text-green-800" },
+	shipped: { statusKey: "shipped", className: "bg-indigo-100 text-indigo-800" },
+	canceled: { statusKey: "cancelled", className: "bg-red-100 text-red-800" },
+	pending: { statusKey: "pending", className: "bg-yellow-100 text-yellow-800" },
 };
 
 export default function AccountPage() {
+	const t = useTranslations("Account");
 	const router = useRouter();
 
 	const { data: profile } = useQuery({
@@ -111,7 +116,9 @@ export default function AccountPage() {
 			setTimeout(() => setSaveSuccess(false), 3000);
 		} catch (error) {
 			setSaveError(
-				error instanceof Error ? error.message : "Enregistrement impossible.",
+				error instanceof Error
+					? error.message
+					: t("overview.personalInfo.saveError"),
 			);
 		} finally {
 			setIsSaving(false);
@@ -119,8 +126,14 @@ export default function AccountPage() {
 	};
 
 	const lastOrder = orders[0];
-	const lastOrderStatus = lastOrder
+	const lastOrderStatusMeta = lastOrder
 		? statusLabels[lastOrder.status] || statusLabels.pending
+		: null;
+	const lastOrderStatus = lastOrderStatusMeta
+		? {
+				className: lastOrderStatusMeta.className,
+				label: t(`orders.status.${lastOrderStatusMeta.statusKey}`),
+			}
 		: null;
 
 	const defaultAddress =
@@ -131,36 +144,38 @@ export default function AccountPage() {
 			<div className="flex flex-col gap-4 justify-between xs:flex-row xs:items-center xs:px-3">
 				<div>
 					<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-						Aperçu
+						{t("menu.overview")}
 					</h2>
 					<p className="text-gray-500">
-						Happy to see you again, {customer.first_name || customer.email}.
+						{t("overview.greeting", {
+							name: customer.first_name || customer.email,
+						})}
 					</p>
 				</div>
 				<Button
 					variant="outline"
 					className="py-6! rounded-full border-gray-200 w-fit px-12!"
 				>
-					Besoin d&apos;aide ?
+					{t("overview.needHelp")}
 				</Button>
 			</div>
 
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 				<StatCard
 					icon={OrderIcon}
-					label="Commandes"
+					label={t("overview.stats.orders")}
 					value={ordersLoading ? "..." : String(ordersCount)}
 					href="/account/orders"
 				/>
 				<StatCard
 					icon={Heart}
-					label="Liste de souhaits"
+					label={t("overview.stats.wishlist")}
 					value="0"
 					href="/wishlist"
 				/>
 				<StatCard
 					icon={AddressIcon}
-					label="Adresses"
+					label={t("overview.stats.addresses")}
 					value={String(customer.addresses?.length ?? 0)}
 					href="/account/addresses"
 				/>
@@ -171,7 +186,7 @@ export default function AccountPage() {
 					<div className="space-y-10">
 						<div className="flex justify-between items-center">
 							<p className=" text-gray-800 font-semibold text-xl! ">
-								Dernière commande
+								{t("overview.lastOrder.title")}
 							</p>
 							{lastOrderStatus && (
 								<span
@@ -189,7 +204,9 @@ export default function AccountPage() {
 									{lastOrder.items?.[0]?.thumbnail && (
 										<Image
 											src={lastOrder.items[0].thumbnail}
-											alt={lastOrder.items[0].product_title || "Produit"}
+											alt={
+												lastOrder.items[0].product_title || t("orders.product")
+											}
 											width={96}
 											height={96}
 											className="object-fill object-top"
@@ -199,7 +216,9 @@ export default function AccountPage() {
 								</div>
 								<div>
 									<p className="text-sm font-medium text-gray-900">
-										Commande n°{lastOrder.display_id}
+										{t("overview.lastOrder.orderNumber", {
+											id: lastOrder.display_id,
+										})}
 									</p>
 									<p className="text-sm text-gray-500">
 										{new Date(lastOrder.created_at).toLocaleDateString(
@@ -217,12 +236,14 @@ export default function AccountPage() {
 								</div>
 							</div>
 						) : (
-							<p className="text-sm text-gray-500">Aucune commande</p>
+							<p className="text-sm text-gray-500">
+								{t("overview.lastOrder.empty")}
+							</p>
 						)}
 					</div>
 					<Link href="/account/orders">
 						<Button variant="outline" className="mt-6 w-full border-gray-200">
-							Voir les commandes
+							{t("overview.lastOrder.viewOrders")}
 						</Button>
 					</Link>
 				</div>
@@ -231,7 +252,7 @@ export default function AccountPage() {
 					<div className="space-y-10">
 						<div className="flex justify-between items-center mb-4">
 							<p className=" text-gray-800 font-semibold  text-xl! ">
-								Adresse par défaut
+								{t("overview.defaultAddress.title")}
 							</p>
 						</div>
 						{defaultAddress ? (
@@ -248,12 +269,14 @@ export default function AccountPage() {
 							</address>
 						) : (
 							<address className="space-y-1 text-sm not-italic text-gray-600">
-								<p className="text-gray-500">Aucune adresse enregistrée</p>
+								<p className="text-gray-500">
+									{t("overview.defaultAddress.empty")}
+								</p>
 							</address>
 						)}
 						<Link href="/account/addresses">
 							<Button variant="outline" className="mt-6 w-full border-gray-200">
-								Voir les adresses
+								{t("overview.defaultAddress.viewAddresses")}
 							</Button>
 						</Link>
 					</div>
@@ -265,25 +288,27 @@ export default function AccountPage() {
 				<div className="flex flex-col gap-4 justify-between sm:flex-row sm:items-center">
 					<div>
 						<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-							Informations personnelles
+							{t("overview.personalInfo.title")}
 						</h2>
-						<p className="text-gray-500">Mettez à jour vos informations de connexion.</p>
+						<p className="text-gray-500">
+							{t("overview.personalInfo.subtitle")}
+						</p>
 					</div>
 				</div>
 				<div className="px-8 py-12 bg-white border border-gray-100 rounded-2xl!">
 					<form className="space-y-10 w-full" onSubmit={handleSaveProfile}>
 						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 							<Input
-								label="Prénom"
-								placeholder="Saisissez votre prénom"
+								label={t("overview.personalInfo.firstName")}
+								placeholder={t("overview.personalInfo.firstNamePlaceholder")}
 								className="h-fit"
 								value={firstName}
 								onChange={(e) => setFirstName(e.target.value)}
 							/>
 
 							<Input
-								label="Nom"
-								placeholder="Saisissez votre nom"
+								label={t("overview.personalInfo.lastName")}
+								placeholder={t("overview.personalInfo.lastNamePlaceholder")}
 								className="h-fit"
 								value={lastName}
 								onChange={(e) => setLastName(e.target.value)}
@@ -292,16 +317,16 @@ export default function AccountPage() {
 						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 							<Input
 								type="email"
-								label="E-mail"
-								placeholder="exemple@gmail.com"
+								label={t("overview.personalInfo.email")}
+								placeholder={t("overview.personalInfo.emailPlaceholder")}
 								className="h-fit"
 								value={email}
 								disabled
 							/>
 
 							<Input
-								label="Téléphone"
-								placeholder="+225 07 00 00 00 00"
+								label={t("overview.personalInfo.phone")}
+								placeholder={t("addresses.phonePlaceholder")}
 								className="h-fit"
 								value={phone}
 								onChange={(e) => setPhone(e.target.value)}
@@ -313,10 +338,14 @@ export default function AccountPage() {
 								className="px-8 font-medium text-white bg-black rounded-full shadow-lg transition-all hover:bg-gray-800 shadow-gray-200"
 								disabled={isSaving}
 							>
-								{isSaving ? "Enregistrement..." : "Enregistrer"}
+								{isSaving
+									? t("overview.personalInfo.saving")
+									: t("overview.personalInfo.save")}
 							</Button>
 							{saveSuccess && (
-								<span className="text-sm text-green-600">Profil mis à jour !</span>
+								<span className="text-sm text-green-600">
+									{t("overview.personalInfo.saveSuccess")}
+								</span>
 							)}
 						</div>
 					</form>

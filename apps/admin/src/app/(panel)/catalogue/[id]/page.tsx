@@ -37,7 +37,7 @@ import { VariantManager } from "@/features/catalogue/variant-manager";
  *
  * Les champs scalaires et la structure de déclinaison sont pilotés
  * séparément : modifier un prix ne doit pas réécrire les variantes, et
- * ajouter une taille ne doit pas exiger de renvoyer tout le produit.
+ * ajouter un format ne doit pas exiger de renvoyer tout le produit.
  */
 const ProductEditPage = () => {
 	const { id } = useParams<{ id: string }>();

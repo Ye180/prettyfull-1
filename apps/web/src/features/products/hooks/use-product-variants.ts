@@ -160,6 +160,15 @@ export function useProductVariants(product: StoreProduct | null | undefined) {
 		}
 	}, [colorVariants, selectedColor]);
 
+	// Plus de sélecteur de format côté storefront (§ refonte design) : le
+	// premier format disponible est résolu automatiquement dès qu'un coloris
+	// est actif, sans attendre un clic utilisateur.
+	useEffect(() => {
+		if (!selectedSize && availableSizes.length > 0) {
+			setSelectedSize(availableSizes[0]!);
+		}
+	}, [availableSizes, selectedSize]);
+
 	const handleColorChange = useCallback((newColor: string) => {
 		setSelectedColor(newColor);
 		setSelectedSize("");

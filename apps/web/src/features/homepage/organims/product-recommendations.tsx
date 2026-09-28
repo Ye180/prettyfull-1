@@ -8,12 +8,12 @@ import Link from "next/link";
 import { useMemo } from "react";
 
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
-	robes: "Des robes pour toutes les occasions, du quotidien aux soirées les plus élégantes.",
-	hauts: "Chemisiers, pulls et t-shirts pensés pour se marier avec tout le reste de votre garde-robe.",
-	ensembles: "Des tenues coordonnées prêtes à porter, pour un look abouti en un seul geste.",
-	accessoires: "Sacs, bijoux et lunettes pour signer chacune de vos tenues.",
-	nouveautes: "Les dernières arrivées de la boutique, à découvrir en premier.",
-	soldes: "Nos meilleures pièces à prix réduit, en quantités limitées.",
+	vitamines: "Vitamines essentielles pour soutenir votre immunité et votre énergie au quotidien.",
+	mineraux: "Magnésium, fer, zinc et autres minéraux pour combler les besoins de votre organisme.",
+	proteines: "Protéines et compléments sportifs pour accompagner votre récupération et vos objectifs.",
+	bien_etre: "Probiotiques, oméga-3 et formules bien-être pour prendre soin de vous au naturel.",
+	gummies: "Nos vitamines en gommes, une façon gourmande de prendre soin de vous.",
+	nouveautes: "Les derniers arrivages de la boutique, à découvrir en premier.",
 };
 
 export const ProductRecommendations = () => {
@@ -24,21 +24,21 @@ export const ProductRecommendations = () => {
 	if (!isLoading && spotlightCategories.length === 0) return null;
 
 	return (
-		<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+		<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
 			{/* Header */}
 			<div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-10">
 				<div className="max-w-xl space-y-2">
 					<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#080808]">
-						Acheter par Catégorie
+						Acheter par Besoin
 					</h2>
 					<p className="text-[1.4rem] text-[#666666]">
-						De la robe de soirée aux accessoires du quotidien, retrouvez tout notre univers mode.
+						Vitamines, minéraux, protéines et bien-être : trouvez la gamme adaptée à vos besoins.
 					</p>
 				</div>
 
 				<Link
 					href={COLLECTION_PATHS.collectionList}
-					className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white text-[1.4rem] font-medium rounded-full whitespace-nowrap hover:bg-[#222] transition-all self-start sm:self-auto shadow"
+					className="inline-flex items-center gap-2 px-6 py-3 bg-amber-600 text-white text-[1.4rem] font-medium rounded-lg whitespace-nowrap hover:bg-amber-700 transition-all self-start sm:self-auto shadow"
 				>
 					<span>Voir tout</span>
 					<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -49,25 +49,25 @@ export const ProductRecommendations = () => {
 			</div>
 
 			{/* Category Cards */}
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 				{isLoading
 					? Array.from({ length: 3 }, (_, i) => (
 							<div key={i} className="space-y-4 animate-pulse">
-								<div className="w-full bg-gray-200 rounded-[2.2rem] aspect-16/11" />
+								<div className="w-full bg-gray-200 rounded-lg aspect-16/11" />
 								<div className="w-2/3 h-6 bg-gray-200 rounded" />
 								<div className="w-full h-4 bg-gray-100 rounded" />
 							</div>
 						))
 					: spotlightCategories.map((category) => {
 							const imageUrl =
-								getMediaUrl(category.product_category_image?.[0]?.url) || "/category/category1.jpg";
+								getMediaUrl(category.product_category_image?.[0]?.url) || "/category/category-vitamins.jpg";
 							return (
 								<Link
 									key={category.id}
 									href={COLLECTION_PATHS.collectionDetail(category.handle)}
 									className="group flex flex-col space-y-4"
 								>
-									<div className="relative w-full aspect-16/11 rounded-[2.2rem] overflow-hidden bg-[#F5F5F5]">
+									<div className="relative w-full aspect-16/11 rounded-lg overflow-hidden bg-[#F5F5F5]">
 										<Image
 											src={imageUrl}
 											alt={category.name}
@@ -82,8 +82,9 @@ export const ProductRecommendations = () => {
 											{category.name}
 										</h3>
 										<p className="text-[1.4rem] text-[#666666] leading-relaxed">
-											{CATEGORY_DESCRIPTIONS[category.handle] ??
-												"Découvrez notre sélection dans cette catégorie."}
+											{category.description ||
+												CATEGORY_DESCRIPTIONS[category.handle] ||
+												"Découvrez notre sélection dans cette gamme."}
 										</p>
 									</div>
 								</Link>

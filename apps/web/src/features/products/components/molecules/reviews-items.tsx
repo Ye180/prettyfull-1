@@ -1,8 +1,9 @@
 import type { Review } from "@prettyfull/contracts";
 import { StarIcon } from "@prettyfull/ui";
+import { useLocale, useTranslations } from "next-intl";
 
-const formatDate = (iso: string) =>
-	new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+const formatDate = (iso: string, locale: string) =>
+	new Date(iso).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" });
 
 const Stars = ({ rating }: { rating: number }) => (
 	<div className="flex items-center gap-1">
@@ -18,6 +19,7 @@ const Stars = ({ rating }: { rating: number }) => (
 );
 
 const Photos = ({ photoUrls }: { photoUrls: string[] }) => {
+	const t = useTranslations("ProductPage.reviews");
 	if (photoUrls.length === 0) return null;
 	return (
 		<div className="flex gap-2 pl-2">
@@ -26,7 +28,7 @@ const Photos = ({ photoUrls }: { photoUrls: string[] }) => {
 				<img
 					key={url}
 					src={url}
-					alt="Photo de l'avis"
+					alt={t("photoAlt")}
 					className="w-16 h-16 rounded-xl object-cover border border-gray-200"
 				/>
 			))}
@@ -35,6 +37,7 @@ const Photos = ({ photoUrls }: { photoUrls: string[] }) => {
 };
 
 export const ReviewsOneItems = ({ review }: { review: Review }) => {
+	const locale = useLocale();
 	return (
 		<div className="p-6 space-y-4 rounded-2xl border border-gray-200">
 			<div className="flex justify-between items-start">
@@ -46,7 +49,7 @@ export const ReviewsOneItems = ({ review }: { review: Review }) => {
 					</div>
 				</div>
 				<p className="text-sm font-light tracking-wide text-gray-500">
-					{formatDate(review.createdAt)}
+					{formatDate(review.createdAt, locale)}
 				</p>
 			</div>
 			<p className="text-base font-normal tracking-wide text-black">{review.body}</p>

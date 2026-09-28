@@ -1,176 +1,1061 @@
 {
-	"headerResponsive": {
-		"setting": "Setting"
-	},
-	"HomePage": {
-		"header": {
-			"placeholder": "Search for products..."
-		},
-		"hero": {
-			"eyebrowLeft": "All Styles",
-			"eyebrowCenter": "Shop Everything",
-			"eyebrowRight": "Everyday Wear",
-			"title": "New Season Essentials",
-			"subtitle": "Soft silhouettes and modern staples for everyday wear.",
-			"ctaButton": "Shop Now"
-		},
-		"promoDuo": {
-			"saleTitle": "Mid-Season Sale",
-			"saleSubtitle": "Up to 40% off selected styles",
-			"saleCta": "Shop Sale",
-			"knitwearTitle": "Everyday Knitwear",
-			"knitwearSubtitle": "Lightweight layers you'll reach for daily",
-			"knitwearCta": "Explore"
-		},
-		"shopByCollection": {
-			"title": "Shop by Collection",
-			"jacket": "Jacket",
-			"tshirts": "T-Shirts",
-			"shorts": "Shorts",
-			"ctaButton": "See Collection"
-		},
-		"news": {
-			"title": "News Arrivals",
-			"viewAll": "View all"
-		},
-		"bestSelling": {
-			"title": "Explore Our Best Selling Product Collection",
-			"subtitle": "Discover and dive into our most popular and best-selling categories that everyone is talking about!",
-			"ctaButton": "Let's Shop Now",
-			"allLabel": "All Collection"
-		},
-		"containers": {
-			"paragraph1": "We are committed to providing you with a seamless and enjoyable shopping experience."
-		},
-		"collection": {
-			"title": "Women's Collection: elegance reinvented",
-			"subtitle": "Stay on trend with our new selection of modern styles, designed just for you.",
-			"deal": "Deal of week",
-			"ctaButton": "Go for it"
-		},
-		"trendReport": {
-			"title": "The Trend Report",
-			"viewAll": "View all"
-		},
-		"recommendation": {
-			"title": "RECOMMENDED FOR YOU",
-			"forYou": "For you",
-			"woman": "Woman",
-			"men": "Men",
-			"accessory": "Accessory"
-		},
-		"howItWorks": {
-			"title": "Order in 3 steps",
-			"description": "From your screen to your door in Abidjan.",
-			"step1Title": "Browse",
-			"step1Description": "Explore the collection and pick your favorites.",
-			"step2Title": "Order",
-			"step2Description": "Checkout securely in a few clicks.",
-			"step3Title": "We ship to Abidjan",
-			"step3Description": "Your order is packed and shipped straight to your door."
-		},
-		"trust": {
-			"title": "Loved by our customers",
-			"quote": "The quality is even better than in the photos, and it arrived in Abidjan faster than I expected. I'm already planning my next order.",
-			"author": "Aïcha K.",
-			"role": "Verified customer"
-		},
-		"features": {
-			"title": "We Deliver Exceptional Customer Experiences",
-			"description": "We are committed to delivering exceptional customer experiences that exceed expectations and make every interaction memorable.",
-			"paymentTitle": "Secure payment",
-			"paymentDescription": "Your transactions are encrypted and protected.",
-			"deliveryTitle": "Delivery to Abidjan",
-			"deliveryDescription": "Fast, tracked shipping straight to your door.",
-			"returnsTitle": "Easy returns",
-			"returnsDescription": "Not the right fit? Return it hassle-free."
-		},
-		"finalCta": {
-			"title": "Let's Take Your Fashion to The Stratosphere",
-			"subtitle": "Ready to elevate your style? Let's launch your fashion into the stratosphere with bold choices and unique pieces.",
-			"ctaButton": "Get Started Now"
-		},
-		"featuredProduct": {
-			"label": "New Collection",
-			"addToCart": "Add to Cart"
-		}
-	},
-	"CollectionPage": {
-		"filters": {
-			"sort_by": "Sort by",
-			"type_clothes": "Best Sellers",
-			"colors": "Colors",
-			"adjust": "Adjust",
-			"taille": "Size",
-			"clear": "Clear",
-			"apply": "Apply"
-		}
-	},
-	"Cart": {
-		"product": {
-			"title": "Cart"
-		},
-		"summary": {
-			"title": " Summary",
-			"totalPrize": "Total Prize",
-			"subtotal": "Subtotal",
-			"shipping": "Shipping",
-			"taxes": "Estimate Duties And Taxes",
-			"total": "Total",
-			"checkout": "Checkout",
-			"apply": "Apply",
-			"couponsCode": "Coupons Code",
-			"couponPlaceholder": "Enter code",
-			"couponComingSoon": "Coupons coming soon"
-		}
-	},
-	"Wishlist": {
-		"title": "Wishlist"
-	},
-	"CheckoutPage": {
-		"checkoutForm": {
-			"labelMethod": "How would you like to receive your order?",
-			"placeholderMethod": "Enter your delivery method...",
-			"labelAddress": "Enter your phone number, name, and address...",
-			"placeholderNumber": "Enter your phone number...",
-			"description": "* For delivery, you can enter your address precisely.",
-			"placeholderLastName": "Enter your first and last name...",
-			"labelName": "Name",
-			"labelEmail": "Email",
-			"placeholderAddress": "Enter your address...",
-			"labelPostCode": "Enter your postal code",
-			"placeholderPostCode": "Enter your postal code...",
-			"labelCity": "Enter your city",
-			"placeholderCity": "Enter your city...",
-			"labelCountry": "Enter your country",
-			"placeholderCountry": "Enter your country...",
-			"labelState": "Enter your region",
-			"placeholderState": "Enter your region..."
-		},
-		"infosCheckout": {
-			"save": "Save this address to my profile",
-			"favorite": "Make this my default address",
-			"termes": "Terms and Conditions",
-			"accept": "I have read and accept the terms and conditions",
-			"ctaButton": "Proceed to payment"
-		},
-		"summary": {
-			"title": "Summary",
-			"subtotal": "Subtotal",
-			"shipping": "Shipping Costs",
-			"taxes": "Estimated Duties and Taxes",
-			"total": "Total"
-		},
-		"features": {
-			"delivery": "Delivery",
-			"shipping": "Shipping",
-			"billing": "Billing",
-			"payment": "Payment",
-			"data": "We take care of every step of your order, from choosing your piece to delivery."
-		},
-		"items": {
-			"color": "Color",
-			"size": "Size"
-		}
-	}
+  "headerResponsive": {
+    "setting": "Setting"
+  },
+  "Header": {
+    "currencyLanguage": {
+      "title": "Currency",
+      "description": "Choose your display currency.",
+      "currencyLabel": "Currency",
+      "applyButton": "Apply"
+    },
+    "nav": {
+      "openMenu": "Open menu",
+      "homeAriaLabel": "Go to homepage",
+      "logout": "Log out",
+      "login": "Log in",
+      "register": "Sign up",
+      "closeMenu": "Close menu",
+      "home": "Home",
+      "collapseSubcategoriesOf": "Collapse subcategories of {name}",
+      "expandSubcategoriesOf": "Expand subcategories of {name}",
+      "info": {
+        "about": "About",
+        "contact": "Contact",
+        "faq": "FAQ"
+      }
+    },
+    "cart": {
+      "ariaViewCart": "View cart",
+      "title": "Your cart",
+      "ariaClose": "Close",
+      "emptyTitle": "Your cart is empty",
+      "emptyDescription": "Browse our range and add your favorite wellness products.",
+      "subtotal": "Subtotal",
+      "shippingNote": "Shipping calculated at checkout.",
+      "viewCartButton": "View cart",
+      "increaseQuantity": "Increase quantity",
+      "decreaseQuantity": "Decrease quantity",
+      "removeItem": "Remove {name} from cart"
+    },
+    "wishlist": {
+      "ariaView": "View wishlist",
+      "title": "Your wishlist",
+      "emptyBadge": "Empty list",
+      "emptyTitle": "Your wishlist is empty",
+      "emptyDescription": "Add your favorite products to easily find them later.",
+      "removeItem": "Remove {name} from wishlist",
+      "viewButton": "View wishlist"
+    }
+  },
+  "Footer": {
+    "copyright": "© 2026 Prettyfull. All rights reserved.",
+    "termsLink": "Terms & Conditions",
+    "shippingReturns": "Shipping & Returns",
+    "address": "Abidjan, Cocody Angré, Côte d'Ivoire",
+    "productsTitle": "Products",
+    "helpTitle": "Help",
+    "aboutTitle": "About",
+    "legalTitle": "Legal",
+    "vitamins": "Vitamins",
+    "minerals": "Minerals",
+    "proteins": "Proteins",
+    "wellness": "Wellness",
+    "faq": "FAQ",
+    "trackOrder": "Track my order",
+    "contactUs": "Contact us",
+    "ourStory": "Our story",
+    "contact": "Contact"
+  },
+  "HomePage": {
+    "header": {
+      "placeholder": "Search for products...",
+      "searchAriaLabel": "Search",
+      "noResultsFor": "No results for \"{query}\"",
+      "searching": "Searching...",
+      "popularCategories": "Popular categories",
+      "topResults": "Top results",
+      "trending": "Trending",
+      "youMayLike": "You may also like"
+    },
+    "hero": {
+      "eyebrowLeft": "Lab Tested",
+      "eyebrowCenter": "Fast Shipping",
+      "eyebrowRight": "Quality Guaranteed",
+      "title": "Our Full Wellness Range",
+      "subtitle": "Lab-tested vitamins, minerals and supplements for your everyday health routine.",
+      "ctaButton": "Shop Now"
+    },
+    "promoDuo": {
+      "saleTitle": "Mid-Season Sale",
+      "saleSubtitle": "Up to 40% off selected styles",
+      "saleCta": "Shop Sale",
+      "knitwearTitle": "Everyday Knitwear",
+      "knitwearSubtitle": "Lightweight layers you'll reach for daily",
+      "knitwearCta": "Explore"
+    },
+    "shopByCollection": {
+      "title": "Shop by Collection",
+      "jacket": "Jacket",
+      "tshirts": "T-Shirts",
+      "shorts": "Shorts",
+      "ctaButton": "See Collection"
+    },
+    "news": {
+      "title": "News Arrivals",
+      "viewAll": "View all"
+    },
+    "shopNewProducts": {
+      "title": "Discover our new arrivals",
+      "discover": "Discover"
+    },
+    "bestSelling": {
+      "title": "Explore Our Best Selling Product Collection",
+      "subtitle": "Discover and dive into our most popular and best-selling categories that everyone is talking about!",
+      "ctaButton": "Let's Shop Now",
+      "allLabel": "All Collection",
+      "addToWishlist": "Add to wishlist",
+      "optionsCount": "({count} options)"
+    },
+    "customerExperience": {
+      "title": "Formulated for your well-being",
+      "subtitle": "Carefully selected ingredients and formulas designed to support your everyday health.",
+      "labTestedTitle": "Lab tested",
+      "labTestedDescription": "Every batch is analyzed by independent laboratories to guarantee purity and effectiveness.",
+      "nonGmoTitle": "Non-GMO",
+      "nonGmoDescription": "Natural ingredients, free from genetically modified organisms, carefully selected.",
+      "guaranteeTitle": "Satisfaction guaranteed",
+      "guaranteeDescription": "We stand behind the quality of our products — refunded if you're not satisfied."
+    },
+    "heroBanner": {
+      "title": "Your wellness starts here",
+      "subtitle": "Discover our range of vitamins and supplements, formulated to support your active life in Abidjan.",
+      "ctaButton": "Shop now"
+    },
+    "trustBadges": {
+      "eyebrow": "Our quality commitments",
+      "title": "Formulated with your wellness in mind",
+      "nonGmo": "Non-GMO",
+      "glutenFree": "Gluten-free",
+      "vegan": "Vegan",
+      "vegetarian": "Vegetarian",
+      "natural": "100% natural"
+    },
+    "containers": {
+      "paragraph1": "We are committed to providing you with a seamless and enjoyable shopping experience."
+    },
+    "collection": {
+      "title": "Women's Collection: elegance reinvented",
+      "subtitle": "Stay on trend with our new selection of modern styles, designed just for you.",
+      "deal": "Deal of week",
+      "ctaButton": "Go for it"
+    },
+    "trendReport": {
+      "title": "The Trend Report",
+      "viewAll": "View all"
+    },
+    "recommendation": {
+      "title": "RECOMMENDED FOR YOU",
+      "forYou": "For you",
+      "woman": "Woman",
+      "men": "Men",
+      "accessory": "Accessory"
+    },
+    "howItWorks": {
+      "title": "Order in 3 steps",
+      "description": "From your screen to your door in Abidjan.",
+      "step1Title": "Browse",
+      "step1Description": "Explore the collection and pick your favorites.",
+      "step2Title": "Order",
+      "step2Description": "Checkout securely in a few clicks.",
+      "step3Title": "We ship to Abidjan",
+      "step3Description": "Your order is packed and shipped straight to your door."
+    },
+    "trust": {
+      "title": "Loved by our customers",
+      "quote": "The quality is even better than in the photos, and it arrived in Abidjan faster than I expected. I'm already planning my next order.",
+      "author": "Aïcha K.",
+      "role": "Verified customer"
+    },
+    "features": {
+      "title": "We Deliver Exceptional Customer Experiences",
+      "description": "We are committed to delivering exceptional customer experiences that exceed expectations and make every interaction memorable.",
+      "paymentTitle": "Secure payment",
+      "paymentDescription": "Your transactions are encrypted and protected.",
+      "deliveryTitle": "Delivery to Abidjan",
+      "deliveryDescription": "Fast, tracked shipping straight to your door.",
+      "returnsTitle": "Easy returns",
+      "returnsDescription": "Not the right fit? Return it hassle-free."
+    },
+    "finalCta": {
+      "title": "Let's Take Your Fashion to The Stratosphere",
+      "subtitle": "Ready to elevate your style? Let's launch your fashion into the stratosphere with bold choices and unique pieces.",
+      "ctaButton": "Get Started Now"
+    },
+    "featuredProduct": {
+      "label": "New Collection",
+      "addToCart": "Add to Cart"
+    }
+  },
+  "AboutPage": {
+    "hero": {
+      "eyebrow": "Our story",
+      "title": "Supplements designed from Abidjan",
+      "subtitle": "PrettyFull brings together a curated selection of vitamins and supplements: quality ingredients, lab-tested dosages, and deliberately limited batches to stay fresh.",
+      "imageAlt": "PrettyFull, vitamins and supplements from Abidjan"
+    },
+    "pillars": {
+      "pillar1": {
+        "title": "Our Positioning",
+        "description": "We favor simple, transparent formulas, precisely dosed, for wellness that lasts."
+      },
+      "pillar2": {
+        "title": "Our Philosophy",
+        "description": "We exist to simplify your everyday health routine, with essential, quality supplements for every stage of life."
+      },
+      "pillar3": {
+        "title": "Our Mission",
+        "description": "A trusted choice for households in Abidjan and beyond, our brand takes care of your health with carefully designed formulas."
+      }
+    },
+    "texture": {
+      "eyebrow": "Craftsmanship",
+      "title": "Formulas chosen with care",
+      "imageAlt": "PrettyFull ingredients and formulas",
+      "points": {
+        "point1": {
+          "title": "A careful ingredient selection",
+          "description": "Actives chosen for their purity, bioavailability and traceable origin, from supplier to capsule."
+        },
+        "point2": {
+          "title": "Precise dosages",
+          "description": "Every formula is calibrated to meet recommended intakes, without under-dosing or unnecessary excess."
+        },
+        "point3": {
+          "title": "Rigorous testing",
+          "description": "Independent lab analysis, batch after batch, for supplements that keep their promises."
+        }
+      }
+    },
+    "responsibility": {
+      "badge": "Responsible commitment",
+      "title": "An environmental responsibility that matters to us",
+      "subtitle": "We believe in a positive impact through thoughtful production and more responsible sourcing practices.",
+      "imageAlt": "PrettyFull responsible sourcing",
+      "items": {
+        "item1": {
+          "title": "Responsible ingredients",
+          "description": "We favor sustainable supply chains and recyclable packaging wherever possible, to reduce the footprint of every range."
+        },
+        "item2": {
+          "title": "Quality over volume",
+          "description": "Our approach favors effectiveness and purity, for formulas built to last rather than to chase a trend."
+        },
+        "item3": {
+          "title": "Formulas built to last",
+          "description": "We'd rather offer fewer references, but quality ones, that stay relevant beyond passing trends."
+        }
+      }
+    },
+    "testimonials": {
+      "eyebrow": "In our customers' words",
+      "title": "Loved by our customers",
+      "subtitle": "The experiences of those who've made PrettyFull part of their health routine.",
+      "testimonial1": {
+        "quote": "I can really feel the difference since starting the multivitamin, and delivery to Abidjan was faster than expected. I'm already planning my next order.",
+        "role": "Customer in Abidjan"
+      },
+      "testimonial2": {
+        "quote": "Clear dosages and easy-to-take capsules. PrettyFull has become my everyday health go-to.",
+        "role": "Customer in Cocody"
+      },
+      "testimonial3": {
+        "quote": "Responsive customer service and supplements that keep their promises. Exactly what I was looking for.",
+        "role": "Customer in Yopougon"
+      }
+    },
+    "finalBanner": {
+      "title": "Your wellness, our priority",
+      "subtitle": "Ready to take care of yourself? Discover our range and signature formulas.",
+      "cta": "Explore the shop"
+    }
+  },
+  "ProductPage": {
+    "reviews": {
+      "photoAlt": "Photo shared by a customer",
+      "heading": "Customer reviews",
+      "countLabel": "Based on {count, plural, one {# review} other {# reviews}}",
+      "noReviewsYet": "No reviews yet",
+      "writeReview": "Write a review",
+      "emptyEyebrow": "First review",
+      "emptyTitle": "Be the first to share your review",
+      "emptyDescription": "Your reviews help our community pick the supplements that are right for them.",
+      "writeFirstReview": "Write the first review",
+      "loadMore": "Show more reviews"
+    },
+    "suggestions": {
+      "heading": "Complete your wellness routine",
+      "loadMore": "View the full collection"
+    }
+  },
+  "CollectionPage": {
+    "filters": {
+      "sort_by": "Sort by",
+      "type_clothes": "Categories",
+      "colors": "Flavors",
+      "adjust": "Health goal",
+      "taille": "Format",
+      "clear": "Clear",
+      "apply": "Apply",
+      "title": "Filters",
+      "loading": "Loading…",
+      "noSizes": "No format available",
+      "price": "Price",
+      "priceMinPlaceholder": "Minimum",
+      "priceMaxPlaceholder": "Maximum",
+      "currency": "FCFA",
+      "flavor": "Flavors",
+      "noFlavors": "No flavor available",
+      "availability": "Availability",
+      "availabilityAll": "All products",
+      "availabilityInStock": "In stock",
+      "availabilityOnSale": "On sale",
+      "dietaryRegime": "Dietary regime"
+    },
+    "page": {
+      "promoCta": "Discover",
+      "categoryHeading": "Shop by category",
+      "viewCategory": "View category",
+      "filterToggleAriaLabel": "Show/hide filters",
+      "filterButtonLabel": "Filter",
+      "searchPlaceholder": "Search...",
+      "resultsCount": "{count} products",
+      "emptyEyebrow": "No results",
+      "emptyHeading": "No product matches your search",
+      "emptyBody": "Try adjusting your filters or your search.",
+      "emptyReset": "Reset filters",
+      "loadMore": "View more",
+      "footerTitle": "Your wellness, our priority",
+      "footerSubtitle": "Lab-tested formulas, carefully selected ingredients to support your everyday health routine.",
+      "footerCta": "Discover the shop",
+      "promoImageAlt": "Promotion",
+      "sort": {
+        "newest": "Newest",
+        "priceAsc": "Price: low to high",
+        "priceDesc": "Price: high to low",
+        "nameAsc": "Name (A → Z)"
+      }
+    }
+  },
+  "Cart": {
+    "product": {
+      "title": "Cart"
+    },
+    "summary": {
+      "title": " Summary",
+      "totalPrize": "Total Prize",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "taxes": "Estimate Duties And Taxes",
+      "total": "Total",
+      "checkout": "Checkout",
+      "apply": "Apply",
+      "couponsCode": "Coupons Code",
+      "couponPlaceholder": "Enter code",
+      "couponComingSoon": "Coupons coming soon",
+      "discount": "Discount ({code})",
+      "free": "Free",
+      "remove": "Remove",
+      "couponApplied": "Code {code} applied",
+      "couponNotApplicable": "This code doesn't apply to your cart",
+      "couponApplyError": "Couldn't apply this code. Please try again.",
+      "couponRemoveError": "Couldn't remove this code. Please try again."
+    },
+    "items": {
+      "emptyBadge": "Empty cart",
+      "emptyTitle": "Your cart is empty",
+      "emptyDescription": "Add items to see them here.",
+      "selectItemAria": "Select {name}",
+      "removeItemAria": "Remove {name}"
+    },
+    "quantitySelector": {
+      "decreaseAria": "Decrease quantity",
+      "increaseAria": "Increase quantity"
+    },
+    "page": {
+      "title": "My cart",
+      "selectAllAria": "Select all",
+      "selectAll": "Select all",
+      "removeAll": "Remove all",
+      "shippingNote": "Shipping costs are calculated at checkout. You can adjust quantities or remove items before confirming your order.",
+      "emptyTitle": "Your cart is currently empty",
+      "emptyDescription": "Discover our selected vitamins and supplements, lab-tested and designed to support your everyday health routine.",
+      "discoverCta": "Explore collections"
+    }
+  },
+  "Wishlist": {
+    "title": "Wishlist",
+    "pageTitle": "Wishlist",
+    "removeAria": "Remove {name} from wishlist",
+    "emptyTitle": "Your wishlist is empty",
+    "emptyDescription": "Save your favorite supplements here to find them easily later.",
+    "exploreCollections": "Explore our collections"
+  },
+  "Account": {
+    "layout": { "title": "My account" },
+    "menu": {
+      "overview": "Overview",
+      "myOrders": "My orders",
+      "addresses": "My addresses",
+      "wishlist": "Wishlist",
+      "myAccount": "My account",
+      "managePreferences": "Manage your details and preferences",
+      "logout": "Log out"
+    },
+    "addresses": {
+      "default": "Default",
+      "phonePrefix": "Phone:",
+      "edit": "Edit",
+      "deleting": "Deleting...",
+      "delete": "Delete",
+      "editAddressTitle": "Edit address",
+      "newAddressTitle": "New address",
+      "editAddressDescription": "Update the details for this address.",
+      "newAddressDescription": "Add a new shipping address to your account.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "company": "Company",
+      "optional": "Optional",
+      "address": "Address",
+      "address2": "Apartment, suite, etc.",
+      "address2Placeholder": "Apartment, floor, building...",
+      "city": "City",
+      "postalCode": "Postal code",
+      "region": "Region",
+      "regionPlaceholder": "e.g. Abidjan",
+      "countryCode": "Country",
+      "phone": "Phone",
+      "phonePlaceholder": "+225 07 00 00 00 00",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "update": "Update",
+      "addAddress": "Add address",
+      "required": "This field is required",
+      "deleteAddressTitle": "Delete this address?",
+      "deleteAddressConfirm": "This action cannot be undone. The address will be permanently removed from your account.",
+      "addressUpdated": "Address updated successfully.",
+      "addressAdded": "Address added successfully.",
+      "saveError": "Couldn't save the address. Please try again.",
+      "addressDeleted": "Address deleted.",
+      "deleteError": "Couldn't delete the address. Please try again.",
+      "pageTitle": "My addresses",
+      "pageSubtitle": "Manage your shipping and billing addresses.",
+      "noAddressTitle": "No addresses saved yet",
+      "noAddressDescription": "Add an address to speed up your next orders.",
+      "tip": "Tip",
+      "tipDescription": "Set a default address to save time at checkout."
+    },
+    "orders": {
+      "product": "Product",
+      "pageTitle": "My orders",
+      "pageSubtitle": "Track your order status and review your purchase history.",
+      "loadError": "Couldn't load your orders. Please try again.",
+      "noOrderTitle": "No orders yet",
+      "noOrderDescription": "Explore our supplements and place your first order.",
+      "startShopping": "Start shopping",
+      "status": {
+        "pending": "Pending",
+        "processing": "Processing",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled",
+        "refunded": "Refunded"
+      }
+    },
+    "orderCard": {
+      "orderLabel": "Order",
+      "itemCount": "{count, plural, one {# item} other {# items}}",
+      "viewDetails": "View details"
+    },
+    "orderDetail": {
+      "back": "Back to orders",
+      "notFound": {
+        "back": "Back",
+        "title": "Order not found",
+        "description": "We couldn't retrieve the details for this order.",
+        "viewOrders": "View my orders"
+      },
+      "cancelModal": {
+        "title": "Cancel this order?",
+        "description": "This action cannot be undone. Once cancelled, the order cannot be reactivated.",
+        "keep": "Keep order",
+        "confirm": "Yes, cancel",
+        "cancelling": "Cancelling..."
+      },
+      "cancelError": "Something went wrong",
+      "orderNumber": "Order #{id}",
+      "placedOn": "Placed on {date}",
+      "copyId": "Copy ID",
+      "copied": "Copied!",
+      "cancelOrder": "Cancel order",
+      "refunded": {
+        "title": "Order refunded",
+        "description": "This order has been refunded."
+      },
+      "cancelled": {
+        "title": "Order cancelled",
+        "description": "This order has been cancelled."
+      },
+      "timeline": {
+        "confirmed": "Order confirmed",
+        "processing": "Processing",
+        "shipped": "Shipped",
+        "delivered": "Delivered"
+      },
+      "infoCards": {
+        "order": "Order",
+        "date": "Date",
+        "payment": "Payment",
+        "total": "Total"
+      },
+      "payment": {
+        "paid": "Paid",
+        "pending": "Pending",
+        "awaiting": "Awaiting",
+        "refunded": "Refunded",
+        "partiallyRefunded": "Partially refunded",
+        "cancelled": "Cancelled"
+      },
+      "items": {
+        "title": "Items ({count})",
+        "variantLabel": "Format:",
+        "quantity": "Qty: {quantity}",
+        "perUnit": "{price} / unit"
+      },
+      "shippingAddress": {
+        "title": "Shipping address",
+        "phone": "Phone: {phone}",
+        "empty": "No address provided"
+      },
+      "summary": {
+        "title": "Summary",
+        "subtotal": "Subtotal",
+        "shipping": "Shipping",
+        "free": "Free",
+        "tax": "Tax",
+        "discount": "Discount",
+        "discountWithCode": "Discount ({code})",
+        "total": "Total"
+      },
+      "shippingMethod": {
+        "title": "Shipping method",
+        "standard": "Standard",
+        "free": "Free"
+      },
+      "actions": {
+        "viewAllOrders": "View all orders",
+        "continueShopping": "Continue shopping"
+      }
+    },
+    "overview": {
+      "greeting": "Happy to see you again, {name}.",
+      "needHelp": "Need help?",
+      "stats": {
+        "orders": "Orders",
+        "wishlist": "Wishlist",
+        "addresses": "Addresses"
+      },
+      "lastOrder": {
+        "title": "Last order",
+        "empty": "No orders yet",
+        "orderNumber": "Order #{id}",
+        "viewOrders": "View orders"
+      },
+      "defaultAddress": {
+        "title": "Default address",
+        "empty": "No address saved",
+        "viewAddresses": "View addresses"
+      },
+      "personalInfo": {
+        "title": "Personal information",
+        "subtitle": "Update your account details.",
+        "firstName": "First name",
+        "firstNamePlaceholder": "Enter your first name",
+        "lastName": "Last name",
+        "lastNamePlaceholder": "Enter your last name",
+        "email": "Email",
+        "emailPlaceholder": "example@gmail.com",
+        "phone": "Phone",
+        "save": "Save",
+        "saving": "Saving...",
+        "saveSuccess": "Profile updated!",
+        "saveError": "Couldn't save your changes."
+      }
+    }
+  },
+  "Auth": {
+    "modal": {
+      "loginTitle": "Log in",
+      "registerTitle": "Create an account",
+      "tabLogin": "Log in",
+      "tabRegister": "Sign up",
+      "panelHeadline": "Your wellbeing, made a daily priority",
+      "benefit1": "Free delivery from 25,000 FCFA",
+      "benefit2": "Lab-tested formulas",
+      "benefit3": "Order tracking and member-only offers"
+    },
+    "register": {
+      "accountCreated": "Your account was created successfully.",
+      "registerError": "Couldn't create your account. Please try again.",
+      "title": "Create an account",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create my account",
+      "alreadyHaveAccount": "Already have an account?",
+      "login": "Log in"
+    },
+    "login": {
+      "error": "Couldn't log in. Please try again.",
+      "title": "Welcome back to PrettyFull",
+      "subtitle": "Log in to your account to find your supplements and track your orders",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log in",
+      "noAccount": "Don't have an account?",
+      "register": "Create an account"
+    }
+  },
+  "OrderConfirmation": {
+    "notFoundBadge": "Not found",
+    "notFoundTitle": "Order not found",
+    "notFoundDescription": "We couldn't find this order. Check the link from your email or view your order history.",
+    "myOrders": "My orders",
+    "backToHome": "Back to home",
+    "thankYou": "Thank you for your order!",
+    "orderReceived": "Your order has been received",
+    "variantLabel": "Format:",
+    "confirmationSentTo": "A confirmation email has been sent to",
+    "orderId": "Order #{id}",
+    "quantity": "Quantity",
+    "paymentMethodDetail": "Payment details",
+    "status": "Status:",
+    "cancelled": "Cancelled",
+    "confirmed": "Confirmed",
+    "receipt": "Receipt:",
+    "sentViaEmailTo": "Sent by email to {email}",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "free": "Free",
+    "tax": "Tax",
+    "total": "Total",
+    "trackYourOrder": "Track my order",
+    "backToHomePage": "Back to home",
+    "continueShopping": "Continue shopping"
+  },
+  "ContactPage": {
+    "hero": { "eyebrow": "Contact", "title": "Let's talk" },
+    "form": {
+      "title": "Send us a message",
+      "description": "A question about a product, your order, or a delivery? Our team replies within 24 business hours.",
+      "honeypotLabel": "Website",
+      "nameLabel": "Full name",
+      "namePlaceholder": "Your first and last name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "phoneLabel": "Phone",
+      "subjectLabel": "Subject",
+      "subjectPlaceholder": "Choose a subject",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Tell us about your request...",
+      "sendError": "Something went wrong while sending. Please try again.",
+      "responseTime": "We reply within 24 business hours.",
+      "sending": "Sending...",
+      "submit": "Send message"
+    },
+    "success": {
+      "title": "Message sent",
+      "description": "Thanks for reaching out. Our team will get back to you as soon as possible.",
+      "newMessage": "Send another message"
+    },
+    "info": {
+      "title": "Our contact details",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone",
+      "addressLabel": "Address"
+    },
+    "address": {
+      "line1": "Cocody, Riviera",
+      "city": "Abidjan",
+      "country": "Côte d'Ivoire"
+    },
+    "hours": {
+      "title": "Hours",
+      "weekdays": "Monday - Friday",
+      "weekdaysTime": "8:00 AM - 6:00 PM",
+      "saturday": "Saturday",
+      "saturdayTime": "9:00 AM - 3:00 PM",
+      "sunday": "Sunday",
+      "sundayTime": "Closed"
+    },
+    "quickAnswers": { "title": "Quick answers" },
+    "subjects": {
+      "subject1": "Question about an order",
+      "subject2": "Question about a product",
+      "subject3": "Shipping and tracking",
+      "subject4": "Return or refund",
+      "subject5": "Payment and Mobile Money",
+      "subject6": "Something else"
+    },
+    "shortcuts": {
+      "shortcut1": {
+        "title": "Track my order",
+        "description": "Check the status and history of your orders right from your account.",
+        "cta": "View my orders"
+      },
+      "shortcut2": {
+        "title": "Shipping and returns",
+        "description": "Delivery times, coverage areas, and return conditions.",
+        "cta": "See the details"
+      },
+      "shortcut3": {
+        "title": "Frequently asked questions",
+        "description": "Answers to the questions we're asked most about our products and orders.",
+        "cta": "Read the FAQ"
+      }
+    }
+  },
+  "CheckoutPage": {
+    "page": {
+      "title": "Complete your order"
+    },
+    "address": {
+      "title": "Shipping address",
+      "edit": "Edit",
+      "updateError": "Couldn't update the address. Please try again.",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email",
+      "firstName": "First name",
+      "firstNameRequired": "First name is required",
+      "lastName": "Last name",
+      "lastNameRequired": "Last name is required",
+      "companyOptional": "Company (optional)",
+      "companyPlaceholder": "Company name",
+      "address": "Address",
+      "addressPlaceholder": "Street number, name, area...",
+      "addressRequired": "Address is required",
+      "address2Optional": "Apartment, suite, etc. (optional)",
+      "address2Placeholder": "Apartment, floor, landmark...",
+      "postCode": "Postal code",
+      "postCodeRequired": "Postal code is required",
+      "city": "City",
+      "cityRequired": "City is required",
+      "region": "Region",
+      "regionRequired": "Region is required",
+      "country": "Country",
+      "countryPlaceholder": "Select your country",
+      "countryRequired": "Country is required",
+      "phone": "Phone",
+      "phonePlaceholder": "e.g. 07 00 00 00 00",
+      "phoneRequired": "Phone is required",
+      "sameBillingLabel": "Use this address as my billing address",
+      "saving": "Saving...",
+      "continueToDelivery": "Continue to delivery"
+    },
+    "delivery": {
+      "title": "Delivery",
+      "edit": "Edit",
+      "setMethodError": "Couldn't save the delivery method. Please try again.",
+      "selectPreferredMethod": "Choose your preferred delivery method",
+      "loadOptionsError": "Couldn't load delivery options.",
+      "loadingOptions": "Loading delivery options...",
+      "loadOptionsErrorDetailed": "Something went wrong while loading delivery options. Please refresh the page.",
+      "noOptionsAvailable": "No delivery options available for this address.",
+      "standardShipping": "Standard shipping",
+      "free": "Free",
+      "processing": "Processing...",
+      "continueToPayment": "Continue to payment",
+      "methodSelected": "Delivery method selected",
+      "completePreviousStep": "Complete the previous step to continue"
+    },
+    "payment": {
+      "title": "Payment",
+      "edit": "Edit",
+      "initError": "Couldn't start the payment. Please try again.",
+      "paymentCollectionError": "Something went wrong while preparing your payment. Please refresh the page and try again.",
+      "codLabel": "Cash on delivery",
+      "selectMethod": "Choose your payment method",
+      "loadingMethods": "Loading payment methods...",
+      "codDescription": "Pay by cash or Mobile Money right when your order arrives.",
+      "cardNumber": "Card number",
+      "cardName": "Name on card",
+      "expiryDate": "Expiry date",
+      "cvv": "CVV",
+      "processing": "Processing...",
+      "reviewOrder": "Review order",
+      "paymentMethodLabel": "Payment method:",
+      "cardEndingIn": "Card ending in {digits}",
+      "completePreviousStep": "Complete the previous step to continue"
+    },
+    "checkoutForm": {
+      "labelMethod": "How would you like to receive your order?",
+      "placeholderMethod": "Enter your delivery method...",
+      "labelAddress": "Enter your phone number, name, and address...",
+      "placeholderNumber": "Enter your phone number...",
+      "description": "* For delivery, you can enter your address precisely.",
+      "placeholderLastName": "Enter your first and last name...",
+      "labelName": "Name",
+      "labelEmail": "Email",
+      "placeholderAddress": "Enter your address...",
+      "labelPostCode": "Enter your postal code",
+      "placeholderPostCode": "Enter your postal code...",
+      "labelCity": "Enter your city",
+      "placeholderCity": "Enter your city...",
+      "labelCountry": "Enter your country",
+      "placeholderCountry": "Enter your country...",
+      "labelState": "Enter your region",
+      "placeholderState": "Enter your region..."
+    },
+    "infosCheckout": {
+      "save": "Save this address to my profile",
+      "favorite": "Make this my default address",
+      "termes": "Terms and Conditions",
+      "accept": "I have read and accept the terms and conditions",
+      "ctaButton": "Proceed to payment"
+    },
+    "summary": {
+      "title": "Summary",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping Costs",
+      "taxes": "Estimated Duties and Taxes",
+      "total": "Total",
+      "reviewIntro": "Please review your order before placing it",
+      "itemsCount": "Order items ({count})",
+      "termsText": "By clicking Place order, you confirm that you have read, understood and accepted our Terms of Use, Terms of Sale and Return Policy.",
+      "placingOrder": "Placing order...",
+      "placeOrder": "Place order",
+      "completePreviousSteps": "Complete the previous steps to continue",
+      "placeOrderError": "Your order couldn't be placed. Please try again.",
+      "unitPriceLabel": "Unit price"
+    },
+    "features": {
+      "delivery": "Delivery",
+      "shipping": "Shipping",
+      "billing": "Billing",
+      "payment": "Payment",
+      "data": "We take care of every step of your order, from choosing your piece to delivery."
+    },
+    "items": {
+      "color": "Color",
+      "size": "Size"
+    }
+  },
+  "FaqPage": {
+    "banner": {
+      "imageAlt": "Person browsing PrettyFull's frequently asked questions",
+      "topLabel1": "Help",
+      "topLabel2": "Support",
+      "topLabel3": "FAQ",
+      "title": "Frequently Asked Questions",
+      "subtitle": "All the answers about your orders, shipping and our products."
+    },
+    "sidebar": {
+      "eyebrow": "Need help?",
+      "title": "How can we help you?",
+      "searchPlaceholder": "Search a question...",
+      "categoriesLabel": "Categories",
+      "allCategories": "All"
+    },
+    "categories": {
+      "orders": "Orders",
+      "shipping": "Shipping",
+      "returns": "Returns & Exchanges",
+      "products": "Products & Dosage",
+      "payments": "Payments",
+      "account": "Account"
+    },
+    "items": {
+      "item1": {
+        "title": "PRE-ORDER / BULK PURCHASE ITEMS",
+        "description": "Some products are temporarily out of stock and offered as pre-orders while we restock. Once a pre-order is confirmed, it cannot be cancelled. See our Terms of Sale for the full policy. Please check your parcel as soon as you receive it and contact us immediately if a product is defective, damaged, or doesn't match your order, so we can resolve the situation quickly."
+      },
+      "item2": {
+        "title": "HOW DO I TRACK MY ORDER?",
+        "description": "As soon as your order ships, you receive an email with a tracking link. You can also find this link at any time in the \"My Orders\" section of your account."
+      },
+      "item3": {
+        "title": "CAN I CHANGE OR CANCEL MY ORDER?",
+        "description": "Contact us as soon as possible after placing your order. As long as it hasn't been prepared for shipping yet, we can update the address, size, or cancel the order."
+      },
+      "item4": {
+        "title": "WHAT ARE THE DELIVERY TIMES?",
+        "description": "Orders ship within 2 to 5 business days. Allow a further 2 to 4 business days for standard delivery in mainland France, and 5 to 10 business days for international deliveries."
+      },
+      "item5": {
+        "title": "DO YOU DELIVER INTERNATIONALLY?",
+        "description": "Yes, we deliver to most European countries as well as North America. Any customs fees remain the recipient's responsibility according to local regulations."
+      },
+      "item6": {
+        "title": "ITEMS IN STOCK",
+        "description": "Returns, exchanges or partial replacements (at our discretion after reviewing the issue) are possible within 30 days of purchase, only for major defects or non-conformities (minor defects are not covered). See the definition of a major defect below."
+      },
+      "item7": {
+        "title": "EXCHANGES",
+        "description": "The fastest way to get the item you want is to return the one you have and, once the return is accepted, place a new separate order for the new item. Return shipping costs remain your responsibility. We cannot guarantee receipt of your returned parcel, so we recommend using a tracked, insured shipping method."
+      },
+      "item8": {
+        "title": "DAMAGE AND ISSUES FOUND",
+        "description": "Due to the nature of the products, slight variations in appearance (label, packaging) may occur without affecting product quality. Major defects include: a package that is unsealed or damaged on arrival, an expired best-before date, or receiving a product different from the one ordered. In this last case, contact us immediately for an exchange or refund."
+      },
+      "item9": {
+        "title": "EXCEPTIONS / NON-REFUNDABLE ITEMS",
+        "description": "Some products cannot be returned, in particular products whose packaging has been opened (for hygiene and health safety reasons), sale items, or gift cards. For any question about a specific product, feel free to contact us."
+      },
+      "item10": {
+        "title": "HOW DO I START A RETURN?",
+        "description": "Go to \"My Orders\", select the relevant item, and follow the steps in the return form. A prepaid label will be emailed to you within 24 hours."
+      },
+      "item11": {
+        "title": "HOW DO I CHOOSE MY FORMAT / DOSAGE?",
+        "description": "Each product page shows the recommended dosage and detailed nutritional information. If you're unsure which dosage suits your situation, we recommend consulting a healthcare professional."
+      },
+      "item12": {
+        "title": "DOES THE PACKAGING MATCH THE PHOTOS?",
+        "description": "We adjust our photos to stay as close to reality as possible, but a slight difference may remain depending on your screen settings or a minor update to the supplier's packaging. Feel free to write to us for details on any product."
+      },
+      "item13": {
+        "title": "WHAT PAYMENT METHODS DO YOU ACCEPT?",
+        "description": "We accept credit cards (Visa, Mastercard, Amex), PayPal, as well as installment payments depending on your cart amount."
+      },
+      "item14": {
+        "title": "IS MY BANKING INFORMATION SECURE?",
+        "description": "Yes, all payments are processed by a PCI-DSS certified provider. We never store your banking details on our servers."
+      },
+      "item15": {
+        "title": "HOW DO I RESET MY PASSWORD?",
+        "description": "From the login page, click \"Forgot password\" and follow the instructions sent by email to choose a new one."
+      },
+      "item16": {
+        "title": "HOW DO I DELETE MY ACCOUNT?",
+        "description": "Send us a request from the Contact page with the email address linked to your account. Deletion takes effect within 48 hours in accordance with GDPR."
+      }
+    },
+    "noResults": "No results for \"{query}\"",
+    "loadMore": "Load more",
+    "productFaqTitle": "Frequently Asked Questions",
+    "bottomBanner": {
+      "title": "Have another question?",
+      "subtitle": "Our customer service team is here to help.",
+      "cta": "Explore the shop"
+    }
+  },
+  "ShippingReturnPage": {
+    "pageTitle": "Shipping and Returns",
+    "items": {
+      "zones": {
+        "title": "DELIVERY AREAS",
+        "description": "PrettyFull delivers throughout Abidjan (Cocody, Marcory, Yopougon, Plateau, Riviera and other districts) as well as to major inland cities of Côte d'Ivoire (Bouaké, Yamoussoukro, San-Pédro, Korhogo, Abengourou, among others). Regional delivery to certain WAEMU-zone countries (Senegal, Burkina Faso, Mali, Togo, Benin) is also available on request; contact our customer service to check availability and fees for your destination."
+      },
+      "delays": {
+        "title": "DELIVERY TIMES",
+        "description": "Orders are prepared within 24 to 48 business hours. Allow a further 24 to 72 hours for delivery in Abidjan, and 3 to 7 business days for other cities in Côte d'Ivoire. For regional deliveries (WAEMU zone), the timeframe is generally between 5 and 10 business days depending on the destination country and carrier used. These timeframes are indicative and may vary during peak periods (end-of-year holidays, sales) or for pre-order items."
+      },
+      "fees": {
+        "title": "DELIVERY FEES",
+        "description": "Delivery fees are calculated based on geographic area and displayed before final order confirmation, directly on the payment page. Delivery is free in Abidjan above a minimum purchase amount shown on the site at checkout. For deliveries within the country and internationally, a flat fee applies depending on the destination city or country."
+      },
+      "tracking": {
+        "title": "ORDER TRACKING",
+        "description": "As soon as your parcel is picked up by our delivery agent or partner carrier, you receive a notification (SMS, WhatsApp or email) with the delivery agent's contact details or a tracking link depending on the delivery method chosen. You can also track your order status at any time from the \"My Orders\" section of your account."
+      },
+      "damagedParcel": {
+        "title": "DAMAGED, INCOMPLETE OR INCORRECT PARCEL",
+        "description": "We recommend checking your parcel as soon as you receive it, if possible in front of the delivery agent. If an item arrives damaged, incomplete, or doesn't match your order, contact our customer service within 48 hours of receipt, attaching photos of the product and packaging. After review, we proceed with an exchange, repair or refund, at no extra cost to you."
+      },
+      "returnWindow": {
+        "title": "RETURN AND EXCHANGE WINDOW",
+        "description": "You have 14 days from receipt of your order to request a return or exchange. After this period, no request can be accepted, except in the case of a manufacturing defect discovered later. To start a return, contact our customer service via the Contact page or from your \"My Orders\" area, specifying the reason for your request."
+      },
+      "returnConditions": {
+        "title": "PRODUCT RETURN CONDITIONS",
+        "description": "To be accepted, a returned product must be in its original packaging, sealed and unopened, with all its labels and inserts. For hygiene and health safety reasons, any product whose packaging has been opened, unsealed, or whose protective film has been removed cannot be accepted back, unless a genuine manufacturing defect is found upon opening."
+      },
+      "refund": {
+        "title": "REFUND TERMS",
+        "description": "Once the returned item is received and inspected by our team, you receive confirmation of the return's acceptance or refusal. If accepted, the refund is issued within 5 to 10 business days to the same payment method used for the purchase (Mobile Money, credit card) or as store credit for a future order, according to your preference. Original delivery fees are only refunded in case of a defect or error attributable to PrettyFull."
+      },
+      "nonReturnable": {
+        "title": "NON-RETURNABLE PRODUCTS",
+        "description": "For hygiene and health safety reasons, any dietary supplement, vitamin, or wellness product whose packaging has been opened cannot be returned or exchanged, unless a genuine manufacturing defect is found. The same applies to promotional items marked as \"final sale\" and gift cards. These exclusions are indicated on the product page where applicable."
+      },
+      "exchange": {
+        "title": "FORMAT OR FLAVOR EXCHANGE",
+        "description": "If the product received doesn't suit you in format or flavor and its packaging remains sealed, an exchange is possible within the same timeframe and conditions as a standard return, subject to availability of the replacement product. If the desired product is no longer available, we offer a refund or store credit. Return shipping costs for the new product are covered by us when the exchange results from our error, and remain the Customer's responsibility in other cases."
+      }
+    }
+  },
+  "TermsPage": {
+    "pageTitle": "Terms and Conditions of Sale",
+    "items": {
+      "purpose": {
+        "title": "1. PURPOSE",
+        "description": "These Terms and Conditions of Sale (\"Terms\") govern all sales of vitamins, dietary supplements and wellness products made on the PrettyFull site by any individual or entity (the \"Customer\") wishing to make a purchase through our online shop. Placing an order on the site implies full and unreserved acceptance of these Terms. PrettyFull reserves the right to modify these Terms at any time; the version applicable is the one in effect on the day of the order."
+      },
+      "products": {
+        "title": "2. PRODUCTS AND AVAILABILITY",
+        "description": "Products offered for sale are those listed on the site on the day of consultation, within the limits of available stock. Each product is presented with a description, photographs, and available nutritional information, intended to inform the Customer as accurately as possible. If a product becomes unavailable after ordering, the Customer will be informed as soon as possible and may choose a full refund, a replacement product, or to wait for restocking."
+      },
+      "prices": {
+        "title": "3. PRICES AND CURRENCY",
+        "description": "All prices displayed on the site are expressed in CFA Francs (FCFA / XOF), all taxes included, excluding delivery fees which are specified before final order confirmation. PrettyFull reserves the right to change its prices at any time, it being understood that the price applicable to an order is the one in effect at the time the Customer confirms it."
+      },
+      "payment": {
+        "title": "4. PAYMENT METHODS",
+        "description": "Orders can be paid via Mobile Money (Wave, Orange Money, MTN Money, Moov Money), by credit card (Visa, Mastercard) through our secure payment provider, or by cash on delivery depending on the delivery area and terms specified at checkout. The order is only finally confirmed after payment confirmation or, for cash on delivery, after phone confirmation by our team."
+      },
+      "orderValidation": {
+        "title": "5. ORDER CONFIRMATION",
+        "description": "Every order placed on the site is presented as a summary (products, formats, flavors, prices, delivery address) that the Customer must check before confirming. Once the order is confirmed, a summary email and/or message is sent to the Customer. PrettyFull reserves the right to cancel or refuse any order from a Customer with whom there is a dispute regarding payment of a previous order, or in case of reasonable doubt about the order's validity."
+      },
+      "delivery": {
+        "title": "6. DELIVERY",
+        "description": "PrettyFull delivers to Abidjan and major cities in Côte d'Ivoire, as well as, in some cases, certain WAEMU-zone countries. Delivery times and fees applicable to each order are communicated before payment confirmation and detailed on our \"Shipping and Returns\" page. The Customer agrees to provide an accurate delivery address and a reachable phone number; PrettyFull cannot be held responsible for a delay or non-delivery resulting from an incorrect address provided by the Customer."
+      },
+      "withdrawal": {
+        "title": "7. RIGHT OF WITHDRAWAL",
+        "description": "Except for personalized products, pre-ordered products, or products whose packaging has been opened for hygiene and health safety reasons, the Customer has a period to change their mind and request a return or exchange, under the conditions and timeframes specified in our Shipping and Returns policy. The product must then be returned in its original condition, packaging sealed and unopened, with its labels."
+      },
+      "returns": {
+        "title": "8. RETURNS, EXCHANGES AND REFUNDS",
+        "description": "The precise terms for returns, exchanges and refunds (timeframes, excluded items, procedure and possible fees) are detailed on our dedicated \"Shipping and Returns\" page, which forms an integral part of these Terms. Every refund is issued to the same payment method used for the purchase, unless otherwise agreed with the Customer."
+      },
+      "warranty": {
+        "title": "9. WARRANTY AND CONFORMITY",
+        "description": "PrettyFull commits to delivering products that conform to their description and are free of manufacturing defects. If a product has a major defect (packaging damaged or unsealed on delivery, expired product, wrong item shipped) found upon receipt, the Customer must report it to our customer service as soon as possible, with supporting photographs, so that a solution (exchange, refund) can be offered at no extra cost to the Customer."
+      },
+      "personalData": {
+        "title": "10. PERSONAL DATA",
+        "description": "Personal information collected when ordering (identity, contact details, delivery address, purchase history) is used solely for processing and tracking orders as well as, with the Customer's consent, for marketing communications. This data is neither sold nor transferred to third parties not involved in fulfilling the order (carrier, payment provider). In accordance with applicable data protection regulations, the Customer has the right to access, rectify and delete their data, which they may exercise by contacting us via the site's Contact page."
+      },
+      "intellectualProperty": {
+        "title": "11. INTELLECTUAL PROPERTY",
+        "description": "All elements of the PrettyFull site (logo, visual identity, product photographs, text, layout) are protected by intellectual property law and remain the exclusive property of PrettyFull. Any reproduction, representation or use, in whole or in part, of these elements without prior written authorization is strictly prohibited."
+      },
+      "liability": {
+        "title": "12. LIABILITY",
+        "description": "PrettyFull cannot be held liable for damages resulting from use of the site not in accordance with its intended purpose, fraudulent intrusion, a case of force majeure, or any malfunction of the internet network or Mobile Money payment operators beyond its control. Product photographs are as accurate as possible but cannot guarantee a perfect match with the product received (packaging, color), due to display variations between screens."
+      },
+      "healthWarnings": {
+        "title": "13. WARNINGS AND HEALTH INFORMATION",
+        "description": "Dietary supplements are not a substitute for a varied and balanced diet or a healthy lifestyle, and should not be used as such. Follow the daily dose indicated on the product label; do not exceed the recommended dose without medical advice. Keep out of reach of young children. It is advisable to seek the advice of a healthcare professional before use, especially in case of pregnancy, breastfeeding, ongoing medical treatment, or a specific condition. In case of an adverse reaction, stop using the product and consult a healthcare professional."
+      },
+      "jurisdiction": {
+        "title": "14. GOVERNING LAW AND DISPUTES",
+        "description": "These Terms and Conditions of Sale are governed by Ivorian law. In the event of a dispute regarding the interpretation or performance of an order, the Customer is invited to first contact our customer service to seek an amicable solution. Failing an amicable agreement, the competent courts of Côte d'Ivoire shall have sole jurisdiction over the dispute."
+      }
+    }
+  }
 }

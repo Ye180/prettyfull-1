@@ -52,8 +52,8 @@ const ORDER_SPECS: OrderSpec[] = [
 		fulfillmentStatus: "delivered",
 		providerKey: "manual",
 		lines: [
-			{ productSlug: "robe-cocktail-satinee", quantity: 1 },
-			{ productSlug: "top-en-soie", quantity: 2 },
+			{ productSlug: "multivitamine-quotidienne", quantity: 1 },
+			{ productSlug: "vitamine-c-1000", quantity: 2 },
 		],
 	},
 	{
@@ -62,7 +62,7 @@ const ORDER_SPECS: OrderSpec[] = [
 		paymentStatus: "paid",
 		fulfillmentStatus: "shipped",
 		providerKey: "manual",
-		lines: [{ productSlug: "ensemble-tailleur", quantity: 1 }],
+		lines: [{ productSlug: "proteine-whey-chocolat", quantity: 1 }],
 	},
 	{
 		daysAgo: 1,
@@ -71,8 +71,8 @@ const ORDER_SPECS: OrderSpec[] = [
 		fulfillmentStatus: "not_fulfilled",
 		providerKey: "wave",
 		lines: [
-			{ productSlug: "blazer-structure", quantity: 1 },
-			{ productSlug: "boucles-oreilles-dorees", quantity: 1 },
+			{ productSlug: "omega-3-huile-de-poisson", quantity: 1 },
+			{ productSlug: "melatonine-sommeil", quantity: 1 },
 		],
 	},
 ];
