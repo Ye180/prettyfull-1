@@ -120,4 +120,18 @@ export const formatMoney = (amount, currency, locale = "fr-FR") => new Intl.Numb
     minimumFractionDigits: CURRENCY_EXPONENTS[currency],
     maximumFractionDigits: CURRENCY_EXPONENTS[currency],
 }).format(toMajorUnit(amount, currency));
+/**
+ * Convertit un montant (plus petite unité) via le taux fixe USD/XOF des
+ * réglages boutique. XOF est la devise pivot ; EUR n'est pas concerné par
+ * cette conversion (hors scope) et repasse tel quel.
+ */
+export const convertAmount = (amountMinor, from, to, usdToXofRate) => {
+    if (from === to || from === "eur" || to === "eur")
+        return amountMinor;
+    const majorInXof = from === "usd"
+        ? toMajorUnit(amountMinor, from) * usdToXofRate
+        : toMajorUnit(amountMinor, from);
+    const majorInTarget = to === "usd" ? majorInXof / usdToXofRate : majorInXof;
+    return toMinorUnit(majorInTarget, to);
+};
 //# sourceMappingURL=common.js.map

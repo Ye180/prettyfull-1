@@ -4,9 +4,11 @@
   },
   "Header": {
     "currencyLanguage": {
-      "title": "Currency",
-      "description": "Choose your display currency.",
+      "title": "Language and currency",
+      "description": "Choose your display language and currency.",
+      "languageLabel": "Language",
       "currencyLabel": "Currency",
+      "loadingCurrencies": "Loading currencies…",
       "applyButton": "Apply"
     },
     "nav": {
@@ -116,6 +118,22 @@
       "allLabel": "All Collection",
       "addToWishlist": "Add to wishlist",
       "optionsCount": "({count} options)"
+    },
+    "bundleSave": {
+      "eyebrow": "Build your routine",
+      "title": "Order more.\nSave more.",
+      "watermark": "ORDER MORE. SAVE MORE. GLOW MORE.",
+      "subtitle": "Why choose just one? Pair vitamins, supplements and wellness rituals into a complete routine, built around you.",
+      "ctaButton": "Build my routine",
+      "perk1Title": "From 25,000 FCFA",
+      "perk1Label": "Free shipping",
+      "perk2Title": "Every batch checked",
+      "perk2Label": "Lab tested",
+      "perk3Title": "Not convinced?",
+      "perk3Label": "Satisfaction guaranteed",
+      "productsBadge": "Best sellers",
+      "cardCta": "View product",
+      "cardFallbackDescription": "An essential piece for your everyday wellness routine."
     },
     "customerExperience": {
       "title": "Formulated for your well-being",

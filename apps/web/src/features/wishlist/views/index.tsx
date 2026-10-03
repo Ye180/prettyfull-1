@@ -1,8 +1,9 @@
 "use client";
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
+import type { CurrencyCode } from "@prettyfull/contracts";
 import { useWishlistStore } from "@prettyfull/store";
-import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,6 +12,7 @@ const WishlistView = () => {
 	const t = useTranslations("Wishlist");
 	const items = useWishlistStore((state) => state.items);
 	const removeItem = useWishlistStore((state) => state.removeItem);
+	const { format } = useDisplayCurrency();
 
 	return (
 		<main className="pt-6 pb-28 w-full min-h-screen text-gray-900 bg-white sm:pt-10">
@@ -49,9 +51,9 @@ const WishlistView = () => {
 										</h3>
 										{item.product.price && (
 											<span className="text-[1.6rem] font-bold text-[#080808]">
-												{formatCurrency_FR(
+												{format(
 													item.product.price.amount,
-													item.product.price.currency === "xof" ? "FCFA" : "$",
+													item.product.price.currency as CurrencyCode,
 												)}
 											</span>
 										)}

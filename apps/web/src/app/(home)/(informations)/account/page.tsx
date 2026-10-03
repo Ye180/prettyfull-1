@@ -2,10 +2,10 @@
 
 import { ArrowLinearIcon } from "@/components/icons/arrow-linear-icon";
 import { useGetCustomerOrders } from "@/features/account/api/get-orders";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import { fetchAddresses, fetchProfile, updateProfile } from "@/lib/store-api";
-import { useRegionStore } from "@/stores/useRegion";
+import type { CurrencyCode } from "@prettyfull/contracts";
 import { Button, Input, Skeleton } from "@prettyfull/ui";
-import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -96,8 +96,7 @@ export default function AccountPage() {
 		addresses: addresses ?? [],
 	};
 
-	const region = useRegionStore((state) => state.region);
-	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
+	const { format } = useDisplayCurrency();
 
 	const { data: ordersData, isLoading: ordersLoading } = useGetCustomerOrders();
 	const [showPassword, setShowPassword] = useState(false);
@@ -231,7 +230,10 @@ export default function AccountPage() {
 										)}
 									</p>
 									<p className="mt-1 text-sm font-medium text-gray-900">
-										{formatCurrency_FR(lastOrder.total ?? 0, currency)}
+										{format(
+										lastOrder.total ?? 0,
+										(lastOrder.currency_code as CurrencyCode) ?? "xof",
+									)}
 									</p>
 								</div>
 							</div>

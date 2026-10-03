@@ -312,9 +312,9 @@ export const deleteStaticPage = async (id: string): Promise<void> => {
 
 export const listFeaturedEntries = async (
 	sectionKey?: string,
-	options: { resolve?: boolean } = {},
+	options: { resolve?: boolean; includeInactive?: boolean; includeUnpublished?: boolean } = {},
 ): Promise<FeaturedEntry[]> => {
-	const filters: SQL[] = [eq(t.featuredEntries.isActive, true)];
+	const filters: SQL[] = options.includeInactive ? [] : [eq(t.featuredEntries.isActive, true)];
 	if (sectionKey) filters.push(eq(t.featuredEntries.sectionKey, sectionKey));
 
 	const rows = await db
@@ -346,6 +346,7 @@ export const listFeaturedEntries = async (
 						id: t.products.id,
 						name: t.products.name,
 						slug: t.products.slug,
+						shortDescription: t.products.shortDescription,
 						basePrice: t.products.basePrice,
 						currency: t.products.currency,
 						thumbnail: sql<string | null>`(
@@ -358,7 +359,7 @@ export const listFeaturedEntries = async (
 					.where(
 						and(
 							sql`${t.products.id} in ${productIds}`,
-							eq(t.products.status, "published"),
+							options.includeUnpublished ? undefined : eq(t.products.status, "published"),
 							isNull(t.products.deletedAt),
 						),
 					)
@@ -429,6 +430,33 @@ export const createFeaturedEntry = async (
 		sectionKey: created!.sectionKey,
 		position: created!.position,
 		isActive: created!.isActive,
+	};
+};
+
+export const updateFeaturedEntry = async (
+	id: string,
+	input: Partial<FeaturedEntryInput>,
+): Promise<FeaturedEntry> => {
+	const patch = Object.fromEntries(
+		Object.entries(input).filter(([, value]) => value !== undefined),
+	);
+
+	const [updated] = await db
+		.update(t.featuredEntries)
+		.set({ ...patch, updatedAt: new Date() })
+		.where(eq(t.featuredEntries.id, id))
+		.returning();
+
+	if (!updated) throw notFound("Mise en avant");
+
+	return {
+		id: updated.id,
+		kind: updated.kind,
+		productId: updated.productId,
+		categoryId: updated.categoryId,
+		sectionKey: updated.sectionKey,
+		position: updated.position,
+		isActive: updated.isActive,
 	};
 };
 

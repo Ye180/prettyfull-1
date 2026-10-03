@@ -1,12 +1,13 @@
 "use client";
 
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
+import type { CurrencyCode } from "@prettyfull/contracts";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "@prettyfull/ui";
-import { formatCurrency_FR } from "@prettyfull/utils";
 import { useState } from "react";
 import { Cart } from "../../../../components/icons/cart.icon";
 import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
@@ -29,7 +30,8 @@ interface ProductInfosNewProps {
 	details?: string[];
 	shippingInfo?: string;
 	returnPolicy?: string;
-	currency?: string;
+	/** Devise d'origine de `price`/`originalPrice` (celle du produit). */
+	currency?: CurrencyCode;
 }
 
 export function ProductInfosNew({
@@ -48,8 +50,9 @@ export function ProductInfosNew({
 	details,
 	shippingInfo = "Livraison offerte dès 50 000 FCFA",
 	returnPolicy = "Retours acceptés sous 14 jours - échange ou avoir",
-	currency = "USD",
+	currency = "xof",
 }: ProductInfosNewProps) {
+	const { format } = useDisplayCurrency();
 	const defaultDetails = [
 		"Ingrédients testés en laboratoire indépendant, lot après lot",
 		"Sans OGM, formule végétalienne disponible sur certaines références",
@@ -98,11 +101,11 @@ export function ProductInfosNew({
 
 				<div className="flex gap-3 items-center">
 					<span className="text-2xl font-bold text-[#080808]">
-						{formatCurrency_FR(price, currency)}
+						{format(price, currency)}
 					</span>
 					{originalPrice && originalPrice > price && (
 						<span className="text-lg text-[#666666] line-through">
-							{formatCurrency_FR(originalPrice, currency)}
+							{format(originalPrice, currency)}
 						</span>
 					)}
 				</div>

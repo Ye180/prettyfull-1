@@ -26,6 +26,7 @@ storeMiscRoutes.get("/config", async (c) => {
 		supportPhone: settings.supportPhone ?? null,
 		defaultCurrency: settings.defaultCurrency,
 		enabledCurrencies: settings.enabledCurrencies,
+		usdToXofRate: settings.usdToXofRate,
 		defaultLocale: settings.defaultLocale,
 		enabledLocales: settings.enabledLocales,
 		freeShippingThreshold: settings.freeShippingThreshold ?? null,

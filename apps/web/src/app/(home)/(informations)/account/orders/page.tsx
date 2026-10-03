@@ -2,7 +2,6 @@
 
 import { useGetCustomerOrders } from "@/features/account/api/get-orders";
 import { OrderCard } from "@/features/account/components/order-card";
-import { useRegionStore } from "@/stores/useRegion";
 import { Button, Skeleton } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -29,8 +28,6 @@ const mapFulfillmentStatus = (
 
 export default function OrdersPage() {
 	const t = useTranslations("Account.orders");
-	const region = useRegionStore((state) => state.region);
-	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
 
 	const { data, isLoading, error } = useGetCustomerOrders();
 	const orders = data?.orders ?? [];
@@ -41,7 +38,7 @@ export default function OrdersPage() {
 		createdAt: order.created_at,
 		status: mapFulfillmentStatus(order.status || "pending"),
 		total: order.total ?? 0,
-		currency,
+		currency: order.currency_code ?? "xof",
 		items: (order.items || []).map((item: any) => ({
 			id: item.id,
 			title: item.product_title || t("product"),

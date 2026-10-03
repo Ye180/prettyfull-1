@@ -9,8 +9,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
-import { CurrencySelector } from "./currency-selector";
-import { LanguageToggle } from "./language-toggle";
+import { LocaleCurrencySelector } from "./locale-currency-selector";
 import SearchBar from "./search-bar";
 
 const NavbarResponsive = ({
@@ -55,10 +54,7 @@ const NavbarResponsive = ({
 					</Link>
 
 					<div className="flex gap-2 items-center">
-						<LanguageToggle />
-						<div className="">
-							<CurrencySelector />
-						</div>
+						<LocaleCurrencySelector />
 
 						{/* Close button */}
 						<button

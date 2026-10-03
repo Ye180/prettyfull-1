@@ -2,8 +2,8 @@
 
 import { Cart } from "@/components/icons/cart.icon";
 import { useCartTotals } from "@/features/cart/hooks/use-cart-totals";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import { paths } from "@/lib/routes/paths-en";
-import { useRegionStore } from "@/stores/useRegion";
 import {
 	Button,
 	Drawer,
@@ -13,7 +13,6 @@ import {
 	DrawerTrigger,
 } from "@prettyfull/ui";
 import { useCartStore } from "@prettyfull/store";
-import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -34,8 +33,7 @@ const CartDrawer = () => {
 	const items = useCartStore((state) => state.items);
 	const itemCount = items.reduce((total, item) => total + item.quantity, 0);
 	const { subtotal } = useCartTotals(items);
-	const region = useRegionStore((state) => state.region);
-	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
+	const { format } = useDisplayCurrency();
 
 	useEffect(() => {
 		const mq = window.matchMedia("(min-width: 768px)");
@@ -90,7 +88,7 @@ const CartDrawer = () => {
 						</div>
 					) : (
 						items.map((item) => (
-							<MiniCartItem key={item.productId} item={item} currency={currency} />
+							<MiniCartItem key={item.productId} item={item} />
 						))
 					)}
 				</div>
@@ -99,7 +97,7 @@ const CartDrawer = () => {
 					<DrawerFooter className="border-t border-gray-100">
 						<div className="flex justify-between items-center mb-1 text-base font-semibold text-gray-900">
 							<span>{t("subtotal")}</span>
-							<span>{formatCurrency_FR(subtotal, currency)}</span>
+							<span>{format(subtotal)}</span>
 						</div>
 						<p className="mb-3 text-xs text-gray-500">
 							{t("shippingNote")}

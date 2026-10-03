@@ -1,13 +1,13 @@
 "use client";
 
-import { useRegionStore } from "@/stores/useRegion";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
+import type { CurrencyCode } from "@prettyfull/contracts";
 import { Checkbox } from "@prettyfull/ui";
 import { useCartStore, type CartItem } from "@prettyfull/store";
 import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
-import { formatCurrency_FR } from "../../../../../../../packages/utils/lib/format-curency";
 import { QuantitySelector } from "../molecules/quantity-selector";
 
 interface CartItemsProps {
@@ -26,8 +26,7 @@ const CartItems = ({
 }: CartItemsProps) => {
 	const t = useTranslations("Cart.items");
 	const removeItem = useCartStore((state) => state.removeItem);
-	const regions = useRegionStore((state) => state.region);
-	const currency = regions?.currency_code === "xof" ? "FCFA" : "$";
+	const { format } = useDisplayCurrency();
 
 	if (!items || items.length === 0) {
 		return (
@@ -71,6 +70,9 @@ const CartItems = ({
 				const imageSrc = item.product.image || "/assets/product5.webp";
 				const unitPrice =
 					item.unitPrice?.amount ?? item.product.price?.amount ?? 250;
+				const sourceCurrency = (item.unitPrice?.currency ??
+					item.product.price?.currency ??
+					"xof") as CurrencyCode;
 				const itemTotal = unitPrice * item.quantity;
 
 				return (
@@ -118,7 +120,7 @@ const CartItems = ({
 							{/* Price and Quantity Selector */}
 							<div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-1">
 								<p className="text-lg sm:text-xl font-bold text-gray-950 font-sans">
-									{formatCurrency_FR(itemTotal, currency)}
+									{format(itemTotal, sourceCurrency)}
 								</p>
 								<QuantitySelector
 									productId={item.productId}

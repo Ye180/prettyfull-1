@@ -3,7 +3,6 @@
 import CartSummary from "@/features/cart/components/molecules/cart-summary";
 import CartItems from "@/features/cart/components/organims/cart-items";
 import { useCartTotals } from "@/features/cart/hooks/use-cart-totals";
-import { useRegionStore } from "@/stores/useRegion";
 import type { CartItem } from "@prettyfull/store";
 import { cn } from "@prettyfull/utils";
 import { ReactNode } from "react";
@@ -36,9 +35,7 @@ const CartContent = ({
 	selectedIds,
 	onToggleItem,
 }: CartContentProps) => {
-	const regions = useRegionStore((state) => state.region);
 	const totals = useCartTotals(items);
-	const currency = regions?.currency_code === "xof" ? "FCFA" : "$";
 	const isPage = layout === "page";
 	const isDrawer = layout === "drawer";
 	// ponytail: squared corners are scoped to the drawer via this flag instead
@@ -79,7 +76,7 @@ const CartContent = ({
 				)}
 			>
 				<div className={cn(isPage && "sticky top-24")}>
-					<CartSummary {...totals} currency={currency} square={square} />
+					<CartSummary {...totals} square={square} />
 				</div>
 			</aside>
 		</div>

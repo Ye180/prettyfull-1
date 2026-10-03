@@ -173,6 +173,14 @@ export const fetchBanners = async (placement?: string) => {
 export const fetchHighlights = async (sectionKey: string): Promise<ContentHighlight[]> =>
 	storeApi.get<ContentHighlight[]>(`/api/store/highlights${toQuery({ sectionKey })}`);
 
+/**
+ * Produits/catégories épinglés à un emplacement de la page d'accueil
+ * (back-office : module Contenu > Mises en avant). Toujours résolus côté
+ * serveur : `target` porte déjà la fiche produit/catégorie complète.
+ */
+export const fetchFeaturedEntries = async (sectionKey: string): Promise<FeaturedEntry[]> =>
+	storeApi.get<FeaturedEntry[]>(`/api/store/featured${toQuery({ sectionKey })}`);
+
 export const fetchStaticPage = async (slug: string): Promise<StaticPage | null> => {
 	try {
 		return await storeApi.get<StaticPage>(`/api/store/pages/${encodeURIComponent(slug)}`);
@@ -187,6 +195,7 @@ interface StoreConfig {
 	storeName: string;
 	defaultCurrency: string;
 	enabledCurrencies: string[];
+	usdToXofRate: number;
 	defaultLocale: string;
 	enabledLocales: string[];
 	maintenanceMode: boolean;

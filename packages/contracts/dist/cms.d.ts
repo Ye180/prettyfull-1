@@ -165,11 +165,6 @@ export declare const staticPageSchema: z.ZodObject<{
     updatedAt: z.ZodString;
 }, z.core.$strip>;
 export type StaticPage = z.infer<typeof staticPageSchema>;
-/**
- * Entrée « vedette » rattachée à une section de page d'accueil.
- * `sectionKey` reprend les clés déjà utilisées par le storefront
- * (`third_section`, `sixth_section`, …) pour ne pas casser l'existant.
- */
 export declare const featuredEntryInputSchema: z.ZodObject<{
     kind: z.ZodEnum<{
         product: "product";
@@ -182,6 +177,23 @@ export declare const featuredEntryInputSchema: z.ZodObject<{
     isActive: z.ZodDefault<z.ZodBoolean>;
 }, z.core.$strip>;
 export type FeaturedEntryInput = z.infer<typeof featuredEntryInputSchema>;
+/**
+ * Mise à jour partielle : ne sert en pratique qu'à changer `position`,
+ * `isActive` ou `sectionKey` - changer la cible d'une mise en avant passe par
+ * une suppression puis une nouvelle entrée plutôt que par ce chemin.
+ */
+export declare const updateFeaturedEntrySchema: z.ZodObject<{
+    kind: z.ZodOptional<z.ZodEnum<{
+        product: "product";
+        category: "category";
+    }>>;
+    productId: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodUUID>>>;
+    categoryId: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodUUID>>>;
+    sectionKey: z.ZodOptional<z.ZodString>;
+    position: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
+    isActive: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+}, z.core.$strip>;
+export type UpdateFeaturedEntryInput = z.infer<typeof updateFeaturedEntrySchema>;
 export declare const featuredEntrySchema: z.ZodObject<{
     id: z.ZodUUID;
     kind: z.ZodEnum<{

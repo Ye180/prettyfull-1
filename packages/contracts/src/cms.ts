@@ -109,33 +109,48 @@ export type StaticPage = z.infer<typeof staticPageSchema>;
  * `sectionKey` reprend les clés déjà utilisées par le storefront
  * (`third_section`, `sixth_section`, …) pour ne pas casser l'existant.
  */
-export const featuredEntryInputSchema = z
-	.object({
-		kind: z.enum(FEATURED_KINDS),
-		productId: uuidSchema.nullish(),
-		categoryId: uuidSchema.nullish(),
-		sectionKey: z.string().trim().min(1).max(64),
-		position: z.number().int().min(0).default(0),
-		isActive: z.boolean().default(true),
-	})
-	.superRefine((value, ctx) => {
-		if (value.kind === "product" && !value.productId) {
-			ctx.addIssue({
-				code: "custom",
-				path: ["productId"],
-				message: "Un produit vedette doit référencer un produit.",
-			});
-		}
-		if (value.kind === "category" && !value.categoryId) {
-			ctx.addIssue({
-				code: "custom",
-				path: ["categoryId"],
-				message: "Une catégorie vedette doit référencer une catégorie.",
-			});
-		}
-	});
+/** Champs sans contrôle croisé - même raison que `bannerBaseSchema` : Zod refuse `.partial()` sur un objet raffiné. */
+const featuredEntryBaseSchema = z.object({
+	kind: z.enum(FEATURED_KINDS),
+	productId: uuidSchema.nullish(),
+	categoryId: uuidSchema.nullish(),
+	sectionKey: z.string().trim().min(1).max(64),
+	position: z.number().int().min(0).default(0),
+	isActive: z.boolean().default(true),
+});
+
+const enforceFeaturedTarget = (
+	value: z.infer<typeof featuredEntryBaseSchema>,
+	ctx: z.RefinementCtx,
+) => {
+	if (value.kind === "product" && !value.productId) {
+		ctx.addIssue({
+			code: "custom",
+			path: ["productId"],
+			message: "Un produit vedette doit référencer un produit.",
+		});
+	}
+	if (value.kind === "category" && !value.categoryId) {
+		ctx.addIssue({
+			code: "custom",
+			path: ["categoryId"],
+			message: "Une catégorie vedette doit référencer une catégorie.",
+		});
+	}
+};
+
+export const featuredEntryInputSchema = featuredEntryBaseSchema.superRefine(enforceFeaturedTarget);
 
 export type FeaturedEntryInput = z.infer<typeof featuredEntryInputSchema>;
+
+/**
+ * Mise à jour partielle : ne sert en pratique qu'à changer `position`,
+ * `isActive` ou `sectionKey` - changer la cible d'une mise en avant passe par
+ * une suppression puis une nouvelle entrée plutôt que par ce chemin.
+ */
+export const updateFeaturedEntrySchema = featuredEntryBaseSchema.partial();
+
+export type UpdateFeaturedEntryInput = z.infer<typeof updateFeaturedEntrySchema>;
 
 export const featuredEntrySchema = z.object({
 	id: uuidSchema,
