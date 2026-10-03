@@ -161,6 +161,20 @@ const SettingsPage = () => {
 							</div>
 						</Field>
 
+						<Field
+							label="Taux de change (1 USD = ? XOF)"
+							hint="Utilisé pour convertir les prix affichés en dollar."
+						>
+							<Input
+								inputMode="decimal"
+								value={String(form.usdToXofRate)}
+								disabled={!writable}
+								onChange={(event) =>
+									set("usdToXofRate", Number(event.target.value) || 0)
+								}
+							/>
+						</Field>
+
 						<Field label="Langue par défaut">
 							<Select
 								value={form.defaultLocale}

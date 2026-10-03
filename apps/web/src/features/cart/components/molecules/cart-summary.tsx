@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import {
 	StoreApiError,
 	applyDiscountCode,
@@ -9,7 +10,7 @@ import {
 } from "@/lib/store-api";
 import { Button, toast } from "@prettyfull/ui";
 import { useCartStore } from "@prettyfull/store";
-import { cn, formatCurrency_FR } from "@prettyfull/utils";
+import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,7 +20,6 @@ interface CartSummaryProps {
 	taxes?: number;
 	shipping?: number;
 	total?: number;
-	currency?: string;
 	/** Squares off the summary block/inputs/buttons - cart drawer only. */
 	square?: boolean;
 }
@@ -29,11 +29,11 @@ const CartSummary = ({
 	taxes = 0,
 	shipping = 0,
 	total = 0,
-	currency = "$",
 	square = false,
 }: CartSummaryProps) => {
 	const t = useTranslations("Cart.summary");
 	const router = useRouter();
+	const { format } = useDisplayCurrency();
 	const items = useCartStore((state) => state.items);
 	const [couponCode, setCouponCode] = useState("");
 	const [appliedCode, setAppliedCode] = useState<string | null>(null);
@@ -114,7 +114,7 @@ const CartSummary = ({
 					{t("totalPrize")}
 				</p>
 				<p className="mt-2 text-4xl md:text-5xl font-extrabold text-gray-950 font-sans tracking-tight">
-					{formatCurrency_FR(finalTotal > 0 ? finalTotal : total, currency)}
+					{format(finalTotal > 0 ? finalTotal : total)}
 				</p>
 			</div>
 
@@ -124,7 +124,7 @@ const CartSummary = ({
 				<div className="flex justify-between items-center text-gray-600">
 					<span>{t("subtotal")}</span>
 					<span className="font-semibold text-gray-900">
-						{formatCurrency_FR(subtotal, currency)}
+						{format(subtotal)}
 					</span>
 				</div>
 
@@ -132,7 +132,7 @@ const CartSummary = ({
 					<div className="flex justify-between items-center text-gray-600">
 						<span>{t("discount", { code: appliedCode })}</span>
 						<span className="font-semibold text-rose-500">
-							-{formatCurrency_FR(discountAmount, currency)}
+							-{format(discountAmount)}
 						</span>
 					</div>
 				)}
@@ -140,14 +140,14 @@ const CartSummary = ({
 				<div className="flex justify-between items-center text-gray-600">
 					<span>{t("shipping")}</span>
 					<span className="font-semibold text-gray-900">
-						{shipping > 0 ? formatCurrency_FR(shipping, currency) : t("free")}
+						{shipping > 0 ? format(shipping) : t("free")}
 					</span>
 				</div>
 
 				<div className="flex justify-between items-center text-gray-600">
 					<span>{t("taxes")}</span>
 					<span className="font-semibold text-gray-900">
-						{formatCurrency_FR(taxAmount, currency)}
+						{format(taxAmount)}
 					</span>
 				</div>
 			</div>

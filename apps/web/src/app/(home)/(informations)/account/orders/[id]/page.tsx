@@ -2,10 +2,10 @@
 
 import { cancelOrder } from "@/features/account/actions/cancel-order";
 import { useGetOrderById } from "@/features/account/api/get-order-by-id";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
+import type { CurrencyCode } from "@prettyfull/contracts";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRegionStore } from "@/stores/useRegion";
 import { Button, Skeleton } from "@prettyfull/ui";
-import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -314,8 +314,7 @@ export default function OrderDetailPage() {
 	const [cancelError, setCancelError] = useState<string | null>(null);
 	const queryClient = useQueryClient();
 
-	const region = useRegionStore((state: any) => state.region);
-	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
+	const { format } = useDisplayCurrency();
 
 	const { data: order, isLoading, error } = useGetOrderById(orderId);
 
@@ -441,6 +440,7 @@ export default function OrderDetailPage() {
 	const taxTotal = orderData.tax_total ?? 0;
 	const discountTotal = orderData.discount_total ?? 0;
 	const total = orderData.total ?? 0;
+	const orderCurrency = (orderData.currency_code as CurrencyCode) ?? "xof";
 
 	// ── Render ────────────────────────────────────────────────────────────────
 
@@ -659,7 +659,7 @@ export default function OrderDetailPage() {
 						</p>
 					</div>
 					<p className="text-[1.5rem] font-bold text-gray-900">
-						{formatCurrency_FR(total, currency)}
+						{format(total, orderCurrency)}
 					</p>
 				</div>
 			</div>
@@ -707,12 +707,12 @@ export default function OrderDetailPage() {
 
 							<div className="text-right shrink-0">
 								<p className="font-semibold tracking-wide text-gray-900">
-									{formatCurrency_FR(item.unit_price * item.quantity, currency)}
+									{format(item.unit_price * item.quantity, orderCurrency)}
 								</p>
 								{item.quantity > 1 && (
 									<p className="text-xs text-gray-400">
 										{t("orderDetail.items.perUnit", {
-											price: formatCurrency_FR(item.unit_price, currency),
+											price: format(item.unit_price, orderCurrency),
 										})}
 									</p>
 								)}
@@ -773,7 +773,7 @@ export default function OrderDetailPage() {
 					<div className="p-6 space-y-4">
 						<div className="flex justify-between text-sm text-gray-600">
 							<span>{t("orderDetail.summary.subtotal")}</span>
-							<span>{formatCurrency_FR(subtotal, currency)}</span>
+							<span>{format(subtotal, orderCurrency)}</span>
 						</div>
 
 						{shippingMethods.length > 0 && (
@@ -785,7 +785,7 @@ export default function OrderDetailPage() {
 								<span>
 									{shippingTotal === 0
 										? t("orderDetail.summary.free")
-										: formatCurrency_FR(shippingTotal, currency)}
+										: format(shippingTotal, orderCurrency)}
 								</span>
 							</div>
 						)}
@@ -796,14 +796,14 @@ export default function OrderDetailPage() {
 								<span>
 									{shippingTotal === 0
 										? t("orderDetail.summary.free")
-										: formatCurrency_FR(shippingTotal, currency)}
+										: format(shippingTotal, orderCurrency)}
 								</span>
 							</div>
 						)}
 
 						<div className="flex justify-between text-sm text-gray-600">
 							<span>{t("orderDetail.summary.tax")}</span>
-							<span>{formatCurrency_FR(taxTotal, currency)}</span>
+							<span>{format(taxTotal, orderCurrency)}</span>
 						</div>
 
 						{discountTotal > 0 && (
@@ -815,13 +815,13 @@ export default function OrderDetailPage() {
 											})
 										: t("orderDetail.summary.discount")}
 								</span>
-								<span>-{formatCurrency_FR(discountTotal, currency)}</span>
+								<span>-{format(discountTotal, orderCurrency)}</span>
 							</div>
 						)}
 
 						<div className="flex justify-between pt-4 text-[2.2rem]! font-bold text-gray-900 border-t border-gray-200">
 							<span>{t("orderDetail.summary.total")}</span>
-							<span>{formatCurrency_FR(total, currency)}</span>
+							<span>{format(total, orderCurrency)}</span>
 						</div>
 					</div>
 				</div>
@@ -849,7 +849,7 @@ export default function OrderDetailPage() {
 								<p className="font-medium text-gray-900">
 									{method.amount === 0
 										? t("orderDetail.shippingMethod.free")
-										: formatCurrency_FR(method.amount ?? 0, currency)}
+										: format(method.amount ?? 0, orderCurrency)}
 								</p>
 							</div>
 						))}

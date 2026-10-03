@@ -1,19 +1,14 @@
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import { useCartStore } from "@prettyfull/store";
-import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import { CartItemType } from "../../types";
 
-const VisualSummary = ({
-	item,
-	currency,
-}: {
-	item: CartItemType;
-	currency: string;
-}) => {
+const VisualSummary = ({ item }: { item: CartItemType }) => {
 	const t = useTranslations("CheckoutPage.summary");
 	const removeItem = useCartStore((state) => state.removeItem);
+	const { format } = useDisplayCurrency();
 
 	const handleRemove = (itemId: string) => {
 		removeItem(itemId);
@@ -48,7 +43,7 @@ const VisualSummary = ({
 						{item.description || ""}
 					</p>
 					<p className="text-gray-500 text-md">
-						{t("unitPriceLabel")} : {formatCurrency_FR(item.price, currency)}
+						{t("unitPriceLabel")} : {format(item.price, item.currency ?? "xof")}
 					</p>
 
 					<div className="flex gap-10 justify-start items-center">

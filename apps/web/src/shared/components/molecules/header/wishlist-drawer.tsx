@@ -1,6 +1,8 @@
 "use client";
 
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import { paths } from "@/lib/routes/paths-en";
+import type { CurrencyCode } from "@prettyfull/contracts";
 import {
 	Button,
 	Drawer,
@@ -9,7 +11,6 @@ import {
 	DrawerTrigger,
 } from "@prettyfull/ui";
 import { useWishlistStore } from "@prettyfull/store";
-import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -23,6 +24,7 @@ const WishlistDrawer = () => {
 	const router = useRouter();
 	const items = useWishlistStore((state) => state.items);
 	const removeItem = useWishlistStore((state) => state.removeItem);
+	const { format } = useDisplayCurrency();
 
 	const goToWishlist = () => {
 		setOpen(false);
@@ -89,9 +91,9 @@ const WishlistDrawer = () => {
 										</p>
 										{item.product.price && (
 											<p className="text-sm font-bold text-gray-900">
-												{formatCurrency_FR(
+												{format(
 													item.product.price.amount,
-													item.product.price.currency === "xof" ? "FCFA" : "$",
+													item.product.price.currency as CurrencyCode,
 												)}
 											</p>
 										)}

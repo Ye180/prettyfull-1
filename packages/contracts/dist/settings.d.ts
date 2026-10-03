@@ -17,6 +17,7 @@ export declare const storeSettingsSchema: z.ZodObject<{
         eur: "eur";
         usd: "usd";
     }>>>;
+    usdToXofRate: z.ZodDefault<z.ZodNumber>;
     defaultLocale: z.ZodDefault<z.ZodEnum<{
         fr: "fr";
         en: "en";
@@ -46,6 +47,7 @@ export declare const updateStoreSettingsSchema: z.ZodObject<{
         eur: "eur";
         usd: "usd";
     }>>>>;
+    usdToXofRate: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
     defaultLocale: z.ZodOptional<z.ZodDefault<z.ZodEnum<{
         fr: "fr";
         en: "en";

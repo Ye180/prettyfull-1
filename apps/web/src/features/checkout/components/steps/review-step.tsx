@@ -1,9 +1,11 @@
 "use client";
 
 import { useGetShippingOptions } from "@/features/checkout/api/get-shipping-options";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
+import type { CurrencyCode } from "@prettyfull/contracts";
 import { useCartStore } from "@prettyfull/store";
 import { Button, Checkbox } from "@prettyfull/ui";
-import { cn, formatCurrency_FR } from "@prettyfull/utils";
+import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
@@ -29,6 +31,7 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [termsAccepted, setTermsAccepted] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const { format } = useDisplayCurrency();
 
 	const isOpen = isStepActive("review");
 	const canAccess = isStepCompleted("payment");
@@ -96,6 +99,9 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 						<div className="space-y-4">
 							{items.map((item) => {
 								const unitPrice = item.unitPrice?.amount ?? item.product.price?.amount ?? 0;
+								const sourceCurrency = (item.unitPrice?.currency ??
+									item.product.price?.currency ??
+									"xof") as CurrencyCode;
 								return (
 									<div
 										key={item.productId}
@@ -123,7 +129,7 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 											</div>
 										</div>
 										<span className="font-medium">
-											{formatCurrency_FR(unitPrice * item.quantity)}
+											{format(unitPrice * item.quantity, sourceCurrency)}
 										</span>
 									</div>
 								);
@@ -135,19 +141,19 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 					<div className="pt-4 space-y-4 border-t border-gray-200">
 						<div className="flex justify-between py-3 text-sm">
 							<span>{t("subtotal")}</span>
-							<span>{formatCurrency_FR(subtotal)}</span>
+							<span>{format(subtotal)}</span>
 						</div>
 						<div className="flex justify-between py-3 text-sm">
 							<span>{t("shipping")}</span>
-							<span>{formatCurrency_FR(shipping)}</span>
+							<span>{format(shipping)}</span>
 						</div>
 						<div className="flex justify-between py-3 text-sm">
 							<span>{t("taxes")}</span>
-							<span>{formatCurrency_FR(taxes)}</span>
+							<span>{format(taxes)}</span>
 						</div>
 						<div className="flex justify-between py-3 text-lg font-semibold border-t border-gray-200">
 							<span>{t("total")}</span>
-							<span>{formatCurrency_FR(total)}</span>
+							<span>{format(total)}</span>
 						</div>
 					</div>
 

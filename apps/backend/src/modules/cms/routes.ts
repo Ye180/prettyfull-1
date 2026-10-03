@@ -9,6 +9,7 @@ import {
 	contentHighlightListQuerySchema,
 	updateContactMessageSchema,
 	updateContentHighlightSchema,
+	updateFeaturedEntrySchema,
 	featuredEntryInputSchema,
 	staticPageInputSchema,
 	staticPageListQuerySchema,
@@ -164,7 +165,17 @@ adminCmsRoutes.get(
 	"/featured",
 	requirePermission(PERMISSIONS.content.read),
 	validate("query", z.object({ sectionKey: z.string().max(64).optional() })),
-	async (c) => c.json(await service.listFeaturedEntries(c.req.valid("query").sectionKey)),
+	async (c) =>
+		c.json(
+			// Résolu (nom du produit/de la catégorie), sans filtrer les entrées
+			// désactivées ni les produits non publiés : l'admin doit pouvoir
+			// retrouver et gérer une mise en avant quel que soit son état.
+			await service.listFeaturedEntries(c.req.valid("query").sectionKey, {
+				resolve: true,
+				includeInactive: true,
+				includeUnpublished: true,
+			}),
+		),
 );
 
 adminCmsRoutes.post(
@@ -182,6 +193,26 @@ adminCmsRoutes.post(
 		});
 
 		return c.json(created, 201);
+	},
+);
+
+adminCmsRoutes.patch(
+	"/featured/:id",
+	requirePermission(PERMISSIONS.content.write),
+	validate("param", idParam),
+	validate("json", updateFeaturedEntrySchema),
+	async (c) => {
+		const { id } = c.req.valid("param");
+		const updated = await service.updateFeaturedEntry(id, c.req.valid("json"));
+
+		await recordAudit(c, {
+			action: "featured.updated",
+			resourceType: "featured_entry",
+			resourceId: id,
+			changes: c.req.valid("json"),
+		});
+
+		return c.json(updated);
 	},
 );
 

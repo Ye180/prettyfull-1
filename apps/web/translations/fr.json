@@ -4,9 +4,11 @@
   },
   "Header": {
     "currencyLanguage": {
-      "title": "Devise",
-      "description": "Choisissez votre devise d'affichage.",
+      "title": "Langue et devise",
+      "description": "Choisissez votre langue et votre devise d'affichage.",
+      "languageLabel": "Langue",
       "currencyLabel": "Devise",
+      "loadingCurrencies": "Chargement des devises…",
       "applyButton": "Appliquer"
     },
     "nav": {
@@ -116,6 +118,22 @@
       "allLabel": "Toute la collection",
       "addToWishlist": "Ajouter à la liste de souhaits",
       "optionsCount": "({count} options)"
+    },
+    "bundleSave": {
+      "eyebrow": "Composez votre routine",
+      "title": "Commandez plus.\nÉconomisez plus.",
+      "watermark": "COMMANDEZ PLUS. ÉCONOMISEZ PLUS. RAYONNEZ PLUS.",
+      "subtitle": "Pourquoi choisir un seul produit ? Associez vitamines, compléments et rituels bien-être pour une routine complète, pensée pour vous.",
+      "ctaButton": "Composer ma routine",
+      "perk1Title": "Dès 25 000 FCFA d'achat",
+      "perk1Label": "Livraison offerte",
+      "perk2Title": "Chaque lot contrôlé",
+      "perk2Label": "Testé en laboratoire",
+      "perk3Title": "Pas convaincue ?",
+      "perk3Label": "Satisfait ou remboursé",
+      "productsBadge": "Meilleures ventes",
+      "cardCta": "Voir le produit",
+      "cardFallbackDescription": "Un essentiel pensé pour accompagner votre routine bien-être."
     },
     "customerExperience": {
       "title": "Formulé pour votre bien-être",

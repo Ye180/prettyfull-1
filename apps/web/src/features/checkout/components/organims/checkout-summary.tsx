@@ -2,17 +2,19 @@
 
 import { useGetShippingOptions } from "@/features/checkout/api/get-shipping-options";
 import { useCheckoutStore } from "@/features/checkout/stores/use-checkout-store";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
+import type { CurrencyCode } from "@prettyfull/contracts";
 import { useCartStore } from "@prettyfull/store";
 import { DropdownMenuSeparator } from "@prettyfull/ui";
-import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import VisualSummary from "../molecules/visual-sumary";
 
 const TAX_RATE = 0.18;
 
-const CheckoutSummary = ({ currency }: { currency: string }) => {
+const CheckoutSummary = () => {
 	const t = useTranslations("CheckoutPage.summary");
 	const items = useCartStore((state) => state.items);
+	const { format } = useDisplayCurrency();
 	const selectedShippingOptionId = useCheckoutStore(
 		(state) => state.selectedShippingOptionId,
 	);
@@ -45,10 +47,12 @@ const CheckoutSummary = ({ currency }: { currency: string }) => {
 							name: item.product.name,
 							description: item.product.description || "",
 							price: item.unitPrice?.amount ?? item.product.price?.amount ?? 0,
+							currency: (item.unitPrice?.currency ??
+								item.product.price?.currency ??
+								"xof") as CurrencyCode,
 							image: item.product.image || "",
 							quantity: item.quantity,
 						}}
-						currency={currency}
 					/>
 				))}
 			</div>
@@ -59,17 +63,17 @@ const CheckoutSummary = ({ currency }: { currency: string }) => {
 				<div className="space-y-8">
 					<div className="flex justify-between text-md">
 						<span>{t("subtotal")}</span>
-						<span>{formatCurrency_FR(subtotal, currency)}</span>
+						<span>{format(subtotal)}</span>
 					</div>
 
 					<div className="flex justify-between text-md">
 						<span>{t("shipping")}</span>
-						<span>{formatCurrency_FR(shipping, currency)}</span>
+						<span>{format(shipping)}</span>
 					</div>
 
 					<div className="flex justify-between text-md">
 						<span>{t("taxes")}</span>
-						<span>{formatCurrency_FR(taxes, currency)}</span>
+						<span>{format(taxes)}</span>
 					</div>
 				</div>
 
@@ -77,7 +81,7 @@ const CheckoutSummary = ({ currency }: { currency: string }) => {
 
 				<div className="flex justify-between py-6 text-lg font-semibold">
 					<span>{t("total")}</span>
-					<span>{formatCurrency_FR(total, currency)}</span>
+					<span>{format(total)}</span>
 				</div>
 			</div>
 

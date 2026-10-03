@@ -19,12 +19,10 @@ export function useAddToCart(
 		selectedColor: string;
 		selectedSize: string;
 		currentImages: string[];
-		currencyCode?: string;
 	},
 ) {
 	const addItem = useCartStore((state) => state.addItem);
-	const { colorOption, sizeOption, selectedColor, selectedSize, currentImages, currencyCode } =
-		options;
+	const { colorOption, sizeOption, selectedColor, selectedSize, currentImages } = options;
 
 	const handleAddToCart = (quantity: number = 1) => {
 		// Une taille n'est exigée que si ce produit en propose réellement une
@@ -82,9 +80,13 @@ export function useAddToCart(
 			},
 			quantity,
 			selectedVariants: variantLabel,
+			// Le prix stocké côté catalogue est en XOF (devise par défaut du
+			// produit) - le libellé affiché à l'écran (FCFA/$) ne doit jamais être
+			// confondu avec la devise réelle du montant, sous peine de fausser
+			// toute conversion en aval (cf. `useDisplayCurrency`).
 			unitPrice: {
 				amount: matchingVariant.calculated_price?.calculated_amount ?? 0,
-				currency: currencyCode === "xof" ? "FCFA" : "USD",
+				currency: "xof",
 			},
 			// Triplet du point de stock : c'est lui, et non le libellé affiché, que
 			// le tunnel d'achat renvoie à l'API pour réserver la bonne déclinaison.

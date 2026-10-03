@@ -213,7 +213,7 @@ const seedSettingsAndIntegrations = async (adminId: string): Promise<void> => {
 			...DEFAULT_STORE_SETTINGS,
 			storeName: "PrettyFull",
 			contactEmail: "contact@prettyfull.shop",
-			enabledCurrencies: ["xof", "eur"],
+			enabledCurrencies: ["xof", "usd"],
 		},
 		updatedBy: adminId,
 	});

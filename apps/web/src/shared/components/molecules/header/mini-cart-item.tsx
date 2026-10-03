@@ -1,15 +1,15 @@
 "use client";
 
 import { QuantitySelector } from "@/features/cart/components/molecules/quantity-selector";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
+import type { CurrencyCode } from "@prettyfull/contracts";
 import { useCartStore, type CartItem } from "@prettyfull/store";
-import { formatCurrency_FR } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 interface MiniCartItemProps {
 	item: CartItem;
-	currency: string;
 }
 
 /**
@@ -17,11 +17,15 @@ interface MiniCartItemProps {
  * prix, et le même stepper -/+ que sur /cart (`QuantitySelector`) - distinct
  * du rendu tabulaire de `CartItems` sur /cart.
  */
-export const MiniCartItem = ({ item, currency }: MiniCartItemProps) => {
+export const MiniCartItem = ({ item }: MiniCartItemProps) => {
 	const t = useTranslations("Header.cart");
 	const removeItem = useCartStore((state) => state.removeItem);
+	const { format } = useDisplayCurrency();
 
 	const unitPrice = item.unitPrice?.amount ?? item.product.price?.amount ?? 0;
+	const sourceCurrency = (item.unitPrice?.currency ??
+		item.product.price?.currency ??
+		"xof") as CurrencyCode;
 	const imageSrc = item.product.image || "/assets/product5.webp";
 
 	return (
@@ -43,7 +47,7 @@ export const MiniCartItem = ({ item, currency }: MiniCartItemProps) => {
 						{item.product.name}
 					</p>
 					<span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-						{formatCurrency_FR(unitPrice, currency)}
+						{format(unitPrice, sourceCurrency)}
 					</span>
 				</div>
 

@@ -2,7 +2,6 @@
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
 import { fetchProductByHandle } from "@/lib/store-api";
-import { useRegionStore } from "@/stores/useRegion";
 import { useWishlistStore } from "@prettyfull/store";
 import { Skeleton } from "@prettyfull/ui";
 import { useQuery } from "@tanstack/react-query";
@@ -44,9 +43,6 @@ export default function ProductViews() {
 		productPrice,
 	} = useProductVariants(product);
 
-	const currencyCode = useRegionStore((state) => state.region?.currency_code);
-	const currencyLabel = currencyCode === "xof" ? "FCFA" : "$";
-
 	// Variante exacte (coloris × taille) affichée : même appariement que
 	// `useAddToCart`, pour que le prix montré soit celui réellement commandé.
 	const currentVariant = useMemo(() => {
@@ -70,7 +66,6 @@ export default function ProductViews() {
 		selectedColor,
 		selectedSize,
 		currentImages,
-		currencyCode,
 	});
 
 	const { summary } = useProductReviews(product?.id);
@@ -90,7 +85,7 @@ export default function ProductViews() {
 				price: {
 					amount:
 						currentVariant?.calculated_price.calculated_amount ?? productPrice,
-					currency: currencyCode ?? "usd",
+					currency: "xof",
 				},
 			},
 		});
@@ -186,7 +181,6 @@ export default function ProductViews() {
 					disabled={availableSizes.length > 0 && !selectedSize}
 					rating={summary.average}
 					reviewCount={summary.count}
-					currency={currencyLabel}
 				/>
 			</div>
 

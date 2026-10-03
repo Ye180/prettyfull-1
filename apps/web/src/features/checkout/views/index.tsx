@@ -1,6 +1,5 @@
 "use client";
 
-import { useRegionStore } from "@/stores/useRegion";
 import { useCartStore } from "@prettyfull/store";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -19,8 +18,6 @@ const CheckoutView = () => {
 	const router = useRouter();
 	const items = useCartStore((state) => state.items);
 	const { goToNextStep } = useCheckoutStep();
-	const region = useRegionStore((state) => state.region);
-	const currency = region?.currency_code === "xof" ? "FCFA" : "$";
 
 	useEffect(() => {
 		if (items.length === 0) {
@@ -77,7 +74,7 @@ const CheckoutView = () => {
 
 					<div className="sm:col-span-5">
 						<div className="sticky top-24 p-6 sm:p-8 bg-[#F9FAFB] rounded-3xl border border-gray-100 shadow-sm">
-							<CheckoutSummary currency={currency} />
+							<CheckoutSummary />
 						</div>
 					</div>
 				</div>

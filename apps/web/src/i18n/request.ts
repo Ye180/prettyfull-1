@@ -8,7 +8,7 @@ import { routing } from "./routing";
 // middleware means `requestLocale` never resolves, so we read the
 // `NEXT_LOCALE` cookie directly instead (same cookie next-intl's own
 // middleware would have set). Language switcher writes this cookie in
-// currency-selector.tsx.
+// locale-currency-selector.tsx.
 export default getRequestConfig(async () => {
   const cookieLocale = (await cookies()).get("NEXT_LOCALE")?.value;
   const locale = hasLocale(routing.locales, cookieLocale)

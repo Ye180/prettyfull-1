@@ -1,7 +1,8 @@
 "use client";
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
-import { formatCurrency_FR } from "@prettyfull/utils";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
+import type { CurrencyCode } from "@prettyfull/contracts";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -66,6 +67,7 @@ const statusStyles = {
 
 export const OrderCard = ({ order }: OrderCardProps) => {
 	const t = useTranslations("Account");
+	const { format } = useDisplayCurrency();
 	const statusKey = statusStyles[order.status] ? order.status : "pending";
 	const status = statusStyles[statusKey];
 	const statusLabel = t(`orders.status.${statusKey}`);
@@ -104,7 +106,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 
 				<div className="text-left sm:text-right">
 					<p className="text-xl font-bold tracking-tight text-gray-900">
-						{formatCurrency_FR(order.total, order.currency)}
+						{format(order.total, order.currency as CurrencyCode)}
 					</p>
 					<p className="mt-1 text-sm font-medium text-gray-500">
 						{t("orderCard.itemCount", { count: order.items.length })}

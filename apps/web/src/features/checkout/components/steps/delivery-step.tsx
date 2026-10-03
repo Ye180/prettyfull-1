@@ -1,7 +1,8 @@
 "use client";
 
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import { Button } from "@prettyfull/ui";
-import { cn, formatCurrency_FR } from "@prettyfull/utils";
+import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useGetShippingOptions } from "../../api/get-shipping-options";
@@ -24,6 +25,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 	);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const { format } = useDisplayCurrency();
 
 	const isOpen = isStepActive("delivery");
 	const isCompleted = isStepCompleted("delivery");
@@ -156,7 +158,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 										</div>
 									</div>
 									<span className="font-medium">
-										{option.amount ? formatCurrency_FR(option.amount) : t("free")}
+										{option.amount ? format(option.amount) : t("free")}
 									</span>
 								</label>
 							))}
@@ -180,7 +182,7 @@ export function DeliveryStep({ cartId, onComplete }: DeliveryStepProps) {
 							<p>{t("standardShipping")}</p>
 							<p className="mt-1 font-medium">
 								{selectedShipping.amount
-									? formatCurrency_FR(selectedShipping.amount)
+									? format(selectedShipping.amount)
 									: t("free")}
 							</p>
 						</>

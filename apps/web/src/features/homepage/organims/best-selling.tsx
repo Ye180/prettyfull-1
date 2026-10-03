@@ -4,10 +4,10 @@ import {
 	useGetBestSellingProducts,
 	useGetShopCategories,
 } from "@/features/homepage/api/medusa/get-best-selling-products";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import { PRODUCT_PATHS } from "@/lib/routes/paths-en";
-import { useRegionStore } from "@/stores/useRegion";
 import { useWishlistStore } from "@prettyfull/store";
-import { formatCurrency_FR, getMediaUrl } from "@prettyfull/utils";
+import { getMediaUrl } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,8 +41,7 @@ export const BestSellingSection = () => {
 	const [activeCategory, setActiveCategory] = useState(ALL_LABEL);
 	const { data: rawProducts, isLoading } = useGetBestSellingProducts();
 	const { data: categories } = useGetShopCategories();
-	const currencyCode = useRegionStore((state) => state.region?.currency_code);
-	const currencySymbol = currencyCode === "xof" ? "FCFA" : "$";
+	const { format } = useDisplayCurrency();
 
 	const wishlistItems = useWishlistStore((state) => state.items);
 	const toggleWishlistItem = useWishlistStore((state) => state.toggleItem);
@@ -79,7 +78,7 @@ export const BestSellingSection = () => {
 				id: product.id,
 				name: product.name,
 				image: product.image,
-				price: { amount: product.price, currency: currencyCode ?? "usd" },
+				price: { amount: product.price, currency: "xof" },
 			},
 		});
 	};
@@ -194,15 +193,12 @@ export const BestSellingSection = () => {
 											</h3>
 											<div className="flex items-center gap-3 pt-1">
 												<span className="text-[1.6rem] font-bold text-[#080808]">
-													{formatCurrency_FR(product.price, currencySymbol)}
+													{format(product.price)}
 												</span>
 												{product.compareAtPrice != null &&
 													product.compareAtPrice > product.price && (
 														<span className="text-[1.4rem] text-[#999999] line-through">
-															{formatCurrency_FR(
-																product.compareAtPrice,
-																currencySymbol,
-															)}
+															{format(product.compareAtPrice)}
 														</span>
 													)}
 											</div>

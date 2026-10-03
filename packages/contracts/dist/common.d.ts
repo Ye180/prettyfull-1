@@ -103,4 +103,10 @@ export declare const toMajorUnit: (amount: number, currency: CurrencyCode) => nu
 /** 15 + "eur" => 1500. Arrondi au plus proche pour absorber les saisies admin. */
 export declare const toMinorUnit: (amount: number, currency: CurrencyCode) => number;
 export declare const formatMoney: (amount: number, currency: CurrencyCode, locale?: string) => string;
+/**
+ * Convertit un montant (plus petite unité) via le taux fixe USD/XOF des
+ * réglages boutique. XOF est la devise pivot ; EUR n'est pas concerné par
+ * cette conversion (hors scope) et repasse tel quel.
+ */
+export declare const convertAmount: (amountMinor: number, from: CurrencyCode, to: CurrencyCode, usdToXofRate: number) => number;
 //# sourceMappingURL=common.d.ts.map

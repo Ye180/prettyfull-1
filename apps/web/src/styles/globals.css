@@ -152,6 +152,28 @@ html {
 	background: #9ca3af;
 }
 
+/* Bandeau d'occasions défilant (page d'accueil) - translation en pourcentage
+ * de la largeur de la piste elle-même (deux copies du contenu côte à côte),
+ * donc la boucle reste parfaitement continue quelle que soit la longueur du
+ * texte. */
+@keyframes marquee-left {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+@keyframes marquee-right {
+	from {
+		transform: translateX(-50%);
+	}
+	to {
+		transform: translateX(0);
+	}
+}
+
 .scrollbar-hide::-webkit-scrollbar {
 	display: none;
 }

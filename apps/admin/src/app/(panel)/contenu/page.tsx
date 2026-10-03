@@ -26,6 +26,7 @@ import {
 import { IconEdit, IconPlus, IconTrash } from "@/components/icons";
 import { slugify } from "@/features/catalogue/product-fields";
 import { ContactMessages } from "@/features/contenu/contact-messages";
+import { FeaturedEntries } from "@/features/contenu/featured-entries";
 import { ImageUpload } from "@/components/ui/image-upload";
 
 /** Module « Contenu » : bannières et pages statiques (§4.7). */
@@ -303,7 +304,11 @@ const ContentPage = () => {
 				)}
 			</Card>
 
-			<Card>
+			<Card className="mt-4">
+				<FeaturedEntries />
+			</Card>
+
+			<Card className="mt-4">
 				<CardHeader
 					title="Pages statiques"
 					description="CGV, à propos, livraison, retours. Contenu en Markdown."

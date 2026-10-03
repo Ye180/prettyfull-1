@@ -1,9 +1,10 @@
 "use client";
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import { fetchOrderConfirmation } from "@/lib/store-api";
+import type { CurrencyCode } from "@prettyfull/contracts";
 import { Skeleton } from "@prettyfull/ui";
-import { formatCurrency_FR } from "@prettyfull/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -36,6 +37,7 @@ const OrderConfirmationView = () => {
 	});
 
 	const [isPaymentDetailOpen, setIsPaymentDetailOpen] = useState(false);
+	const { format } = useDisplayCurrency();
 
 	if (!orderId || !token || error) {
 		return (
@@ -87,7 +89,7 @@ const OrderConfirmationView = () => {
 		);
 	}
 
-	const currency = order.currency_code.toUpperCase();
+	const orderCurrency = order.currency_code as CurrencyCode;
 
 	return (
 		<main className="w-full min-h-screen bg-white text-gray-900 pb-28 pt-8 sm:pt-14">
@@ -169,7 +171,7 @@ const OrderConfirmationView = () => {
 								</div>
 
 								<p className="text-base sm:text-lg font-extrabold text-gray-950 whitespace-nowrap">
-									{formatCurrency_FR(item.unit_price * item.quantity, currency)}
+									{format(item.unit_price * item.quantity, orderCurrency)}
 								</p>
 							</div>
 						))}
@@ -211,7 +213,7 @@ const OrderConfirmationView = () => {
 						<div className="flex justify-between items-center text-gray-600">
 							<span>{t("subtotal")}</span>
 							<span className="font-semibold text-gray-900">
-								{formatCurrency_FR(order.subtotal, currency)}
+								{format(order.subtotal, orderCurrency)}
 							</span>
 						</div>
 						<div className="flex justify-between items-center text-gray-600">
@@ -219,13 +221,13 @@ const OrderConfirmationView = () => {
 							<span className="font-semibold text-gray-900">
 								{order.shipping_total === 0
 									? t("free")
-									: formatCurrency_FR(order.shipping_total, currency)}
+									: format(order.shipping_total, orderCurrency)}
 							</span>
 						</div>
 						<div className="flex justify-between items-center text-gray-600">
 							<span>{t("tax")}</span>
 							<span className="font-semibold text-gray-900">
-								{formatCurrency_FR(order.tax_total, currency)}
+								{format(order.tax_total, orderCurrency)}
 							</span>
 						</div>
 
@@ -234,7 +236,7 @@ const OrderConfirmationView = () => {
 						<div className="flex justify-between items-center pt-1">
 							<span className="text-base font-bold text-gray-900">{t("total")}</span>
 							<span className="text-2xl sm:text-3xl font-extrabold text-gray-950 font-sans tracking-tight">
-								{formatCurrency_FR(order.total, currency)}
+								{format(order.total, orderCurrency)}
 							</span>
 						</div>
 					</div>

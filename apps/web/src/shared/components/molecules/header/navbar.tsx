@@ -12,8 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import CartDrawer from "./cart-drawer";
-import { CurrencySelector } from "./currency-selector";
-import { LanguageToggle } from "./language-toggle";
+import { LocaleCurrencySelector } from "./locale-currency-selector";
 import NavCategoryBar from "./nav-category-bar";
 import NavbarResponsive from "./navbar-responsive";
 import SearchBar from "./search-bar";
@@ -90,10 +89,7 @@ const NavBarHeaders = ({ main_category = [] }: NavBarHeadersProps) => {
 
 					{/* Actions - droite */}
 					<div className="flex items-center justify-end space-x-6 text-[1.5rem] font-medium">
-						<LanguageToggle />
-						<div className="max-lg:hidden">
-							<CurrencySelector />
-						</div>
+						<LocaleCurrencySelector />
 						<WishlistDrawer />
 						<CartDrawer />
 
