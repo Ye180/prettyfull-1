@@ -2,73 +2,54 @@
 
 import { QuantitySelector } from "@/features/cart/components/molecules/quantity-selector";
 import { useDisplayCurrency } from "@/hooks/use-display-currency";
-import { TrashIcon } from "../../../../../../../packages/ui/src/icons/trash.icon";
 import type { CurrencyCode } from "@prettyfull/contracts";
 import { useCartStore, type CartItem } from "@prettyfull/store";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
-interface MiniCartItemProps {
-	item: CartItem;
-}
-
-/**
- * Ligne de panier façon carte flottante (référence client) : image, nom,
- * prix, et le même stepper -/+ que sur /cart (`QuantitySelector`) - distinct
- * du rendu tabulaire de `CartItems` sur /cart.
- */
-export const MiniCartItem = ({ item }: MiniCartItemProps) => {
+/** Ligne du tiroir panier : vignette, nom, stepper, total de ligne, retrait. */
+export const MiniCartItem = ({ item }: { item: CartItem }) => {
 	const t = useTranslations("Header.cart");
 	const removeItem = useCartStore((state) => state.removeItem);
 	const { format } = useDisplayCurrency();
 
 	const unitPrice = item.unitPrice?.amount ?? item.product.price?.amount ?? 0;
-	const sourceCurrency = (item.unitPrice?.currency ??
-		item.product.price?.currency ??
-		"xof") as CurrencyCode;
-	const imageSrc = item.product.image || "/assets/product5.webp";
+	const currency = (item.unitPrice?.currency ?? item.product.price?.currency ?? "xof") as CurrencyCode;
 
 	return (
-		<div className="flex gap-4 p-4 bg-white rounded-xl border border-gray-200 shadow-xs">
-			<div className="overflow-hidden relative w-16 h-16 bg-gray-50 rounded-lg shrink-0">
+		<li className="flex gap-4 py-5">
+			<div className="overflow-hidden relative shrink-0 size-[8rem] bg-(--color-surface-card)">
 				<Image
-					src={imageSrc}
+					src={item.product.image || "/products/shop/hero-shopping.jpg"}
 					alt={item.product.name}
 					fill
-					sizes="64px"
-					className="object-contain p-1"
+					sizes="80px"
+					className="object-cover"
 					unoptimized
 				/>
 			</div>
 
-			<div className="flex-1 min-w-0">
-				<div className="flex gap-2 justify-between">
-					<p className="text-sm font-medium leading-snug text-gray-900 line-clamp-2">
-						{item.product.name}
-					</p>
-					<span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-						{format(unitPrice, sourceCurrency)}
+			<div className="flex flex-col flex-1 justify-between min-w-0">
+				<div className="flex gap-3 justify-between">
+					<p className="text-[1.4rem] font-medium leading-snug line-clamp-2 text-(--color-ink)">{item.product.name}</p>
+					<span className="text-[1.4rem] font-semibold whitespace-nowrap text-(--color-ink)">
+						{format(unitPrice * item.quantity, currency)}
 					</span>
 				</div>
 
-				<div className="flex justify-between items-end mt-3">
-					<QuantitySelector
-						productId={item.productId}
-						initialQuantity={item.quantity}
-						square
-					/>
-
+				<div className="flex justify-between items-center mt-3">
+					<QuantitySelector productId={item.productId} initialQuantity={item.quantity} />
 					<button
 						type="button"
 						aria-label={t("removeItem", { name: item.product.name })}
 						onClick={() => removeItem(item.productId)}
-						className="p-2 text-gray-400 rounded-md transition-colors cursor-pointer hover:text-red-500 hover:bg-red-50"
+						className="text-[1.25rem] underline underline-offset-4 transition-colors cursor-pointer text-(--color-surface-muted) hover:text-(--color-ink)"
 					>
-						<TrashIcon size={16} />
+						{t("remove")}
 					</button>
 				</div>
 			</div>
-		</div>
+		</li>
 	);
 };
 

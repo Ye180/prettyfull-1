@@ -1,7 +1,5 @@
 import { cn } from "@prettyfull/utils";
-import Image from "next/image";
-
-const FALLBACK_IMAGE = "/assets/logo.png";
+import BrandLogo from "./brand-logo";
 
 export const LoadingPrettyfull = ({ className }: { className?: string }) => (
 	<div
@@ -10,14 +8,7 @@ export const LoadingPrettyfull = ({ className }: { className?: string }) => (
 			className,
 		)}
 	>
-		<Image
-			src={FALLBACK_IMAGE}
-			alt="Hero background image"
-			width={900}
-			height={300}
-			className="w-full h-fit"
-			priority
-		/>
+		<BrandLogo className="text-[4rem] sm:text-[6rem] opacity-60" />
 		<div className="absolute inset-0 w-full h-full bg-gray-300/50"></div>
 	</div>
 );

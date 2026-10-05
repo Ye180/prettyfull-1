@@ -27,32 +27,27 @@ const Content = () => {
 	} = useFaqFilters();
 
 	return (
-		<div className="pb-20 w-full text-gray-900 bg-white">
-			{/* Top Hero Banner */}
-			<PhotoOverlayBanner
-				image="/category/category-principale.jpg"
-				imageAlt={t("banner.imageAlt")}
-				height="lg"
-				topLabels={[
-					t("banner.topLabel1"),
-					t("banner.topLabel2"),
-					t("banner.topLabel3"),
-				]}
-				title={t("banner.title")}
-				subtitle={t("banner.subtitle")}
-				titleAlign="bottom-left"
-			/>
+		<div className="pb-20 w-full">
+			<header className="border-b bg-(--color-surface-card) border-(--color-surface-border)">
+				<div className="px-6 py-16 mx-auto max-w-[130rem] sm:py-20 lg:px-10">
+					<p className="text-[1.3rem] font-semibold tracking-[0.14em] uppercase text-(--color-surface-muted)">
+						{t("banner.eyebrow")}
+					</p>
+					<h1 className="mt-4 text-[4rem]! sm:text-[5.6rem]!">{t("banner.title")}</h1>
+					<p className="mt-5 max-w-[60ch] text-[1.6rem] leading-relaxed text-(--color-ink)/75">{t("banner.subtitle")}</p>
+				</div>
+			</header>
 
 			{/* Main Content: 2 Columns */}
-			<section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+			<section className="px-6 py-16 mx-auto max-w-[130rem] sm:py-20 lg:px-10">
 				<div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
 					{/* Left Column: Filter and Search */}
 					<div className="space-y-8 lg:col-span-4">
 						<div className="space-y-3">
-							<span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
+							<span className="text-[1.25rem] font-semibold tracking-[0.14em] uppercase text-(--color-surface-muted)">
 								{t("sidebar.eyebrow")}
 							</span>
-							<h2 className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-950">
+							<h2 className="text-[3rem]! sm:text-[3.4rem]!">
 								{t("sidebar.title")}
 							</h2>
 						</div>
@@ -65,13 +60,13 @@ const Content = () => {
 								value={searchQuery}
 								onChange={(event) => setSearchQuery(event.target.value)}
 								placeholder={t("sidebar.searchPlaceholder")}
-								className="py-3.5 pr-4 pl-11 w-full text-sm bg-[#F9FAFB] rounded-full border border-gray-200 outline-none placeholder:text-gray-400 focus:border-black transition font-medium"
+								className="py-3.5 pr-4 pl-11 w-full text-[1.4rem] bg-white border outline-none transition border-(--color-surface-border) placeholder:text-(--color-surface-muted) focus:border-(--color-ink)"
 							/>
 						</div>
 
 						{/* Category Pills */}
 						<div className="space-y-2">
-							<p className="text-xs font-semibold tracking-wider text-gray-500 uppercase">
+							<p className="text-[1.2rem] font-semibold tracking-[0.12em] uppercase text-(--color-surface-muted)">
 								{t("sidebar.categoriesLabel")}
 							</p>
 							<div className="flex flex-wrap gap-2 pt-1">
@@ -79,10 +74,10 @@ const Content = () => {
 									type="button"
 									onClick={() => setSelectedCategory(null)}
 									className={cn(
-										"rounded-full border px-4 py-2 text-xs sm:text-sm font-semibold transition-all cursor-pointer",
+										"border px-4 py-2 text-[1.3rem] font-medium transition-all cursor-pointer",
 										selectedCategory === null
-											? "bg-black text-white border-black shadow-xs"
-											: "border-gray-200 bg-white text-gray-700 hover:border-gray-300",
+											? "bg-(--color-ink) text-white border-(--color-ink)"
+											: "border-(--color-surface-border) bg-white text-(--color-ink)/80 hover:border-(--color-ink)",
 									)}
 								>
 									{t("sidebar.allCategories")}
@@ -97,10 +92,10 @@ const Content = () => {
 												setSelectedCategory(isActive ? null : category)
 											}
 											className={cn(
-												"px-4 py-2 text-xs font-semibold rounded-full border transition-all cursor-pointer sm:text-sm",
+												"px-4 py-2 text-[1.3rem] font-medium border transition-all cursor-pointer",
 												isActive
-													? "text-white bg-black border-black shadow-xs"
-													: "text-gray-700 bg-white border-gray-200 hover:border-gray-300",
+													? "bg-(--color-ink) text-white border-(--color-ink)"
+													: "border-(--color-surface-border) bg-white text-(--color-ink)/80 hover:border-(--color-ink)",
 											)}
 										>
 											{categoryLabel(category)}
@@ -113,29 +108,24 @@ const Content = () => {
 
 					{/* Right Column: Accordion Items */}
 					<div className="space-y-4 lg:col-span-8">
-						<Accordion
-							type="single"
-							collapsible
-							defaultValue={visibleItems[2]?.title}
-							className="flex flex-col gap-3.5 w-full"
-						>
+						<Accordion type="single" collapsible className="w-full border-t border-(--color-surface-border)">
 							{visibleItems.map((item) => (
 								<AccordionItem
 									key={item.title}
 									value={item.title}
-									className="px-6 py-1 rounded-2xl border border-gray-200 bg-[#F9FAFB] transition-all duration-200 data-[state=open]:bg-black data-[state=open]:border-black data-[state=open]:text-white shadow-xs"
+									className="border-b border-(--color-surface-border)"
 								>
-									<AccordionTrigger className="py-4 font-sans text-base font-bold tracking-tight text-left sm:text-lg hover:no-underline">
+									<AccordionTrigger className="py-5 text-[1.6rem] font-medium text-left hover:no-underline text-(--color-ink)">
 										{item.title}
 									</AccordionTrigger>
-									<AccordionContent className="pb-5 text-sm font-normal leading-relaxed opacity-90 sm:text-base">
+									<AccordionContent className="pb-6 max-w-[70ch] text-[1.5rem] leading-relaxed text-(--color-ink)/75">
 										{item.description}
 									</AccordionContent>
 								</AccordionItem>
 							))}
 
 							{visibleItems.length === 0 && (
-								<div className="p-12 text-center text-gray-500 bg-gray-50 rounded-2xl border border-gray-200">
+								<div className="p-12 text-center text-[1.5rem] text-(--color-surface-muted) bg-(--color-surface-card)">
 									{t("noResults", { query: searchQuery })}
 								</div>
 							)}
@@ -146,7 +136,7 @@ const Content = () => {
 								<button
 									type="button"
 									onClick={loadMore}
-									className="px-8 py-3.5 text-sm font-semibold rounded-full border border-gray-300 bg-white hover:bg-gray-50 text-gray-900 transition-colors shadow-xs cursor-pointer"
+									className="px-8 py-3.5 text-[1.3rem] font-semibold tracking-[0.08em] uppercase border transition-colors cursor-pointer border-(--color-ink) text-(--color-ink) hover:bg-(--color-ink) hover:text-white"
 								>
 									{t("loadMore")}
 								</button>
@@ -158,10 +148,10 @@ const Content = () => {
 
 			{/* Bottom Stratosphere Banner */}
 			<PhotoOverlayBanner
-				image="/home/sublime-1.jpg"
+				image="/products/shop/hero-shopping-alt.jpg"
 				title={t("bottomBanner.title")}
 				subtitle={t("bottomBanner.subtitle")}
-				cta={{ label: t("bottomBanner.cta"), href: "/collections" }}
+				cta={{ label: t("bottomBanner.cta"), href: "/contact" }}
 			/>
 		</div>
 	);

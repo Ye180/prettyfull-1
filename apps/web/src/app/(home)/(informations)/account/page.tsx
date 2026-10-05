@@ -5,36 +5,26 @@ import { useGetCustomerOrders } from "@/features/account/api/get-orders";
 import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import { fetchAddresses, fetchProfile, updateProfile } from "@/lib/store-api";
 import type { CurrencyCode } from "@prettyfull/contracts";
-import { Button, Input, Skeleton } from "@prettyfull/ui";
+import { Input, Skeleton } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Separator } from "../../../../../../../packages/ui/src/components/ui/separator";
-import { AddressIcon } from "../../../../../../../packages/ui/src/icons/adresse.icon";
-import { Heart } from "../../../../../../../packages/ui/src/icons/heart.icon";
-import { OrderIcon } from "../../../../../../../packages/ui/src/icons/order.icon";
+import { useWishlistStore } from "@prettyfull/store";
 
-const StatCard = ({ icon: Icon, label, value, href }: any) => (
-	<Link href={href} className="block group">
-		<div className="p-6 h-60 bg-white rounded-2xl border border-gray-100 transition-all duration-200">
-			<div className="flex flex-col justify-between items-start">
-				<div className="">
-					<p className="font-medium text-gray-500 text-md">{label}</p>
-					<p className="mt-4 text-3xl font-bold text-gray-900">{value}</p>
-				</div>
-				<div className="flex justify-end items-center w-full text-gray-400 rounded-full transition-colors h-fit group-hover:text-white">
-					<Button
-						variant="default"
-						className="text-black bg-gray-100 py-4 px-4 w-fit rounded-full hover:*:text-white *:text-black group-hover:bg-black   group-hover:*:text-white rotate-45 "
-					>
-						<ArrowLinearIcon className="" />
-					</Button>
-				</div>
-			</div>
+const StatCard = ({ label, value, href }: { label: string; value: string; href: string }) => (
+	<Link
+		href={href}
+		className="flex flex-col justify-between p-7 min-h-[16rem] transition-colors group bg-(--color-surface-card) hover:bg-(--color-surface-border)/60"
+	>
+		<div className="flex justify-between items-start">
+			<p className="text-[1.2rem] font-semibold tracking-[0.12em] uppercase text-(--color-surface-muted)">{label}</p>
+			<span className="text-(--color-ink) transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true">
+				<ArrowLinearIcon className="w-5 h-5 rotate-45" />
+			</span>
 		</div>
+		<p className="text-[4.4rem] leading-none text-(--color-ink) [font-family:var(--font-display)]">{value}</p>
 	</Link>
 );
 
@@ -44,18 +34,17 @@ const statusLabels: Record<
 > = {
 	not_fulfilled: {
 		statusKey: "processing",
-		className: "bg-blue-100 text-amber-700",
+		className: "bg-sky-50 text-sky-800",
 	},
-	fulfilled: { statusKey: "delivered", className: "bg-green-100 text-green-800" },
-	delivered: { statusKey: "delivered", className: "bg-green-100 text-green-800" },
-	shipped: { statusKey: "shipped", className: "bg-indigo-100 text-indigo-800" },
-	canceled: { statusKey: "cancelled", className: "bg-red-100 text-red-800" },
-	pending: { statusKey: "pending", className: "bg-yellow-100 text-yellow-800" },
+	fulfilled: { statusKey: "delivered", className: "bg-emerald-50 text-emerald-800" },
+	delivered: { statusKey: "delivered", className: "bg-emerald-50 text-emerald-800" },
+	shipped: { statusKey: "shipped", className: "bg-indigo-50 text-indigo-800" },
+	canceled: { statusKey: "cancelled", className: "bg-red-50 text-red-800" },
+	pending: { statusKey: "pending", className: "bg-amber-50 text-amber-800" },
 };
 
 export default function AccountPage() {
 	const t = useTranslations("Account");
-	const router = useRouter();
 
 	const { data: profile } = useQuery({
 		queryKey: ["customer-profile"],
@@ -97,9 +86,9 @@ export default function AccountPage() {
 	};
 
 	const { format } = useDisplayCurrency();
+	const wishlistCount = useWishlistStore((state) => state.items.length);
 
 	const { data: ordersData, isLoading: ordersLoading } = useGetCustomerOrders();
-	const [showPassword, setShowPassword] = useState(false);
 	const orders = ordersData?.orders ?? [];
 	const ordersCount = ordersData?.count ?? 0;
 
@@ -138,220 +127,162 @@ export default function AccountPage() {
 	const defaultAddress =
 		addresses?.find((address) => address.isDefaultShipping) ?? addresses?.[0];
 
+	const panel = "flex flex-col justify-between p-7 border border-(--color-surface-border)";
+	const panelTitle = "text-[2.2rem] text-(--color-ink) [font-family:var(--font-display)]";
+	const outlineButton =
+		"flex justify-center items-center py-3.5 mt-8 w-full text-[1.3rem] font-semibold tracking-[0.08em] uppercase border transition-colors border-(--color-ink) text-(--color-ink) hover:bg-(--color-ink) hover:text-white";
+
 	return (
-		<div className="pb-20 space-y-12">
-			<div className="flex flex-col gap-4 justify-between xs:flex-row xs:items-center xs:px-3">
+		<div className="space-y-12">
+			<div className="flex flex-col gap-5 justify-between sm:flex-row sm:items-end">
 				<div>
-					<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-						{t("menu.overview")}
-					</h2>
-					<p className="text-gray-500">
-						{t("overview.greeting", {
-							name: customer.first_name || customer.email,
-						})}
+					<h2 className="text-[3.6rem]! sm:text-[4.4rem]!">{t("menu.overview")}</h2>
+					<p className="mt-1 text-[1.5rem] text-(--color-surface-muted)">
+						{t("overview.greeting", { name: customer.first_name || customer.email })}
 					</p>
 				</div>
-				<Button
-					variant="outline"
-					className="py-6! rounded-full border-gray-200 w-fit px-12!"
+				<Link
+					href="/contact"
+					className="px-8 py-3.5 text-[1.3rem] font-medium underline underline-offset-4 transition-colors w-fit text-(--color-surface-muted) hover:text-(--color-ink)"
 				>
 					{t("overview.needHelp")}
-				</Button>
+				</Link>
 			</div>
 
-			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-				<StatCard
-					icon={OrderIcon}
-					label={t("overview.stats.orders")}
-					value={ordersLoading ? "..." : String(ordersCount)}
-					href="/account/orders"
-				/>
-				<StatCard
-					icon={Heart}
-					label={t("overview.stats.wishlist")}
-					value="0"
-					href="/wishlist"
-				/>
-				<StatCard
-					icon={AddressIcon}
-					label={t("overview.stats.addresses")}
-					value={String(customer.addresses?.length ?? 0)}
-					href="/account/addresses"
-				/>
+			<div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+				<StatCard label={t("overview.stats.orders")} value={ordersLoading ? "–" : String(ordersCount)} href="/account/orders" />
+				<StatCard label={t("overview.stats.wishlist")} value={String(wishlistCount)} href="/wishlist" />
+				<StatCard label={t("overview.stats.addresses")} value={String(customer.addresses?.length ?? 0)} href="/account/addresses" />
 			</div>
 
-			<div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-				<div className="flex flex-col justify-between p-6 bg-white border border-gray-100 rounded-2xl!">
-					<div className="space-y-10">
-						<div className="flex justify-between items-center">
-							<p className=" text-gray-800 font-semibold text-xl! ">
-								{t("overview.lastOrder.title")}
-							</p>
+			<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+				<div className={panel}>
+					<div>
+						<div className="flex gap-4 justify-between items-center">
+							<p className={panelTitle}>{t("overview.lastOrder.title")}</p>
 							{lastOrderStatus && (
-								<span
-									className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${lastOrderStatus.className}`}
-								>
-									{lastOrderStatus.label}
-								</span>
+								<span className={`px-3 py-1 text-[1.2rem] font-medium ${lastOrderStatus.className}`}>{lastOrderStatus.label}</span>
 							)}
 						</div>
-						{ordersLoading ? (
-							<Skeleton className="w-full h-24" />
-						) : lastOrder ? (
-							<div className="flex gap-4">
-								<div className="overflow-hidden w-24 h-24 bg-gray-100 rounded-2xl shrink-0">
-									{lastOrder.items?.[0]?.thumbnail && (
-										<Image
-											src={lastOrder.items[0].thumbnail}
-											alt={
-												lastOrder.items[0].product_title || t("orders.product")
-											}
-											width={96}
-											height={96}
-											className="object-fill object-top"
-											unoptimized
-										/>
-									)}
-								</div>
-								<div>
-									<p className="text-sm font-medium text-gray-900">
-										{t("overview.lastOrder.orderNumber", {
-											id: lastOrder.display_id,
-										})}
-									</p>
-									<p className="text-sm text-gray-500">
-										{new Date(lastOrder.created_at).toLocaleDateString(
-											"fr-FR",
-											{
+						<div className="mt-6">
+							{ordersLoading ? (
+								<Skeleton className="w-full h-[8rem]" />
+							) : lastOrder ? (
+								<div className="flex gap-5 items-center">
+									<div className="overflow-hidden relative shrink-0 size-[8rem] bg-(--color-surface-card)">
+										{lastOrder.items?.[0]?.thumbnail && (
+											<Image
+												src={lastOrder.items[0].thumbnail}
+												alt={lastOrder.items[0].product_title || t("orders.product")}
+												fill
+												sizes="80px"
+												className="object-cover"
+												unoptimized
+											/>
+										)}
+									</div>
+									<div className="space-y-1">
+										<p className="text-[1.5rem] font-medium text-(--color-ink)">
+											{t("overview.lastOrder.orderNumber", { id: lastOrder.display_id })}
+										</p>
+										<p className="text-[1.35rem] text-(--color-surface-muted)">
+											{new Date(lastOrder.created_at).toLocaleDateString("fr-FR", {
 												day: "numeric",
 												month: "long",
 												year: "numeric",
-											},
-										)}
-									</p>
-									<p className="mt-1 text-sm font-medium text-gray-900">
-										{format(
-										lastOrder.total ?? 0,
-										(lastOrder.currency_code as CurrencyCode) ?? "xof",
-									)}
-									</p>
+											})}
+										</p>
+										<p className="text-[1.45rem] font-semibold text-(--color-ink)">
+											{format(lastOrder.total ?? 0, (lastOrder.currency_code as CurrencyCode) ?? "xof")}
+										</p>
+									</div>
 								</div>
-							</div>
-						) : (
-							<p className="text-sm text-gray-500">
-								{t("overview.lastOrder.empty")}
-							</p>
-						)}
+							) : (
+								<p className="text-[1.45rem] text-(--color-surface-muted)">{t("overview.lastOrder.empty")}</p>
+							)}
+						</div>
 					</div>
-					<Link href="/account/orders">
-						<Button variant="outline" className="mt-6 w-full border-gray-200">
-							{t("overview.lastOrder.viewOrders")}
-						</Button>
+					<Link href="/account/orders" className={outlineButton}>
+						{t("overview.lastOrder.viewOrders")}
 					</Link>
 				</div>
 
-				<div className="flex flex-col justify-between p-6 bg-white border border-gray-100 rounded-2xl!">
-					<div className="space-y-10">
-						<div className="flex justify-between items-center mb-4">
-							<p className=" text-gray-800 font-semibold  text-xl! ">
-								{t("overview.defaultAddress.title")}
-							</p>
-						</div>
-						{defaultAddress ? (
-							<address className="space-y-1 text-sm not-italic text-gray-600">
-								<p className="font-medium text-gray-900">
-									{defaultAddress.firstName} {defaultAddress.lastName}
-								</p>
-								<p>{defaultAddress.address1}</p>
-								{defaultAddress.address2 && <p>{defaultAddress.address2}</p>}
-								<p>
-									{defaultAddress.postalCode} {defaultAddress.city}
-								</p>
-								<p>{defaultAddress.countryCode?.toUpperCase()}</p>
-							</address>
-						) : (
-							<address className="space-y-1 text-sm not-italic text-gray-600">
-								<p className="text-gray-500">
-									{t("overview.defaultAddress.empty")}
-								</p>
-							</address>
-						)}
-						<Link href="/account/addresses">
-							<Button variant="outline" className="mt-6 w-full border-gray-200">
-								{t("overview.defaultAddress.viewAddresses")}
-							</Button>
-						</Link>
+				<div className={panel}>
+					<div>
+						<p className={panelTitle}>{t("overview.defaultAddress.title")}</p>
+						<address className="mt-6 space-y-1 text-[1.45rem] not-italic leading-relaxed text-(--color-ink)/75">
+							{defaultAddress ? (
+								<>
+									<p className="font-medium text-(--color-ink)">
+										{defaultAddress.firstName} {defaultAddress.lastName}
+									</p>
+									<p>{defaultAddress.address1}</p>
+									{defaultAddress.address2 && <p>{defaultAddress.address2}</p>}
+									<p>
+										{defaultAddress.postalCode} {defaultAddress.city}
+									</p>
+									<p>{defaultAddress.countryCode?.toUpperCase()}</p>
+								</>
+							) : (
+								<p className="text-(--color-surface-muted)">{t("overview.defaultAddress.empty")}</p>
+							)}
+						</address>
 					</div>
+					<Link href="/account/addresses" className={outlineButton}>
+						{t("overview.defaultAddress.viewAddresses")}
+					</Link>
 				</div>
 			</div>
 
-			<Separator />
-			<div className="space-y-8">
-				<div className="flex flex-col gap-4 justify-between sm:flex-row sm:items-center">
-					<div>
-						<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
-							{t("overview.personalInfo.title")}
-						</h2>
-						<p className="text-gray-500">
-							{t("overview.personalInfo.subtitle")}
-						</p>
+			<div className="pt-12 space-y-8 border-t border-(--color-surface-border)">
+				<div>
+					<h2 className="text-[3rem]! sm:text-[3.6rem]!">{t("overview.personalInfo.title")}</h2>
+					<p className="mt-1 text-[1.5rem] text-(--color-surface-muted)">{t("overview.personalInfo.subtitle")}</p>
+				</div>
+				<form className="p-7 space-y-6 border sm:p-10 border-(--color-surface-border)" onSubmit={handleSaveProfile}>
+					<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+						<Input
+							label={t("overview.personalInfo.firstName")}
+							placeholder={t("overview.personalInfo.firstNamePlaceholder")}
+							className="h-fit"
+							value={firstName}
+							onChange={(e) => setFirstName(e.target.value)}
+						/>
+						<Input
+							label={t("overview.personalInfo.lastName")}
+							placeholder={t("overview.personalInfo.lastNamePlaceholder")}
+							className="h-fit"
+							value={lastName}
+							onChange={(e) => setLastName(e.target.value)}
+						/>
+						<Input
+							type="email"
+							label={t("overview.personalInfo.email")}
+							placeholder={t("overview.personalInfo.emailPlaceholder")}
+							className="h-fit"
+							value={email}
+							disabled
+						/>
+						<Input
+							label={t("overview.personalInfo.phone")}
+							placeholder={t("addresses.phonePlaceholder")}
+							className="h-fit"
+							value={phone}
+							onChange={(e) => setPhone(e.target.value)}
+						/>
 					</div>
-				</div>
-				<div className="px-8 py-12 bg-white border border-gray-100 rounded-2xl!">
-					<form className="space-y-10 w-full" onSubmit={handleSaveProfile}>
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-							<Input
-								label={t("overview.personalInfo.firstName")}
-								placeholder={t("overview.personalInfo.firstNamePlaceholder")}
-								className="h-fit"
-								value={firstName}
-								onChange={(e) => setFirstName(e.target.value)}
-							/>
-
-							<Input
-								label={t("overview.personalInfo.lastName")}
-								placeholder={t("overview.personalInfo.lastNamePlaceholder")}
-								className="h-fit"
-								value={lastName}
-								onChange={(e) => setLastName(e.target.value)}
-							/>
-						</div>
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-							<Input
-								type="email"
-								label={t("overview.personalInfo.email")}
-								placeholder={t("overview.personalInfo.emailPlaceholder")}
-								className="h-fit"
-								value={email}
-								disabled
-							/>
-
-							<Input
-								label={t("overview.personalInfo.phone")}
-								placeholder={t("addresses.phonePlaceholder")}
-								className="h-fit"
-								value={phone}
-								onChange={(e) => setPhone(e.target.value)}
-							/>
-						</div>
-						<div className="flex gap-4 items-center pt-6">
-							<Button
-								type="submit"
-								className="px-8 font-medium text-white bg-black rounded-full shadow-lg transition-all hover:bg-gray-800 shadow-gray-200"
-								disabled={isSaving}
-							>
-								{isSaving
-									? t("overview.personalInfo.saving")
-									: t("overview.personalInfo.save")}
-							</Button>
-							{saveSuccess && (
-								<span className="text-sm text-green-600">
-									{t("overview.personalInfo.saveSuccess")}
-								</span>
-							)}
-						</div>
-					</form>
-				</div>
+					<div className="flex flex-wrap gap-4 items-center pt-2">
+						<button
+							type="submit"
+							disabled={isSaving}
+							className="px-10 py-4 text-[1.35rem] font-semibold tracking-[0.1em] text-white uppercase transition-colors cursor-pointer bg-(--color-ink) hover:bg-black disabled:opacity-60"
+						>
+							{isSaving ? t("overview.personalInfo.saving") : t("overview.personalInfo.save")}
+						</button>
+						{saveSuccess && <span className="text-[1.35rem] text-emerald-700">{t("overview.personalInfo.saveSuccess")}</span>}
+						{saveError && <span className="text-[1.35rem] text-red-700">{saveError}</span>}
+					</div>
+				</form>
 			</div>
 		</div>
 	);

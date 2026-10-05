@@ -72,7 +72,7 @@ export const PhotoOverlayBanner = ({
 						{cta && (
 							<Link
 								href={cta.href}
-								className="inline-flex items-center gap-3 px-8 py-3.5 mt-2 text-[1.4rem] font-medium text-black bg-white rounded-full transition-all hover:bg-white/90 hover:scale-105 active:scale-95 shadow-lg"
+								className="inline-flex items-center gap-3 px-8 py-3.5 mt-2 text-[1.4rem] font-medium text-black bg-white rounded-sm transition-all hover:bg-white/90 hover:scale-105 active:scale-95 shadow-lg"
 							>
 								<span>{cta.label}</span>
 								<svg

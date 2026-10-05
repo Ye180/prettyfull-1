@@ -25,7 +25,7 @@ function SelectValue({
 	return (
 		<SelectPrimitive.Value
 			data-slot="select-value"
-			className="bg-amber-800! placeholder:text-gray-500"
+			className="placeholder:text-gray-500"
 			{...props}
 		/>
 	);

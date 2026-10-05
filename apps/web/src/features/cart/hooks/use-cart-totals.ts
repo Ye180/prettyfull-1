@@ -1,18 +1,20 @@
 import type { CartItem } from "@prettyfull/store";
 
 const TAX_RATE = 0.18;
-const SHIPPING_FEE = 10;
-const FREE_SHIPPING_THRESHOLD = 50_000;
+/** Même seuil que le bandeau d'annonce du header. */
+export const FREE_SHIPPING_THRESHOLD = 25_000;
 
 export interface CartTotals {
 	subtotal: number;
-	shipping: number;
 	taxes: number;
 	total: number;
+	/** Le port réel dépend de la zone choisie à la caisse ; seule la gratuité est connue ici. */
+	freeShipping: boolean;
+	remainingForFreeShipping: number;
 }
 
 /**
- * Sous-total/livraison/taxes/total, calculés localement à partir du panier.
+ * Sous-total/taxes/total, calculés localement à partir du panier.
  * Partagé entre la page `/cart` et le tiroir pour ne pas dupliquer le calcul.
  */
 export function useCartTotals(items: CartItem[]): CartTotals {
@@ -21,9 +23,13 @@ export function useCartTotals(items: CartItem[]): CartTotals {
 			acc + (item.unitPrice?.amount ?? item.product.price?.amount ?? 0) * item.quantity,
 		0,
 	);
-	const shipping = items.length === 0 || subtotal > FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
 	const taxes = subtotal * TAX_RATE;
-	const total = subtotal + shipping + taxes;
 
-	return { subtotal, shipping, taxes, total };
+	return {
+		subtotal,
+		taxes,
+		total: subtotal + taxes,
+		freeShipping: subtotal >= FREE_SHIPPING_THRESHOLD,
+		remainingForFreeShipping: Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal),
+	};
 }

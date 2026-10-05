@@ -40,7 +40,7 @@ export interface CardProductProps {
 export const CardProduct: React.FC<CardProductProps> = ({
 	product,
 	className,
-	currencyCode,
+	currencyCode = "xof",
 	priority = false,
 }) => {
 	const router = useRouter();
@@ -93,7 +93,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 				selectedVariants: {},
 				unitPrice: {
 					amount: defaultVariant.calculated_price?.calculated_amount ?? 0,
-					currency: currencyCode === "xof" ? "FCFA" : "USD",
+					currency: currencyCode,
 				},
 				// Triplet du point de stock : c'est lui, et non le libellé affiché, que
 				// le tunnel d'achat renvoie à l'API pour réserver la bonne déclinaison.

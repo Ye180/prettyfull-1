@@ -162,7 +162,7 @@ const statusConfig: Record<
 		step: 0,
 	},
 	processing: {
-		color: "bg-amber-50 text-amber-700 border-blue-200",
+		color: "bg-stone-100 text-black border-blue-200",
 		dot: "bg-blue-500",
 		step: 1,
 	},
@@ -266,9 +266,9 @@ const OrderTimeline = ({ currentStep }: { currentStep: number }) => {
 							<div
 								className={`flex items-center justify-center rounded-full transition-all duration-300 ${
 									isActive
-										? "w-12 h-12 text-white bg-amber-600 ring-4 ring-amber-600/10"
+										? "w-12 h-12 text-white bg-stone-900 ring-4 ring-stone-900/10"
 										: isCompleted
-											? "w-10 h-10 text-white bg-amber-600"
+											? "w-10 h-10 text-white bg-stone-900"
 											: "w-10 h-10 text-gray-400 bg-gray-100"
 								}`}
 							>
@@ -381,7 +381,7 @@ export default function OrderDetailPage() {
 						{t("orderDetail.notFound.description")}
 					</p>
 					<Link href="/account/orders">
-						<Button className="px-8 text-white bg-amber-600 rounded-lg hover:bg-amber-700">
+						<Button className="px-8 text-white bg-stone-900 rounded-lg hover:bg-black">
 							{t("orderDetail.notFound.viewOrders")}
 						</Button>
 					</Link>
@@ -862,13 +862,13 @@ export default function OrderDetailPage() {
 				<Link href="/account/orders" className="flex-1">
 					<Button
 						variant="outline"
-						className="w-full rounded-lg border-gray-300 hover:bg-amber-600 hover:text-white hover:border-amber-600"
+						className="w-full rounded-lg border-gray-300 hover:bg-stone-900 hover:text-white hover:border-stone-900"
 					>
 						{t("orderDetail.actions.viewAllOrders")}
 					</Button>
 				</Link>
 				<Link href="/" className="flex-1">
-					<Button className="w-full text-white bg-amber-600 rounded-lg hover:bg-amber-700">
+					<Button className="w-full text-white bg-stone-900 rounded-lg hover:bg-black">
 						{t("orderDetail.actions.continueShopping")}
 					</Button>
 				</Link>

@@ -37,9 +37,9 @@ const EMPTY: FormState = {
 };
 
 const FIELD_CLASS =
-	"w-full rounded-xl border border-neutral-300 bg-white px-6 py-5 text-[1.6rem] " +
-	"font-light text-black placeholder:text-neutral-400 font-manrope transition-colors " +
-	"focus:border-black focus:outline-none aria-[invalid=true]:border-red-500";
+	"w-full border border-(--color-surface-border) bg-white px-5 py-4 text-[1.5rem] " +
+	"text-(--color-ink) placeholder:text-(--color-surface-muted)/70 transition-colors " +
+	"focus:border-(--color-ink) focus:outline-none aria-[invalid=true]:border-red-500";
 
 const ContactForm = () => {
 	const t = useTranslations("ContactPage");
@@ -91,10 +91,10 @@ const ContactForm = () => {
 
 	if (sent) {
 		return (
-			<div className="rounded-2xl border border-neutral-200 bg-neutral-50 px-8 py-16 text-center sm:px-14">
+			<div className="bg-(--color-surface-card) px-8 py-16 text-center sm:px-14">
 				<span
 					aria-hidden="true"
-					className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-black"
+					className="mx-auto mb-8 flex size-[5.6rem] items-center justify-center rounded-full bg-(--color-ink)"
 				>
 					<svg
 						width="28"
@@ -110,18 +110,18 @@ const ContactForm = () => {
 					</svg>
 				</span>
 
-				<h3 className="mb-4 font-bebas-neue text-[3.2rem]! leading-none tracking-wide uppercase">
+				<h3 className="mb-4 text-[2.8rem]! font-normal! [font-family:var(--font-display)]!">
 					{t("success.title")}
 				</h3>
 
-				<p className="mx-auto max-w-[46ch] text-[1.6rem] font-light leading-relaxed text-neutral-600 font-manrope">
+				<p className="mx-auto max-w-[46ch] text-[1.5rem] leading-relaxed text-(--color-ink)/75">
 					{t("success.description")}
 				</p>
 
 				<button
 					type="button"
 					onClick={() => setSent(false)}
-					className="mt-10 text-[1.5rem] font-medium underline underline-offset-4 font-manrope hover:no-underline cursor-pointer"
+					className="mt-10 text-[1.4rem] font-medium underline underline-offset-4 hover:no-underline cursor-pointer text-(--color-ink)"
 				>
 					{t("success.newMessage")}
 				</button>
@@ -156,7 +156,7 @@ const ContactForm = () => {
 				<div>
 					<label
 						htmlFor="contact-name"
-						className="mb-3 block text-[1.4rem] font-medium uppercase tracking-wider font-manrope"
+						className="mb-2 block text-[1.3rem] font-medium text-(--color-ink)"
 					>
 						{t("form.nameLabel")} <span className="text-red-600">*</span>
 					</label>
@@ -172,7 +172,7 @@ const ContactForm = () => {
 						className={FIELD_CLASS}
 					/>
 					{error("name") && (
-						<p className="mt-2 text-[1.3rem] text-red-600 font-manrope">
+						<p className="mt-2 text-[1.3rem] text-red-600">
 							{error("name")}
 						</p>
 					)}
@@ -181,7 +181,7 @@ const ContactForm = () => {
 				<div>
 					<label
 						htmlFor="contact-email"
-						className="mb-3 block text-[1.4rem] font-medium uppercase tracking-wider font-manrope"
+						className="mb-2 block text-[1.3rem] font-medium text-(--color-ink)"
 					>
 						{t("form.emailLabel")} <span className="text-red-600">*</span>
 					</label>
@@ -197,7 +197,7 @@ const ContactForm = () => {
 						className={FIELD_CLASS}
 					/>
 					{error("email") && (
-						<p className="mt-2 text-[1.3rem] text-red-600 font-manrope">
+						<p className="mt-2 text-[1.3rem] text-red-600">
 							{error("email")}
 						</p>
 					)}
@@ -206,7 +206,7 @@ const ContactForm = () => {
 				<div>
 					<label
 						htmlFor="contact-phone"
-						className="mb-3 block text-[1.4rem] font-medium uppercase tracking-wider font-manrope"
+						className="mb-2 block text-[1.3rem] font-medium text-(--color-ink)"
 					>
 						{t("form.phoneLabel")}
 					</label>
@@ -224,7 +224,7 @@ const ContactForm = () => {
 				<div>
 					<label
 						htmlFor="contact-subject"
-						className="mb-3 block text-[1.4rem] font-medium uppercase tracking-wider font-manrope"
+						className="mb-2 block text-[1.3rem] font-medium text-(--color-ink)"
 					>
 						{t("form.subjectLabel")}
 					</label>
@@ -247,7 +247,7 @@ const ContactForm = () => {
 			<div>
 				<label
 					htmlFor="contact-message"
-					className="mb-3 block text-[1.4rem] font-medium uppercase tracking-wider font-manrope"
+					className="mb-2 block text-[1.3rem] font-medium text-(--color-ink)"
 				>
 					{t("form.messageLabel")} <span className="text-red-600">*</span>
 				</label>
@@ -262,7 +262,7 @@ const ContactForm = () => {
 					className={`${FIELD_CLASS} resize-y`}
 				/>
 				{error("message") && (
-					<p className="mt-2 text-[1.3rem] text-red-600 font-manrope">
+					<p className="mt-2 text-[1.3rem] text-red-600">
 						{error("message")}
 					</p>
 				)}
@@ -271,7 +271,7 @@ const ContactForm = () => {
 			{send.isError && Object.keys(errors).length === 0 && (
 				<p
 					role="alert"
-					className="rounded-xl bg-red-50 px-6 py-4 text-[1.5rem] text-red-700 font-manrope"
+					className="bg-red-50 px-6 py-4 text-[1.4rem] text-red-700"
 				>
 					{send.error instanceof Error
 						? send.error.message
@@ -280,14 +280,14 @@ const ContactForm = () => {
 			)}
 
 			<div className="flex flex-col gap-5 pt-2 sm:flex-row sm:items-center sm:justify-between">
-				<p className="text-[1.3rem] font-light text-neutral-500 font-manrope">
+				<p className="text-[1.3rem] text-(--color-surface-muted)">
 					{t("form.responseTime")}
 				</p>
 
 				<button
 					type="submit"
 					disabled={send.isPending}
-					className="inline-flex items-center justify-center rounded-full bg-black px-12 py-5 text-[1.5rem] font-medium text-white transition-colors hover:bg-neutral-800 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 font-manrope"
+					className="inline-flex items-center justify-center bg-(--color-ink) px-12 py-4 text-[1.35rem] font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-black cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
 				>
 					{send.isPending ? t("form.sending") : t("form.submit")}
 				</button>

@@ -47,11 +47,11 @@ const HomeView = () => {
 
 			{/* 6. Stratosphere Call-To-Action Banner */}
 			<PhotoOverlayBanner
-				image={promoBanner?.image || "/home/supplements-hero-flatlay.jpg"}
-				title={promoBanner?.title || "Votre bien-être, notre priorité"}
+				image={promoBanner?.image || "/products/shop/beauty-flatlay-alt.jpg"}
+				title={promoBanner?.title || "Des soins Made in USA"}
 				subtitle={
 					promoBanner?.subtitle ||
-					"Formules testées en laboratoire, ingrédients sélectionnés avec soin. Découvrez la gamme qui accompagne votre routine santé au quotidien."
+					"Crèmes, sérums, gels douche et huiles, pour le visage comme pour le corps."
 				}
 				cta={{
 					label: promoBanner?.cta || "Découvrir la boutique",

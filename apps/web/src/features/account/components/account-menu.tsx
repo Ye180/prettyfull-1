@@ -44,15 +44,13 @@ export const AccountMenu = () => {
 	};
 
 	return (
-		<nav className="flex flex-col h-full bg-white rounded-2xl border border-gray-100 transition-all duration-200 shadow-2xs">
-			<div className="px-7 py-8 border-b border-gray-100">
-				<h3 className="text-2xl! font-bold tracking-wider text-gray-900">
-					{t("myAccount")}
-				</h3>
-				<p className="mt-2 text-gray-500 text-md">{t("managePreferences")}</p>
+		<nav className="flex flex-col bg-(--color-surface-card)">
+			<div className="hidden px-7 pt-8 pb-6 border-b md:block border-(--color-surface-border)">
+				<p className="text-[2.4rem] text-(--color-ink) [font-family:var(--font-display)]">{t("myAccount")}</p>
+				<p className="mt-1 text-[1.35rem] leading-relaxed text-(--color-surface-muted)">{t("managePreferences")}</p>
 			</div>
 
-			<div className="flex-1 px-4 py-6 space-y-2">
+			<div className="flex overflow-x-auto gap-1 p-2 md:flex-col md:p-3 scrollbar-hide">
 				{menuItems.map((item) => {
 					const Icon = item.icon;
 					const isActive =
@@ -64,36 +62,26 @@ export const AccountMenu = () => {
 							key={item.href}
 							href={item.href}
 							className={cn(
-								"flex overflow-hidden relative items-center px-5 py-4 text-base font-medium rounded-xl transition-all duration-200 group",
+								"flex relative gap-3.5 items-center px-4 py-3.5 text-[1.45rem] whitespace-nowrap transition-colors",
 								isActive
-									? "text-gray-900 bg-gray-50/80"
-									: "text-gray-500 hover:text-gray-900 hover:bg-gray-50",
+									? "bg-white font-medium text-(--color-ink)"
+									: "text-(--color-ink)/65 hover:text-(--color-ink) hover:bg-white/60",
 							)}
 						>
-							{isActive && (
-								<span className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1.5 bg-black rounded-r-full" />
-							)}
-
-							<Icon
-								className={cn(
-									"mr-4 w-6 h-6 transition-colors duration-200",
-									isActive
-										? "text-gray-900"
-										: "text-gray-400 group-hover:text-gray-900",
-								)}
-							/>
+							{isActive && <span className="hidden absolute inset-y-0 left-0 w-[0.3rem] md:block bg-(--color-ink)" />}
+							<Icon className="w-5 h-5 shrink-0" />
 							{item.label}
 						</Link>
 					);
 				})}
 			</div>
 
-			<div className="p-5 mt-auto border-t border-gray-100">
+			<div className="hidden p-3 border-t md:block border-(--color-surface-border)">
 				<button
 					onClick={handleLogout}
-					className="flex items-center px-5 py-4 w-full text-base font-medium text-gray-500 rounded-xl transition-all duration-200 hover:text-red-600 hover:bg-red-50 group cursor-pointer"
+					className="flex gap-3.5 items-center px-4 py-3.5 w-full text-[1.45rem] transition-colors cursor-pointer text-(--color-ink)/65 hover:text-red-700"
 				>
-					<LogoutIcon className="mr-4 w-6 h-6 text-gray-400 transition-colors group-hover:text-red-500" />
+					<LogoutIcon className="w-5 h-5" />
 					{t("logout")}
 				</button>
 			</div>

@@ -10,9 +10,8 @@ import {
 import { useTranslations } from "next-intl";
 
 /**
- * Mini-FAQ PDP : sous-ensemble statique du contenu FAQ existant (pas de
- * duplication de texte), même pattern visuel que l'accordéon de la page FAQ
- * (ligne active en fond noir).
+ * Mini-FAQ PDP : sous-ensemble du contenu FAQ existant (pas de duplication
+ * de texte), même accordéon que la page FAQ.
  */
 export function ProductFaq() {
 	const t = useTranslations("FaqPage");
@@ -20,18 +19,18 @@ export function ProductFaq() {
 
 	return (
 		<div className="py-9">
-			<h2 className="mb-8 text-3xl font-bebas-neue">{t("productFaqTitle")}</h2>
-			<Accordion type="single" collapsible className="flex flex-col gap-3 w-full">
+			<h2 className="mb-6 text-[3rem]!">{t("productFaqTitle")}</h2>
+			<Accordion type="single" collapsible className="w-full border-t border-(--color-surface-border)">
 				{PDP_FAQ_ITEMS.map((item) => (
 					<AccordionItem
 						key={item.title}
 						value={item.title}
-						className="px-6 rounded-2xl border border-b-0 border-black/10 data-[state=open]:bg-black data-[state=open]:border-black data-[state=open]:text-white"
+						className="border-b border-(--color-surface-border)"
 					>
-						<AccordionTrigger className="font-manrope text-lg font-medium">
+						<AccordionTrigger className="py-5 text-[1.6rem] font-medium text-left hover:no-underline text-(--color-ink)">
 							{item.title}
 						</AccordionTrigger>
-						<AccordionContent className="font-manrope text-base leading-relaxed opacity-80">
+						<AccordionContent className="pb-6 max-w-[70ch] text-[1.5rem] leading-relaxed text-(--color-ink)/75">
 							{item.description}
 						</AccordionContent>
 					</AccordionItem>

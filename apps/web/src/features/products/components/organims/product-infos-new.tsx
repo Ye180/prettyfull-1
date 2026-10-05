@@ -48,19 +48,11 @@ export function ProductInfosNew({
 	reviewCount = 2260,
 	description,
 	details,
-	shippingInfo = "Livraison offerte dès 50 000 FCFA",
+	shippingInfo = "Livraison offerte dès 25 000 FCFA d'achat",
 	returnPolicy = "Retours acceptés sous 14 jours - échange ou avoir",
 	currency = "xof",
 }: ProductInfosNewProps) {
 	const { format } = useDisplayCurrency();
-	const defaultDetails = [
-		"Ingrédients testés en laboratoire indépendant, lot après lot",
-		"Sans OGM, formule végétalienne disponible sur certaines références",
-		"Posologie recommandée indiquée sur l'étiquette du produit",
-		"Approvisionnement responsable et traçabilité des ingrédients",
-	];
-
-	const displayDetails = details || defaultDetails;
 
 	// Stepper local - non branché au store panier, la quantité n'est transmise
 	// qu'au moment du clic sur "Ajouter au panier" (cf. useAddToCart).
@@ -155,7 +147,9 @@ export function ProductInfosNew({
 				<button
 					type="button"
 					onClick={onAddToWishlist}
-					aria-label={isWishlisted ? "Retirer de la wishlist" : "Ajouter à la wishlist"}
+					aria-label={
+						isWishlisted ? "Retirer de la wishlist" : "Ajouter à la wishlist"
+					}
 					className={`flex justify-center items-center w-12 h-12 rounded-md border shrink-0 cursor-pointer transition ${
 						isWishlisted
 							? "text-white bg-neutral-900 border-neutral-900"
@@ -184,33 +178,31 @@ export function ProductInfosNew({
 				<span>{shippingInfo}</span>
 			</div>
 
-			{/* Description / Directions / Livraison & retours */}
-			<Accordion type="single" collapsible defaultValue="description" className="border-t border-neutral-200">
+			{/* Description / Livraison & retours */}
+			<Accordion
+				type="single"
+				collapsible
+				defaultValue="description"
+				className="border-t border-neutral-200"
+			>
 				<AccordionItem value="description">
 					<AccordionTrigger className="text-base">Description</AccordionTrigger>
 					<AccordionContent>
 						{description && (
-							<p className="mb-3 leading-relaxed text-neutral-600">{description}</p>
+							<p className="mb-3 leading-relaxed text-neutral-600">
+								{description}
+							</p>
 						)}
-						<ul className="space-y-2 text-neutral-600">
-							{displayDetails.map((detail, i) => (
-								<li key={i} className="flex gap-2 items-start">
-									<span className="mt-0.5 text-neutral-400">•</span>
-									<span>{detail}</span>
-								</li>
-							))}
-						</ul>
-					</AccordionContent>
-				</AccordionItem>
-
-				<AccordionItem value="directions">
-					<AccordionTrigger className="text-base">Posologie</AccordionTrigger>
-					<AccordionContent>
-						<p className="text-neutral-600">
-							Prendre la portion indiquée sur l&apos;étiquette, de préférence au
-							cours d&apos;un repas. Ne pas dépasser la dose journalière
-							recommandée.
-						</p>
+						{details && details.length > 0 && (
+							<ul className="space-y-2 text-neutral-600">
+								{details.map((detail, i) => (
+									<li key={i} className="flex gap-2 items-start">
+										<span className="mt-0.5 text-neutral-400">•</span>
+										<span>{detail}</span>
+									</li>
+								))}
+							</ul>
+						)}
 					</AccordionContent>
 				</AccordionItem>
 

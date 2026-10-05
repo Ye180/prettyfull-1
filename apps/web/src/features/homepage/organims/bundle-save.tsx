@@ -33,7 +33,7 @@ const PERK_ICONS = {
 	),
 } as const;
 
-const FALLBACK_IMAGE = "/products/multivitamin.jpg";
+const FALLBACK_IMAGE = "/products/shop/hero-shopping.jpg";
 
 /** Décalage vertical progressif des cartes produit, façon "escalier" discret. */
 const CARD_OFFSETS = ["mt-0", "mt-4 sm:mt-6", "mt-8 sm:mt-12", "mt-12 sm:mt-16"];
@@ -85,11 +85,11 @@ const toCardFromFeatured = (
 
 /**
  * Section "Bundle & Save" : incite à composer une routine complète plutôt
- * qu'un seul produit, dans l'identité dorée de la boutique (cf. accent
- * --color-brand). Les avantages repris (livraison offerte dès 25 000 FCFA,
- * tests labo, satisfait ou remboursé) sont ceux déjà annoncés ailleurs sur
- * le site, pas des paliers de remise fictifs. Les cartes produit en dessous
- * affichent de vraies fiches (photo, nom, description) issues du catalogue.
+ * qu'un seul produit, dans l'identité sobre gris/blanc de la boutique. Les
+ * avantages repris (livraison offerte dès 25 000 FCFA, tests labo, satisfait
+ * ou remboursé) sont ceux déjà annoncés ailleurs sur le site, pas des paliers
+ * de remise fictifs. Les cartes produit en dessous affichent de vraies
+ * fiches (photo, nom, description) issues du catalogue.
  */
 export const BundleSaveSection = () => {
 	const t = useTranslations("HomePage.bundleSave");
@@ -116,8 +116,8 @@ export const BundleSaveSection = () => {
 
 	const perks = [
 		{ icon: "truck", title: t("perk1Title"), label: t("perk1Label") },
-		{ icon: "lab", title: t("perk2Title"), label: t("perk2Label") },
-		{ icon: "shield", title: t("perk3Title"), label: t("perk3Label") },
+		{ icon: "shield", title: t("perk2Title"), label: t("perk2Label") },
+		{ icon: "lab", title: t("perk3Title"), label: t("perk3Label") },
 	] as const;
 
 	const cardsToShow = isLoading
@@ -133,11 +133,11 @@ export const BundleSaveSection = () => {
 	return (
 		<section className="w-full py-10 sm:py-16">
 			<div className="max-w-[150rem] mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] bg-gradient-to-br from-[#b45309] via-[#d97706] to-[#f59e0b]">
+				<div className="relative overflow-hidden rounded-lg border border-stone-200 bg-stone-100">
 					{/* Filigrane décoratif */}
 					<p
 						aria-hidden="true"
-						className="pointer-events-none select-none absolute inset-0 flex items-center justify-center text-center px-6 font-display font-bold uppercase text-white/10 text-[3.2rem] sm:text-[5.5rem] lg:text-[7rem] leading-[0.95] tracking-tight"
+						className="pointer-events-none select-none absolute inset-0 flex items-center justify-center text-center px-6 font-display font-bold uppercase text-stone-900/5 text-[3.2rem] sm:text-[5.5rem] lg:text-[7rem] leading-[0.95] tracking-tight"
 					>
 						{t("watermark")}
 					</p>
@@ -146,22 +146,19 @@ export const BundleSaveSection = () => {
 						{/* En-tête : message + avantages */}
 						<div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
 							<div className="max-w-xl space-y-4">
-								<p className="text-[1.3rem] font-semibold tracking-widest text-white/80 uppercase">
-									{t("eyebrow")}
-								</p>
-								<h2 className="text-white text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
+								<h2 className="text-stone-900 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
 									{titleLines.map((line, i) => (
 										<span key={i} className="block">
 											{line}
 										</span>
 									))}
 								</h2>
-								<p className="max-w-md text-[1.5rem] sm:text-[1.6rem] text-white/85 leading-relaxed">
+								<p className="max-w-md text-[1.5rem] sm:text-[1.6rem] text-stone-600 leading-relaxed">
 									{t("subtitle")}
 								</p>
 								<Link
 									href="/collections"
-									className="inline-flex items-center gap-2 mt-2 px-7 py-3.5 bg-white text-[#7c3d0a] text-[1.4rem] font-semibold rounded-full hover:bg-white/90 hover:scale-105 active:scale-95 transition-all shadow-lg"
+									className="inline-flex items-center gap-2 mt-2 px-7 py-3.5 bg-stone-900 text-white text-[1.4rem] font-semibold rounded-sm hover:bg-black transition-all shadow-lg"
 								>
 									<span>{t("ctaButton")}</span>
 									<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -174,14 +171,14 @@ export const BundleSaveSection = () => {
 							<div className="flex flex-col gap-5 sm:flex-row sm:gap-8">
 								{perks.map((perk) => (
 									<div key={perk.icon} className="flex items-center gap-3 sm:flex-col sm:items-start sm:gap-4">
-										<div className="flex items-center justify-center w-12 h-12 shrink-0 rounded-full border border-white/40 text-white">
+										<div className="flex items-center justify-center w-12 h-12 shrink-0 rounded-full border border-stone-300 text-stone-900">
 											{PERK_ICONS[perk.icon]}
 										</div>
 										<div>
-											<p className="text-[1.4rem] font-semibold text-white leading-tight">
+											<p className="text-[1.4rem] font-semibold text-stone-900 leading-tight">
 												{perk.title}
 											</p>
-											<span className="inline-block mt-1 px-3 py-0.5 bg-white/15 text-white/90 text-[1.2rem] font-medium rounded-full">
+											<span className="inline-block mt-1 px-3 py-0.5 bg-stone-200 text-stone-700 text-[1.2rem] font-medium rounded-sm">
 												{perk.label}
 											</span>
 										</div>
@@ -204,8 +201,8 @@ export const BundleSaveSection = () => {
 								const wrapperClassName = `w-76 shrink-0 snap-start sm:w-88 lg:w-auto lg:shrink lg:grow lg:basis-80 lg:max-w-2xl ${CARD_OFFSETS[i] ?? ""}`;
 
 								const cardBody = (
-									<div className="flex w-full h-full flex-col items-center gap-5 rounded-[2rem] bg-[#fffbeb] px-8 pt-10 pb-9 text-center shadow-xl transition-transform duration-300 hover:-translate-y-2">
-										<span className="flex items-center justify-center w-11 h-11 rounded-full bg-white text-[#7c3d0a] text-[1.4rem] font-semibold shadow">
+									<div className="flex w-full h-full flex-col items-center gap-5 rounded-lg border border-stone-200 bg-white px-8 pt-10 pb-9 text-center shadow-sm transition-transform duration-300 hover:-translate-y-2">
+										<span className="flex items-center justify-center w-11 h-11 rounded-full bg-stone-100 text-stone-900 text-[1.4rem] font-semibold">
 											{String(i + 1).padStart(2, "0")}
 										</span>
 
@@ -216,16 +213,16 @@ export const BundleSaveSection = () => {
 											</>
 										) : (
 											<>
-												<h3 className="font-display text-3xl font-bold text-[#2b1608] tracking-tight line-clamp-2 min-h-[7.4rem]">
+												<h3 className="font-display text-3xl font-bold text-stone-900 tracking-tight line-clamp-2 min-h-[7.4rem]">
 													{product.name}
 												</h3>
-												<p className="text-[1.4rem] text-[#6b4423] leading-relaxed line-clamp-2 min-h-[4.2rem]">
+												<p className="text-[1.4rem] text-stone-600 leading-relaxed line-clamp-2 min-h-[4.2rem]">
 													{product.description}
 												</p>
 											</>
 										)}
 
-										<div className="relative w-full aspect-4/5 rounded-3xl overflow-hidden bg-black/5">
+										<div className="relative w-full aspect-4/5 rounded-md overflow-hidden bg-black/5">
 											{isLoading ? (
 												<div className="w-full h-full animate-pulse bg-black/10" />
 											) : (
@@ -241,7 +238,7 @@ export const BundleSaveSection = () => {
 										</div>
 
 										{!isLoading && (
-											<span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[1.4rem] font-semibold text-[#7c3d0a] underline underline-offset-4">
+											<span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[1.4rem] font-semibold text-stone-900 underline underline-offset-4">
 												{t("cardCta")}
 												<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 													<line x1="7" y1="17" x2="17" y2="7" />

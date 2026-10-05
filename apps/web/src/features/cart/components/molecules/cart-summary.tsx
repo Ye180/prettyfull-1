@@ -8,9 +8,8 @@ import {
 	removeDiscountCode,
 	syncCartToServer,
 } from "@/lib/store-api";
-import { Button, toast } from "@prettyfull/ui";
+import { toast } from "@prettyfull/ui";
 import { useCartStore } from "@prettyfull/store";
-import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -18,19 +17,11 @@ import { useState } from "react";
 interface CartSummaryProps {
 	subtotal?: number;
 	taxes?: number;
-	shipping?: number;
-	total?: number;
-	/** Squares off the summary block/inputs/buttons - cart drawer only. */
-	square?: boolean;
+	freeShipping?: boolean;
 }
 
-const CartSummary = ({
-	subtotal = 0,
-	taxes = 0,
-	shipping = 0,
-	total = 0,
-	square = false,
-}: CartSummaryProps) => {
+/** Récapitulatif du panier : totaux, code promo, passage en caisse. */
+const CartSummary = ({ subtotal = 0, taxes = 0, freeShipping = false }: CartSummaryProps) => {
 	const t = useTranslations("Cart.summary");
 	const router = useRouter();
 	const { format } = useDisplayCurrency();
@@ -40,11 +31,7 @@ const CartSummary = ({
 	const [discountAmount, setDiscountAmount] = useState(0);
 	const [isApplying, setIsApplying] = useState(false);
 
-	const taxAmount = taxes;
-	const finalTotal = Math.max(
-		0,
-		subtotal - discountAmount + taxAmount + shipping,
-	);
+	const finalTotal = Math.max(0, subtotal - discountAmount + taxes);
 
 	/**
 	 * Le code est validé côté serveur, contre le vrai sous-total : le panier
@@ -102,122 +89,96 @@ const CartSummary = ({
 		router.push("/checkout");
 	};
 
+	const row = "flex justify-between items-center text-[1.4rem] text-(--color-ink)/75";
+
 	return (
-		<div
-			className={cn(
-				"p-7 md:p-8 bg-[#F9FAFB] border border-gray-100 shadow-sm",
-				square ? "rounded-none" : "rounded-xl",
-			)}
-		>
-			<div className="text-center pb-2">
-				<p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-					{t("totalPrize")}
-				</p>
-				<p className="mt-2 text-4xl md:text-5xl font-extrabold text-gray-950 font-sans tracking-tight">
-					{format(finalTotal > 0 ? finalTotal : total)}
-				</p>
-			</div>
+		<div className="p-7 bg-(--color-surface-card) md:p-8">
+			<h2 className="pb-5 text-[2.2rem]!">{t("title")}</h2>
 
-			<div className="w-full h-px bg-gray-200/80 my-6" />
-
-			<div className="space-y-4 text-base">
-				<div className="flex justify-between items-center text-gray-600">
+			<div className="space-y-3">
+				<div className={row}>
 					<span>{t("subtotal")}</span>
-					<span className="font-semibold text-gray-900">
-						{format(subtotal)}
-					</span>
+					<span className="text-(--color-ink)">{format(subtotal)}</span>
 				</div>
-
 				{appliedCode && (
-					<div className="flex justify-between items-center text-gray-600">
+					<div className={row}>
 						<span>{t("discount", { code: appliedCode })}</span>
-						<span className="font-semibold text-rose-500">
-							-{format(discountAmount)}
-						</span>
+						<span className="text-emerald-700">-{format(discountAmount)}</span>
 					</div>
 				)}
-
-				<div className="flex justify-between items-center text-gray-600">
+				<div className={row}>
 					<span>{t("shipping")}</span>
-					<span className="font-semibold text-gray-900">
-						{shipping > 0 ? format(shipping) : t("free")}
-					</span>
+					<span className="text-(--color-ink)">{freeShipping ? t("free") : t("atCheckout")}</span>
 				</div>
-
-				<div className="flex justify-between items-center text-gray-600">
+				<div className={row}>
 					<span>{t("taxes")}</span>
-					<span className="font-semibold text-gray-900">
-						{format(taxAmount)}
-					</span>
+					<span className="text-(--color-ink)">{format(taxes)}</span>
 				</div>
 			</div>
 
-			<div className="w-full h-px bg-gray-200/80 my-6" />
+			<div className="flex justify-between items-baseline pt-5 mt-5 border-t border-(--color-surface-border)">
+				<span className="text-[1.6rem] font-semibold text-(--color-ink)">{t("total")}</span>
+				<span className="text-[2.4rem] font-semibold text-(--color-ink)">{format(finalTotal)}</span>
+			</div>
 
-			<div className="mb-6">
-				<label
-					htmlFor="coupon-input"
-					className="block mb-2 text-sm font-medium text-gray-700"
-				>
+			<div className="mt-6">
+				<label htmlFor="coupon-input" className="block mb-2 text-[1.3rem] font-medium text-(--color-ink)">
 					{t("couponsCode")}
 				</label>
 				{appliedCode ? (
-					<div
-						className={cn(
-							"flex items-center justify-between gap-2.5 px-4 py-3 text-sm bg-white border border-gray-200 font-medium",
-							square ? "rounded-none" : "rounded-lg",
-						)}
-					>
-						<span className="text-gray-900">{appliedCode}</span>
+					<div className="flex justify-between items-center px-4 py-3 text-[1.3rem] bg-white border border-(--color-surface-border)">
+						<span className="font-medium text-(--color-ink)">{appliedCode}</span>
 						<button
 							type="button"
 							onClick={() => void handleRemoveCoupon()}
 							disabled={isApplying}
-							className="text-gray-400 hover:text-black transition disabled:opacity-50 cursor-pointer"
+							className="underline underline-offset-4 transition-colors cursor-pointer text-(--color-surface-muted) hover:text-(--color-ink) disabled:opacity-50"
 						>
 							{t("remove")}
 						</button>
 					</div>
 				) : (
-				<div className="flex gap-2.5">
-					<input
-						id="coupon-input"
-						type="text"
-						value={couponCode}
-						onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-						placeholder={t("couponPlaceholder")}
-						disabled={isApplying}
-						className={cn(
-							"flex-1 px-4 py-3 text-sm bg-white border border-gray-200 focus:outline-none focus:border-black font-medium transition disabled:opacity-50",
-							square ? "rounded-none" : "rounded-lg",
-						)}
-					/>
-					<button
-						type="button"
-						onClick={() => void handleApplyCoupon()}
-						disabled={isApplying || !couponCode.trim()}
-						className={cn(
-							"px-6 py-3 text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition cursor-pointer shadow-sm shrink-0 disabled:opacity-50 disabled:cursor-not-allowed",
-							square ? "rounded-none" : "rounded-lg",
-						)}
-					>
-						{isApplying ? "…" : t("apply")}
-					</button>
-				</div>
+					<div className="flex">
+						<input
+							id="coupon-input"
+							type="text"
+							value={couponCode}
+							onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+							placeholder={t("couponPlaceholder")}
+							disabled={isApplying}
+							className="flex-1 px-4 py-3 min-w-0 text-[1.3rem] bg-white border border-r-0 border-(--color-surface-border) outline-none focus:border-(--color-ink) disabled:opacity-50"
+						/>
+						<button
+							type="button"
+							onClick={() => void handleApplyCoupon()}
+							disabled={isApplying || !couponCode.trim()}
+							className="px-5 text-[1.25rem] font-semibold tracking-[0.08em] uppercase border transition-colors cursor-pointer shrink-0 border-(--color-ink) text-(--color-ink) hover:bg-(--color-ink) hover:text-white disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-(--color-ink)"
+						>
+							{isApplying ? "…" : t("apply")}
+						</button>
+					</div>
 				)}
 			</div>
 
 			<button
 				type="button"
 				onClick={handleCheckout}
-				className={cn(
-					"w-full py-4 px-6 bg-amber-600 hover:bg-amber-700 text-white font-semibold flex items-center justify-center gap-3 transition cursor-pointer shadow-md group",
-					square ? "rounded-none" : "rounded-lg",
-				)}
+				className="flex gap-3 justify-center items-center py-4 mt-6 w-full text-[1.4rem] font-semibold tracking-[0.1em] text-white uppercase transition-colors cursor-pointer group bg-(--color-ink) hover:bg-black"
 			>
-				<span className="text-base font-medium">{t("checkout")}</span>
+				{t("checkout")}
 				<ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
 			</button>
+
+			<ul className="mt-6 space-y-2 text-[1.25rem] text-(--color-surface-muted)">
+				<li className="flex gap-2 items-center">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+					{t("securePayment")}
+				</li>
+				<li className="flex gap-2 items-center">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="m9 12 2 2 4-4" /></svg>
+					{t("authentic")}
+				</li>
+			</ul>
 		</div>
 	);
 };

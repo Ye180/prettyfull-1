@@ -163,8 +163,8 @@ const AddressCard = ({
 		<div className="relative p-6 bg-white rounded-xl border border-gray-200 transition-all duration-200 hover:border-gray-300 hover:shadow-sm">
 			{isDefault && (
 				<div className="flex gap-1.5 items-center mb-4">
-					<StarIcon className="w-4 h-4 text-amber-500" />
-					<span className="text-xs font-semibold tracking-wider text-amber-600 uppercase">
+					<StarIcon className="w-4 h-4 text-stone-700" />
+					<span className="text-xs font-semibold tracking-wider text-stone-900 uppercase">
 						{t("default")}
 					</span>
 				</div>
@@ -625,7 +625,7 @@ export default function AddressesPage() {
 				</div>
 				<Button
 					onClick={handleOpenAdd}
-					className="flex gap-2 items-center self-start px-8 text-white bg-black rounded-full max-md:py-4 hover:bg-gray-800 w-fit"
+					className="flex gap-2 items-center self-start px-8 text-white bg-black rounded-sm max-md:py-4 hover:bg-gray-800 w-fit"
 				>
 					<PlusIcon className="size-10" />
 					{t("addAddress")}

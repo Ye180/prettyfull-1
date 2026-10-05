@@ -36,7 +36,7 @@ export default function NotFound() {
 						<div className="pt-2">
 							<Link
 								href="/"
-								className="inline-flex items-center gap-3 px-8 py-3.5 bg-white text-gray-950 font-semibold rounded-full hover:bg-gray-100 transition shadow-lg group text-sm sm:text-base cursor-pointer"
+								className="inline-flex items-center gap-3 px-8 py-3.5 bg-white text-gray-950 font-semibold rounded-sm hover:bg-gray-100 transition shadow-lg group text-sm sm:text-base cursor-pointer"
 							>
 								<span>Retour à l'accueil</span>
 								<ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1 text-black" />

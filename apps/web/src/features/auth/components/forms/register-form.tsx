@@ -67,13 +67,13 @@ export function RegisterForm({
 							label={t("firstName")}
 							{...register("firstName")}
 							errorMessage={errors.firstName?.message}
-							className="h-fit rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
+							className="h-fit rounded-xl border-gray-200 focus:border-stone-900 transition-colors"
 						/>
 						<Input
 							label={t("lastName")}
 							{...register("lastName")}
 							errorMessage={errors.lastName?.message}
-							className="h-fit rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
+							className="h-fit rounded-xl border-gray-200 focus:border-stone-900 transition-colors"
 						/>
 						<div className="col-span-2">
 							<Input
@@ -81,7 +81,7 @@ export function RegisterForm({
 								type="email"
 								{...register("email")}
 								errorMessage={errors.email?.message}
-								className="rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
+								className="rounded-xl border-gray-200 focus:border-stone-900 transition-colors"
 							/>
 						</div>
 						<div className="relative col-span-2">
@@ -90,7 +90,7 @@ export function RegisterForm({
 								type={showPassword ? "text" : "password"}
 								{...register("password")}
 								errorMessage={errors.password?.message}
-								className="rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
+								className="rounded-xl border-gray-200 focus:border-stone-900 transition-colors"
 							/>
 							{showPassword ? (
 								<span
@@ -128,7 +128,7 @@ export function RegisterForm({
 						type="submit"
 						isLoading={registerMutation.isPending}
 						fullWidth
-						className="bg-amber-600 hover:bg-amber-700"
+						className="bg-stone-900 hover:bg-black"
 					>
 						{t("submit")}
 					</Button>
@@ -138,14 +138,14 @@ export function RegisterForm({
 							<button
 								type="button"
 								onClick={onSwitchMode}
-								className="font-semibold text-amber-600 underline cursor-pointer"
+								className="font-semibold text-stone-900 underline cursor-pointer"
 							>
 								{t("login")}
 							</button>
 						) : (
 							<Link
 								href="/login"
-								className="font-semibold text-amber-600 underline"
+								className="font-semibold text-stone-900 underline"
 							>
 								{t("login")}
 							</Link>

@@ -93,7 +93,7 @@ const WishlistView = () => {
 						</p>
 						<Link
 							href="/collections"
-							className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-full transition shadow-sm"
+							className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-sm transition shadow-sm"
 						>
 							<span>{t("exploreCollections")}</span>
 							<ArrowRightIcon className="w-4 h-4" />

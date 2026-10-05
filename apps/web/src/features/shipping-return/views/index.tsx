@@ -1,18 +1,22 @@
 "use client";
 
+import LegalPage from "@/shared/components/organims/legal-page";
 import { useTranslations } from "next-intl";
-import BannerContent from "@/shared/components/molecules/core/banner-content";
-import Content from "../organims/content";
+import { getShippingReturnItems } from "../data";
 
-const ShippingPrivacyViews = () => {
+const ShippingReturnViews = () => {
 	const t = useTranslations("ShippingReturnPage");
 
 	return (
-		<div className="px-4 space-y-12 pb-18 md:space-y-20">
-			<BannerContent label={t("pageTitle")} />
-			<Content />
-		</div>
+		<LegalPage
+			eyebrow={t("eyebrow")}
+			title={t("pageTitle")}
+			intro={t("intro")}
+			sections={getShippingReturnItems(t)}
+			contactLabel={t("contactLabel")}
+			contactCta={t("contactCta")}
+		/>
 	);
 };
 
-export default ShippingPrivacyViews;
+export default ShippingReturnViews;

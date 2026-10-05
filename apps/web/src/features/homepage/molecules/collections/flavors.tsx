@@ -35,7 +35,7 @@ const Flavors = () => {
 				return (
 					<span
 						key={item.name}
-						className="inline-flex gap-2 items-center px-3 py-1.5 text-sm rounded-full border border-gray-200"
+						className="inline-flex gap-2 items-center px-3 py-1.5 text-sm rounded-sm border border-gray-200"
 					>
 						<span
 							className="w-3 h-3 rounded-full border border-black/10"
@@ -58,7 +58,7 @@ const Flavors = () => {
 					type="button"
 					onClick={addNextColor}
 					aria-label="Ajouter une saveur"
-					className="flex justify-center items-center w-8 h-8 text-gray-400 rounded-full border border-gray-200 hover:border-amber-600 hover:text-amber-600 cursor-pointer"
+					className="flex justify-center items-center w-8 h-8 text-gray-400 rounded-full border border-gray-200 hover:border-stone-900 hover:text-stone-900 cursor-pointer"
 				>
 					+
 				</button>
