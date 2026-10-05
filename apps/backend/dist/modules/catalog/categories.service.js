@@ -131,7 +131,12 @@ export const getCategoryTree = async (options = {}) => {
         else
             roots.push(node);
     }
-    return roots;
+    // Le tri SQL par `path` sert l'assemblage, pas l'affichage : entre frères,
+    // c'est `position` (glisser-déposer du panel) qui fait foi.
+    const byPosition = (a, b) => a.position - b.position;
+    for (const node of nodes.values())
+        node.children.sort(byPosition);
+    return roots.sort(byPosition);
 };
 export const getCategoryBySlug = async (slug) => {
     const [row] = await fetchRows(and(eq(t.categories.slug, slug), isNull(t.categories.deletedAt))).limit(1);
