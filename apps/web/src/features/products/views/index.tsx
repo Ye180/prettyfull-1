@@ -13,7 +13,6 @@ import { ProductGalleryNew } from "../components/organims/product-gallery-new";
 import { ProductInfosNew } from "../components/organims/product-infos-new";
 import ProductSuggestion from "../components/organims/product-suggestion";
 import Reviews from "../components/organims/reviews";
-import SupplementFacts from "../components/organims/supplement-facts";
 import { useAddToCart } from "../hooks/use-add-to-cart";
 import { useProductReviews } from "../hooks/use-product-reviews";
 import { useProductVariants } from "../hooks/use-product-variants";
@@ -81,6 +80,7 @@ export default function ProductViews() {
 			product: {
 				id: product.id,
 				name: product.title,
+				handle: product.handle,
 				image: currentImages?.[0],
 				price: {
 					amount:
@@ -165,7 +165,6 @@ export default function ProductViews() {
 						activeImage={activeImage}
 						setActiveImage={setActiveImage}
 					/>
-					<SupplementFacts />
 				</div>
 				<ProductInfosNew
 					productName={product.title}

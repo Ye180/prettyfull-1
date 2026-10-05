@@ -55,7 +55,7 @@ export const BestSellingSection = () => {
 				category: product.collection?.title ?? "",
 				price: product.variants[0]?.calculated_price?.calculated_amount ?? 0,
 				compareAtPrice: product.variants[0]?.calculated_price?.original_amount,
-				image: getMediaUrl(product.thumbnail) || "/products/multivitamin.jpg",
+				image: getMediaUrl(product.thumbnail) || "/products/shop/hero-shopping.jpg",
 				variantCount: countDistinctColors(product),
 			})),
 		[rawProducts],
@@ -77,6 +77,7 @@ export const BestSellingSection = () => {
 			product: {
 				id: product.id,
 				name: product.name,
+				handle: product.handle,
 				image: product.image,
 				price: { amount: product.price, currency: "xof" },
 			},
@@ -108,7 +109,7 @@ export const BestSellingSection = () => {
 					</p>
 					<Link
 						href="/collections"
-						className="inline-flex items-center gap-2 px-6 py-3 bg-amber-600 text-white text-[1.4rem] font-medium rounded-lg whitespace-nowrap hover:bg-amber-700 transition-all self-start shadow"
+						className="inline-flex items-center gap-2 px-6 py-3 bg-stone-900 text-white text-[1.4rem] font-medium rounded-lg whitespace-nowrap hover:bg-black transition-all self-start shadow"
 					>
 						<span>{t("ctaButton")}</span>
 						<svg
@@ -137,8 +138,8 @@ export const BestSellingSection = () => {
 							onClick={() => setActiveCategory(cat)}
 							className={`px-5 py-2 rounded-lg text-[1.4rem] font-medium whitespace-nowrap transition-all ${
 								isActive
-									? "bg-amber-600 text-white shadow"
-									: "bg-transparent text-[#222222] border border-[#E5E7EB] hover:border-amber-600"
+									? "bg-stone-900 text-white shadow"
+									: "bg-transparent text-[#222222] border border-[#E5E7EB] hover:border-stone-900"
 							} cursor-pointer`}
 						>
 							{cat}

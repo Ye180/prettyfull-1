@@ -42,7 +42,7 @@ export const ReviewsOneItems = ({ review }: { review: Review }) => {
 		<div className="p-6 space-y-4 rounded-2xl border border-gray-200">
 			<div className="flex justify-between items-start">
 				<div className="flex gap-4 items-center text-sm font-light">
-					<div className="w-14 h-14 bg-amber-700 rounded-full" />
+					<div className="w-14 h-14 bg-black rounded-full" />
 					<div>
 						<h5 className="tracking-wide">{review.authorName}</h5>
 						<Stars rating={review.rating} />

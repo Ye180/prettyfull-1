@@ -52,10 +52,10 @@ export const FOOTER_DATA = [
       {
             titleKey: "productsTitle",
             links: [
-                  { labelKey: "vitamins", url: "/collections/vitamines" },
-                  { labelKey: "minerals", url: "/collections/mineraux" },
-                  { labelKey: "proteins", url: "/collections/proteines" },
-                  { labelKey: "wellness", url: "/collections/bien_etre" },
+                  { labelKey: "phones", url: "/collections/telephones-informatique" },
+                  { labelKey: "skincare", url: "/collections/soins-visage" },
+                  { labelKey: "bodycare", url: "/collections/soins-corps" },
+                  { labelKey: "fashion", url: "/collections/mode-accessoires" },
             ],
       },
       {

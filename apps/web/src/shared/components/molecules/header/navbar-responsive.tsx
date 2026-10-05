@@ -3,13 +3,16 @@ import { COLLECTION_PATHS, paths } from "@/lib/routes/paths-en";
 import { NAV_INFO_LINKS } from "@/lib/utils/constants/header";
 import type { StoreCategory } from "@/lib/store-api/types";
 import type { User as UserProfile } from "@prettyfull/contracts";
-import { Logo, LogOut, ScrollArea, Skeleton, User } from "@prettyfull/ui";
+import { LogOut, ScrollArea, Skeleton, User } from "@prettyfull/ui";
+import BrandLogo from "../core/brand-logo";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import { LocaleCurrencySelector } from "./locale-currency-selector";
+import { buildNavPromoTiles, navLabel } from "./nav-promo-tiles";
 import SearchBar from "./search-bar";
 
 const NavbarResponsive = ({
@@ -50,7 +53,7 @@ const NavbarResponsive = ({
 				{/* Header avec logo et icônes */}
 				<div className="flex justify-between items-center px-4 pt-10 pb-4 border-b border-gray-200 shrink-0">
 					<Link href="/" onClick={close}>
-						<Logo className="w-48 md:w-56" />
+						<BrandLogo className="text-[2.2rem]" />
 					</Link>
 
 					<div className="flex gap-2 items-center">
@@ -76,11 +79,11 @@ const NavbarResponsive = ({
 				<ScrollArea className="flex-1 px-4">
 					<div className="flex flex-col gap-y-1 py-4">
 						<Link
-							href={paths.home}
+							href={paths.collections}
 							onClick={close}
 							className="text-[1.5rem] w-full py-3 px-3 hover:bg-gray-50 rounded-md font-semibold text-gray-900 transition-colors"
 						>
-							{t("home")}
+							{t("bestSellersNav")}
 						</Link>
 
 						{main_category ? (
@@ -96,7 +99,7 @@ const NavbarResponsive = ({
 												onClick={close}
 												className="flex-1 text-[1.5rem] w-full py-3 px-3 hover:bg-gray-50 rounded-md font-semibold text-gray-900 transition-colors"
 											>
-												{cat.name}
+												{navLabel(cat)}
 											</Link>
 											{hasChildren && (
 												<button
@@ -124,17 +127,40 @@ const NavbarResponsive = ({
 											)}
 										</div>
 										{hasChildren && isOpen && (
-											<div className="flex flex-col pl-4 border-l border-gray-100 ml-3 gap-y-1">
-												{children.map((child) => (
-													<Link
-														key={child.handle}
-														href={COLLECTION_PATHS.collectionDetail(child.handle)}
-														onClick={close}
-														className="text-[1.4rem] w-full py-2.5 px-3 hover:bg-gray-50 rounded-md font-normal text-gray-600 hover:text-black transition-colors"
-													>
-														{child.name}
-													</Link>
-												))}
+											<div className="pl-4 ml-3 border-l border-gray-100">
+												<div className="flex flex-col gap-y-1 pb-4">
+													{children.map((child) => (
+														<Link
+															key={child.handle}
+															href={COLLECTION_PATHS.collectionDetail(child.handle)}
+															onClick={close}
+															className="text-[1.4rem] w-full py-2.5 px-3 hover:bg-gray-50 rounded-md font-normal text-gray-600 hover:text-black transition-colors"
+														>
+															{child.name}
+														</Link>
+													))}
+												</div>
+
+												{/* Visuels d'appel - mêmes que le mega-menu desktop */}
+												<div className="grid grid-cols-2 gap-3 pb-4 pr-3">
+													{buildNavPromoTiles(main_category ?? [], t, cat.handle).map((tile) => (
+														<Link key={tile.href} href={tile.href} onClick={close} className="group block">
+															<div className="relative aspect-4/3 overflow-hidden rounded-lg bg-gray-50">
+																<Image
+																	src={tile.image}
+																	alt=""
+																	fill
+																	sizes="40vw"
+																	className="object-cover transition-transform duration-500 group-hover:scale-105"
+																	unoptimized
+																/>
+															</div>
+															<p className="mt-2 text-[1.3rem] font-semibold text-gray-900">
+																{tile.title}
+															</p>
+														</Link>
+													))}
+												</div>
 											</div>
 										)}
 									</div>

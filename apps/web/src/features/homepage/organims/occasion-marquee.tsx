@@ -15,45 +15,45 @@ interface MarqueeRow {
 const ROWS: MarqueeRow[] = [
 	{
 		items: [
-			"ÉNERGIE AU QUOTIDIEN",
-			"SOMMEIL RÉPARATEUR",
-			"SPORT & RÉCUPÉRATION",
-			"IMMUNITÉ",
-			"RENTRÉE",
-			"VOYAGES",
+			"IPHONE NEUF & SCELLÉ",
+			"IPHONE SECONDE MAIN",
+			"ORDINATEURS",
+			"PARFUMS",
+			"MADE IN USA",
+			"CADEAUX",
 		],
-		bg: "bg-amber-600",
-		text: "text-amber-50",
+		bg: "bg-stone-900",
+		text: "text-stone-100",
 		rotate: "-rotate-2",
 		duration: "28s",
 		direction: "left",
 	},
 	{
 		items: [
-			"PEAU & CHEVEUX",
-			"DIGESTION",
-			"CONCENTRATION",
-			"GROSSESSE",
-			"MÉNOPAUSE",
-			"SENIORS",
+			"SOINS DU VISAGE",
+			"SOINS DU CORPS",
+			"SÉRUMS",
+			"RAW HAIR",
+			"DENTIFRICES",
+			"BLANCHIMENT",
 		],
-		bg: "bg-emerald-500",
-		text: "text-emerald-950",
+		bg: "bg-stone-200",
+		text: "text-stone-900",
 		rotate: "rotate-1",
 		duration: "34s",
 		direction: "right",
 	},
 	{
 		items: [
-			"GESTION DU STRESS",
-			"MUSCULATION",
-			"SAISON FROIDE",
-			"DÉTOX",
-			"CADEAUX BIEN-ÊTRE",
-			"NOUVEL AN",
+			"LULULEMON",
+			"ALO",
+			"SACS COACH",
+			"VALISES DE VOYAGE",
+			"ÉPICES AMÉRICAINES",
+			"BISCUITS AMÉRICAINS",
 		],
 		bg: "bg-[#080808]",
-		text: "text-amber-400",
+		text: "text-stone-500",
 		rotate: "-rotate-1",
 		duration: "31s",
 		direction: "left",
@@ -69,7 +69,7 @@ const Item = ({ text, colorClass }: { text: string; colorClass: string }) => (
 );
 
 /**
- * Bandeau "une occasion pour chaque complément" - trois pistes de texte en
+ * Bandeau des rayons - trois pistes de texte en
  * défilement continu, inclinées et débordant du conteneur, dans la lignée
  * des bandeaux de marque type "A ring for every thing". Le rendu statique
  * (sans défilement, une seule copie centrée) sert de repli sous
@@ -79,9 +79,9 @@ export const OccasionMarquee = () => {
 	const reducedMotion = useReducedMotion();
 
 	return (
-		<section className="overflow-x-hidden py-16 sm:py-24 bg-[#fffbeb]">
+		<section className="overflow-x-hidden py-16 sm:py-24 bg-stone-50">
 			<h2 className="px-4 mx-auto max-w-3xl text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-center text-[#080808] [font-family:var(--font-display)]!">
-				Un complément pour chaque occasion.
+				Un article pour chaque envie.
 			</h2>
 
 			<div className="flex flex-col gap-3 mt-10 sm:gap-5 sm:mt-14">

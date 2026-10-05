@@ -126,8 +126,8 @@ export const SidebarFilter = ({
 									onClick={() => onChange({ ...filters, sizes: toggleItem(filters.sizes, size) })}
 									className={`px-4 py-1.5 rounded-md border text-[1.3rem] font-medium transition-colors cursor-pointer ${
 										isChecked
-											? "bg-amber-600 text-white border-amber-600"
-											: "border-neutral-300 text-neutral-800 hover:border-amber-600"
+											? "bg-stone-900 text-white border-stone-900"
+											: "border-neutral-300 text-neutral-800 hover:border-stone-900"
 									}`}
 								>
 									{size}
@@ -186,7 +186,7 @@ export const SidebarFilter = ({
 									type="button"
 									onClick={() => onChange({ ...filters, colors: toggleItem(filters.colors, color.name) })}
 									className={`flex items-center gap-2 px-3 py-1.5 rounded-md border text-[1.3rem] transition-colors cursor-pointer ${
-										isChecked ? "border-amber-600 bg-amber-50" : "border-neutral-200 hover:border-amber-600"
+										isChecked ? "border-stone-900 bg-stone-100" : "border-neutral-200 hover:border-stone-900"
 									}`}
 								>
 									<span

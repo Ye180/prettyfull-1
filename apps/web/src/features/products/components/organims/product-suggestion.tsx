@@ -57,7 +57,7 @@ const ProductSuggestion = ({
 				<div className="flex justify-center">
 					<Link
 						href="/collections"
-						className="inline-flex items-center px-8 py-3 text-sm font-medium text-white bg-black rounded-full transition-colors hover:bg-gray-800"
+						className="inline-flex items-center px-8 py-3 text-sm font-medium text-white bg-black rounded-sm transition-colors hover:bg-gray-800"
 					>
 						{t("loadMore")}
 					</Link>

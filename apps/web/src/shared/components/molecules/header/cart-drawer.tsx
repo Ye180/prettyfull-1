@@ -5,7 +5,6 @@ import { useCartTotals } from "@/features/cart/hooks/use-cart-totals";
 import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import { paths } from "@/lib/routes/paths-en";
 import {
-	Button,
 	Drawer,
 	DrawerClose,
 	DrawerContent,
@@ -14,9 +13,11 @@ import {
 } from "@prettyfull/ui";
 import { useCartStore } from "@prettyfull/store";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
+import FreeShippingBar from "@/features/cart/components/molecules/free-shipping-bar";
 import MiniCartItem from "./mini-cart-item";
 
 /**
@@ -43,9 +44,9 @@ const CartDrawer = () => {
 		return () => mq.removeEventListener("change", handler);
 	}, []);
 
-	const goToCart = () => {
+	const go = (href: string) => {
 		setOpen(false);
-		router.push(paths.cart);
+		router.push(href);
 	};
 
 	return (
@@ -62,49 +63,73 @@ const CartDrawer = () => {
 				)}
 			</DrawerTrigger>
 
-			<DrawerContent
-				className="flex! flex-col w-full sm:max-w-md! max-h-[85vh] rounded-none! border-t-0!"
-			>
-				<div className="flex justify-between items-center px-6 py-5 border-b border-gray-100 shrink-0">
-					<h2 className="text-2xl font-semibold text-gray-900">{t("title")}</h2>
+			<DrawerContent className="flex! flex-col w-full sm:max-w-[46rem]! max-h-[88vh] md:h-full md:max-h-none rounded-none! border-0!">
+				<div className="flex justify-between items-center px-6 py-5 border-b border-(--color-surface-border) shrink-0">
+					<h2 className="text-[2.4rem]!">
+						{t("title")} {itemCount > 0 && <span className="text-(--color-surface-muted)">({itemCount})</span>}
+					</h2>
 					<DrawerClose
 						aria-label={t("ariaClose")}
-						className="p-1 text-gray-500 rounded-md cursor-pointer hover:bg-gray-100 hover:text-black"
+						className="p-1.5 rounded-md cursor-pointer text-(--color-surface-muted) hover:text-(--color-ink) hover:bg-(--color-surface-card)"
 					>
 						<CloseIcon className="w-6 h-6" />
 					</DrawerClose>
 				</div>
 
-				<div className="overflow-y-auto flex-1 min-h-0 px-6 py-4 space-y-4 bg-gray-50">
+				{items.length > 0 && (
+					<div className="px-6 py-4 border-b border-(--color-surface-border) shrink-0">
+						<FreeShippingBar subtotal={subtotal} />
+					</div>
+				)}
+
+				{/* data-lenis-prevent : sans lui, le smooth-scroll de la page capte la molette
+				 * et la liste du tiroir ne défile pas (ou par à-coups). */}
+				<div data-lenis-prevent className="overflow-y-auto overscroll-contain flex-1 px-6 min-h-0">
 					{items.length === 0 ? (
-						<div className="flex flex-col justify-center items-center py-16 text-center">
-							<div className="flex justify-center items-center mb-6 w-16 h-16 bg-gray-100 rounded-full">
-								<Cart className="w-6 h-6 text-gray-400" />
-							</div>
-							<h3 className="text-xl font-bold text-gray-900">{t("emptyTitle")}</h3>
-							<p className="mt-2 max-w-xs text-sm text-gray-500">
-								{t("emptyDescription")}
-							</p>
+						<div className="flex flex-col justify-center items-center py-20 text-center">
+							<h3 className="text-[2.2rem]! [font-family:var(--font-display)]!">{t("emptyTitle")}</h3>
+							<p className="mt-2 max-w-[30rem] text-[1.4rem] text-(--color-surface-muted)">{t("emptyDescription")}</p>
+							<DrawerClose asChild>
+								<Link
+									href={paths.collections}
+									className="px-8 py-3.5 mt-8 text-[1.3rem] font-semibold tracking-[0.1em] text-white uppercase bg-(--color-ink) hover:bg-black"
+								>
+									{t("shopNow")}
+								</Link>
+							</DrawerClose>
 						</div>
 					) : (
-						items.map((item) => (
-							<MiniCartItem key={item.productId} item={item} />
-						))
+						<ul className="divide-y divide-(--color-surface-border)">
+							{items.map((item) => (
+								<MiniCartItem key={item.productId} item={item} />
+							))}
+						</ul>
 					)}
 				</div>
 
 				{items.length > 0 && (
-					<DrawerFooter className="border-t border-gray-100">
-						<div className="flex justify-between items-center mb-1 text-base font-semibold text-gray-900">
-							<span>{t("subtotal")}</span>
-							<span>{format(subtotal)}</span>
+					<DrawerFooter className="gap-0! px-6! pt-5! pb-6! border-t border-(--color-surface-border) bg-(--color-surface-card)">
+						<div className="flex justify-between items-baseline text-(--color-ink)">
+							<span className="text-[1.5rem] font-semibold">{t("subtotal")}</span>
+							<span className="text-[1.8rem] font-semibold">{format(subtotal)}</span>
 						</div>
-						<p className="mb-3 text-xs text-gray-500">
-							{t("shippingNote")}
-						</p>
-						<Button shape="square" fullWidth onClick={goToCart}>
-							{t("viewCartButton")}
-						</Button>
+						<p className="mt-1 mb-5 text-[1.25rem] text-(--color-surface-muted)">{t("shippingNote")}</p>
+						<div className="grid grid-cols-2 gap-3">
+							<button
+								type="button"
+								onClick={() => go(paths.cart)}
+								className="py-3.5 text-[1.3rem] font-semibold tracking-[0.08em] uppercase border transition-colors cursor-pointer border-(--color-ink) text-(--color-ink) hover:bg-white"
+							>
+								{t("viewCartButton")}
+							</button>
+							<button
+								type="button"
+								onClick={() => go("/checkout")}
+								className="py-3.5 text-[1.3rem] font-semibold tracking-[0.08em] text-white uppercase transition-colors cursor-pointer bg-(--color-ink) hover:bg-black"
+							>
+								{t("checkoutButton")}
+							</button>
+						</div>
 					</DrawerFooter>
 				)}
 			</DrawerContent>

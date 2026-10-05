@@ -65,21 +65,21 @@ export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
 							label={t("email")}
 							{...register("email")}
 							errorMessage={errors.email?.message}
-							className="rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
+							className="rounded-xl border-gray-200 focus:border-stone-900 transition-colors"
 						/>
 						<Input
 							type="password"
 							label={t("password")}
 							{...register("password")}
 							errorMessage={errors.password?.message}
-							className="rounded-xl border-gray-200 focus:border-amber-600 transition-colors"
+							className="rounded-xl border-gray-200 focus:border-stone-900 transition-colors"
 						/>
 					</div>
 					<Button
 						type="submit"
 						isLoading={loginMutation.isPending}
 						fullWidth
-						className="bg-amber-600 hover:bg-amber-700"
+						className="bg-stone-900 hover:bg-black"
 					>
 						{t("submit")}
 					</Button>
@@ -116,14 +116,14 @@ export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
 							<button
 								type="button"
 								onClick={onSwitchMode}
-								className="font-semibold text-amber-600 underline cursor-pointer"
+								className="font-semibold text-stone-900 underline cursor-pointer"
 							>
 								{t("register")}
 							</button>
 						) : (
 							<Link
 								href="/create-account"
-								className="font-semibold text-amber-600 underline"
+								className="font-semibold text-stone-900 underline"
 							>
 								{t("register")}
 							</Link>

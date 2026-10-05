@@ -21,24 +21,37 @@
       "home": "Home",
       "collapseSubcategoriesOf": "Collapse subcategories of {name}",
       "expandSubcategoriesOf": "Expand subcategories of {name}",
+      "shopAll": "Shop All {name}",
+      "bestSellersTitle": "Best Sellers",
+      "bestSellersSubtitle": "The customer favorites",
+      "newArrivalsTitle": "New Arrivals",
+      "newArrivalsSubtitle": "Just landed",
       "info": {
         "about": "About",
         "contact": "Contact",
         "faq": "FAQ"
-      }
+      },
+      "shopAllHeading": "Shop All",
+      "bestSellersHeading": "Best Sellers",
+      "allBestSellers": "Shop All Best Sellers",
+      "newArrivalsLink": "New Arrivals",
+      "bestSellersNav": "Best Sellers"
     },
     "cart": {
       "ariaViewCart": "View cart",
       "title": "Your cart",
       "ariaClose": "Close",
       "emptyTitle": "Your cart is empty",
-      "emptyDescription": "Browse our range and add your favorite wellness products.",
+      "emptyDescription": "Browse the shop and add your favorite items.",
       "subtotal": "Subtotal",
       "shippingNote": "Shipping calculated at checkout.",
       "viewCartButton": "View cart",
       "increaseQuantity": "Increase quantity",
       "decreaseQuantity": "Decrease quantity",
-      "removeItem": "Remove {name} from cart"
+      "removeItem": "Remove {name} from cart",
+      "remove": "Remove",
+      "checkoutButton": "Checkout",
+      "shopNow": "Shop now"
     },
     "wishlist": {
       "ariaView": "View wishlist",
@@ -47,7 +60,16 @@
       "emptyTitle": "Your wishlist is empty",
       "emptyDescription": "Add your favorite products to easily find them later.",
       "removeItem": "Remove {name} from wishlist",
-      "viewButton": "View wishlist"
+      "viewButton": "View wishlist",
+      "remove": "Remove",
+      "ariaClose": "Close"
+    },
+    "announcement": {
+      "shipping": "Free shipping on orders over 25,000 FCFA",
+      "labTested": "Authentic products imported from the US",
+      "guarantee": "Satisfaction guaranteed",
+      "previous": "Previous message",
+      "next": "Next message"
     }
   },
   "Footer": {
@@ -55,19 +77,24 @@
     "termsLink": "Terms & Conditions",
     "shippingReturns": "Shipping & Returns",
     "address": "Abidjan, Cocody Angré, Côte d'Ivoire",
-    "productsTitle": "Products",
+    "productsTitle": "Shop",
     "helpTitle": "Help",
     "aboutTitle": "About",
     "legalTitle": "Legal",
-    "vitamins": "Vitamins",
-    "minerals": "Minerals",
-    "proteins": "Proteins",
-    "wellness": "Wellness",
     "faq": "FAQ",
     "trackOrder": "Track my order",
     "contactUs": "Contact us",
     "ourStory": "Our story",
-    "contact": "Contact"
+    "contact": "Contact",
+    "phones": "Phones & Computers",
+    "skincare": "Skincare",
+    "bodycare": "Bodycare",
+    "fashion": "Fashion & Accessories",
+    "eyebrow": "Imported from the US, delivered in Abidjan",
+    "tagline": "The best of the US, delivered to you.",
+    "emailUs": "Email us",
+    "callUs": "Call us",
+    "description": "New and pre-owned iPhones, US-made skincare, fragrances, fashion and American groceries: a selection imported for you."
   },
   "HomePage": {
     "header": {
@@ -75,17 +102,20 @@
       "searchAriaLabel": "Search",
       "noResultsFor": "No results for \"{query}\"",
       "searching": "Searching...",
-      "popularCategories": "Popular categories",
-      "topResults": "Top results",
-      "trending": "Trending",
-      "youMayLike": "You may also like"
+      "popularSearches": "Popular searches",
+      "departments": "Departments",
+      "suggestions": "Suggestions",
+      "products": "Products",
+      "seeAllResults": "See all {count} results for “{query}”",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock"
     },
     "hero": {
-      "eyebrowLeft": "Lab Tested",
-      "eyebrowCenter": "Fast Shipping",
-      "eyebrowRight": "Quality Guaranteed",
-      "title": "Our Full Wellness Range",
-      "subtitle": "Lab-tested vitamins, minerals and supplements for your everyday health routine.",
+      "eyebrowLeft": "Imported from the US",
+      "eyebrowCenter": "Fast delivery",
+      "eyebrowRight": "Authentic products",
+      "title": "The whole shop",
+      "subtitle": "iPhones, skincare, fragrances, fashion and American groceries, all in one place.",
       "ctaButton": "Shop Now"
     },
     "promoDuo": {
@@ -108,7 +138,7 @@
       "viewAll": "View all"
     },
     "shopNewProducts": {
-      "title": "Discover our new arrivals",
+      "title": "Featured departments",
       "discover": "Discover"
     },
     "bestSelling": {
@@ -120,44 +150,45 @@
       "optionsCount": "({count} options)"
     },
     "bundleSave": {
-      "eyebrow": "Build your routine",
+      "eyebrow": "Build your cart",
       "title": "Order more.\nSave more.",
       "watermark": "ORDER MORE. SAVE MORE. GLOW MORE.",
-      "subtitle": "Why choose just one? Pair vitamins, supplements and wellness rituals into a complete routine, built around you.",
-      "ctaButton": "Build my routine",
+      "subtitle": "Why choose just one item? Pair an iPhone, your favorite skincare and a fragrance: it all ships in the same box.",
+      "ctaButton": "Build my cart",
       "perk1Title": "From 25,000 FCFA",
       "perk1Label": "Free shipping",
-      "perk2Title": "Every batch checked",
-      "perk2Label": "Lab tested",
-      "perk3Title": "Not convinced?",
-      "perk3Label": "Satisfaction guaranteed",
+      "perk2Title": "Sourced in the US",
+      "perk2Label": "Authentic products",
+      "perk3Title": "Any question?",
+      "perk3Label": "Responsive customer service",
       "productsBadge": "Best sellers",
       "cardCta": "View product",
-      "cardFallbackDescription": "An essential piece for your everyday wellness routine."
+      "cardFallbackDescription": "An item imported from the US, picked for you."
     },
     "customerExperience": {
-      "title": "Formulated for your well-being",
-      "subtitle": "Carefully selected ingredients and formulas designed to support your everyday health.",
-      "labTestedTitle": "Lab tested",
-      "labTestedDescription": "Every batch is analyzed by independent laboratories to guarantee purity and effectiveness.",
-      "nonGmoTitle": "Non-GMO",
-      "nonGmoDescription": "Natural ingredients, free from genetically modified organisms, carefully selected.",
-      "guaranteeTitle": "Satisfaction guaranteed",
-      "guaranteeDescription": "We stand behind the quality of our products — refunded if you're not satisfied."
+      "title": "The best of the US, with confidence",
+      "subtitle": "Authentic items, imported for you and delivered to your door.",
+      "authenticTitle": "Authentic products",
+      "authenticDescription": "Every item is sourced from US suppliers, new or pre-owned.",
+      "deliveryTitle": "Delivered to your door",
+      "deliveryDescription": "You order online, we handle import and delivery in Abidjan.",
+      "supportTitle": "Here to help",
+      "supportDescription": "A question about a product, model or size? Our team will answer."
     },
     "heroBanner": {
-      "title": "Your wellness starts here",
-      "subtitle": "Discover our range of vitamins and supplements, formulated to support your active life in Abidjan.",
+      "eyebrow": "Imported from the US",
+      "title": "The best of the US, delivered to you",
+      "subtitle": "New and pre-owned iPhones, face and body care, fragrances, fashion and American groceries: an imported selection, delivered in Abidjan.",
       "ctaButton": "Shop now"
     },
     "trustBadges": {
-      "eyebrow": "Our quality commitments",
-      "title": "Formulated with your wellness in mind",
-      "nonGmo": "Non-GMO",
-      "glutenFree": "Gluten-free",
-      "vegan": "Vegan",
-      "vegetarian": "Vegetarian",
-      "natural": "100% natural"
+      "eyebrow": "Our commitments",
+      "title": "Why shop with us",
+      "authentic": "Authentic",
+      "madeInUsa": "Made in USA",
+      "sealed": "New & sealed",
+      "secondHand": "Pre-owned",
+      "delivery": "Delivery"
     },
     "containers": {
       "paragraph1": "We are committed to providing you with a seamless and enjoyable shopping experience."
@@ -218,84 +249,63 @@
   "AboutPage": {
     "hero": {
       "eyebrow": "Our story",
-      "title": "Supplements designed from Abidjan",
-      "subtitle": "PrettyFull brings together a curated selection of vitamins and supplements: quality ingredients, lab-tested dosages, and deliberately limited batches to stay fresh.",
-      "imageAlt": "PrettyFull, vitamins and supplements from Abidjan"
+      "title": "The best of the US, within reach",
+      "subtitle": "PrettyFull sources in the United States what is hard to find here: iPhones, US-made skincare, fragrances, fashion and American groceries. You order online, we take care of the rest.",
+      "cta": "Shop now",
+      "imageAlt": "PrettyFull customer with her shopping"
+    },
+    "story": {
+      "eyebrow": "Why PrettyFull",
+      "title": "A shop born from frustration",
+      "p1": "Finding a reliable iPhone, genuine American skincare or your favorite cookies in Abidjan often meant inflated prices, counterfeits and middlemen who disappeared once paid.",
+      "p2": "So we did the opposite: order directly from suppliers in the United States, show clear prices in FCFA, and stay reachable from the first message to delivery.",
+      "p3": "Today, PrettyFull brings together new and pre-owned iPhones, face and body care, oral care, fragrances, natural hair, fashion and American groceries - with the same standards for every item.",
+      "imageAlt": "Selection of skincare imported from the US"
+    },
+    "steps": {
+      "eyebrow": "How it works",
+      "title": "From the American store to your door",
+      "s1": {
+        "title": "You order",
+        "description": "Pick your items on the site and pay securely, in FCFA."
+      },
+      "s2": {
+        "title": "We source in the US",
+        "description": "We order each item from our suppliers in the United States."
+      },
+      "s3": {
+        "title": "Import to Abidjan",
+        "description": "Your items are shipped to Abidjan; follow the progress from your account."
+      },
+      "s4": {
+        "title": "Delivered to you",
+        "description": "We deliver to your address, with customer service reachable at every step."
+      }
     },
     "pillars": {
-      "pillar1": {
-        "title": "Our Positioning",
-        "description": "We favor simple, transparent formulas, precisely dosed, for wellness that lasts."
+      "eyebrow": "Our commitments",
+      "title": "What you can count on",
+      "p1": {
+        "title": "Authentic products",
+        "description": "Every item is sourced from suppliers in the United States. New iPhones arrive sealed, pre-owned ones in the condition stated on their page."
       },
-      "pillar2": {
-        "title": "Our Philosophy",
-        "description": "We exist to simplify your everyday health routine, with essential, quality supplements for every stage of life."
+      "p2": {
+        "title": "Clear prices",
+        "description": "Prices are shown in FCFA and delivery fees before payment. Delivery is free from 25,000 FCFA."
       },
-      "pillar3": {
-        "title": "Our Mission",
-        "description": "A trusted choice for households in Abidjan and beyond, our brand takes care of your health with carefully designed formulas."
+      "p3": {
+        "title": "A real person on the line",
+        "description": "A question about a model, a size or a parcel? You talk to our team, by message, email or phone."
       }
     },
-    "texture": {
-      "eyebrow": "Craftsmanship",
-      "title": "Formulas chosen with care",
-      "imageAlt": "PrettyFull ingredients and formulas",
-      "points": {
-        "point1": {
-          "title": "A careful ingredient selection",
-          "description": "Actives chosen for their purity, bioavailability and traceable origin, from supplier to capsule."
-        },
-        "point2": {
-          "title": "Precise dosages",
-          "description": "Every formula is calibrated to meet recommended intakes, without under-dosing or unnecessary excess."
-        },
-        "point3": {
-          "title": "Rigorous testing",
-          "description": "Independent lab analysis, batch after batch, for supplements that keep their promises."
-        }
-      }
-    },
-    "responsibility": {
-      "badge": "Responsible commitment",
-      "title": "An environmental responsibility that matters to us",
-      "subtitle": "We believe in a positive impact through thoughtful production and more responsible sourcing practices.",
-      "imageAlt": "PrettyFull responsible sourcing",
-      "items": {
-        "item1": {
-          "title": "Responsible ingredients",
-          "description": "We favor sustainable supply chains and recyclable packaging wherever possible, to reduce the footprint of every range."
-        },
-        "item2": {
-          "title": "Quality over volume",
-          "description": "Our approach favors effectiveness and purity, for formulas built to last rather than to chase a trend."
-        },
-        "item3": {
-          "title": "Formulas built to last",
-          "description": "We'd rather offer fewer references, but quality ones, that stay relevant beyond passing trends."
-        }
-      }
-    },
-    "testimonials": {
-      "eyebrow": "In our customers' words",
-      "title": "Loved by our customers",
-      "subtitle": "The experiences of those who've made PrettyFull part of their health routine.",
-      "testimonial1": {
-        "quote": "I can really feel the difference since starting the multivitamin, and delivery to Abidjan was faster than expected. I'm already planning my next order.",
-        "role": "Customer in Abidjan"
-      },
-      "testimonial2": {
-        "quote": "Clear dosages and easy-to-take capsules. PrettyFull has become my everyday health go-to.",
-        "role": "Customer in Cocody"
-      },
-      "testimonial3": {
-        "quote": "Responsive customer service and supplements that keep their promises. Exactly what I was looking for.",
-        "role": "Customer in Yopougon"
-      }
+    "ranges": {
+      "eyebrow": "Our departments",
+      "title": "From iPhones to cookies"
     },
     "finalBanner": {
-      "title": "Your wellness, our priority",
-      "subtitle": "Ready to take care of yourself? Discover our range and signature formulas.",
-      "cta": "Explore the shop"
+      "title": "Ready to order?",
+      "subtitle": "iPhones, skincare, fragrances, fashion and American groceries, delivered in Abidjan.",
+      "cta": "Shop now"
     }
   },
   "ProductPage": {
@@ -307,12 +317,12 @@
       "writeReview": "Write a review",
       "emptyEyebrow": "First review",
       "emptyTitle": "Be the first to share your review",
-      "emptyDescription": "Your reviews help our community pick the supplements that are right for them.",
+      "emptyDescription": "Your reviews help our community choose the items that suit them best.",
       "writeFirstReview": "Write the first review",
       "loadMore": "Show more reviews"
     },
     "suggestions": {
-      "heading": "Complete your wellness routine",
+      "heading": "You may also like",
       "loadMore": "View the full collection"
     }
   },
@@ -353,8 +363,8 @@
       "emptyBody": "Try adjusting your filters or your search.",
       "emptyReset": "Reset filters",
       "loadMore": "View more",
-      "footerTitle": "Your wellness, our priority",
-      "footerSubtitle": "Lab-tested formulas, carefully selected ingredients to support your everyday health routine.",
+      "footerTitle": "The best of the US, delivered to you",
+      "footerSubtitle": "iPhones, skincare, fragrances, fashion and American groceries, imported and delivered in Abidjan.",
       "footerCta": "Discover the shop",
       "promoImageAlt": "Promotion",
       "sort": {
@@ -370,7 +380,7 @@
       "title": "Cart"
     },
     "summary": {
-      "title": " Summary",
+      "title": "Order summary",
       "totalPrize": "Total Prize",
       "subtotal": "Subtotal",
       "shipping": "Shipping",
@@ -387,14 +397,20 @@
       "couponApplied": "Code {code} applied",
       "couponNotApplicable": "This code doesn't apply to your cart",
       "couponApplyError": "Couldn't apply this code. Please try again.",
-      "couponRemoveError": "Couldn't remove this code. Please try again."
+      "couponRemoveError": "Couldn't remove this code. Please try again.",
+      "atCheckout": "Calculated at checkout",
+      "securePayment": "Secure payment",
+      "authentic": "Authentic products imported from the US"
     },
     "items": {
       "emptyBadge": "Empty cart",
       "emptyTitle": "Your cart is empty",
       "emptyDescription": "Add items to see them here.",
-      "selectItemAria": "Select {name}",
-      "removeItemAria": "Remove {name}"
+      "removeItemAria": "Remove {name}",
+      "product": "Product",
+      "quantity": "Quantity",
+      "total": "Total",
+      "remove": "Remove"
     },
     "quantitySelector": {
       "decreaseAria": "Decrease quantity",
@@ -402,13 +418,16 @@
     },
     "page": {
       "title": "My cart",
-      "selectAllAria": "Select all",
-      "selectAll": "Select all",
-      "removeAll": "Remove all",
+      "removeAll": "Empty cart",
       "shippingNote": "Shipping costs are calculated at checkout. You can adjust quantities or remove items before confirming your order.",
       "emptyTitle": "Your cart is currently empty",
-      "emptyDescription": "Discover our selected vitamins and supplements, lab-tested and designed to support your everyday health routine.",
-      "discoverCta": "Explore collections"
+      "emptyDescription": "Discover our iPhones, skincare, fragrances and fashion imported from the US.",
+      "discoverCta": "Explore collections",
+      "continueShopping": "Continue shopping"
+    },
+    "freeShipping": {
+      "remaining": "Only <b>{amount}</b> away from free delivery",
+      "reached": "Good news: delivery is on us"
     }
   },
   "Wishlist": {
@@ -416,11 +435,15 @@
     "pageTitle": "Wishlist",
     "removeAria": "Remove {name} from wishlist",
     "emptyTitle": "Your wishlist is empty",
-    "emptyDescription": "Save your favorite supplements here to find them easily later.",
-    "exploreCollections": "Explore our collections"
+    "emptyDescription": "Save your favorite items here to find them easily later.",
+    "exploreCollections": "Explore our collections",
+    "pageSubtitle": "The items you saved for later.",
+    "remove": "Remove"
   },
   "Account": {
-    "layout": { "title": "My account" },
+    "layout": {
+      "title": "My account"
+    },
     "menu": {
       "overview": "Overview",
       "myOrders": "My orders",
@@ -479,7 +502,7 @@
       "pageSubtitle": "Track your order status and review your purchase history.",
       "loadError": "Couldn't load your orders. Please try again.",
       "noOrderTitle": "No orders yet",
-      "noOrderDescription": "Explore our supplements and place your first order.",
+      "noOrderDescription": "Discover the shop and place your first order.",
       "startShopping": "Start shopping",
       "status": {
         "pending": "Pending",
@@ -617,9 +640,9 @@
       "registerTitle": "Create an account",
       "tabLogin": "Log in",
       "tabRegister": "Sign up",
-      "panelHeadline": "Your wellbeing, made a daily priority",
+      "panelHeadline": "The best of the US, delivered to you",
       "benefit1": "Free delivery from 25,000 FCFA",
-      "benefit2": "Lab-tested formulas",
+      "benefit2": "Authentic products imported from the US",
       "benefit3": "Order tracking and member-only offers"
     },
     "register": {
@@ -637,7 +660,7 @@
     "login": {
       "error": "Couldn't log in. Please try again.",
       "title": "Welcome back to PrettyFull",
-      "subtitle": "Log in to your account to find your supplements and track your orders",
+      "subtitle": "Log in to your account to find your items and track your orders",
       "email": "Email",
       "password": "Password",
       "submit": "Log in",
@@ -673,7 +696,11 @@
     "continueShopping": "Continue shopping"
   },
   "ContactPage": {
-    "hero": { "eyebrow": "Contact", "title": "Let's talk" },
+    "hero": {
+      "eyebrow": "Contact",
+      "title": "Let's talk",
+      "subtitle": "A question about a product, an available model or your order? Our team replies within one business day."
+    },
     "form": {
       "title": "Send us a message",
       "description": "A question about a product, your order, or a delivery? Our team replies within 24 business hours.",
@@ -704,7 +731,7 @@
       "addressLabel": "Address"
     },
     "address": {
-      "line1": "Cocody, Riviera",
+      "line1": "Cocody Angré",
       "city": "Abidjan",
       "country": "Côte d'Ivoire"
     },
@@ -717,7 +744,9 @@
       "sunday": "Sunday",
       "sundayTime": "Closed"
     },
-    "quickAnswers": { "title": "Quick answers" },
+    "quickAnswers": {
+      "title": "Quick answers"
+    },
     "subjects": {
       "subject1": "Question about an order",
       "subject2": "Question about a product",
@@ -857,7 +886,8 @@
       "placeOrder": "Place order",
       "completePreviousSteps": "Complete the previous steps to continue",
       "placeOrderError": "Your order couldn't be placed. Please try again.",
-      "unitPriceLabel": "Unit price"
+      "unitPriceLabel": "Unit price",
+      "remove": "Remove {name} from cart"
     },
     "features": {
       "delivery": "Delivery",
@@ -873,12 +903,9 @@
   },
   "FaqPage": {
     "banner": {
-      "imageAlt": "Person browsing PrettyFull's frequently asked questions",
-      "topLabel1": "Help",
-      "topLabel2": "Support",
-      "topLabel3": "FAQ",
-      "title": "Frequently Asked Questions",
-      "subtitle": "All the answers about your orders, shipping and our products."
+      "title": "Frequently asked questions",
+      "subtitle": "Orders, delivery from the US, returns, payment: every answer in one place.",
+      "eyebrow": "Help"
     },
     "sidebar": {
       "eyebrow": "Need help?",
@@ -891,189 +918,201 @@
       "orders": "Orders",
       "shipping": "Shipping",
       "returns": "Returns & Exchanges",
-      "products": "Products & Dosage",
+      "products": "Products",
       "payments": "Payments",
       "account": "Account"
     },
     "items": {
       "item1": {
-        "title": "PRE-ORDER / BULK PURCHASE ITEMS",
-        "description": "Some products are temporarily out of stock and offered as pre-orders while we restock. Once a pre-order is confirmed, it cannot be cancelled. See our Terms of Sale for the full policy. Please check your parcel as soon as you receive it and contact us immediately if a product is defective, damaged, or doesn't match your order, so we can resolve the situation quickly."
+        "title": "Are items in stock?",
+        "description": "Our items are ordered from suppliers in the United States when you place your order. If an item is no longer available, we let you know quickly and offer a full refund, an equivalent item or waiting for restock."
       },
       "item2": {
-        "title": "HOW DO I TRACK MY ORDER?",
-        "description": "As soon as your order ships, you receive an email with a tracking link. You can also find this link at any time in the \"My Orders\" section of your account."
+        "title": "How do I track my order?",
+        "description": "Follow your order at any time from the “My orders” section of your account. As soon as your parcel is handed to our courier, you are notified by SMS, WhatsApp or email."
       },
       "item3": {
-        "title": "CAN I CHANGE OR CANCEL MY ORDER?",
-        "description": "Contact us as soon as possible after placing your order. As long as it hasn't been prepared for shipping yet, we can update the address, size, or cancel the order."
+        "title": "Can I change or cancel my order?",
+        "description": "Contact us as soon as possible. As long as your item has not yet been ordered from our supplier, we can change or cancel the order. After that, the return conditions apply."
       },
       "item4": {
-        "title": "WHAT ARE THE DELIVERY TIMES?",
-        "description": "Orders ship within 2 to 5 business days. Allow a further 2 to 4 business days for standard delivery in mainland France, and 5 to 10 business days for international deliveries."
+        "title": "How long does delivery take?",
+        "description": "Delivery time includes shipping your items from the United States to Abidjan, then delivery to your address. The estimated time is shown when you order; it may vary with supplier availability, customs and peak periods."
       },
       "item5": {
-        "title": "DO YOU DELIVER INTERNATIONALLY?",
-        "description": "Yes, we deliver to most European countries as well as North America. Any customs fees remain the recipient's responsibility according to local regulations."
+        "title": "Where do you deliver?",
+        "description": "We deliver everywhere in Abidjan and to the main cities in Côte d'Ivoire. For any other destination, contact us to check availability and fees. Delivery is free from 25,000 FCFA, in the areas shown at checkout."
       },
       "item6": {
-        "title": "ITEMS IN STOCK",
-        "description": "Returns, exchanges or partial replacements (at our discretion after reviewing the issue) are possible within 30 days of purchase, only for major defects or non-conformities (minor defects are not covered). See the definition of a major defect below."
+        "title": "How long do I have to return an item?",
+        "description": "You have 14 days from receiving your order to request a return or exchange. The item must be in its original, unused condition, with its packaging, labels and accessories."
       },
       "item7": {
-        "title": "EXCHANGES",
-        "description": "The fastest way to get the item you want is to return the one you have and, once the return is accepted, place a new separate order for the new item. Return shipping costs remain your responsibility. We cannot guarantee receipt of your returned parcel, so we recommend using a tracked, insured shipping method."
+        "title": "How do I exchange an item?",
+        "description": "If an item doesn't suit you in size, color or model and is still in its original condition, an exchange is possible within the same time limit as a return, subject to availability from our suppliers. Otherwise, we offer a refund or store credit."
       },
       "item8": {
-        "title": "DAMAGE AND ISSUES FOUND",
-        "description": "Due to the nature of the products, slight variations in appearance (label, packaging) may occur without affecting product quality. Major defects include: a package that is unsealed or damaged on arrival, an expired best-before date, or receiving a product different from the one ordered. In this last case, contact us immediately for an exchange or refund."
+        "title": "My parcel is damaged or the item doesn't match",
+        "description": "Check your parcel on receipt, ideally in front of the courier. If an item is damaged, incomplete or different from your order, contact us within 48 hours with photos of the product and packaging: we will exchange or refund it at no cost to you."
       },
       "item9": {
-        "title": "EXCEPTIONS / NON-REFUNDABLE ITEMS",
-        "description": "Some products cannot be returned, in particular products whose packaging has been opened (for hygiene and health safety reasons), sale items, or gift cards. For any question about a specific product, feel free to contact us."
+        "title": "Which items can't be returned?",
+        "description": "For hygiene and safety reasons, unless defective: opened skincare and cosmetics, opened toothpaste, mouthwash and whitening kits, unpacked raw hair, fragrances with a broken seal, grocery products and items marked “final sale”."
       },
       "item10": {
-        "title": "HOW DO I START A RETURN?",
-        "description": "Go to \"My Orders\", select the relevant item, and follow the steps in the return form. A prepaid label will be emailed to you within 24 hours."
+        "title": "How do I start a return?",
+        "description": "Contact us from the Contact page or from “My orders”, stating the item and the reason. We will then tell you how to send it back."
       },
       "item11": {
-        "title": "HOW DO I CHOOSE MY FORMAT / DOSAGE?",
-        "description": "Each product page shows the recommended dosage and detailed nutritional information. If you're unsure which dosage suits your situation, we recommend consulting a healthcare professional."
+        "title": "Are the products authentic?",
+        "description": "Yes. Every item is sourced from suppliers in the United States. New iPhones are delivered sealed in their original packaging; pre-owned items are delivered in the condition described on their page."
       },
       "item12": {
-        "title": "DOES THE PACKAGING MATCH THE PHOTOS?",
-        "description": "We adjust our photos to stay as close to reality as possible, but a slight difference may remain depending on your screen settings or a minor update to the supplier's packaging. Feel free to write to us for details on any product."
+        "title": "What condition are pre-owned iPhones in?",
+        "description": "Each pre-owned iPhone is delivered in the condition described on its page. On receipt, check the screen, battery, camera and network, and report any issue within 48 hours with photos or video."
       },
       "item13": {
-        "title": "WHAT PAYMENT METHODS DO YOU ACCEPT?",
-        "description": "We accept credit cards (Visa, Mastercard, Amex), PayPal, as well as installment payments depending on your cart amount."
+        "title": "Which payment methods do you accept?",
+        "description": "Mobile Money (Wave, Orange Money, MTN Money, Moov Money), bank card (Visa, Mastercard) through our secure payment provider, or cash on delivery depending on your area. Available methods are shown at checkout."
       },
       "item14": {
-        "title": "IS MY BANKING INFORMATION SECURE?",
-        "description": "Yes, all payments are processed by a PCI-DSS certified provider. We never store your banking details on our servers."
+        "title": "Is my payment data secure?",
+        "description": "Card and Mobile Money payments are processed directly by our payment providers: your banking details are not stored on our servers."
       },
       "item15": {
-        "title": "HOW DO I RESET MY PASSWORD?",
-        "description": "From the login page, click \"Forgot password\" and follow the instructions sent by email to choose a new one."
+        "title": "How do I reset my password?",
+        "description": "On the login page, click “Forgot password” and follow the instructions sent by email to choose a new one."
       },
       "item16": {
-        "title": "HOW DO I DELETE MY ACCOUNT?",
-        "description": "Send us a request from the Contact page with the email address linked to your account. Deletion takes effect within 48 hours in accordance with GDPR."
+        "title": "How do I delete my account?",
+        "description": "Send us a request from the Contact page with the email address linked to your account. We will delete it as soon as possible and confirm it to you."
       }
     },
     "noResults": "No results for \"{query}\"",
     "loadMore": "Load more",
     "productFaqTitle": "Frequently Asked Questions",
     "bottomBanner": {
-      "title": "Have another question?",
-      "subtitle": "Our customer service team is here to help.",
-      "cta": "Explore the shop"
+      "title": "Can't find your answer?",
+      "subtitle": "Our team replies within one business day.",
+      "cta": "Contact us"
     }
   },
   "ShippingReturnPage": {
     "pageTitle": "Shipping and Returns",
     "items": {
       "zones": {
-        "title": "DELIVERY AREAS",
-        "description": "PrettyFull delivers throughout Abidjan (Cocody, Marcory, Yopougon, Plateau, Riviera and other districts) as well as to major inland cities of Côte d'Ivoire (Bouaké, Yamoussoukro, San-Pédro, Korhogo, Abengourou, among others). Regional delivery to certain WAEMU-zone countries (Senegal, Burkina Faso, Mali, Togo, Benin) is also available on request; contact our customer service to check availability and fees for your destination."
+        "title": "Delivery areas",
+        "description": "PrettyFull delivers everywhere in Abidjan (Cocody, Marcory, Yopougon, Plateau, Riviera and other districts) and to the main cities across Côte d'Ivoire. For any other destination, contact our customer service to check availability and fees."
       },
       "delays": {
-        "title": "DELIVERY TIMES",
-        "description": "Orders are prepared within 24 to 48 business hours. Allow a further 24 to 72 hours for delivery in Abidjan, and 3 to 7 business days for other cities in Côte d'Ivoire. For regional deliveries (WAEMU zone), the timeframe is generally between 5 and 10 business days depending on the destination country and carrier used. These timeframes are indicative and may vary during peak periods (end-of-year holidays, sales) or for pre-order items."
+        "title": "Delivery times",
+        "description": "Our items are ordered from suppliers in the United States, so delivery time includes international shipping to Abidjan and then delivery to your address. The estimated time is shown when you order. It may vary with supplier availability, international transport, customs and peak periods (holidays, sales)."
       },
       "fees": {
-        "title": "DELIVERY FEES",
-        "description": "Delivery fees are calculated based on geographic area and displayed before final order confirmation, directly on the payment page. Delivery is free in Abidjan above a minimum purchase amount shown on the site at checkout. For deliveries within the country and internationally, a flat fee applies depending on the destination city or country."
+        "title": "Delivery fees",
+        "description": "Delivery fees depend on your area and are shown before payment. Delivery is free from 25,000 FCFA, in the areas indicated at checkout."
       },
       "tracking": {
-        "title": "ORDER TRACKING",
-        "description": "As soon as your parcel is picked up by our delivery agent or partner carrier, you receive a notification (SMS, WhatsApp or email) with the delivery agent's contact details or a tracking link depending on the delivery method chosen. You can also track your order status at any time from the \"My Orders\" section of your account."
+        "title": "Order tracking",
+        "description": "You can follow your order at any time from the “My orders” section of your account. As soon as your parcel is handed to our courier, you are notified by SMS, WhatsApp or email."
       },
       "damagedParcel": {
-        "title": "DAMAGED, INCOMPLETE OR INCORRECT PARCEL",
-        "description": "We recommend checking your parcel as soon as you receive it, if possible in front of the delivery agent. If an item arrives damaged, incomplete, or doesn't match your order, contact our customer service within 48 hours of receipt, attaching photos of the product and packaging. After review, we proceed with an exchange, repair or refund, at no extra cost to you."
+        "title": "Damaged, incomplete or non-conforming parcel",
+        "description": "Check your parcel on receipt, ideally in front of the courier. If an item is damaged, incomplete or doesn't match your order, contact our customer service within 48 hours with photos of the product and packaging. After review, we will exchange or refund it at no cost to you."
       },
       "returnWindow": {
-        "title": "RETURN AND EXCHANGE WINDOW",
-        "description": "You have 14 days from receipt of your order to request a return or exchange. After this period, no request can be accepted, except in the case of a manufacturing defect discovered later. To start a return, contact our customer service via the Contact page or from your \"My Orders\" area, specifying the reason for your request."
+        "title": "Return and exchange window",
+        "description": "You have 14 days from receiving your order to request a return or exchange. To start one, contact our customer service from the Contact page or from “My orders”, stating the reason."
       },
       "returnConditions": {
-        "title": "PRODUCT RETURN CONDITIONS",
-        "description": "To be accepted, a returned product must be in its original packaging, sealed and unopened, with all its labels and inserts. For hygiene and health safety reasons, any product whose packaging has been opened, unsealed, or whose protective film has been removed cannot be accepted back, unless a genuine manufacturing defect is found upon opening."
+        "title": "Return conditions",
+        "description": "To be accepted, an item must be returned in its original, unused condition, in its original packaging with all labels and accessories (cables, manuals, box)."
       },
       "refund": {
-        "title": "REFUND TERMS",
-        "description": "Once the returned item is received and inspected by our team, you receive confirmation of the return's acceptance or refusal. If accepted, the refund is issued within 5 to 10 business days to the same payment method used for the purchase (Mobile Money, credit card) or as store credit for a future order, according to your preference. Original delivery fees are only refunded in case of a defect or error attributable to PrettyFull."
+        "title": "Refunds",
+        "description": "Once the returned item is received and checked, you will be told whether the return is accepted. If accepted, the refund is made to the original payment method or as store credit, as you prefer. Original delivery fees are only refunded in case of a defect or an error on our side."
       },
       "nonReturnable": {
-        "title": "NON-RETURNABLE PRODUCTS",
-        "description": "For hygiene and health safety reasons, any dietary supplement, vitamin, or wellness product whose packaging has been opened cannot be returned or exchanged, unless a genuine manufacturing defect is found. The same applies to promotional items marked as \"final sale\" and gift cards. These exclusions are indicated on the product page where applicable."
+        "title": "Non-returnable items",
+        "description": "For hygiene and safety reasons, the following cannot be returned or exchanged unless defective: opened skincare and cosmetics, opened toothpaste, mouthwash and whitening kits, unpacked raw hair, fragrances with a broken seal and grocery products. The same applies to items marked “final sale”."
       },
       "exchange": {
-        "title": "FORMAT OR FLAVOR EXCHANGE",
-        "description": "If the product received doesn't suit you in format or flavor and its packaging remains sealed, an exchange is possible within the same timeframe and conditions as a standard return, subject to availability of the replacement product. If the desired product is no longer available, we offer a refund or store credit. Return shipping costs for the new product are covered by us when the exchange results from our error, and remain the Customer's responsibility in other cases."
+        "title": "Size, color or model exchange",
+        "description": "If an item doesn't suit you in size, color or model and is still in its original condition, an exchange is possible within the same time limits and conditions as a return, subject to availability from our suppliers. Otherwise, we offer a refund or store credit."
+      },
+      "iphones": {
+        "title": "New and pre-owned iPhones",
+        "description": "New iPhones are delivered sealed in their original packaging: a return is only possible if the packaging has not been opened. Pre-owned iPhones are delivered in the condition described on their page; check the device (screen, battery, camera, network) on receipt and report any issue within 48 hours with photos or video."
       }
-    }
+    },
+    "eyebrow": "Help",
+    "intro": "Everything you need to know about how your items travel from the US, how they are delivered in Abidjan and Côte d'Ivoire, and how to return an item.",
+    "contactLabel": "Unsure about a delivery or a return? Write to us.",
+    "contactCta": "Contact us"
   },
   "TermsPage": {
     "pageTitle": "Terms and Conditions of Sale",
     "items": {
       "purpose": {
-        "title": "1. PURPOSE",
-        "description": "These Terms and Conditions of Sale (\"Terms\") govern all sales of vitamins, dietary supplements and wellness products made on the PrettyFull site by any individual or entity (the \"Customer\") wishing to make a purchase through our online shop. Placing an order on the site implies full and unreserved acceptance of these Terms. PrettyFull reserves the right to modify these Terms at any time; the version applicable is the one in effect on the day of the order."
+        "title": "Purpose",
+        "description": "These Terms and Conditions of Sale govern all sales made on the PrettyFull website: phones and computers (new and pre-owned iPhones), face and body care, oral care, fragrances, hair, fashion and accessories, and American groceries. Placing an order implies full acceptance of these terms. PrettyFull may update them at any time; the version in force on the day of the order applies."
       },
       "products": {
-        "title": "2. PRODUCTS AND AVAILABILITY",
-        "description": "Products offered for sale are those listed on the site on the day of consultation, within the limits of available stock. Each product is presented with a description, photographs, and available nutritional information, intended to inform the Customer as accurately as possible. If a product becomes unavailable after ordering, the Customer will be informed as soon as possible and may choose a full refund, a replacement product, or to wait for restocking."
+        "title": "Products and availability",
+        "description": "Items are sourced from suppliers in the United States and imported for delivery in Côte d'Ivoire. Each product page shows a description, photos and, for pre-owned items, the stated condition. Availability depends on our suppliers: if an item becomes unavailable after your order, we will let you know promptly and offer a full refund, an equivalent item or waiting for restock."
       },
       "prices": {
-        "title": "3. PRICES AND CURRENCY",
+        "title": "Prices and currency",
         "description": "All prices displayed on the site are expressed in CFA Francs (FCFA / XOF), all taxes included, excluding delivery fees which are specified before final order confirmation. PrettyFull reserves the right to change its prices at any time, it being understood that the price applicable to an order is the one in effect at the time the Customer confirms it."
       },
       "payment": {
-        "title": "4. PAYMENT METHODS",
+        "title": "Payment methods",
         "description": "Orders can be paid via Mobile Money (Wave, Orange Money, MTN Money, Moov Money), by credit card (Visa, Mastercard) through our secure payment provider, or by cash on delivery depending on the delivery area and terms specified at checkout. The order is only finally confirmed after payment confirmation or, for cash on delivery, after phone confirmation by our team."
       },
       "orderValidation": {
-        "title": "5. ORDER CONFIRMATION",
-        "description": "Every order placed on the site is presented as a summary (products, formats, flavors, prices, delivery address) that the Customer must check before confirming. Once the order is confirmed, a summary email and/or message is sent to the Customer. PrettyFull reserves the right to cancel or refuse any order from a Customer with whom there is a dispute regarding payment of a previous order, or in case of reasonable doubt about the order's validity."
+        "title": "Order confirmation",
+        "description": "Before confirming, a summary (items, models, sizes or colors, prices, delivery address) is shown for you to check. Once confirmed, a summary is sent to you by email and/or message. PrettyFull may cancel any order in case of a previous payment dispute or reasonable doubt about its validity."
       },
       "delivery": {
-        "title": "6. DELIVERY",
-        "description": "PrettyFull delivers to Abidjan and major cities in Côte d'Ivoire, as well as, in some cases, certain WAEMU-zone countries. Delivery times and fees applicable to each order are communicated before payment confirmation and detailed on our \"Shipping and Returns\" page. The Customer agrees to provide an accurate delivery address and a reachable phone number; PrettyFull cannot be held responsible for a delay or non-delivery resulting from an incorrect address provided by the Customer."
+        "title": "Delivery",
+        "description": "Because items are ordered from our US suppliers and imported, delivery time includes international shipping to Abidjan and then delivery to your address. The estimated time and applicable fees are shown before payment and detailed in the “Shipping & Returns” section. You agree to provide an accurate address and a reachable phone number; PrettyFull is not liable for delays or failed delivery caused by an incorrect address."
       },
       "withdrawal": {
-        "title": "7. RIGHT OF WITHDRAWAL",
-        "description": "Except for personalized products, pre-ordered products, or products whose packaging has been opened for hygiene and health safety reasons, the Customer has a period to change their mind and request a return or exchange, under the conditions and timeframes specified in our Shipping and Returns policy. The product must then be returned in its original condition, packaging sealed and unopened, with its labels."
+        "title": "Right of withdrawal",
+        "description": "You may change your mind and request a return or exchange under the conditions set out in our “Shipping & Returns” policy. For hygiene reasons, the following are excluded: opened skincare and cosmetics, opened oral care products, unpacked raw hair and food products. Items must be returned in their original condition, with packaging and labels."
       },
       "returns": {
-        "title": "8. RETURNS, EXCHANGES AND REFUNDS",
+        "title": "Returns, exchanges and refunds",
         "description": "The precise terms for returns, exchanges and refunds (timeframes, excluded items, procedure and possible fees) are detailed on our dedicated \"Shipping and Returns\" page, which forms an integral part of these Terms. Every refund is issued to the same payment method used for the purchase, unless otherwise agreed with the Customer."
       },
       "warranty": {
-        "title": "9. WARRANTY AND CONFORMITY",
-        "description": "PrettyFull commits to delivering products that conform to their description and are free of manufacturing defects. If a product has a major defect (packaging damaged or unsealed on delivery, expired product, wrong item shipped) found upon receipt, the Customer must report it to our customer service as soon as possible, with supporting photographs, so that a solution (exchange, refund) can be offered at no extra cost to the Customer."
+        "title": "Warranty and conformity",
+        "description": "PrettyFull undertakes to deliver items that match their description. New iPhones are delivered sealed in their original packaging; pre-owned iPhones are delivered in the condition described on their page. If an item is defective on receipt (damaged parcel, non-conforming item, wrong reference), report it to our customer service promptly with photos so we can offer an exchange or refund at no extra cost."
       },
       "personalData": {
-        "title": "10. PERSONAL DATA",
+        "title": "Personal data",
         "description": "Personal information collected when ordering (identity, contact details, delivery address, purchase history) is used solely for processing and tracking orders as well as, with the Customer's consent, for marketing communications. This data is neither sold nor transferred to third parties not involved in fulfilling the order (carrier, payment provider). In accordance with applicable data protection regulations, the Customer has the right to access, rectify and delete their data, which they may exercise by contacting us via the site's Contact page."
       },
       "intellectualProperty": {
-        "title": "11. INTELLECTUAL PROPERTY",
+        "title": "Intellectual property",
         "description": "All elements of the PrettyFull site (logo, visual identity, product photographs, text, layout) are protected by intellectual property law and remain the exclusive property of PrettyFull. Any reproduction, representation or use, in whole or in part, of these elements without prior written authorization is strictly prohibited."
       },
       "liability": {
-        "title": "12. LIABILITY",
-        "description": "PrettyFull cannot be held liable for damages resulting from use of the site not in accordance with its intended purpose, fraudulent intrusion, a case of force majeure, or any malfunction of the internet network or Mobile Money payment operators beyond its control. Product photographs are as accurate as possible but cannot guarantee a perfect match with the product received (packaging, color), due to display variations between screens."
-      },
-      "healthWarnings": {
-        "title": "13. WARNINGS AND HEALTH INFORMATION",
-        "description": "Dietary supplements are not a substitute for a varied and balanced diet or a healthy lifestyle, and should not be used as such. Follow the daily dose indicated on the product label; do not exceed the recommended dose without medical advice. Keep out of reach of young children. It is advisable to seek the advice of a healthcare professional before use, especially in case of pregnancy, breastfeeding, ongoing medical treatment, or a specific condition. In case of an adverse reaction, stop using the product and consult a healthcare professional."
+        "title": "Liability",
+        "description": "PrettyFull cannot be held liable for damage resulting from improper use of the website, force majeure (including delays related to international shipping or customs), or failures of the internet or payment operators beyond its control. Product photos are as accurate as possible but may differ slightly from the item received (packaging, shade, version)."
       },
       "jurisdiction": {
-        "title": "14. GOVERNING LAW AND DISPUTES",
+        "title": "Governing law and disputes",
         "description": "These Terms and Conditions of Sale are governed by Ivorian law. In the event of a dispute regarding the interpretation or performance of an order, the Customer is invited to first contact our customer service to seek an amicable solution. Failing an amicable agreement, the competent courts of Côte d'Ivoire shall have sole jurisdiction over the dispute."
+      },
+      "productInformation": {
+        "title": "Product information",
+        "description": "Skincare, cosmetics and hygiene products are made in the USA and may be labelled in English. Before first using a skincare product, check the ingredient list and test it on a small area of skin; stop using it if a reaction occurs. American grocery products should be consumed according to the packaging, including the best-before date and allergens."
       }
-    }
+    },
+    "eyebrow": "Legal information",
+    "intro": "These terms govern every order placed on PrettyFull: products imported from the US, prices, payment, delivery in Abidjan and returns. They apply as soon as your order is confirmed.",
+    "contactLabel": "A question about these terms? Our team will answer.",
+    "contactCta": "Contact us"
   }
 }

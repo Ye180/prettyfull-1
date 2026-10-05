@@ -5,12 +5,12 @@ import { AuthModal, type AuthMode } from "@/features/auth/components";
 import { paths } from "@/lib/routes/paths-en";
 import { fetchProfile } from "@/lib/store-api";
 import type { StoreCategory } from "@/lib/store-api/types";
-import { LogOut, User } from "@prettyfull/ui";
+import { User } from "@prettyfull/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import BrandLogo from "../core/brand-logo";
 import CartDrawer from "./cart-drawer";
 import { LocaleCurrencySelector } from "./locale-currency-selector";
 import NavCategoryBar from "./nav-category-bar";
@@ -43,8 +43,9 @@ const NavBarHeaders = ({ main_category = [] }: NavBarHeadersProps) => {
 	return (
 		<>
 			<div className="flex flex-col w-full">
-				{/* Row 1 : burger+recherche (gauche), logo (centre), actions (droite) */}
-				<div className="grid grid-cols-[auto_1fr_auto] gap-4 items-center py-5 sm:py-6 ">
+				{/* Row 1 : bandeau gris pleine largeur - burger+recherche (gauche), logo (centre), icônes (droite) */}
+				<div className="bg-(--color-surface-card)">
+				<div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center px-4 py-5 sm:px-6 sm:py-7 lg:px-10">
 					<div className="flex gap-3 items-center">
 						<button
 							onClick={() => setIsMobileMenuOpen(true)}
@@ -77,58 +78,36 @@ const NavBarHeaders = ({ main_category = [] }: NavBarHeadersProps) => {
 						className="flex justify-self-center items-center p-1 transition-opacity hover:opacity-80"
 						aria-label={t("homeAriaLabel")}
 					>
-						<Image
-							src="/assets/logo.png"
-							alt="Prettyfull"
-							width={200}
-							height={46}
-							className="w-auto h-10 sm:h-12"
-							priority
-						/>
+						<BrandLogo className="text-[2.4rem] sm:text-[3.6rem] lg:text-[4.2rem]" />
 					</Link>
 
-					{/* Actions - droite */}
-					<div className="flex items-center justify-end space-x-6 text-[1.5rem] font-medium">
-						<LocaleCurrencySelector />
+					{/* Icônes - droite, façon naturium : compte, favoris, panier */}
+					<div className="flex items-center justify-end gap-5 sm:gap-6">
+						<div className="max-sm:hidden">
+							<LocaleCurrencySelector />
+						</div>
+						{profile ? (
+							<Link
+								href={paths.account}
+								aria-label={profile.firstName}
+								className="text-(--color-ink) transition-opacity hover:opacity-70 max-sm:hidden"
+							>
+								<User className="size-[22px]" />
+							</Link>
+						) : (
+							<button
+								type="button"
+								onClick={() => openAuth("login")}
+								aria-label={t("login")}
+								className="text-(--color-ink) transition-opacity hover:opacity-70 cursor-pointer max-sm:hidden"
+							>
+								<User className="size-[22px]" />
+							</button>
+						)}
 						<WishlistDrawer />
 						<CartDrawer />
-
-						<div className="flex items-center space-x-4 max-sm:hidden">
-							{profile ? (
-								<>
-									<Link
-										href={paths.account}
-										className="flex items-center gap-1.5 text-[#111111] hover:text-black transition-colors"
-									>
-										<User className="w-[20px] h-[20px]" />
-										{profile.firstName}
-									</Link>
-									<button
-										onClick={() => logout()}
-										className="flex items-center gap-1.5 text-[#111111] hover:text-black transition-colors cursor-pointer"
-									>
-										<LogOut className="w-[20px] h-[20px]" />
-										{t("logout")}
-									</button>
-								</>
-							) : (
-								<>
-									<button
-										onClick={() => openAuth("login")}
-										className="text-[#111111] hover:text-black transition-colors cursor-pointer"
-									>
-										{t("login")}
-									</button>
-									<button
-										onClick={() => openAuth("register")}
-										className="text-[#111111] hover:text-black transition-colors cursor-pointer"
-									>
-										{t("register")}
-									</button>
-								</>
-							)}
-						</div>
 					</div>
+				</div>
 				</div>
 
 				{/* Row 2 : barre de catégories, toujours visible - sous-catégories au survol/clic */}

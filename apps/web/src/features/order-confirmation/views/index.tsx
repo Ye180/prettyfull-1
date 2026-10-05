@@ -62,13 +62,13 @@ const OrderConfirmationView = () => {
 					<div className="flex flex-col sm:flex-row gap-3 justify-center pt-6">
 						<Link
 							href="/account/orders"
-							className="px-6 py-3 bg-black text-white font-semibold rounded-full hover:bg-black/85 transition"
+							className="px-6 py-3 bg-black text-white font-semibold rounded-sm hover:bg-black/85 transition"
 						>
 							{t("myOrders")}
 						</Link>
 						<Link
 							href="/"
-							className="px-6 py-3 bg-white border border-gray-300 text-gray-900 font-semibold rounded-full hover:bg-gray-50 transition"
+							className="px-6 py-3 bg-white border border-gray-300 text-gray-900 font-semibold rounded-sm hover:bg-gray-50 transition"
 						>
 							{t("backToHome")}
 						</Link>
@@ -246,21 +246,21 @@ const OrderConfirmationView = () => {
 				<div className="flex flex-col sm:flex-row gap-3.5 sm:gap-4 justify-center items-center pt-2">
 					<Link
 						href="/account/orders"
-						className="w-full sm:w-auto px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-full transition shadow-sm cursor-pointer text-sm sm:text-base text-center"
+						className="w-full sm:w-auto px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-sm transition shadow-sm cursor-pointer text-sm sm:text-base text-center"
 					>
 						{t("trackYourOrder")}
 					</Link>
 
 					<Link
 						href="/"
-						className="w-full sm:w-auto px-8 py-3.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-900 font-semibold rounded-full transition shadow-xs text-sm sm:text-base text-center"
+						className="w-full sm:w-auto px-8 py-3.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-900 font-semibold rounded-sm transition shadow-xs text-sm sm:text-base text-center"
 					>
 						{t("backToHomePage")}
 					</Link>
 
 					<Link
 						href="/collections"
-						className="w-full sm:w-auto px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-full transition shadow-sm text-sm sm:text-base text-center flex items-center justify-center gap-2"
+						className="w-full sm:w-auto px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-sm transition shadow-sm text-sm sm:text-base text-center flex items-center justify-center gap-2"
 					>
 						<span>{t("continueShopping")}</span>
 						<ArrowRightIcon className="w-4 h-4" />

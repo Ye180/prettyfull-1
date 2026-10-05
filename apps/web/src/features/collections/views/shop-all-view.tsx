@@ -318,8 +318,8 @@ export const ShopAllView = () => {
 							onClick={() => setSidebarOpen((prev) => !prev)}
 							className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all text-[1.4rem] font-medium shrink-0 ${
 								sidebarOpen
-									? "bg-amber-600 text-white border-amber-600"
-									: "border-neutral-300 text-black hover:border-amber-600"
+									? "bg-stone-900 text-white border-stone-900"
+									: "border-neutral-300 text-black hover:border-stone-900"
 							} cursor-pointer`}
 							aria-label={t("filterToggleAriaLabel")}
 						>
@@ -354,7 +354,7 @@ export const ShopAllView = () => {
 								placeholder={t("searchPlaceholder")}
 								value={searchDraft}
 								onChange={(e) => setSearchDraft(e.target.value)}
-								className="py-2.5 pr-3 pl-9 w-full text-[1.3rem] rounded-lg border outline-none transition-colors border-neutral-200 focus:border-amber-600"
+								className="py-2.5 pr-3 pl-9 w-full text-[1.3rem] rounded-lg border outline-none transition-colors border-neutral-200 focus:border-stone-900"
 							/>
 						</div>
 
@@ -370,7 +370,7 @@ export const ShopAllView = () => {
 							const option = SORT_OPTIONS.find((o) => o.value === e.target.value);
 							if (option) setSort(option.sort, option.order);
 						}}
-						className="px-4 py-2.5 rounded-lg border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-amber-600"
+						className="px-4 py-2.5 rounded-lg border border-neutral-200 text-[1.3rem] font-medium bg-white text-neutral-800 outline-none cursor-pointer hover:border-stone-900"
 					>
 						{SORT_OPTIONS.map((option) => (
 							<option key={option.value} value={option.value}>
@@ -470,7 +470,7 @@ export const ShopAllView = () => {
 							<div className="flex justify-center pt-8">
 								<button
 									onClick={() => setLimit((prev) => prev + PAGE_SIZE)}
-									className="inline-flex items-center px-10 py-3 text-sm font-medium text-white bg-amber-600 rounded-lg transition-colors hover:bg-amber-700 cursor-pointer"
+									className="inline-flex items-center px-10 py-3 text-sm font-medium text-white bg-stone-900 rounded-lg transition-colors hover:bg-black cursor-pointer"
 								>
 									{t("loadMore")}
 								</button>

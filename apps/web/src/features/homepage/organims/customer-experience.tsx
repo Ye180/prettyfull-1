@@ -17,6 +17,14 @@ const ICONS: Record<string, React.ReactNode> = {
 			<path d="M16 3.13a4 4 0 0 1 0 7.75" />
 		</svg>
 	),
+	truck: (
+		<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+			<rect x="1" y="6" width="14" height="11" rx="1.5" />
+			<path d="M15 10h4l3 3.5V17h-7z" />
+			<circle cx="6" cy="19.5" r="1.8" />
+			<circle cx="17.5" cy="19.5" r="1.8" />
+		</svg>
+	),
 	shield: (
 		<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 			<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -34,19 +42,19 @@ const DEFAULT_ICON = (
 
 const DEFAULT_FEATURE_KEYS = [
 	{
-		icon: "lab",
-		titleKey: "labTestedTitle",
-		descriptionKey: "labTestedDescription",
-	},
-	{
-		icon: "leaf",
-		titleKey: "nonGmoTitle",
-		descriptionKey: "nonGmoDescription",
-	},
-	{
 		icon: "shield",
-		titleKey: "guaranteeTitle",
-		descriptionKey: "guaranteeDescription",
+		titleKey: "authenticTitle",
+		descriptionKey: "authenticDescription",
+	},
+	{
+		icon: "truck",
+		titleKey: "deliveryTitle",
+		descriptionKey: "deliveryDescription",
+	},
+	{
+		icon: "lab",
+		titleKey: "supportTitle",
+		descriptionKey: "supportDescription",
 	},
 ];
 
@@ -79,7 +87,7 @@ export const CustomerExperienceSection = () => {
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-12">
 					{features.map((feature, idx) => (
 						<div key={idx} className="flex flex-col items-start space-y-5">
-							<div className="w-14 h-14 rounded-full bg-amber-600 text-white flex items-center justify-center shadow-lg">
+							<div className="w-14 h-14 rounded-full bg-stone-900 text-white flex items-center justify-center shadow-lg">
 								{ICONS[feature.icon] ?? DEFAULT_ICON}
 							</div>
 							<h3 className="text-[1.8rem] font-bold text-white tracking-tight">

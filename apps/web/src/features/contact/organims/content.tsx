@@ -22,16 +22,14 @@ const Content = () => {
 	const SHORTCUTS = getShortcuts(t);
 
 	return (
-		<section className="mx-auto w-full max-w-[140rem] px-8 sm:px-20">
+		<section className="px-6 mx-auto w-full max-w-[130rem] lg:px-10">
 			<div className="grid gap-14 sm:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] sm:gap-14 md:gap-20">
 				<div className="order-2 sm:order-1 sm:row-span-2">
-					<span className="mb-6 block h-px w-16 bg-black" aria-hidden="true" />
-
-					<h2 className="font-bebas-neue text-[3.6rem]! leading-[1.05] tracking-wide uppercase md:text-[4.6rem]!">
+					<h2 className="text-[3rem]! sm:text-[3.6rem]!">
 						{t("form.title")}
 					</h2>
 
-					<p className="mb-12 mt-5 max-w-[58ch] text-[1.7rem] font-light leading-relaxed text-neutral-600 font-manrope">
+					<p className="mb-10 mt-4 max-w-[58ch] text-[1.5rem] leading-relaxed text-(--color-ink)/75">
 						{t("form.description")}
 					</p>
 
@@ -39,20 +37,20 @@ const Content = () => {
 				</div>
 
 				<aside className="order-1 sm:order-2">
-					<div className="rounded-2xl bg-black px-8 py-10 text-white sm:px-10">
-						<h3 className="mb-8 font-bebas-neue text-[2.8rem]! leading-none tracking-wide uppercase">
+					<div className="px-8 py-10 text-white bg-(--color-ink) sm:px-10">
+						<h3 className="mb-8 text-[2.4rem]! font-normal! text-white! [font-family:var(--font-display)]!">
 							{t("info.title")}
 						</h3>
 
 						<dl className="space-y-7">
 							<div>
-								<dt className="mb-2 text-[1.2rem] font-medium uppercase tracking-[0.2em] text-white/50 font-manrope">
+								<dt className="mb-2 text-[1.15rem] font-semibold uppercase tracking-[0.14em] text-white/50">
 									{t("info.emailLabel")}
 								</dt>
 								<dd>
 									<a
 										href={`mailto:${CONTACT_DETAILS.email}`}
-										className="text-[1.7rem] font-light underline underline-offset-4 font-manrope hover:no-underline"
+										className="text-[1.6rem] underline underline-offset-4 hover:no-underline"
 									>
 										{CONTACT_DETAILS.email}
 									</a>
@@ -60,13 +58,13 @@ const Content = () => {
 							</div>
 
 							<div>
-								<dt className="mb-2 text-[1.2rem] font-medium uppercase tracking-[0.2em] text-white/50 font-manrope">
+								<dt className="mb-2 text-[1.15rem] font-semibold uppercase tracking-[0.14em] text-white/50">
 									{t("info.phoneLabel")}
 								</dt>
 								<dd>
 									<a
 										href={CONTACT_DETAILS.phoneHref}
-										className="text-[1.7rem] font-light underline underline-offset-4 font-manrope hover:no-underline"
+										className="text-[1.6rem] underline underline-offset-4 hover:no-underline"
 									>
 										{CONTACT_DETAILS.phone}
 									</a>
@@ -74,10 +72,10 @@ const Content = () => {
 							</div>
 
 							<div>
-								<dt className="mb-2 text-[1.2rem] font-medium uppercase tracking-[0.2em] text-white/50 font-manrope">
+								<dt className="mb-2 text-[1.15rem] font-semibold uppercase tracking-[0.14em] text-white/50">
 									{t("info.addressLabel")}
 								</dt>
-								<dd className="text-[1.7rem] font-light leading-relaxed text-white/90 font-manrope">
+								<dd className="text-[1.6rem] leading-relaxed text-white/90">
 									{CONTACT_DETAILS.address.line1}
 									<br />
 									{CONTACT_DETAILS.address.city},{" "}
@@ -90,7 +88,7 @@ const Content = () => {
 
 				<aside className="order-3 space-y-12">
 					<div>
-						<h3 className="mb-6 font-bebas-neue text-[2.4rem]! leading-none tracking-wide uppercase">
+						<h3 className="mb-5 text-[2.2rem]! font-normal! [font-family:var(--font-display)]!">
 							{t("hours.title")}
 						</h3>
 
@@ -98,12 +96,12 @@ const Content = () => {
 							{CONTACT_DETAILS.hours.map((slot) => (
 								<div
 									key={slot.days}
-									className="flex items-baseline justify-between gap-4 border-b border-neutral-200 pb-3"
+									className="flex items-baseline justify-between gap-4 border-b border-(--color-surface-border) pb-3"
 								>
-									<dt className="text-[1.5rem] font-light text-neutral-600 font-manrope">
+									<dt className="text-[1.45rem] text-(--color-ink)/70">
 										{slot.days}
 									</dt>
-									<dd className="text-[1.5rem] font-medium font-manrope">
+									<dd className="text-[1.45rem] font-medium text-(--color-ink)">
 										{slot.time}
 									</dd>
 								</div>
@@ -112,7 +110,7 @@ const Content = () => {
 					</div>
 
 					<div>
-						<h3 className="mb-6 font-bebas-neue text-[2.4rem]! leading-none tracking-wide uppercase">
+						<h3 className="mb-5 text-[2.2rem]! font-normal! [font-family:var(--font-display)]!">
 							{t("quickAnswers.title")}
 						</h3>
 
@@ -121,15 +119,15 @@ const Content = () => {
 								<li key={shortcut.href}>
 									<Link
 										href={shortcut.href}
-										className="group block rounded-xl border border-neutral-200 px-6 py-5 transition-colors hover:border-black"
+										className="block px-6 py-5 border transition-colors group border-(--color-surface-border) hover:border-(--color-ink)"
 									>
-										<span className="mb-1 block text-[1.6rem] font-medium font-manrope">
+										<span className="mb-1 block text-[1.5rem] font-medium text-(--color-ink)">
 											{shortcut.title}
 										</span>
-										<span className="block text-[1.4rem] font-light leading-relaxed text-neutral-500 font-manrope">
+										<span className="block text-[1.35rem] leading-relaxed text-(--color-surface-muted)">
 											{shortcut.description}
 										</span>
-										<span className="mt-3 inline-block text-[1.3rem] font-medium underline underline-offset-4 font-manrope group-hover:no-underline">
+										<span className="mt-3 inline-block text-[1.3rem] font-medium underline underline-offset-4 text-(--color-ink) group-hover:no-underline">
 											{shortcut.cta}
 										</span>
 									</Link>

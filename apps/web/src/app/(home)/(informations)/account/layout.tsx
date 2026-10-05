@@ -1,30 +1,23 @@
-// web/src/app/(home)/(informations)/account/layout.tsx
 "use client";
 
 import { AccountMenu } from "@/features/account/components/account-menu";
 import { useTranslations } from "next-intl";
 import { PropsWithChildren } from "react";
 
-const AccountLayout = ({ children }: PropsWithChildren<{}>) => {
+const AccountLayout = ({ children }: PropsWithChildren) => {
 	const t = useTranslations("Account.layout");
 	return (
-		<div className="py-12 min-h-screen">
-			<div className="container px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-				<div className="mb-6 md:hidden">
-					<h1 className="text-3xl font-bold text-gray-900">{t("title")}</h1>
-				</div>
+		<div className="px-4 pt-10 pb-24 mx-auto w-full max-w-[130rem] min-h-screen sm:px-6 lg:px-10">
+			<h1 className="mb-8 text-[3.6rem]! md:hidden">{t("title")}</h1>
 
-				<div className="grid grid-cols-1 gap-8 md:grid-cols-12 lg:gap-12">
-					<aside className="md:col-span-4 lg:col-span-3">
-						<div className="sticky top-28">
-							<AccountMenu />
-						</div>
-					</aside>
+			<div className="grid grid-cols-1 gap-10 md:grid-cols-[26rem_1fr] lg:gap-16">
+				<aside>
+					<div className="md:sticky md:top-56">
+						<AccountMenu />
+					</div>
+				</aside>
 
-					<main className="space-y-8 md:col-span-8 lg:col-span-9">
-						{children}
-					</main>
-				</div>
+				<main className="min-w-0">{children}</main>
 			</div>
 		</div>
 	);

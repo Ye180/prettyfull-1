@@ -48,7 +48,7 @@ const statusStyles = {
 		dot: "bg-yellow-500",
 	},
 	processing: {
-		color: "bg-amber-50 text-amber-700 border-blue-200",
+		color: "bg-stone-100 text-black border-blue-200",
 		dot: "bg-blue-500",
 	},
 	shipped: {
@@ -79,71 +79,58 @@ export const OrderCard = ({ order }: OrderCardProps) => {
 	});
 
 	return (
-		<div className="w-[83%]  rounded-2xl border border-gray-100 transition-all duration-200 group">
-			<div className="flex flex-col gap-4 justify-between p-6 border-b border-gray-100/80 sm:flex-row sm:items-start">
+		<div className="border transition-colors group border-(--color-surface-border) hover:border-(--color-ink)/40">
+			<div className="flex flex-col gap-4 justify-between p-6 border-b sm:flex-row sm:items-start border-(--color-surface-border)">
 				<div className="space-y-3">
 					<div className="flex gap-3 items-center">
-						<p className="font-semibold text-gray-900 text-md!">
+						<p className="text-[1.6rem] font-medium text-(--color-ink)">
 							{t("orderCard.orderLabel")}{" "}
-							<span className="text-md! text-gray-500">#{order.displayId}</span>
+							<span className="text-(--color-surface-muted)">#{order.displayId}</span>
 						</p>
 
 						<span
-							className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${status.color}`}
+							className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[1.2rem] font-medium ${status.color}`}
 						>
 							<span
-								className={`h-1.5 w-1.5 rounded-full ${status.dot} animate-pulse`}
+								className={`h-1.5 w-1.5 rounded-full ${status.dot}`}
 							/>
 							{statusLabel}
 						</span>
 					</div>
 
-					<div className="flex items-center text-sm font-medium text-gray-500">
-						<CalendarIcon className="mr-2 w-4 h-4 text-gray-400" />
+					<div className="flex items-center text-[1.35rem] text-(--color-surface-muted)">
+						<CalendarIcon className="mr-2 w-4 h-4" />
 						{date}
 					</div>
 				</div>
 
 				<div className="text-left sm:text-right">
-					<p className="text-xl font-bold tracking-tight text-gray-900">
+					<p className="text-[1.8rem] font-semibold text-(--color-ink)">
 						{format(order.total, order.currency as CurrencyCode)}
 					</p>
-					<p className="mt-1 text-sm font-medium text-gray-500">
+					<p className="mt-1 text-[1.3rem] text-(--color-surface-muted)">
 						{t("orderCard.itemCount", { count: order.items.length })}
 					</p>
 				</div>
 			</div>
 
-			<div className="p-6 bg-gray-50/30">
-				<div className="flex gap-x-10 items-center pb-2 h-60 horizontal-scroll scrollbar-hide">
-					{order.items.map((item) => (
-						<div key={item.id} className="flex space-x-8 sm:space-x-10">
-							<div className="relative w-40 h-44 bg-gray-100 rounded-2xl aspect-square">
-								<div className="overflow-hidden w-40 h-44 rounded-2xl border border-gray-200">
-									<Image
-										src={item.thumbnail}
-										alt={item.title}
-										width={100}
-										height={100}
-										className="object-top rounded-2xl"
-										unoptimized
-									/>
-								</div>
-								{item.quantity > 1 && (
-									<p className="absolute flex items-center justify-center font-semibold text-white bg-black rounded-full -top-4 -right-5 size-12 text-[1.4rem]">
-										{item.quantity}
-									</p>
-								)}
-							</div>
-						</div>
-					))}
-				</div>
+			<div className="flex overflow-x-auto gap-4 px-6 py-5 scrollbar-hide">
+				{order.items.map((item) => (
+					<div key={item.id} className="overflow-hidden relative shrink-0 size-[8rem] bg-(--color-surface-card)">
+						<Image src={item.thumbnail} alt={item.title} fill sizes="80px" className="object-cover" unoptimized />
+						{item.quantity > 1 && (
+							<span className="flex absolute top-1 right-1 justify-center items-center px-1 min-w-[2rem] h-[2rem] text-[1.1rem] font-semibold text-white rounded-full bg-(--color-ink)">
+								{item.quantity}
+							</span>
+						)}
+					</div>
+				))}
 			</div>
 
-			<div className="flex justify-between items-start p-5 px-6 border-t border-gray-100 md:items-center max-md:flex-col max-md:gap-y-10">
+			<div className="flex justify-between items-start px-6 py-4 border-t md:items-center max-md:flex-col max-md:gap-y-4 border-(--color-surface-border)">
 				<Link
 					href={`/account/orders/${order.id}`}
-					className="flex items-center text-sm font-semibold text-gray-600 transition-colors group/link hover:text-black"
+					className="flex items-center text-[1.3rem] font-semibold tracking-[0.08em] uppercase transition-colors group/link text-(--color-ink)"
 				>
 					{t("orderCard.viewDetails")}
 					<ArrowRightIcon className="ml-2 w-4 h-4 opacity-0 transition-all duration-200 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0" />

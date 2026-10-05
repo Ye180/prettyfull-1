@@ -51,19 +51,19 @@ export default function OrdersPage() {
 		<div className="space-y-8">
 			<div className="flex flex-col gap-4 justify-between sm:flex-row sm:items-center">
 				<div>
-					<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
+					<h2 className="text-[3.6rem]! sm:text-[4.4rem]!">
 						{t("pageTitle")}
 					</h2>
-					<p className="mt-1 text-gray-500">
+					<p className="mt-1 text-[1.5rem] text-(--color-surface-muted)">
 						{t("pageSubtitle")}
 					</p>
 				</div>
 			</div>
 
 			{isLoading ? (
-				<div className="grid gap-6">
+				<div className="grid gap-4">
 					{[1, 2].map((i) => (
-						<Skeleton key={i} className="w-full h-60 rounded-2xl" />
+						<Skeleton key={i} className="w-full h-60" />
 					))}
 				</div>
 			) : error ? (
@@ -71,22 +71,22 @@ export default function OrdersPage() {
 					{t("loadError")}
 				</div>
 			) : mappedOrders.length > 0 ? (
-				<div className="grid gap-6">
+				<div className="grid gap-4">
 					{mappedOrders.map((order: any) => (
 						<OrderCard key={order.id} order={order} />
 					))}
 				</div>
 			) : (
-				<div className="flex flex-col justify-center items-center p-12 text-center bg-white rounded-2xl border border-gray-200 border-dashed">
-					<div className="flex justify-center items-center mb-4 w-16 h-16 bg-gray-50 rounded-full">
+				<div className="flex flex-col justify-center items-center p-12 text-center bg-(--color-surface-card)">
+					<div className="flex justify-center items-center mb-4 w-16 h-16 bg-white rounded-full">
 						<OrderIcon className="w-8 h-8 text-gray-400" />
 					</div>
-					<h3 className="text-lg font-semibold text-gray-900">{t("noOrderTitle")}</h3>
-					<p className="mx-auto mt-2 mb-8 max-w-sm text-gray-500">
+					<h3 className="text-[2.2rem]! font-normal! [font-family:var(--font-display)]!">{t("noOrderTitle")}</h3>
+					<p className="mx-auto mt-2 mb-8 max-w-sm text-[1.45rem] text-(--color-surface-muted)">
 						{t("noOrderDescription")}
 					</p>
 					<Link href="/products">
-						<Button className="px-8 py-6 h-auto text-base text-white bg-black rounded-full hover:bg-gray-800">
+						<Button className="px-10 py-4 h-auto text-[1.35rem] font-semibold tracking-[0.1em] uppercase text-white rounded-none bg-(--color-ink) hover:bg-black">
 							{t("startShopping")}
 						</Button>
 					</Link>

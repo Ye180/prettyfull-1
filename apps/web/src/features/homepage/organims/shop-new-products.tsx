@@ -31,7 +31,7 @@ export const ShopNewProducts = () => {
 
 	return (
 		<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
-			<h2 className="pb-8 text-3xl font-bold tracking-tight text-amber-700 sm:text-4xl">
+			<h2 className="pb-8 text-3xl font-bold tracking-tight text-black sm:text-4xl">
 				{t("title")}
 			</h2>
 
@@ -89,7 +89,7 @@ const Tile = ({ category, height }: TileProps) => {
 	const t = useTranslations("HomePage.shopNewProducts");
 	const imageUrl =
 		getMediaUrl(imageUrlOf(category.image)) ||
-		"/category/category-vitamins.jpg";
+		"/products/shop/hero-shopping.jpg";
 
 	return (
 		<Link

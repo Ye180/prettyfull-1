@@ -2,7 +2,7 @@
 
 import { fetchProductsRaw, storeApi } from "@/lib/store-api";
 import { normalizeStandaloneProducts } from "@prettyfull/ui";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { SortField } from "./use-collection-filters";
 
 interface CollectionProductsParams {
@@ -44,19 +44,7 @@ const categoryOf = (product: {
  * (utile quand la liste mélange plusieurs rayons, page `/collections`).
  */
 const getCollectionProducts = async (params: CollectionProductsParams) => {
-	const [category, { products, meta }] = await Promise.all([
-		params.categorySlug
-			? storeApi
-					.get<{
-						id: string;
-						name: string;
-						slug: string;
-						imageUrl: string | null;
-						bannerUrl: string | null;
-					}>(`/api/store/categories/${encodeURIComponent(params.categorySlug)}`)
-					.catch(() => null)
-			: Promise.resolve(null),
-		fetchProductsRaw({
+	const { products, meta } = await fetchProductsRaw({
 			categorySlug: params.categorySlug,
 			limit: params.limit,
 			sort: params.sort,
@@ -68,8 +56,7 @@ const getCollectionProducts = async (params: CollectionProductsParams) => {
 			color: params.colors && params.colors.length > 0 ? params.colors.join(",") : undefined,
 			stockStatus: params.stockStatus,
 			onSale: params.onSale,
-		}),
-	]);
+		});
 
 	const normalized = normalizeStandaloneProducts(
 		products.map((product) => {
@@ -78,12 +65,7 @@ const getCollectionProducts = async (params: CollectionProductsParams) => {
 		}),
 	);
 
-	return {
-		categoryName: category?.name ?? "",
-		categoryImage: category?.bannerUrl || category?.imageUrl || "",
-		products: normalized,
-		meta,
-	};
+	return { products: normalized, meta };
 };
 
 export const useCollectionProducts = (params: CollectionProductsParams) =>
@@ -91,4 +73,31 @@ export const useCollectionProducts = (params: CollectionProductsParams) =>
 		queryKey: ["collection-products", params],
 		queryFn: () => getCollectionProducts(params),
 		staleTime: 5 * 60 * 1000,
+		// Filtre, tri ou "Voir plus" : on garde la grille affichée pendant le
+		// rechargement plutôt que de la remplacer par des squelettes.
+		placeholderData: keepPreviousData,
+	});
+
+interface CollectionCategory {
+	id: string;
+	name: string;
+	slug: string;
+	description: string | null;
+	imageUrl: string | null;
+	bannerUrl: string | null;
+}
+
+/**
+ * Infos du rayon (titre, description, visuel), requêtées à part des produits :
+ * l'en-tête de page s'affiche dès qu'elles arrivent, sans attendre la grille.
+ */
+export const useCollectionCategory = (slug: string) =>
+	useQuery({
+		queryKey: ["collection-category", slug],
+		queryFn: () =>
+			storeApi
+				.get<CollectionCategory>(`/api/store/categories/${encodeURIComponent(slug)}`)
+				.catch(() => null),
+		enabled: Boolean(slug),
+		staleTime: 10 * 60 * 1000,
 	});

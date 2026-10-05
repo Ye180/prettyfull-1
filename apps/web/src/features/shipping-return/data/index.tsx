@@ -6,6 +6,7 @@ const ITEM_KEYS = [
 	"fees",
 	"tracking",
 	"damagedParcel",
+	"iphones",
 	"returnWindow",
 	"returnConditions",
 	"refund",
@@ -15,6 +16,7 @@ const ITEM_KEYS = [
 
 export const getShippingReturnItems = (t: Translate) =>
 	ITEM_KEYS.map((key) => ({
+		id: key,
 		title: t(`items.${key}.title`),
 		description: t(`items.${key}.description`),
 	}));

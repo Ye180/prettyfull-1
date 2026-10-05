@@ -1,115 +1,70 @@
 "use client";
 
-import { ArrowRightIcon } from "@/components/icons/arrow-icon";
-import CartContent from "@/features/cart/components/organims/cart-content";
+import CartSummary from "@/features/cart/components/molecules/cart-summary";
+import FreeShippingBar from "@/features/cart/components/molecules/free-shipping-bar";
+import CartItems from "@/features/cart/components/organims/cart-items";
+import { useCartTotals } from "@/features/cart/hooks/use-cart-totals";
+import { paths } from "@/lib/routes/paths-en";
 import { useCartStore } from "@prettyfull/store";
-import { Checkbox } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useState } from "react";
 
 const CartView = () => {
 	const t = useTranslations("Cart.page");
 	const items = useCartStore((state) => state.items);
 	const clearCart = useCartStore((state) => state.clearCart);
-	const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-
-	const totalItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-
-	const allSelected =
-		items.length > 0 && items.every((item) => selectedIds.has(item.productId));
-
-	const toggleAll = () => {
-		setSelectedIds(
-			allSelected ? new Set() : new Set(items.map((item) => item.productId)),
-		);
-	};
-
-	const toggleItem = (productId: string) => {
-		setSelectedIds((prev) => {
-			const next = new Set(prev);
-			if (next.has(productId)) {
-				next.delete(productId);
-			} else {
-				next.add(productId);
-			}
-			return next;
-		});
-	};
+	const totals = useCartTotals(items);
+	const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
 	return (
-		<main className="pt-6 pb-28 w-full min-h-screen text-gray-900 bg-white sm:pt-10">
-			<div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-				{/* Title */}
-				<div className="flex flex-wrap gap-4 justify-between items-center pb-6">
-					<h1 className="font-sans text-xl font-extrabold tracking-tight sm:text-2xl md:text-5xl text-gray-950">
-						{t("title")}{" "}
-						<span className="font-medium text-gray-400">
-							({totalItemCount || items.length})
-						</span>
-					</h1>
-				</div>
+		<main className="px-4 pt-10 pb-28 mx-auto w-full max-w-[140rem] min-h-[60vh] sm:px-6 lg:px-10">
+			<div className="flex flex-wrap gap-4 justify-between items-end pb-8 border-b border-(--color-surface-border)">
+				<h1 className="text-[3.6rem]! sm:text-[4.8rem]!">
+					{t("title")} <span className="text-(--color-surface-muted)">({itemCount})</span>
+				</h1>
+				<Link
+					href={paths.collections}
+					className="text-[1.35rem] underline underline-offset-4 transition-colors text-(--color-surface-muted) hover:text-(--color-ink)"
+				>
+					{t("continueShopping")}
+				</Link>
+			</div>
 
-				{items.length > 0 ? (
-					<>
-						{/* Select all & Remove all toolbar */}
-						<div className="flex justify-between items-center py-4 mb-6 border-b border-gray-200">
-							<label className="flex gap-3 items-center cursor-pointer select-none">
-								<Checkbox
-									checked={allSelected}
-									onCheckedChange={toggleAll}
-									aria-label={t("selectAllAria")}
-									className="rounded"
-								/>
-								<span className="text-sm font-medium text-gray-800 sm:text-base">
-									{t("selectAll")}
-								</span>
-							</label>
+			{items.length > 0 ? (
+				<div className="grid gap-12 pt-8 lg:grid-cols-[1fr_40rem] lg:gap-16">
+					<section>
+						<div className="mb-8 max-w-[52rem]">
+							<FreeShippingBar subtotal={totals.subtotal} />
+						</div>
+						<CartItems items={items} />
+						<div className="flex flex-wrap gap-4 justify-between items-center pt-6 border-t border-(--color-surface-border)">
+							<p className="max-w-[60rem] text-[1.3rem] leading-relaxed text-(--color-surface-muted)">{t("shippingNote")}</p>
 							<button
 								type="button"
 								onClick={clearCart}
-								className="text-sm font-semibold text-rose-500 transition cursor-pointer sm:text-base hover:text-rose-600"
+								className="text-[1.3rem] underline underline-offset-4 transition-colors cursor-pointer text-(--color-surface-muted) hover:text-(--color-ink)"
 							>
 								{t("removeAll")}
 							</button>
 						</div>
+					</section>
 
-						<CartContent
-							items={items}
-							layout="page"
-							selectedIds={selectedIds}
-							onToggleItem={toggleItem}
-							itemsFooter={
-								<div className="pt-4 mt-8 text-xs leading-relaxed text-gray-500 border-t border-gray-100 sm:text-sm">
-									<p>{t("shippingNote")}</p>
-								</div>
-							}
-						/>
-					</>
-				) : (
-					/* Empty Cart State */
-					<div className="flex flex-col items-center py-20 mx-auto max-w-lg text-center">
-						<div className="flex justify-center items-center mb-6 w-20 h-20 text-3xl bg-gray-50 rounded-full border border-gray-200">
-							🛍️
-						</div>
-						<h2 className="mb-2 text-2xl font-bold text-gray-900">
-							{t("emptyTitle")}
-						</h2>
-						<p className="mb-8 leading-relaxed text-gray-500">
-							{t("emptyDescription")}
-						</p>
-						<div className="flex flex-col gap-4 justify-center w-full sm:flex-row">
-							<Link
-								href="/collections"
-								className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-full transition shadow-sm"
-							>
-								<span>{t("discoverCta")}</span>
-								<ArrowRightIcon className="w-4 h-4" />
-							</Link>
-						</div>
-					</div>
-				)}
-			</div>
+					<aside className="lg:sticky lg:top-56 lg:self-start">
+						<CartSummary subtotal={totals.subtotal} taxes={totals.taxes} freeShipping={totals.freeShipping} />
+					</aside>
+				</div>
+			) : (
+				<div className="flex flex-col items-center py-24 mx-auto max-w-[52rem] text-center">
+					<h2 className="text-[3rem]!">{t("emptyTitle")}</h2>
+					<p className="mt-4 text-[1.5rem] leading-relaxed text-(--color-surface-muted)">{t("emptyDescription")}</p>
+					<Link
+						href={paths.collections}
+						className="inline-flex gap-2 items-center px-10 py-4 mt-10 text-[1.4rem] font-semibold tracking-[0.1em] text-white uppercase transition-colors bg-(--color-ink) hover:bg-black"
+					>
+						{t("discoverCta")}
+					</Link>
+				</div>
+			)}
 		</main>
 	);
 };

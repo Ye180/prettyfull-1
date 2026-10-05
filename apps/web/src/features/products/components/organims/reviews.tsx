@@ -100,7 +100,7 @@ const Reviews = ({
 				<Button
 					variant="outline"
 					onClick={loadMore}
-					className="w-full sm:w-[90%] p-2 py-4 text-lg rounded-full cursor-pointer sm:ml-10 sm:mt-8 sm:flex max-sm:hidden"
+					className="w-full sm:w-[90%] p-2 py-4 text-lg rounded-sm cursor-pointer sm:ml-10 sm:mt-8 sm:flex max-sm:hidden"
 				>
 					{t("loadMore")}
 				</Button>

@@ -60,8 +60,8 @@ export const SizeSelector: React.FC<SizeSelectorProps> = ({
 							outOfStock
 								? "text-gray-300 border-gray-200 cursor-not-allowed line-through"
 								: isSelected
-									? "bg-amber-600 text-white border-amber-600"
-									: "text-gray-600 border-gray-300 hover:border-amber-600 hover:text-amber-600 cursor-pointer active:bg-white hover:bg-white",
+									? "bg-black text-white border-black"
+									: "text-gray-600 border-gray-300 hover:border-black hover:text-black cursor-pointer active:bg-white hover:bg-white",
 						)}
 						title={outOfStock ? "Rupture de stock" : undefined}
 					>

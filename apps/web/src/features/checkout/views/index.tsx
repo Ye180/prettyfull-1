@@ -48,8 +48,7 @@ const CheckoutView = () => {
 				 * chaque seuil réel est ×1,6 plus large que son nom ne le
 				 * suggère (`lg` ne s'active qu'au-delà de ~1638px). `sm` est
 				 * celui qui tombe, par ce même effet, sur le seuil réellement
-				 * voulu ici (~1024px) - même contournement déjà utilisé par
-				 * `cart-content.tsx`.
+				 * voulu ici (~1024px).
 				 */}
 				<div className="grid grid-cols-1 gap-12 sm:grid-cols-12 sm:gap-16">
 					<div className="space-y-10 sm:col-span-7">

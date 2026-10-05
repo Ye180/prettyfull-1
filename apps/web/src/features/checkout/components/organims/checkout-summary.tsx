@@ -38,7 +38,7 @@ const CheckoutSummary = () => {
 	return (
 		<div className="px-8 py-6 w-full bg-white rounded-xl">
 			{/* SECTION: Produits visuels */}
-			<div className="flex flex-col pb-8 space-y-10">
+			<div className="flex flex-col gap-5 pb-6 border-b border-(--color-surface-border)">
 				{items.map((item) => (
 					<VisualSummary
 						key={item.productId}
@@ -58,9 +58,9 @@ const CheckoutSummary = () => {
 			</div>
 
 			{/* SECTION: Résumé des coûts */}
-			<h3 className="py-8 text-2xl! lg:text-3xl!">{t("title")}</h3>
-			<div className="mb-6 space-y-8">
-				<div className="space-y-8">
+			<h3 className="pt-6 pb-4 text-[2rem]!">{t("title")}</h3>
+			<div className="mb-2 space-y-4">
+				<div className="space-y-3 text-[1.4rem]">
 					<div className="flex justify-between text-md">
 						<span>{t("subtotal")}</span>
 						<span>{format(subtotal)}</span>
@@ -79,7 +79,7 @@ const CheckoutSummary = () => {
 
 				<DropdownMenuSeparator />
 
-				<div className="flex justify-between py-6 text-lg font-semibold">
+				<div className="flex justify-between py-4 text-[1.7rem] font-semibold">
 					<span>{t("total")}</span>
 					<span>{format(total)}</span>
 				</div>

@@ -13,12 +13,13 @@ const ITEM_KEYS = [
 	"personalData",
 	"intellectualProperty",
 	"liability",
-	"healthWarnings",
+	"productInformation",
 	"jurisdiction",
 ] as const;
 
 export const getTermsItems = (t: Translate) =>
 	ITEM_KEYS.map((key) => ({
+		id: key,
 		title: t(`items.${key}.title`),
 		description: t(`items.${key}.description`),
 	}));

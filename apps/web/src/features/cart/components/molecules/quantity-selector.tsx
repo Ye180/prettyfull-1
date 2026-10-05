@@ -3,71 +3,42 @@
 import { useCartStore } from "@prettyfull/store";
 import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 
 interface Props {
 	productId: string;
 	initialQuantity: number;
-	/** Squares off the pill/buttons - used by the cart drawer only. */
-	square?: boolean;
+	className?: string;
 }
 
-export const QuantitySelector = ({
-	productId,
-	initialQuantity,
-	square,
-}: Props) => {
+/** Stepper −/+ sobre, branché directement sur le store panier. */
+export const QuantitySelector = ({ productId, initialQuantity, className }: Props) => {
 	const t = useTranslations("Cart.quantitySelector");
 	const updateQuantity = useCartStore((state) => state.updateQuantity);
-	const [quantity, setQuantity] = useState(initialQuantity);
 
-	useEffect(() => {
-		setQuantity(initialQuantity);
-	}, [initialQuantity]);
-
-	const handleUpdate = (newQuantity: number) => {
-		if (newQuantity < 1) return;
-		setQuantity(newQuantity);
-		updateQuantity(productId, newQuantity);
-	};
+	const button =
+		"flex justify-center items-center size-[3.2rem] text-[1.6rem] text-(--color-ink) transition-colors cursor-pointer hover:bg-(--color-surface-card) disabled:opacity-30 disabled:cursor-not-allowed";
 
 	return (
-		<div
-			className={cn(
-				"flex items-center px-2 py-1 bg-[#F4F4F5] w-fit border border-gray-200",
-				square ? "rounded-none" : "rounded-md",
-			)}
-		>
+		<div className={cn("inline-flex items-center border border-(--color-surface-border)", className)}>
 			<button
 				type="button"
-				onClick={() => handleUpdate(quantity - 1)}
-				disabled={quantity <= 1}
+				onClick={() => updateQuantity(productId, initialQuantity - 1)}
+				disabled={initialQuantity <= 1}
 				aria-label={t("decreaseAria")}
-				className={cn(
-					"w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-white border border-gray-200 text-gray-700 font-semibold transition",
-					square ? "rounded-none" : "rounded-md",
-					quantity <= 1
-						? "opacity-40 cursor-not-allowed"
-						: "hover:bg-gray-100 cursor-pointer shadow-xs",
-				)}
+				className={button}
 			>
-				<span className="text-sm leading-none select-none">−</span>
+				−
 			</button>
-
-			<span className="w-8 sm:w-10 font-semibold text-center select-none text-sm sm:text-base text-gray-900">
-				{quantity}
+			<span className="w-[3.2rem] text-[1.4rem] font-medium text-center select-none text-(--color-ink)">
+				{initialQuantity}
 			</span>
-
 			<button
 				type="button"
-				onClick={() => handleUpdate(quantity + 1)}
+				onClick={() => updateQuantity(productId, initialQuantity + 1)}
 				aria-label={t("increaseAria")}
-				className={cn(
-					"w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-amber-600 text-white font-semibold hover:bg-amber-700 transition cursor-pointer shadow-xs",
-					square ? "rounded-none" : "rounded-md",
-				)}
+				className={button}
 			>
-				<span className="text-sm leading-none select-none">+</span>
+				+
 			</button>
 		</div>
 	);

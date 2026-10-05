@@ -48,14 +48,14 @@ export function AuthModal({
 			onClose={onClose}
 			hideTitle
 			title={mode === "login" ? t("loginTitle") : t("registerTitle")}
-			className="w-[95vw] sm:w-[92vw] lg:w-[76rem] xl:w-[86rem] max-h-[92vh] p-0 gap-0 rounded-[2.4rem] border-none overflow-hidden"
+			className="w-[95vw] sm:w-[92vw] sm:max-w-none lg:w-[90rem] xl:w-[104rem] max-h-[92vh] p-0 gap-0 rounded-[2.4rem] border-none overflow-hidden"
 		>
 			<div className="grid lg:grid-cols-[1fr_1.15fr]">
 				{/* Panneau éditorial - identité de marque, caché sur mobile pour
 				 * garder le formulaire au centre de l'attention. */}
 				<div className="hidden relative min-h-[58rem] lg:block">
 					<Image
-						src="/home/supplements-hero-colorful.jpg"
+						src="/products/shop/hero-shopping-alt.jpg"
 						alt=""
 						fill
 						sizes="40vw"
@@ -79,7 +79,7 @@ export function AuthModal({
 										key={benefit}
 										className="flex gap-3 items-center text-[1.5rem] text-white/90"
 									>
-										<span className="flex justify-center items-center w-6 h-6 rounded-full shrink-0 bg-amber-600">
+										<span className="flex justify-center items-center w-6 h-6 rounded-full shrink-0 bg-stone-900">
 											<Check className="w-4 h-4 text-white" strokeWidth={3} />
 										</span>
 										{benefit}

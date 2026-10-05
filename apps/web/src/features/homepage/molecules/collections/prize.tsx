@@ -10,7 +10,7 @@ interface PrizeProps {
  */
 const Prize = ({ minPrice, maxPrice, onChange }: PrizeProps) => {
 	const inputClass =
-		"w-full rounded-full border border-gray-200 py-2.5 pl-8 pr-4 text-sm outline-none focus:border-black placeholder:text-gray-400";
+		"w-full rounded-sm border border-gray-200 py-2.5 pl-8 pr-4 text-sm outline-none focus:border-black placeholder:text-gray-400";
 
 	return (
 		<div className="flex gap-3">

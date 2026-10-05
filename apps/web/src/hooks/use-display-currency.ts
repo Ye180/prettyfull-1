@@ -2,7 +2,7 @@
 
 import { fetchConfig } from "@/lib/store-api";
 import { useRegionStore } from "@/stores/useRegion";
-import { convertAmount, formatMoney, type CurrencyCode } from "@prettyfull/contracts";
+import { CURRENCY_CODES, convertAmount, formatMoney, type CurrencyCode } from "@prettyfull/contracts";
 import { useQuery } from "@tanstack/react-query";
 
 /**
@@ -25,8 +25,15 @@ export const useDisplayCurrency = () => {
 		"xof") as CurrencyCode;
 	const usdToXofRate = config?.usdToXofRate ?? 600;
 
+	// D'anciens paniers stockent un libellé ("FCFA", "USD") au lieu d'un code :
+	// sans repli, la conversion rendait NaN.
 	const convert = (amountMinor: number, fromCurrency: CurrencyCode = "xof"): number =>
-		convertAmount(amountMinor, fromCurrency, currencyCode, usdToXofRate);
+		convertAmount(
+			amountMinor,
+			CURRENCY_CODES.includes(fromCurrency) ? fromCurrency : "xof",
+			currencyCode,
+			usdToXofRate,
+		);
 
 	const format = (amountMinor: number, fromCurrency: CurrencyCode = "xof"): string =>
 		formatMoney(convert(amountMinor, fromCurrency), currencyCode);

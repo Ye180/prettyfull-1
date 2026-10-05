@@ -1,303 +1,137 @@
 "use client";
 
-import Image from "next/image";
-import { useTranslations } from "next-intl";
+import CategoryShowcase from "@/features/homepage/organims/category-showcase";
+import { paths } from "@/lib/routes/paths-en";
 import PhotoOverlayBanner from "@/shared/components/organims/photo-overlay-banner";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import Link from "next/link";
 
-type Translate = (key: string) => string;
+const STEP_KEYS = ["s1", "s2", "s3", "s4"] as const;
+const PILLAR_KEYS = ["p1", "p2", "p3"] as const;
 
-const getPillars = (t: Translate) => [
-	{
-		title: t("pillars.pillar1.title"),
-		description: t("pillars.pillar1.description"),
-	},
-	{
-		title: t("pillars.pillar2.title"),
-		description: t("pillars.pillar2.description"),
-	},
-	{
-		title: t("pillars.pillar3.title"),
-		description: t("pillars.pillar3.description"),
-	},
-];
+const Eyebrow = ({ children }: { children: React.ReactNode }) => (
+	<p className="text-[1.3rem] font-semibold tracking-[0.14em] uppercase text-(--color-surface-muted)">{children}</p>
+);
 
-const getTexturePoints = (t: Translate) => [
-	{
-		number: "01",
-		title: t("texture.points.point1.title"),
-		description: t("texture.points.point1.description"),
-	},
-	{
-		number: "02",
-		title: t("texture.points.point2.title"),
-		description: t("texture.points.point2.description"),
-	},
-	{
-		number: "03",
-		title: t("texture.points.point3.title"),
-		description: t("texture.points.point3.description"),
-	},
-];
-
-const getResponsibilityPoints = (t: Translate) => [
-	{
-		title: t("responsibility.items.item1.title"),
-		description: t("responsibility.items.item1.description"),
-	},
-	{
-		title: t("responsibility.items.item2.title"),
-		description: t("responsibility.items.item2.description"),
-	},
-	{
-		title: t("responsibility.items.item3.title"),
-		description: t("responsibility.items.item3.description"),
-	},
-];
-
-const getTestimonials = (t: Translate) => [
-	{
-		quote: t("testimonials.testimonial1.quote"),
-		author: "Aïcha K.",
-		role: t("testimonials.testimonial1.role"),
-		avatar: "/products/multivitamin.jpg",
-	},
-	{
-		quote: t("testimonials.testimonial2.quote"),
-		author: "Fatou D.",
-		role: t("testimonials.testimonial2.role"),
-		avatar: "/products/omega3-capsules.jpg",
-	},
-	{
-		quote: t("testimonials.testimonial3.quote"),
-		author: "Aminata S.",
-		role: t("testimonials.testimonial3.role"),
-		avatar: "/products/gummies.jpg",
-	},
-];
-
+/** Page « À propos » : promesse, histoire, fonctionnement du sourcing, engagements, rayons. */
 const AboutView = () => {
 	const t = useTranslations("AboutPage");
-	const pillars = getPillars(t);
-	const texturePoints = getTexturePoints(t);
-	const responsibilityPoints = getResponsibilityPoints(t);
-	const testimonials = getTestimonials(t);
 
 	return (
-		<main className="w-full min-h-screen bg-white text-gray-900 pb-20">
-			{/* SECTION 1: HERO */}
-			<section className="relative w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-8">
-				<div className="relative w-full h-[520px] sm:h-[640px] md:h-[720px] rounded-3xl overflow-hidden shadow-sm">
+		<main className="w-full">
+			{/* Hero - même composition que celui de l'accueil */}
+			<section className="grid w-full bg-(--color-surface-card) lg:min-h-[64vh] lg:grid-cols-[1fr_1.1fr]">
+				<div className="flex flex-col justify-center order-2 px-6 py-14 sm:px-12 lg:order-1 lg:py-20 lg:pl-20 xl:pl-28">
+					<Eyebrow>{t("hero.eyebrow")}</Eyebrow>
+					<h1 className="mt-5 max-w-[16ch] text-[4.2rem]! leading-[1.04]! font-normal! text-(--color-ink) sm:text-[5.6rem]! xl:text-[6.8rem]!">
+						{t("hero.title")}
+					</h1>
+					<p className="mt-6 max-w-[42ch] text-[1.7rem] leading-relaxed text-(--color-ink)/80 sm:text-[1.9rem]">
+						{t("hero.subtitle")}
+					</p>
+					<Link
+						href={paths.collections}
+						className="inline-flex items-center px-12 py-5 mt-10 text-[1.4rem] font-semibold tracking-[0.1em] text-white uppercase transition-colors w-fit bg-(--color-ink) hover:bg-black"
+					>
+						{t("hero.cta")}
+					</Link>
+				</div>
+				<div className="relative order-1 min-h-[38rem] sm:min-h-[52rem] lg:order-2 lg:min-h-0">
 					<Image
-						src="/home/supplements-hero-lifestyle.jpg"
+						src="/products/shop/hero-shopping.jpg"
 						alt={t("hero.imageAlt")}
 						fill
 						priority
-						sizes="100vw"
-						className="object-cover object-center brightness-90"
+						sizes="(max-width: 1024px) 100vw, 55vw"
+						className="object-cover"
+						unoptimized
 					/>
-					<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
+				</div>
+			</section>
 
-					<div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-12 md:p-16 max-w-4xl text-white space-y-4">
-						<span className="inline-block text-xs sm:text-sm uppercase tracking-widest text-gray-300 font-semibold">
-							{t("hero.eyebrow")}
-						</span>
-						<h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold font-sans tracking-tight leading-tight">
-							{t("hero.title")}
-						</h1>
-						<p className="text-base sm:text-xl text-gray-200 font-light leading-relaxed max-w-2xl">
-							{t("hero.subtitle")}
-						</p>
+			{/* Notre histoire */}
+			<section className="grid gap-12 items-center px-6 py-20 mx-auto max-w-[130rem] lg:grid-cols-2 lg:gap-20 lg:px-10 lg:py-28">
+				<div className="overflow-hidden relative aspect-4/5 bg-(--color-surface-card)">
+					<Image
+						src="/products/shop/beauty-flatlay-alt.jpg"
+						alt={t("story.imageAlt")}
+						fill
+						sizes="(max-width: 1024px) 100vw, 50vw"
+						className="object-cover"
+						unoptimized
+					/>
+				</div>
+				<div>
+					<Eyebrow>{t("story.eyebrow")}</Eyebrow>
+					<h2 className="mt-4 text-[3.4rem]! sm:text-[4.4rem]!">{t("story.title")}</h2>
+					<div className="mt-8 space-y-5 text-[1.6rem] leading-[1.75] text-(--color-ink)/80">
+						<p>{t("story.p1")}</p>
+						<p>{t("story.p2")}</p>
+						<p>{t("story.p3")}</p>
 					</div>
 				</div>
 			</section>
 
-			{/* SECTION 2: 3 BRAND PILLARS */}
-			<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
-					{pillars.map((pillar, idx) => (
-						<div
-							key={pillar.title}
-							className="p-8 sm:p-10 rounded-3xl bg-[#F9FAFB] border border-gray-150/80 hover:border-black/20 transition duration-300 space-y-4 flex flex-col justify-between"
-						>
-							<div className="space-y-3">
-								<span className="text-xs font-bold tracking-widest text-gray-400 font-mono">
-									0{idx + 1}
-								</span>
-								<h2 className="text-xl sm:text-2xl font-bold font-sans tracking-tight text-gray-950">
-									{pillar.title}
-								</h2>
-								<p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-									{pillar.description}
+			{/* Comment ça marche */}
+			<section className="border-y bg-(--color-surface-card) border-(--color-surface-border)">
+				<div className="px-6 py-20 mx-auto max-w-[130rem] lg:px-10 lg:py-24">
+					<div className="max-w-[60rem]">
+						<Eyebrow>{t("steps.eyebrow")}</Eyebrow>
+						<h2 className="mt-4 text-[3.4rem]! sm:text-[4.4rem]!">{t("steps.title")}</h2>
+					</div>
+					<ol className="grid gap-10 mt-14 sm:grid-cols-2 lg:grid-cols-4">
+						{STEP_KEYS.map((key, index) => (
+							<li key={key} className="pt-6 border-t border-(--color-ink)">
+								<p className="text-[1.3rem] font-semibold tabular-nums text-(--color-surface-muted)">
+									{String(index + 1).padStart(2, "0")}
 								</p>
-							</div>
-							<div className="pt-4 border-t border-gray-200/60">
-								<span className="text-xs uppercase tracking-wider font-semibold text-gray-400">
-									PrettyFull
-								</span>
-							</div>
+								<h3 className="mt-3 text-[2.1rem]! font-normal! text-(--color-ink) [font-family:var(--font-display)]!">
+									{t(`steps.${key}.title`)}
+								</h3>
+								<p className="mt-3 text-[1.45rem] leading-relaxed text-(--color-ink)/75">
+									{t(`steps.${key}.description`)}
+								</p>
+							</li>
+						))}
+					</ol>
+				</div>
+			</section>
+
+			{/* Engagements */}
+			<section className="px-6 py-20 mx-auto max-w-[130rem] lg:px-10 lg:py-28">
+				<div className="mx-auto max-w-[60rem] text-center">
+					<Eyebrow>{t("pillars.eyebrow")}</Eyebrow>
+					<h2 className="mt-4 text-[3.4rem]! sm:text-[4.4rem]!">{t("pillars.title")}</h2>
+				</div>
+				<div className="grid gap-px mt-14 bg-(--color-surface-border) md:grid-cols-3">
+					{PILLAR_KEYS.map((key) => (
+						<div key={key} className="p-10 bg-white">
+							<h3 className="text-[2.2rem]! font-normal! text-(--color-ink) [font-family:var(--font-display)]!">
+								{t(`pillars.${key}.title`)}
+							</h3>
+							<p className="mt-4 text-[1.5rem] leading-relaxed text-(--color-ink)/75">{t(`pillars.${key}.description`)}</p>
 						</div>
 					))}
 				</div>
 			</section>
 
-			{/* SECTION 3: LUXURY TEXTURES */}
-			<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 border-t border-gray-100">
-				<div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-					{/* Left: Texture Image */}
-					<div className="lg:col-span-5">
-						<div className="relative w-full h-[450px] sm:h-[550px] rounded-3xl overflow-hidden shadow-md">
-							<Image
-								src="/home/supplements-hero-colorful.jpg"
-								alt={t("texture.imageAlt")}
-								fill
-								sizes="(max-width: 1024px) 100vw, 45vw"
-								className="object-cover"
-							/>
-						</div>
-					</div>
-
-					{/* Right: Texture Points */}
-					<div className="lg:col-span-7 space-y-8">
-						<div className="space-y-3">
-							<span className="text-xs uppercase tracking-widest font-semibold text-gray-400">
-								{t("texture.eyebrow")}
-							</span>
-							<h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-sans tracking-tight text-gray-950 leading-tight">
-								{t("texture.title")}
-							</h2>
-						</div>
-
-						<div className="space-y-6 divide-y divide-gray-150">
-							{texturePoints.map((pt) => (
-								<div key={pt.number} className="pt-6 first:pt-0 space-y-2">
-									<div className="flex items-center gap-3">
-										<span className="text-xs font-mono font-bold text-gray-400">
-											{pt.number}
-										</span>
-										<h3 className="text-lg sm:text-xl font-bold font-sans text-gray-900">
-											{pt.title}
-										</h3>
-									</div>
-									<p className="text-sm sm:text-base text-gray-600 leading-relaxed pl-7">
-										{pt.description}
-									</p>
-								</div>
-							))}
-						</div>
-					</div>
+			{/* Nos rayons */}
+			<section>
+				<div className="px-6 pb-10 mx-auto max-w-[130rem] text-center lg:px-10">
+					<Eyebrow>{t("ranges.eyebrow")}</Eyebrow>
+					<h2 className="mt-4 text-[3.4rem]! sm:text-[4.4rem]!">{t("ranges.title")}</h2>
 				</div>
+				<CategoryShowcase />
 			</section>
 
-			{/* SECTION 4: ENVIRONMENTAL RESPONSIBILITY */}
-			<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-gray-100">
-				<div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-					{/* Left Content */}
-					<div className="lg:col-span-7 space-y-8 order-2 lg:order-1">
-						<div className="space-y-4">
-							<span className="text-xs uppercase tracking-widest font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-								{t("responsibility.badge")}
-							</span>
-							<h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-sans tracking-tight text-gray-950 leading-tight">
-								{t("responsibility.title")}
-							</h2>
-							<p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-								{t("responsibility.subtitle")}
-							</p>
-						</div>
-
-						<div className="space-y-6 divide-y divide-gray-150">
-							{responsibilityPoints.map((item) => (
-								<div key={item.title} className="pt-6 first:pt-0 space-y-2">
-									<div className="flex items-center gap-2">
-										<span className="w-2 h-2 rounded-full bg-black inline-block" />
-										<h3 className="text-base sm:text-lg font-bold font-sans text-gray-900">
-											{item.title}
-										</h3>
-									</div>
-									<p className="text-sm sm:text-base text-gray-600 leading-relaxed pl-4">
-										{item.description}
-									</p>
-								</div>
-							))}
-						</div>
-					</div>
-
-					{/* Right Model Image */}
-					<div className="lg:col-span-5 order-1 lg:order-2">
-						<div className="relative w-full h-[480px] sm:h-[580px] rounded-3xl overflow-hidden shadow-md">
-							<Image
-								src="/category/category-wellness.jpg"
-								alt={t("responsibility.imageAlt")}
-								fill
-								sizes="(max-width: 1024px) 100vw, 45vw"
-								className="object-cover"
-							/>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			{/* SECTION 5: COMMUNITY TRUST (TESTIMONIALS) */}
-			<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-t border-gray-100">
-				<div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-					<span className="text-xs uppercase tracking-widest font-semibold text-gray-400">
-						{t("testimonials.eyebrow")}
-					</span>
-					<h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-sans tracking-tight text-gray-950">
-						{t("testimonials.title")}
-					</h2>
-					<p className="text-sm sm:text-base text-gray-500">
-						{t("testimonials.subtitle")}
-					</p>
-				</div>
-
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-					{testimonials.map((testimonial) => (
-						<div
-							key={testimonial.author}
-							className="p-8 sm:p-9 rounded-3xl bg-[#F9FAFB] border border-gray-150/80 flex flex-col justify-between space-y-6 hover:shadow-sm transition"
-						>
-							<div className="space-y-4">
-								<div className="flex text-amber-400 gap-1 text-sm">
-									{"★".repeat(5)}
-								</div>
-								<p className="text-sm sm:text-base text-gray-700 leading-relaxed italic">
-									&ldquo;{testimonial.quote}&rdquo;
-								</p>
-							</div>
-
-							<div className="flex items-center gap-4 pt-4 border-t border-gray-200/60">
-								<div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-200">
-									<Image
-										src={testimonial.avatar}
-										alt={testimonial.author}
-										fill
-										sizes="48px"
-										className="object-cover"
-									/>
-								</div>
-								<div>
-									<h4 className="font-bold text-sm text-gray-950 font-sans">
-										{testimonial.author}
-									</h4>
-									<p className="text-xs text-gray-500">{testimonial.role}</p>
-								</div>
-							</div>
-						</div>
-					))}
-				</div>
-			</section>
-
-			{/* SECTION 6: BANNIÈRE FINALE */}
-			<section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-				<PhotoOverlayBanner
-					image="/home/supplements-hero-colorful.jpg"
-					title={t("finalBanner.title")}
-					subtitle={t("finalBanner.subtitle")}
-					cta={{ label: t("finalBanner.cta"), href: "/collections" }}
-					contained={false}
-				/>
-			</section>
+			<PhotoOverlayBanner
+				image="/products/shop/suitcase.jpg"
+				title={t("finalBanner.title")}
+				subtitle={t("finalBanner.subtitle")}
+				cta={{ label: t("finalBanner.cta"), href: paths.collections }}
+				contained
+			/>
 		</main>
 	);
 };

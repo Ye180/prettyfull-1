@@ -80,7 +80,7 @@ const Toolbar = ({
 							key={category.id}
 							href={COLLECTION_PATHS.collectionDetail(category.handle)}
 							className={cn(
-								"shrink-0 whitespace-nowrap rounded-full border px-4 py-1.5 text-[1.2rem] uppercase tracking-wide transition-colors",
+								"shrink-0 whitespace-nowrap rounded-sm border px-4 py-1.5 text-[1.2rem] uppercase tracking-wide transition-colors",
 								category.handle === activeCategorySlug
 									? "border-black bg-black text-white"
 									: "border-neutral-300 text-neutral-600 hover:border-black hover:text-black",
@@ -93,7 +93,7 @@ const Toolbar = ({
 			)}
 
 			<div className="flex flex-wrap gap-3 items-center justify-between">
-				<div className="flex gap-2 items-center px-3 py-2 rounded-full border border-neutral-200 max-w-xs w-full">
+				<div className="flex gap-2 items-center px-3 py-2 rounded-sm border border-neutral-200 max-w-xs w-full">
 					<Search className="w-4 h-4 text-neutral-400 shrink-0" />
 					<input
 						type="text"

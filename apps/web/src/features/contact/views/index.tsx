@@ -1,52 +1,27 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import Content from "../organims/content";
 
-/**
- * Page « Contact ».
- *
- * Ouverture plus sobre que celle de la page « À propos » : on vient ici pour
- * agir, pas pour lire une histoire de marque.
- */
+/** Page « Contact » : en-tête sobre, puis formulaire et coordonnées. */
 const ContactViews = () => {
 	const t = useTranslations("ContactPage");
 
 	return (
-		<div className="pb-28">
-			<section className="relative w-full overflow-hidden bg-black">
-				<div className="relative h-[38vh] min-h-[28rem] w-full md:h-[44vh]">
-					<Image
-						src="/home/cover-desktop.jpg"
-						alt=""
-						fill
-						priority
-						sizes="100vw"
-						// Point focal remonté : un cadrage centré sur cette bande basse
-						// coupe les visages en deux.
-						className="object-cover object-[center_22%] opacity-65"
-					/>
-
-					<div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
-
-					<div className="absolute inset-x-0 bottom-0 px-8 pb-12 sm:px-20 md:pb-16">
-						<div className="mx-auto max-w-[140rem]">
-							<p className="mb-4 text-[1.3rem] font-medium uppercase tracking-[0.35em] text-white/70 font-manrope">
-								{t("hero.eyebrow")}
-							</p>
-							<h1 className="font-bebas-neue text-[5rem]! leading-[0.95] tracking-wide text-white uppercase md:text-[7.5rem]!">
-								{t("hero.title")}
-							</h1>
-						</div>
-					</div>
+		<main className="pb-24 w-full">
+			<header className="border-b bg-(--color-surface-card) border-(--color-surface-border)">
+				<div className="px-6 py-16 mx-auto max-w-[130rem] sm:py-20 lg:px-10">
+					<p className="text-[1.3rem] font-semibold tracking-[0.14em] uppercase text-(--color-surface-muted)">
+						{t("hero.eyebrow")}
+					</p>
+					<h1 className="mt-4 text-[4rem]! sm:text-[5.6rem]!">{t("hero.title")}</h1>
+					<p className="mt-5 max-w-[60ch] text-[1.6rem] leading-relaxed text-(--color-ink)/75">{t("hero.subtitle")}</p>
 				</div>
-			</section>
-
-			<div className="pt-20 md:pt-28">
+			</header>
+			<div className="pt-14 md:pt-20">
 				<Content />
 			</div>
-		</div>
+		</main>
 	);
 };
 

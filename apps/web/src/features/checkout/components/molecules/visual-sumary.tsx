@@ -5,61 +5,51 @@ import Image from "next/image";
 import { CloseIcon } from "../../../../../../../packages/ui/src/icons/close.icon";
 import { CartItemType } from "../../types";
 
+/** Ligne produit compacte du récapitulatif : vignette, nom, prix, retrait. */
 const VisualSummary = ({ item }: { item: CartItemType }) => {
 	const t = useTranslations("CheckoutPage.summary");
 	const removeItem = useCartStore((state) => state.removeItem);
 	const { format } = useDisplayCurrency();
+	const currency = item.currency ?? "xof";
 
-	const handleRemove = (itemId: string) => {
-		removeItem(itemId);
-	};
 	return (
-		<div className="flex space-x-8 sm:space-x-10">
-			<div className="relative w-40 h-44 bg-gray-100 rounded-lg aspect-square">
-				<div className="overflow-hidden w-40 h-44 rounded-lg">
+		<div className="flex gap-4 items-center">
+			<div className="relative shrink-0">
+				<div className="overflow-hidden size-[6.4rem] rounded-md border border-(--color-surface-border) bg-(--color-surface-card)">
 					<Image
 						src={item.image}
 						alt={item.name}
-						width={100}
-						height={100}
-						className="object-top object-cover w-40 h-44 rounded-lg"
-					unoptimized
+						width={64}
+						height={64}
+						className="object-cover size-full"
+						unoptimized
 					/>
 				</div>
-
-				<p className="absolute flex items-center justify-center font-semibold text-white bg-amber-600 rounded-full -top-4 -right-5 size-12 text-[1.4rem]">
+				<span className="flex absolute -top-2 -right-2 justify-center items-center px-1 min-w-[2rem] h-[2rem] text-[1.1rem] font-semibold text-white rounded-full bg-(--color-ink)">
 					{item.quantity}
+				</span>
+			</div>
+
+			<div className="flex-1 min-w-0">
+				<p className="text-[1.4rem] font-medium leading-snug text-(--color-ink) line-clamp-2">
+					{item.name}
+				</p>
+				<p className="mt-0.5 text-[1.25rem] text-(--color-surface-muted)">
+					{t("unitPriceLabel")} : {format(item.price, currency)}
 				</p>
 			</div>
 
-			{/* `sm:` ici pour la même raison qu'en vue checkout (cf. views/index.tsx) :
-			 * c'est le préfixe qui bascule réellement vers ~1024px sur ce projet. */}
-			<div className="flex flex-row justify-between space-y-4 w-full sm:flex-col">
-				<div className="space-y-2 text-[1.5rem]">
-					<h5 className="font-semibold text-[2.2rem]! tracking-wider whitespace-nowrap">
-						{item.name}
-					</h5>
-					<p className="text-gray-500 text-md line-clamp-1">
-						{item.description || ""}
-					</p>
-					<p className="text-gray-500 text-md">
-						{t("unitPriceLabel")} : {format(item.price, item.currency ?? "xof")}
-					</p>
-
-					<div className="flex gap-10 justify-start items-center">
-						<button
-							onClick={() => handleRemove(item.id)}
-							className="hidden p-2 rounded-lg cursor-pointer sm:block hover:bg-gray-100"
-						>
-							<CloseIcon size={15} className="text-gray-400" />
-						</button>
-					</div>
-				</div>
+			<div className="flex flex-col gap-1 items-end shrink-0">
+				<span className="text-[1.4rem] font-semibold text-(--color-ink) whitespace-nowrap">
+					{format(item.price * item.quantity, currency)}
+				</span>
 				<button
-					onClick={() => handleRemove(item.id)}
-					className="block p-2 h-fit rounded-lg cursor-pointer sm:hidden hover:bg-gray-100"
+					type="button"
+					onClick={() => removeItem(item.id)}
+					aria-label={t("remove", { name: item.name })}
+					className="p-1 rounded cursor-pointer text-(--color-surface-muted) hover:text-(--color-ink) hover:bg-(--color-surface-card)"
 				>
-					<CloseIcon size={15} className="text-gray-400" />
+					<CloseIcon size={12} />
 				</button>
 			</div>
 		</div>

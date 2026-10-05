@@ -1,3 +1,5 @@
+import { CONTACT_INFO } from "@/lib/utils/constants/contact";
+
 /**
  * Coordonnées et contenu de la page contact.
  *
@@ -8,13 +10,6 @@
  */
 
 type Translate = (key: string) => string;
-
-export const CONTACT_INFO = {
-	email: "contact@prettyfull.shop",
-	phone: "+225 07 00 00 00",
-	phoneHref: "tel:+22507000000",
-	whatsapp: "+225 07 00 00 00",
-} as const;
 
 export const getContactDetails = (t: Translate) =>
 	({
