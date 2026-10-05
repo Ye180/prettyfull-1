@@ -5,6 +5,8 @@ import { createJSONStorage, persist } from "zustand/middleware";
 export interface CartProduct {
   id: string;
   name: string;
+  /** Slug de la fiche produit (lien depuis la liste de souhaits). */
+  handle?: string;
   description?: string;
   image?: string;
   price?: { amount: number; currency: string };

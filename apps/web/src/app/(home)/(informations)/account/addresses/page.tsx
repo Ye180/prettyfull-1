@@ -286,111 +286,117 @@ const AddressFormModal = ({
 		await onSave(form);
 	};
 
+	// Champs compacts : le label par défaut de `Input` (2.4rem) est pensé pour
+	// les pages pleines, trop lourd dans une modale.
+	const field = {
+		className:
+			"h-16 px-4 py-0 rounded-lg border-gray-300 text-[1.4rem] focus-visible:border-black max-md:h-16",
+		labelClassName:
+			"mb-1.5 text-[1.3rem] max-md:text-[1.3rem] font-sans font-medium text-gray-700",
+	};
+
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto py-10">
-				<DialogHeader>
-					<DialogTitle className="text-[2.4rem]! lg:text-[3.4rem]! font-bold tracking-wide">
+			<DialogContent className="flex flex-col gap-0 p-0 sm:max-w-[64rem] max-h-[90vh] rounded-2xl overflow-hidden">
+				<DialogHeader className="px-8 pt-8 pb-6 text-left border-b border-gray-100">
+					<DialogTitle className="text-[2.4rem]! font-bold tracking-wide">
 						{editingAddress ? t("editAddressTitle") : t("newAddressTitle")}
 					</DialogTitle>
-					<DialogDescription className="text-gray-500">
+					<DialogDescription className="text-[1.4rem] text-gray-500">
 						{editingAddress
 							? t("editAddressDescription")
 							: t("newAddressDescription")}
 					</DialogDescription>
 				</DialogHeader>
 
-				<form onSubmit={handleSubmit} className="mt-6 space-y-5">
-					<div className="grid grid-cols-2 gap-4">
+				<form
+					onSubmit={handleSubmit}
+					className="flex flex-col flex-1 min-h-0"
+				>
+					<div className="grid overflow-y-auto grid-cols-1 gap-x-4 gap-y-5 px-8 py-6 sm:grid-cols-2">
 						<Input
+							{...field}
 							label={t("firstName")}
 							placeholder="Jean"
-							className="px-4 h-20 label:text-[1rem]"
 							value={form.first_name}
 							onChange={handleChange("first_name")}
 							errorMessage={errors.first_name}
 						/>
 						<Input
+							{...field}
 							label={t("lastName")}
 							placeholder="Dupont"
-							className="px-4 h-20"
 							value={form.last_name}
 							onChange={handleChange("last_name")}
 							errorMessage={errors.last_name}
 						/>
-					</div>
-
-					<Input
-						label={t("company")}
-						placeholder={t("optional")}
-						className="px-4 h-20"
-						value={form.company}
-						onChange={handleChange("company")}
-					/>
-
-					<Input
-						label={t("address")}
-						placeholder="123 Rue de la Paix"
-						className="px-4 h-20"
-						value={form.address_1}
-						onChange={handleChange("address_1")}
-						errorMessage={errors.address_1}
-					/>
-
-					<Input
-						label={t("address2")}
-						placeholder={t("address2Placeholder")}
-						className="px-4 h-20"
-						value={form.address_2}
-						onChange={handleChange("address_2")}
-					/>
-
-					<div className="grid grid-cols-2 gap-4">
 						<Input
+							{...field}
+							label={t("company")}
+							placeholder={t("optional")}
+							value={form.company}
+							onChange={handleChange("company")}
+						/>
+						<Input
+							{...field}
+							label={t("phone")}
+							placeholder={t("phonePlaceholder")}
+							value={form.phone}
+							onChange={handleChange("phone")}
+						/>
+						<div className="sm:col-span-2">
+							<Input
+								{...field}
+								label={t("address")}
+								placeholder="123 Rue de la Paix"
+								value={form.address_1}
+								onChange={handleChange("address_1")}
+								errorMessage={errors.address_1}
+							/>
+						</div>
+						<div className="sm:col-span-2">
+							<Input
+								{...field}
+								label={t("address2")}
+								placeholder={t("address2Placeholder")}
+								value={form.address_2}
+								onChange={handleChange("address_2")}
+							/>
+						</div>
+						<Input
+							{...field}
 							label={t("city")}
 							placeholder="Paris"
-							className="px-4 h-20"
 							value={form.city}
 							onChange={handleChange("city")}
 							errorMessage={errors.city}
 						/>
 						<Input
+							{...field}
 							label={t("postalCode")}
 							placeholder="75001"
-							className="px-4 h-20"
 							value={form.postal_code}
 							onChange={handleChange("postal_code")}
 							errorMessage={errors.postal_code}
 						/>
-					</div>
-
-					<div className="grid grid-cols-2 gap-4">
 						<Input
+							{...field}
 							label={t("region")}
 							placeholder={t("regionPlaceholder")}
-							className="px-4 h-20"
 							value={form.province}
 							onChange={handleChange("province")}
 						/>
 						<Input
+							{...field}
 							label={t("countryCode")}
 							placeholder="fr"
-							className="px-4 h-20"
 							value={form.country_code}
 							onChange={handleChange("country_code")}
 							errorMessage={errors.country_code}
 						/>
 					</div>
 
-					<Input
-						label={t("phone")}
-						placeholder={t("phonePlaceholder")}
-						className="px-4 h-20"
-						value={form.phone}
-						onChange={handleChange("phone")}
-					/>
-
-					<div className="flex gap-3 justify-end pt-4 max-md:gap-6 max-md:flex-col-reverse">
+					<div className="flex gap-3 justify-end px-8 py-5 border-t border-gray-100 max-sm:flex-col-reverse">
 						<Button
 							type="button"
 							variant="outline"

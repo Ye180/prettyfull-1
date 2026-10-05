@@ -77,6 +77,7 @@ export const BestSellingSection = () => {
 			product: {
 				id: product.id,
 				name: product.name,
+				handle: product.handle,
 				image: product.image,
 				price: { amount: product.price, currency: "xof" },
 			},

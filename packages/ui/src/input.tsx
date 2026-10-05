@@ -31,15 +31,21 @@ interface InputProps
 		InputHTMLAttributes<HTMLInputElement>,
 		VariantProps<typeof inputVariants> {
 	label?: string;
+	labelClassName?: string;
 	errorMessage?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-	({ className, label, variant, errorMessage, ...props }, ref) => {
+	({ className, label, labelClassName, variant, errorMessage, ...props }, ref) => {
 		return (
 			<div>
 				{label && (
-					<label className="mb-2 block text-[2.4rem] font-medium font-family-heading max-md:text-[1.9rem]">
+					<label
+						className={cn(
+							"mb-2 block text-[2.4rem] font-medium font-family-heading max-md:text-[1.9rem]",
+							labelClassName,
+						)}
+					>
 						{label}
 					</label>
 				)}

@@ -34,7 +34,7 @@ export const AccountMenu = () => {
 		},
 		{
 			label: t("wishlist"),
-			href: "/wishlist",
+			href: "/account/wishlist",
 			icon: Heart,
 		},
 	];

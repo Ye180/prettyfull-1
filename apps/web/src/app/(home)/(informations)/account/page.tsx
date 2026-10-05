@@ -151,7 +151,7 @@ export default function AccountPage() {
 
 			<div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
 				<StatCard label={t("overview.stats.orders")} value={ordersLoading ? "–" : String(ordersCount)} href="/account/orders" />
-				<StatCard label={t("overview.stats.wishlist")} value={String(wishlistCount)} href="/wishlist" />
+				<StatCard label={t("overview.stats.wishlist")} value={String(wishlistCount)} href="/account/wishlist" />
 				<StatCard label={t("overview.stats.addresses")} value={String(customer.addresses?.length ?? 0)} href="/account/addresses" />
 			</div>
 

@@ -80,6 +80,7 @@ export default function ProductViews() {
 			product: {
 				id: product.id,
 				name: product.title,
+				handle: product.handle,
 				image: currentImages?.[0],
 				price: {
 					amount:

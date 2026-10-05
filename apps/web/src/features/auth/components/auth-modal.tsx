@@ -48,7 +48,7 @@ export function AuthModal({
 			onClose={onClose}
 			hideTitle
 			title={mode === "login" ? t("loginTitle") : t("registerTitle")}
-			className="w-[95vw] sm:w-[92vw] lg:w-[76rem] xl:w-[86rem] max-h-[92vh] p-0 gap-0 rounded-[2.4rem] border-none overflow-hidden"
+			className="w-[95vw] sm:w-[92vw] sm:max-w-none lg:w-[90rem] xl:w-[104rem] max-h-[92vh] p-0 gap-0 rounded-[2.4rem] border-none overflow-hidden"
 		>
 			<div className="grid lg:grid-cols-[1fr_1.15fr]">
 				{/* Panneau éditorial - identité de marque, caché sur mobile pour

@@ -60,7 +60,9 @@
       "emptyTitle": "Votre liste de souhaits est vide",
       "emptyDescription": "Ajoutez vos produits préférés pour les retrouver facilement.",
       "removeItem": "Retirer {name} de la liste de souhaits",
-      "viewButton": "Voir la liste de souhaits"
+      "viewButton": "Voir la liste de souhaits",
+      "remove": "Retirer",
+      "ariaClose": "Fermer"
     },
     "announcement": {
       "shipping": "Livraison offerte dès 25 000 FCFA d'achat",
@@ -434,7 +436,9 @@
     "removeAria": "Retirer {name} de la liste de souhaits",
     "emptyTitle": "Votre liste de souhaits est vide",
     "emptyDescription": "Enregistrez vos articles préférés ici pour les retrouver facilement plus tard.",
-    "exploreCollections": "Découvrir nos collections"
+    "exploreCollections": "Découvrir nos collections",
+    "pageSubtitle": "Retrouvez les articles que vous avez mis de côté.",
+    "remove": "Retirer"
   },
   "Account": {
     "layout": {

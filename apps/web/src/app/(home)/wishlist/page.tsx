@@ -1,7 +1,7 @@
-import WishlistView from "@/features/wishlist/views";
+import { paths } from "@/lib/routes/paths-en";
+import { redirect } from "next/navigation";
 
-const Page = () => {
-	return <WishlistView />;
-};
-
-export default Page;
+// Ancienne URL : la liste de souhaits vit désormais dans l'espace compte.
+export default function Page() {
+	redirect(paths.wishlist);
+}

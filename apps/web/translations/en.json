@@ -60,7 +60,9 @@
       "emptyTitle": "Your wishlist is empty",
       "emptyDescription": "Add your favorite products to easily find them later.",
       "removeItem": "Remove {name} from wishlist",
-      "viewButton": "View wishlist"
+      "viewButton": "View wishlist",
+      "remove": "Remove",
+      "ariaClose": "Close"
     },
     "announcement": {
       "shipping": "Free shipping on orders over 25,000 FCFA",
@@ -434,7 +436,9 @@
     "removeAria": "Remove {name} from wishlist",
     "emptyTitle": "Your wishlist is empty",
     "emptyDescription": "Save your favorite items here to find them easily later.",
-    "exploreCollections": "Explore our collections"
+    "exploreCollections": "Explore our collections",
+    "pageSubtitle": "The items you saved for later.",
+    "remove": "Remove"
   },
   "Account": {
     "layout": {

@@ -2,12 +2,31 @@
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
 import { useDisplayCurrency } from "@/hooks/use-display-currency";
+import { paths } from "@/lib/routes/paths-en";
 import type { CurrencyCode } from "@prettyfull/contracts";
 import { useWishlistStore } from "@prettyfull/store";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
+const ItemLink = ({
+	href,
+	className,
+	children,
+}: {
+	href?: string;
+	className: string;
+	children: React.ReactNode;
+}) =>
+	href ? (
+		<Link href={href} className={className}>
+			{children}
+		</Link>
+	) : (
+		<div className={className}>{children}</div>
+	);
+
+/** Liste de souhaits - rendue dans l'espace compte (barre latérale fournie par le layout). */
 const WishlistView = () => {
 	const t = useTranslations("Wishlist");
 	const items = useWishlistStore((state) => state.items);
@@ -15,93 +34,88 @@ const WishlistView = () => {
 	const { format } = useDisplayCurrency();
 
 	return (
-		<main className="pt-6 pb-28 w-full min-h-screen text-gray-900 bg-white sm:pt-10">
-			<div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="flex flex-wrap gap-4 justify-between items-center pb-6">
-					<h1 className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl text-gray-950">
-						{t("pageTitle")}
-						<span className="font-medium text-gray-400">({items.length})</span>
-					</h1>
-				</div>
+		<div className="space-y-8">
+			<div>
+				<h2 className="text-4xl! font-bold tracking-wider text-gray-900">
+					{t("pageTitle")}{" "}
+					<span className="font-normal text-(--color-surface-muted)">
+						({items.length})
+					</span>
+				</h2>
+				<p className="mt-1 text-gray-500">{t("pageSubtitle")}</p>
+			</div>
 
-				{items.length > 0 ? (
-					<div className="grid grid-cols-1 gap-8 pt-4 sm:grid-cols-2 lg:grid-cols-3">
-						{items.map((item) => (
-							<div
-								key={item.productId}
-								className="flex flex-col space-y-4 group"
-							>
-								<Link href={`/products/${item.productId}`} className="block">
-									<div className="relative w-full aspect-[1/1.12] bg-[#F7F7F7] rounded-[2.2rem] overflow-hidden transition-all duration-300 group-hover:shadow-md">
-										<Image
-											src={item.product.image || "/assets/product5.webp"}
-											alt={item.product.name}
-											fill
-											sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-											className="object-cover transition-transform duration-500 group-hover:scale-105"
-											unoptimized
-										/>
-									</div>
-								</Link>
+			{items.length > 0 ? (
+				<ul className="grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-3">
+					{items.map((item) => {
+						// Anciens favoris enregistrés sans slug : pas de lien plutôt qu'une 404.
+						const href = item.product.handle
+							? `${paths.products}/${item.product.handle}`
+							: undefined;
+						return (
+							<li key={item.productId} className="flex flex-col group">
+								<ItemLink
+									href={href}
+									className="block overflow-hidden relative w-full aspect-4/5 bg-(--color-surface-card)"
+								>
+									<Image
+										src={
+											item.product.image || "/products/shop/hero-shopping.jpg"
+										}
+										alt={item.product.name}
+										fill
+										sizes="(max-width: 1024px) 50vw, 25vw"
+										className="object-cover transition-transform duration-500 group-hover:scale-105"
+										unoptimized
+									/>
+								</ItemLink>
 
-								<div className="flex gap-2 justify-between items-start pt-1">
-									<div>
-										<h3 className="text-[1.6rem] font-semibold text-[#080808]">
-											{item.product.name}
-										</h3>
-										{item.product.price && (
-											<span className="text-[1.6rem] font-bold text-[#080808]">
-												{format(
-													item.product.price.amount,
-													item.product.price.currency as CurrencyCode,
-												)}
-											</span>
-										)}
-									</div>
-
+								<div className="flex flex-col flex-1 gap-1 pt-4">
+									<ItemLink
+										href={href}
+										className="text-[1.5rem] font-medium leading-snug line-clamp-2 text-(--color-ink) hover:underline underline-offset-4"
+									>
+										{item.product.name}
+									</ItemLink>
+									{item.product.price && (
+										<span className="text-[1.5rem] font-semibold text-(--color-ink)">
+											{format(
+												item.product.price.amount,
+												item.product.price.currency as CurrencyCode,
+											)}
+										</span>
+									)}
 									<button
 										type="button"
 										onClick={() => removeItem(item.productId)}
 										aria-label={t("removeAria", { name: item.product.name })}
-										className="p-2 text-rose-500 rounded-full transition cursor-pointer hover:text-rose-600 hover:bg-rose-50"
+										className="self-start mt-2 text-[1.3rem] underline underline-offset-4 transition-colors cursor-pointer text-(--color-surface-muted) hover:text-(--color-ink)"
 									>
-										<svg
-											width="18"
-											height="18"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeWidth="1.8"
-										>
-											<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6" />
-										</svg>
+										{t("remove")}
 									</button>
 								</div>
-							</div>
-						))}
-					</div>
-				) : (
-					<div className="flex flex-col items-center py-20 mx-auto max-w-lg text-center">
-						<div className="flex justify-center items-center mb-6 w-20 h-20 text-3xl bg-gray-50 rounded-full border border-gray-200">
-							♡
-						</div>
-						<h2 className="mb-2 text-2xl font-bold text-gray-900">
-							{t("emptyTitle")}
-						</h2>
-						<p className="mb-8 leading-relaxed text-gray-500">
-							{t("emptyDescription")}
-						</p>
-						<Link
-							href="/collections"
-							className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-black hover:bg-black/85 text-white font-semibold rounded-sm transition shadow-sm"
-						>
-							<span>{t("exploreCollections")}</span>
-							<ArrowRightIcon className="w-4 h-4" />
-						</Link>
-					</div>
-				)}
-			</div>
-		</main>
+							</li>
+						);
+					})}
+				</ul>
+			) : (
+				<div className="flex flex-col justify-center items-center p-12 text-center bg-white rounded-2xl border border-gray-200 border-dashed">
+					<h3 className="text-[2.2rem]! [font-family:var(--font-display)]!">
+						{t("emptyTitle")}
+					</h3>
+					<p className="mx-auto mt-2 mb-8 max-w-sm text-[1.4rem] text-gray-500">
+						{t("emptyDescription")}
+					</p>
+					<Link
+						href={paths.collections}
+						className="inline-flex gap-2 justify-center items-center px-8 py-3.5 text-[1.3rem] font-semibold tracking-[0.08em] text-white uppercase transition-colors bg-(--color-ink) hover:bg-black"
+					>
+						{t("exploreCollections")}
+						<ArrowRightIcon className="w-4 h-4" />
+					</Link>
+				</div>
+			)}
+		</div>
 	);
 };
 
