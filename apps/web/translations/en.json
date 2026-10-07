@@ -179,7 +179,15 @@
       "eyebrow": "Imported from the US",
       "title": "The best of the US, delivered to you",
       "subtitle": "New and pre-owned iPhones, face and body care, fragrances, fashion and American groceries: an imported selection, delivered in Abidjan.",
-      "ctaButton": "Shop now"
+      "ctaButton": "Shop now",
+      "secondaryCta": "New arrivals",
+      "shippingTitle": "Free delivery",
+      "shippingText": "On orders over 25,000 FCFA",
+      "authenticTitle": "Authentic products",
+      "authenticText": "Imported straight from the USA",
+      "deliveryTitle": "Delivered in Abidjan",
+      "deliveryText": "Online order tracking",
+      "trustLabel": "Our commitments"
     },
     "trustBadges": {
       "eyebrow": "Our commitments",

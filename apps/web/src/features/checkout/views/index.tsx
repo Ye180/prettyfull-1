@@ -19,8 +19,11 @@ const CheckoutView = () => {
 	const items = useCartStore((state) => state.items);
 	const { goToNextStep } = useCheckoutStep();
 
+	// `getState()` et non `items` : pendant l'hydratation React, le hook renvoie
+	// l'état serveur (panier vide) et renverrait vers /cart un panier plein
+	// lors d'un chargement direct de /checkout (ex. retour du login).
 	useEffect(() => {
-		if (items.length === 0) {
+		if (useCartStore.getState().items.length === 0) {
 			router.replace("/cart");
 		}
 	}, [items.length, router]);

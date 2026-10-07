@@ -6,6 +6,7 @@ import { useRegionStore } from "@/stores/useRegion";
 import type { StoreRegion } from "@/lib/store-api/types";
 import { Check, ChevronDown, CustomModal, Globe } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -24,6 +25,7 @@ export function LocaleCurrencySelector() {
 	const t = useTranslations("Header.currencyLanguage");
 	const locale = useLocale() as AppLocale;
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
 	const setCurrentRegion = useRegionStore((state) => state.setRegion);
 	const currentRegion = useRegionStore((state) => state.region);
@@ -52,6 +54,9 @@ export function LocaleCurrencySelector() {
 		setOpen(false);
 		if (selectedLocale !== locale) {
 			setLocaleCookie(selectedLocale);
+			// Les adaptateurs traduisent les données API au moment du fetch : le
+			// cache React Query garde l'ancienne langue tant qu'on ne le relance pas.
+			queryClient.invalidateQueries();
 			router.refresh();
 		}
 	};

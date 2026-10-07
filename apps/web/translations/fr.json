@@ -179,7 +179,15 @@
       "eyebrow": "Importé des USA",
       "title": "Le meilleur des USA, livré chez vous",
       "subtitle": "iPhone neufs et de seconde main, soins visage et corps, parfums, mode et épicerie américaine : une sélection importée, livrée à Abidjan.",
-      "ctaButton": "Découvrir la boutique"
+      "ctaButton": "Découvrir la boutique",
+      "secondaryCta": "Nouveautés",
+      "shippingTitle": "Livraison offerte",
+      "shippingText": "Dès 25 000 FCFA d'achat",
+      "authenticTitle": "Produits authentiques",
+      "authenticText": "Importés directement des USA",
+      "deliveryTitle": "Livré à Abidjan",
+      "deliveryText": "Suivi de commande en ligne",
+      "trustLabel": "Nos engagements"
     },
     "trustBadges": {
       "eyebrow": "Nos engagements",

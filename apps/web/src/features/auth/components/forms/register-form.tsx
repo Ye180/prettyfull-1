@@ -6,11 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, toast } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Flex from "../../../../../../../packages/ui/src/layouts/helpers/flex";
 import { useRegister } from "../../api/register";
+import { redirectAfterAuth } from "../../lib/redirect-after-auth";
 import {
 	registerSchema,
 	type RegisterFormData,
@@ -28,7 +29,8 @@ export function RegisterForm({
 	onSwitchMode,
 }: RegisterFormProps = {}) {
 	const t = useTranslations("Auth.register");
-	const router = useRouter();
+	// Même paramètre que le login : posé par `proxy.ts` sur une route protégée.
+	const [callbackUrl] = useQueryState("redirect");
 
 	const {
 		register,
@@ -48,7 +50,7 @@ export function RegisterForm({
 			if (onSuccess) {
 				onSuccess();
 			} else {
-				router.push("/account");
+				redirectAfterAuth(callbackUrl);
 			}
 		} catch (error) {
 			toast.error(

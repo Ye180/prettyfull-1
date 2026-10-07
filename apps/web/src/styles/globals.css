@@ -227,6 +227,30 @@ html {
 	}
 }
 
+/* Hero d'accueil - entrée unique : la photo se pose (léger dézoom), le texte
+ * monte en se nettoyant d'un flou, les engagements suivent en décalé. */
+@keyframes hero-settle {
+	from {
+		transform: scale(1.05);
+	}
+	to {
+		transform: scale(1);
+	}
+}
+
+@keyframes hero-rise {
+	from {
+		opacity: 0;
+		transform: translateY(2.4rem);
+		filter: blur(6px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+		filter: none;
+	}
+}
+
 .scrollbar-hide::-webkit-scrollbar {
 	display: none;
 }
