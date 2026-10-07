@@ -159,7 +159,8 @@ export const CardProduct: React.FC<CardProductProps> = ({
 						height={800}
 						sizes="(max-width: 639px) 50vw, (max-width: 1024px) 33vw, 25vw"
 						className={cn(
-							"object-cover transition-opacity duration-300",
+							// absolute : le cadre aspect-3/4 fixe la hauteur, quelle que soit la photo.
+							"absolute inset-0 size-full object-cover transition-opacity duration-300",
 							isImageLoading ? "opacity-0" : "opacity-100",
 						)}
 						onLoad={() => setIsImageLoading(false)}

@@ -5,11 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, toast } from "@prettyfull/ui";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useForm } from "react-hook-form";
 import Flex from "../../../../../../../packages/ui/src/layouts/helpers/flex";
 import { useLogin } from "../../api/login";
+import { redirectAfterAuth } from "../../lib/redirect-after-auth";
 import { loginSchema, type LoginFormData } from "../../schemas/login.schema";
 
 interface LoginFormProps {
@@ -21,7 +21,6 @@ interface LoginFormProps {
 
 export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
 	const t = useTranslations("Auth.login");
-	const router = useRouter();
 
 	// Nom du paramètre posé par `proxy.ts` quand il bounce une route protégée
 	// (`/account`, `/wishlist`, `/checkout`) vers `/login`.
@@ -43,7 +42,7 @@ export function LoginForm({ onSuccess, onSwitchMode }: LoginFormProps = {}) {
 			if (onSuccess) {
 				onSuccess();
 			} else {
-				router.push(callbackUrl ?? "/account");
+				redirectAfterAuth(callbackUrl);
 			}
 		} catch (error) {
 			toast.error(
