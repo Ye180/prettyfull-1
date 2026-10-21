@@ -22,6 +22,7 @@ import { currentUser, requirePermission } from "../../middleware/auth.js";
 import { validate } from "../../middleware/validate.js";
 import type { AppEnv } from "../../middleware/request-context.js";
 import * as service from "./service.js";
+import { MINUTE, rateLimit } from "../../middleware/rate-limit.js";
 
 const idParam = z.object({ id: z.uuid() });
 const slugParam = z.object({ slug: z.string().min(1).max(160) });
@@ -370,6 +371,7 @@ storeCmsRoutes.get(
  */
 storeCmsRoutes.post(
 	"/contact",
+	rateLimit("contact", 5, 60 * MINUTE),
 	validate("json", contactMessageInputSchema),
 	async (c) => {
 		const input = c.req.valid("json");

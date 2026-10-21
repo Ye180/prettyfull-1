@@ -1,3 +1,4 @@
+import { assertDisposableDatabase } from "../guard.js";
 import {
 	ALL_PERMISSIONS,
 	DEFAULT_STORE_SETTINGS,
@@ -580,9 +581,7 @@ export { DEMO_PASSWORD };
 // --- Orchestration ---------------------------------------------------------
 
 const run = async (): Promise<void> => {
-	if (env.NODE_ENV === "production") {
-		throw new Error("db:seed est interdit en production.");
-	}
+	assertDisposableDatabase("db:seed");
 
 	console.log(`seed sur ${new URL(env.DATABASE_URL).host}`);
 

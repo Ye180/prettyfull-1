@@ -8,6 +8,7 @@ import { secureHeaders } from "hono/secure-headers";
 import { openApiDocument } from "./docs/openapi.js";
 import { env, isProduction } from "./lib/env.js";
 import { requireAuth, requireKind } from "./middleware/auth.js";
+import { MINUTE, rateLimit } from "./middleware/rate-limit.js";
 import { errorHandler, notFoundHandler } from "./middleware/error.js";
 import { requestContext, type AppEnv } from "./middleware/request-context.js";
 import { storeAddressRoutes } from "./modules/auth/addresses.js";
@@ -20,17 +21,20 @@ import { adminDashboardRoutes } from "./modules/dashboard/routes.js";
 import { adminIntegrationsRoutes } from "./modules/integrations/routes.js";
 import { adminInventoryRoutes } from "./modules/inventory/routes.js";
 import {
-	adminOrdersRoutes,
-	storeOrderConfirmationRoutes,
-	storeOrdersRoutes,
+  adminOrdersRoutes,
+  storeOrderConfirmationRoutes,
+  storeOrdersRoutes,
 } from "./modules/orders/routes.js";
 import { adminPromotionsRoutes } from "./modules/promotions/routes.js";
-import { adminReviewRoutes, storeReviewRoutes } from "./modules/reviews/routes.js";
+import {
+  adminReviewRoutes,
+  storeReviewRoutes,
+} from "./modules/reviews/routes.js";
 import { adminSettingsRoutes } from "./modules/settings/routes.js";
 import { storeMiscRoutes } from "./modules/store/routes.js";
 import {
-	adminUploadRoutes,
-	uploadthingRoutes,
+  adminUploadRoutes,
+  uploadthingRoutes,
 } from "./modules/uploads/routes.js";
 import { adminUsersRoutes } from "./modules/users/routes.js";
 import { webhookRoutes } from "./modules/webhooks/routes.js";
@@ -39,39 +43,50 @@ import { startReservationSweeper } from "./tasks/reservation-sweeper.js";
 const app = new Hono<AppEnv>();
 
 app.use("*", requestContext);
-app.use("*", logger());
+// Chemin sans requête : `?token=` des commandes invitées n'a rien à faire
+// dans les journaux d'accès.
+app.use(
+  "*",
+  logger((message, ...rest) => console.log(message.replace(/\?\S*/, ""), ...rest)),
+);
 app.use("*", secureHeaders());
 
 // 2 Mio : large pour du JSON de catalogue, trop étroit pour servir de vecteur
 // de saturation mémoire. Les téléversements de fichiers auront leur limite.
 app.use("*", bodyLimit({ maxSize: 2 * 1024 * 1024 }));
 
+// Filet global contre l'inondation ; les routes sensibles ont leurs propres
+// limites, plus strictes. Large car un même opérateur mobile partage souvent
+// une IP entre de nombreux clients (CGNAT). Les webhooks n'y sont pas soumis.
+app.use("/api/store/*", rateLimit("store", 600, MINUTE));
+app.use("/api/admin/*", rateLimit("admin", 600, MINUTE));
+
 /**
  * `credentials: true` est indispensable : les jetons de rafraîchissement
  * circulent en cookie `httpOnly`, jamais dans le corps des réponses.
  */
 app.use(
-	"*",
-	cors({
-		origin: env.CORS_ORIGINS,
-		credentials: true,
-		allowHeaders: [
-			"Content-Type",
-			"Authorization",
-			"X-Request-Id",
-			// Requis par le client UploadThing.
-			"X-Uploadthing-Package",
-			"X-Uploadthing-Version",
-			// Propagation de trace ajoutée automatiquement par Next.js aux
-			// requêtes fetch (W3C Trace Context et B3).
-			"traceparent",
-			"tracestate",
-			"b3",
-		],
-		allowMethods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
-		exposeHeaders: ["X-Request-Id"],
-		maxAge: 86_400,
-	}),
+  "*",
+  cors({
+    origin: env.CORS_ORIGINS,
+    credentials: true,
+    allowHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Request-Id",
+      // Requis par le client UploadThing.
+      "X-Uploadthing-Package",
+      "X-Uploadthing-Version",
+      // Propagation de trace ajoutée automatiquement par Next.js aux
+      // requêtes fetch (W3C Trace Context et B3).
+      "traceparent",
+      "tracestate",
+      "b3",
+    ],
+    allowMethods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+    exposeHeaders: ["X-Request-Id"],
+    maxAge: 86_400,
+  }),
 );
 
 /**
@@ -80,23 +95,26 @@ app.use(
  * `/docs` sert une interface de lecture, `/openapi.json` le document brut -
  * exploitable par un générateur de client ou un outil de test.
  */
-app.get("/openapi.json", (c) => c.json(openApiDocument));
+// Hors production seulement : la carte complète de l'API n'a pas à être publique.
+if (!isProduction) {
+  app.get("/openapi.json", (c) => c.json(openApiDocument));
 
-app.get(
-	"/docs",
-	Scalar({
-		url: "/openapi.json",
-		pageTitle: "API PrettyFull",
-		theme: "default",
-	}),
-);
+  app.get(
+    "/docs",
+    Scalar({
+      url: "/openapi.json",
+      pageTitle: "API PrettyFull",
+      theme: "default",
+    }),
+  );
+}
 
 app.get("/health", (c) =>
-	c.json({
-		status: "ok",
-		environment: env.NODE_ENV,
-		timestamp: new Date().toISOString(),
-	}),
+  c.json({
+    status: "ok",
+    environment: env.NODE_ENV,
+    timestamp: new Date().toISOString(),
+  }),
 );
 
 /**
@@ -158,12 +176,12 @@ app.onError(errorHandler);
 app.notFound(notFoundHandler);
 
 serve({ fetch: app.fetch, port: env.PORT }, ({ port }) => {
-	console.log(`API PrettyFull à l'écoute sur http://localhost:${port}`);
-	if (!isProduction) {
-		console.log(`  origines CORS autorisées : ${env.CORS_ORIGINS.join(", ")}`);
-	}
+  console.log(`API PrettyFull à l'écoute sur http://localhost:${port}`);
+  if (!isProduction) {
+    console.log(`  origines CORS autorisées : ${env.CORS_ORIGINS.join(", ")}`);
+  }
 
-	startReservationSweeper();
+  startReservationSweeper();
 });
 
 export type AppType = typeof app;

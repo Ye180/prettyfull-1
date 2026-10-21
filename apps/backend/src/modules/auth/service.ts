@@ -224,9 +224,11 @@ export const refresh = async (
 ): Promise<{ auth: AuthResponse; refreshToken: string }> => {
 	const tokenHash = sha256(refreshToken);
 
+	// Révocation et lecture en une seule requête : deux appels simultanés avec
+	// le même jeton ne peuvent pas ouvrir deux sessions.
 	const [stored] = await db
-		.select({ id: t.refreshTokens.id, userId: t.refreshTokens.userId })
-		.from(t.refreshTokens)
+		.update(t.refreshTokens)
+		.set({ revokedAt: new Date() })
 		.where(
 			and(
 				eq(t.refreshTokens.tokenHash, tokenHash),
@@ -234,9 +236,12 @@ export const refresh = async (
 				gt(t.refreshTokens.expiresAt, new Date()),
 			),
 		)
-		.limit(1);
+		.returning({ id: t.refreshTokens.id, userId: t.refreshTokens.userId });
 
-	if (!stored) throw unauthorized("Session expirée, veuillez vous reconnecter.");
+	if (!stored) {
+		await revokeOnReuse(tokenHash);
+		throw unauthorized("Session expirée, veuillez vous reconnecter.");
+	}
 
 	const [record] = await db
 		.select(selectUser)
@@ -245,19 +250,37 @@ export const refresh = async (
 		.limit(1);
 
 	if (!record || record.kind !== expectedKind || record.status !== "active") {
-		await db
-			.update(t.refreshTokens)
-			.set({ revokedAt: new Date() })
-			.where(eq(t.refreshTokens.id, stored.id));
 		throw unauthorized("Session expirée, veuillez vous reconnecter.");
 	}
 
+	return issueSession(record, context);
+};
+
+/** Délai pendant lequel un jeton tout juste tourné peut être présenté sans alerte. */
+const REUSE_GRACE_MS = 30_000;
+
+/**
+ * Détection de réutilisation : un jeton révoqué depuis longtemps qui revient
+ * signifie qu'il a été copié (vol de cookie). Toutes les sessions du compte
+ * sont alors fermées - l'attaquant comme la titulaire devront se reconnecter.
+ *
+ * Le délai de grâce couvre le cas bénin de deux onglets qui renouvellent la
+ * session au même instant.
+ */
+const revokeOnReuse = async (tokenHash: string): Promise<void> => {
+	const [reused] = await db
+		.select({ userId: t.refreshTokens.userId, revokedAt: t.refreshTokens.revokedAt })
+		.from(t.refreshTokens)
+		.where(eq(t.refreshTokens.tokenHash, tokenHash))
+		.limit(1);
+
+	if (!reused?.revokedAt || Date.now() - reused.revokedAt.getTime() < REUSE_GRACE_MS) return;
+
+	console.warn(`[auth] jeton de rafraîchissement réutilisé : sessions fermées pour ${reused.userId}`);
 	await db
 		.update(t.refreshTokens)
 		.set({ revokedAt: new Date() })
-		.where(eq(t.refreshTokens.id, stored.id));
-
-	return issueSession(record, context);
+		.where(and(eq(t.refreshTokens.userId, reused.userId), isNull(t.refreshTokens.revokedAt)));
 };
 
 /** Révoque le jeton de rafraîchissement courant. */

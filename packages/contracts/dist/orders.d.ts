@@ -136,7 +136,6 @@ export declare const checkoutSchema: z.ZodObject<{
     shippingRateId: z.ZodUUID;
     paymentProviderKey: z.ZodString;
     note: z.ZodOptional<z.ZodString>;
-    returnUrl: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 /** Réponse de passage de commande : `redirectUrl` si le PSP l'exige. */

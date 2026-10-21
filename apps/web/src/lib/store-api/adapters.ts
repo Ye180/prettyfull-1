@@ -323,6 +323,7 @@ export const toStoreOrder = (order: Order): StoreOrder => ({
 	id: order.id,
 	display_id: order.displayId,
 	status: toStoreStatus(order),
+	payment_status: order.paymentStatus,
 	created_at: order.placedAt,
 	email: order.email,
 	items: order.items.map((item) => ({

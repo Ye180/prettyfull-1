@@ -3,6 +3,7 @@ import { getConnInfo } from "@hono/node-server/conninfo";
 import type { Context } from "hono";
 import { createMiddleware } from "hono/factory";
 import type { JwtPayload } from "@prettyfull/contracts";
+import { env } from "../lib/env.js";
 
 /**
  * Variables de contexte partagées par toute la chaîne de traitement.
@@ -25,22 +26,21 @@ export interface AppEnv {
 /**
  * Adresse cliente réelle.
  *
- * Derrière un proxy (Vercel, Nginx), `x-forwarded-for` contient la chaîne
- * complète : la première entrée est l'appelant d'origine. En l'absence de
- * proxy, on retombe sur l'adresse de la connexion - sans quoi le journal
- * d'audit du §5 n'aurait aucune IP en déploiement direct.
+ * Chaque proxy ajoute l'adresse qu'il voit **à la fin** de
+ * `x-forwarded-for` ; le début de la chaîne vient du client et peut être
+ * inventé. On lit donc l'entrée posée par le proxy de confiance le plus
+ * proche (`TRUST_PROXY_HOPS` depuis la fin). Sans cela, la limitation de
+ * débit se contournerait en changeant l'en-tête à chaque requête.
  */
 const resolveClientIp = (c: Context<AppEnv>): string | null => {
-	const headers = c.req.raw.headers;
+	const hops = env.TRUST_PROXY_HOPS ?? 0;
+	const forwarded = c.req.header("x-forwarded-for");
 
-	const forwarded = headers.get("x-forwarded-for");
-	if (forwarded) {
-		const first = forwarded.split(",")[0]?.trim();
-		if (first) return first;
+	if (hops > 0 && forwarded) {
+		const chain = forwarded.split(",").map((entry) => entry.trim()).filter(Boolean);
+		const trusted = chain[chain.length - hops];
+		if (trusted) return trusted;
 	}
-
-	const proxied = headers.get("x-real-ip") ?? headers.get("cf-connecting-ip");
-	if (proxied) return proxied;
 
 	try {
 		return getConnInfo(c).remote.address ?? null;

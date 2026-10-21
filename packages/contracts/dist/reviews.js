@@ -18,7 +18,15 @@ export const reviewInputSchema = z.object({
         .trim()
         .min(10, "Votre avis doit faire au moins 10 caractères.")
         .max(2_000),
-    photoUrls: z.array(z.url()).max(6).default([]),
+    // Uniquement des fichiers téléversés via le formulaire (UploadThing) : une
+    // URL libre permettrait de pister l'équipe de modération ou les visiteurs.
+    photoUrls: z
+        .array(z.url().refine((value) => {
+        const { protocol, hostname } = new URL(value);
+        return protocol === "https:" && (hostname.endsWith(".ufs.sh") || hostname === "utfs.io");
+    }, "Photo non reconnue."))
+        .max(6)
+        .default([]),
     /** Champ leurre : voir `contactMessageInputSchema`. */
     website: z.string().max(200).optional(),
 });

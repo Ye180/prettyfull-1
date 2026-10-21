@@ -19,5 +19,12 @@
 	"packageManager": "pnpm@10.21.0",
 	"engines": {
 		"node": ">=20.9"
+	},
+	"pnpm": {
+		"overrides": {
+			"kysely@<0.28.17": "^0.28.17",
+			"react-router@>=7.0.0 <7.18.2": "^7.18.2",
+			"qs@<6.16.0": "^6.16.0"
+		}
 	}
 }

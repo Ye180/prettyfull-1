@@ -34,10 +34,21 @@ const COLUMNS = [
 	"image_principale",
 ] as const;
 
-/** Échappe une valeur selon RFC 4180 (guillemets doublés si nécessaire). */
+/** Début de cellule qu'Excel ou LibreOffice exécuterait comme formule. */
+const FORMULA_START = /^[=+\-@\t\r]/;
+
+/**
+ * Échappe une valeur selon RFC 4180 (guillemets doublés si nécessaire).
+ *
+ * Un texte commençant par `=`, `+`, `-` ou `@` est préfixé d'une apostrophe :
+ * sans cela, un nom de produit comme `=HYPERLINK(...)` s'exécuterait à
+ * l'ouverture de l'export dans un tableur. Les nombres ne sont pas touchés ;
+ * l'import retire l'apostrophe.
+ */
 const escapeCell = (value: unknown): string => {
 	if (value === null || value === undefined) return "";
-	const text = String(value);
+	let text = String(value);
+	if (typeof value === "string" && FORMULA_START.test(text)) text = `'${text}`;
 	return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 };
 
@@ -78,7 +89,10 @@ const parseLine = (line: string): string[] => {
 	}
 
 	cells.push(current);
-	return cells.map((cell) => cell.trim());
+	// Réciproque de `escapeCell` : retire l'apostrophe anti-formule.
+	return cells
+		.map((cell) => cell.trim())
+		.map((cell) => (cell.startsWith("'") && FORMULA_START.test(cell.slice(1)) ? cell.slice(1) : cell));
 };
 
 export const exportProductsCsv = async (): Promise<string> => {

@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "icon-tile-stack",
+        "value": "*",
+        "files": [
+          "public/offline.html"
+        ],
+        "createdAt": "2026-10-21T21:05:09.817Z",
+        "reason": "claude: the tile is the installed app icon itself (same #141311 rounded square as public/icons/*), shown on the PWA offline fallback so the page reads as the app; not a decorative feature-card icon"
+      }
+    ]
+  }
+}

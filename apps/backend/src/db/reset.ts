@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { closeDb, db } from "./index.js";
 import { env } from "../lib/env.js";
+import { assertDisposableDatabase } from "./guard.js";
 
 /**
  * Vide et recrée le schéma `public`.
@@ -9,9 +10,7 @@ import { env } from "../lib/env.js";
  * remise à zéro doit passer par une migration explicite et une sauvegarde.
  */
 const run = async (): Promise<void> => {
-	if (env.NODE_ENV === "production") {
-		throw new Error("db:reset est interdit en production.");
-	}
+	assertDisposableDatabase("db:reset");
 
 	console.log(`réinitialisation du schéma sur ${new URL(env.DATABASE_URL).host}`);
 	await db.execute(sql`drop schema if exists public cascade`);

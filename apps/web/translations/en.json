@@ -701,7 +701,18 @@
     "total": "Total",
     "trackYourOrder": "Track my order",
     "backToHomePage": "Back to home",
-    "continueShopping": "Continue shopping"
+    "continueShopping": "Continue shopping",
+    "paymentConfirming": "Confirming your payment…",
+    "paymentConfirmingDescription": "This usually takes a few seconds. Please keep this page open.",
+    "paymentSlow": "Confirmation is taking longer than expected. You'll get an email as soon as the payment is validated.",
+    "paymentIncompleteBadge": "Payment not completed",
+    "paymentIncompleteTitle": "Your payment didn't go through",
+    "paymentIncompleteDescription": "Your order is reserved for a limited time. You can resume the payment now; nothing has been charged.",
+    "resumePayment": "Resume payment",
+    "resumingPayment": "Redirecting…",
+    "resumeError": "Unable to resume the payment. Please try again.",
+    "paid": "Paid",
+    "awaitingPayment": "Awaiting payment"
   },
   "ContactPage": {
     "hero": {
@@ -845,15 +856,12 @@
       "selectMethod": "Choose your payment method",
       "loadingMethods": "Loading payment methods...",
       "codDescription": "Pay by cash or Mobile Money right when your order arrives.",
-      "cardNumber": "Card number",
-      "cardName": "Name on card",
-      "expiryDate": "Expiry date",
-      "cvv": "CVV",
       "processing": "Processing...",
       "reviewOrder": "Review order",
       "paymentMethodLabel": "Payment method:",
-      "cardEndingIn": "Card ending in {digits}",
-      "completePreviousStep": "Complete the previous step to continue"
+      "completePreviousStep": "Complete the previous step to continue",
+      "stripeLabel": "Secure payment by Stripe",
+      "stripeDescription": "You will be redirected to Stripe's payment page to pay by card, Apple Pay or Google Pay. Your card details never pass through our site."
     },
     "checkoutForm": {
       "labelMethod": "How would you like to receive your order?",
@@ -1122,5 +1130,29 @@
     "intro": "These terms govern every order placed on PrettyFull: products imported from the US, prices, payment, delivery in Abidjan and returns. They apply as soon as your order is confirmed.",
     "contactLabel": "A question about these terms? Our team will answer.",
     "contactCta": "Contact us"
+  },
+  "Pwa": {
+    "install": {
+      "title": "Install Prettyfull",
+      "description": "Open the shop in one tap from your home screen, full screen.",
+      "cta": "Install",
+      "howTo": "How?",
+      "later": "Not now",
+      "done": "Done",
+      "footerCta": "Install the app",
+      "ios": {
+        "step1": "Tap <share></share> <strong>Share</strong> in the browser bar.",
+        "step2": "Scroll down and choose <add></add> <strong>Add to Home Screen</strong>.",
+        "step3": "Tap <strong>Add</strong>: Prettyfull shows up with your apps."
+      }
+    },
+    "update": {
+      "message": "A new version is available.",
+      "cta": "Update",
+      "updating": "Updating…"
+    },
+    "offline": {
+      "message": "You're offline. Your cart is saved."
+    }
   }
 }

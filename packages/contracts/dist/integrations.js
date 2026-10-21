@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { INTEGRATION_ENVIRONMENTS, SHIPPING_RATE_KINDS, TRANSACTION_KINDS, TRANSACTION_STATUSES, } from "./enums.js";
-import { currencySchema, moneySchema, paginationQuerySchema, uuidSchema, } from "./common.js";
+import { currencySchema, moneySchema, paginationQuerySchema, uuidSchema, partialForUpdate, } from "./common.js";
 /**
  * Configuration d'un agrégateur, paiement ou livraison (§2.5).
  *
@@ -17,7 +17,7 @@ const providerConfigBaseSchema = z.object({
     config: z.record(z.string(), z.unknown()).default({}),
     position: z.number().int().min(0).default(0),
 });
-export const updateProviderConfigSchema = providerConfigBaseSchema.partial();
+export const updateProviderConfigSchema = partialForUpdate(providerConfigBaseSchema);
 export const providerConfigSchema = providerConfigBaseSchema
     .omit({ credentials: true })
     .extend({
@@ -91,7 +91,7 @@ const enforceWeightRange = (value, ctx) => {
     }
 };
 export const shippingRateInputSchema = shippingRateBaseSchema.superRefine(enforceWeightRange);
-export const updateShippingRateSchema = shippingRateBaseSchema.partial().superRefine(enforceWeightRange);
+export const updateShippingRateSchema = partialForUpdate(shippingRateBaseSchema).superRefine(enforceWeightRange);
 export const shippingRateSchema = z.object({
     id: uuidSchema,
     zoneId: uuidSchema,

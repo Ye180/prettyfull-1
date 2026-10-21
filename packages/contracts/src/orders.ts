@@ -89,8 +89,6 @@ export const checkoutSchema = z.object({
 	shippingRateId: uuidSchema,
 	paymentProviderKey: z.string().min(1).max(64),
 	note: z.string().trim().max(1_000).optional(),
-	/** URL de retour après paiement externe (Wave, etc.). */
-	returnUrl: z.string().max(1_000).optional(),
 });
 
 export type CheckoutInput = z.infer<typeof checkoutSchema>;

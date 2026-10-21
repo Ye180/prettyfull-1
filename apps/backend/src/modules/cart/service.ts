@@ -427,6 +427,20 @@ export const listShippingOptions = async (cartId: string): Promise<ShippingOptio
 		);
 	}
 
+	return quoteShipping(cartId, cart.currency as CurrencyCode, cart.shippingAddress);
+};
+
+/**
+ * Tarifs applicables à ce panier pour cette destination (zone, poids,
+ * transporteur actif). Le passage en commande s'en sert aussi : le tarif
+ * choisi par le navigateur doit figurer dans cette liste, sinon n'importe quel
+ * tarif bon marché d'une autre zone serait accepté.
+ */
+export const quoteShipping = async (
+	cartId: string,
+	currency: CurrencyCode,
+	destination: { countryCode: string; city?: string | null; postalCode?: string | null; province?: string | null },
+): Promise<ShippingOption[]> => {
 	const lines = await loadCartLines(cartId);
 	const subtotal = lines.reduce((total, line) => total + line.lineTotal, 0);
 	const weightGrams = await cartWeight(cartId);
@@ -455,14 +469,14 @@ export const listShippingOptions = async (cartId: string): Promise<ShippingOptio
 				credentials: provider.credentials,
 				config: provider.config,
 				destination: {
-					countryCode: cart.shippingAddress.countryCode,
-					city: cart.shippingAddress.city,
-					postalCode: cart.shippingAddress.postalCode ?? null,
-					province: cart.shippingAddress.province ?? null,
+					countryCode: destination.countryCode,
+					city: destination.city ?? "",
+					postalCode: destination.postalCode ?? null,
+					province: destination.province ?? null,
 				},
 				weightGrams,
 				subtotal,
-				currency: cart.currency as CurrencyCode,
+				currency,
 			});
 
 			options.push(

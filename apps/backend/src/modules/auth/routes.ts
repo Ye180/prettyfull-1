@@ -17,6 +17,7 @@ import { unauthorized } from "../../lib/errors.js";
 import { recordAudit } from "../../lib/audit.js";
 import { currentUser, requireAuth, requireKind } from "../../middleware/auth.js";
 import { validate } from "../../middleware/validate.js";
+import { MINUTE, consumeRateLimit, rateLimit } from "../../middleware/rate-limit.js";
 import type { AppEnv } from "../../middleware/request-context.js";
 import * as service from "./service.js";
 
@@ -36,9 +37,17 @@ const buildAuthRoutes = (kind: UserKind, scope: CookieScope) => {
 		ipAddress: c.get("clientIp"),
 	});
 
-	app.post("/login", validate("json", loginSchema), async (c) => {
+	/**
+	 * Deux compteurs : par IP (une machine qui essaie beaucoup de comptes) et
+	 * par e-mail (beaucoup de machines contre un même compte). Le second gêne
+	 * au pire 15 min la titulaire du compte, jamais plus.
+	 */
+	app.post("/login", rateLimit(`login-${scope}`, 30, 15 * MINUTE), validate("json", loginSchema), async (c) => {
+		const input = c.req.valid("json");
+		consumeRateLimit(`login-email-${scope}`, input.email.trim().toLowerCase(), 10, 15 * MINUTE);
+
 		const { auth, refreshToken } = await service.login(
-			c.req.valid("json"),
+			input,
 			kind,
 			context(c),
 		);
@@ -51,7 +60,7 @@ const buildAuthRoutes = (kind: UserKind, scope: CookieScope) => {
 	 * Renouvelle la session. Le jeton arrive normalement par cookie ; le corps
 	 * de requête sert de repli aux clients non navigateurs (tests, mobile).
 	 */
-	app.post("/refresh", validate("json", refreshSchema), async (c) => {
+	app.post("/refresh", rateLimit(`refresh-${scope}`, 60, 15 * MINUTE), validate("json", refreshSchema), async (c) => {
 		const token = readRefreshCookie(c, scope) ?? c.req.valid("json").refreshToken;
 		if (!token) throw unauthorized("Aucune session à renouveler.");
 
@@ -114,7 +123,7 @@ export const storeAuthRoutes = (() => {
 
 	// L'inscription libre n'existe que côté storefront : les comptes
 	// back-office sont créés depuis le module « Utilisateurs & rôles ».
-	app.post("/register", validate("json", registerSchema), async (c) => {
+	app.post("/register", rateLimit("register", 10, 60 * MINUTE), validate("json", registerSchema), async (c) => {
 		const { auth, refreshToken } = await service.register(c.req.valid("json"), {
 			userAgent: c.get("userAgent"),
 			ipAddress: c.get("clientIp"),

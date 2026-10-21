@@ -1,7 +1,42 @@
 import type { NextConfig } from "next";
 
+/**
+ * En-têtes de sécurité appliqués à toutes les pages.
+ *
+ * - `frame-ancestors 'none'` + `X-Frame-Options` : le site ne peut pas être
+ *   affiché dans une iframe tierce (clickjacking).
+ * - `base-uri`, `object-src`, `form-action` : verrous CSP sans risque de
+ *   casser les scripts inline de Next.
+ * - HSTS : force HTTPS pendant 2 ans (ignoré en HTTP local).
+ *
+ * ponytail: pas de `script-src` strict - il exige des nonces par requête via
+ * le proxy ; à ajouter si une surface XSS apparaît (contenu HTML riche).
+ */
+const securityHeaders = [
+	{
+		key: "Content-Security-Policy",
+		value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'",
+	},
+	{ key: "X-Frame-Options", value: "DENY" },
+	{ key: "X-Content-Type-Options", value: "nosniff" },
+	{ key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+	{ key: "Strict-Transport-Security", value: "max-age=63072000" },
+	{ key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+];
+
 const nextConfig: NextConfig = {
 	transpilePackages: ["@prettyfull/ui", "@prettyfull/utils"],
+	poweredByHeader: false,
+
+	async headers() {
+		return [
+			{
+				source: "/:path*",
+				// Le back-office ne doit jamais être indexé.
+				headers: [...securityHeaders, { key: "X-Robots-Tag", value: "noindex, nofollow" }],
+			},
+		];
+	},
 
 	/**
 	 * Le panel affiche les visuels via `<img>` plutôt que `next/image` - les

@@ -11,6 +11,7 @@ import { requirePermission } from "../../middleware/auth.js";
 import { validate } from "../../middleware/validate.js";
 import type { AppEnv } from "../../middleware/request-context.js";
 import * as service from "./service.js";
+import { MINUTE, rateLimit } from "../../middleware/rate-limit.js";
 
 const idParam = z.object({ id: z.uuid() });
 const productQuery = z.object({ productId: z.uuid() });
@@ -41,6 +42,7 @@ storeReviewRoutes.get(
  */
 storeReviewRoutes.post(
 	"/reviews",
+	rateLimit("review", 10, 60 * MINUTE),
 	validate("json", reviewInputSchema),
 	async (c) => {
 		const input = c.req.valid("json");

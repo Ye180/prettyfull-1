@@ -1,4 +1,4 @@
-import { PERMISSIONS } from "@prettyfull/contracts";
+import { PERMISSIONS, UPLOAD_ENDPOINTS } from "@prettyfull/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { UTApi } from "uploadthing/server";
@@ -8,6 +8,7 @@ import { badRequest, internalError } from "../../lib/errors.js";
 import { recordAudit } from "../../lib/audit.js";
 import { requirePermission } from "../../middleware/auth.js";
 import { validate } from "../../middleware/validate.js";
+import { MINUTE, clientKey, consumeRateLimit } from "../../middleware/rate-limit.js";
 import type { AppEnv } from "../../middleware/request-context.js";
 import { uploadRouter } from "./router.js";
 
@@ -21,6 +22,22 @@ import { uploadRouter } from "./router.js";
 const isConfigured = Boolean(env.UPLOADTHING_TOKEN);
 
 export const uploadthingRoutes = new Hono<AppEnv>();
+
+/**
+ * Les photos d'avis sont le seul téléversement anonyme : quota par IP, pour
+ * que personne ne remplisse le stockage. Les rappels signés d'UploadThing
+ * (`uploadthing-hook`) ne comptent pas.
+ */
+uploadthingRoutes.use("*", async (c, next) => {
+	if (
+		c.req.method === "POST" &&
+		c.req.query("slug") === UPLOAD_ENDPOINTS.reviewPhoto &&
+		!c.req.header("uploadthing-hook")
+	) {
+		consumeRateLimit("review-photo", clientKey(c), 20, 60 * MINUTE);
+	}
+	await next();
+});
 
 if (isConfigured) {
 	const handlers = createRouteHandler({

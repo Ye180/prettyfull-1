@@ -10,6 +10,7 @@ import {
 	moneySchema,
 	paginationQuerySchema,
 	uuidSchema,
+	partialForUpdate,
 } from "./common.js";
 
 /**
@@ -29,7 +30,7 @@ const providerConfigBaseSchema = z.object({
 	position: z.number().int().min(0).default(0),
 });
 
-export const updateProviderConfigSchema = providerConfigBaseSchema.partial();
+export const updateProviderConfigSchema = partialForUpdate(providerConfigBaseSchema);
 
 export type UpdateProviderConfigInput = z.infer<typeof updateProviderConfigSchema>;
 
@@ -126,7 +127,7 @@ export const shippingRateInputSchema =
 	shippingRateBaseSchema.superRefine(enforceWeightRange);
 
 export const updateShippingRateSchema =
-	shippingRateBaseSchema.partial().superRefine(enforceWeightRange);
+	partialForUpdate(shippingRateBaseSchema).superRefine(enforceWeightRange);
 
 export type ShippingRateInput = z.infer<typeof shippingRateInputSchema>;
 export type UpdateShippingRateInput = z.infer<typeof updateShippingRateSchema>;

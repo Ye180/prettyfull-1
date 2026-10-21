@@ -28,6 +28,7 @@ const formatZodIssues = (error: ZodError): Record<string, string[]> => {
  */
 export const errorHandler: ErrorHandler = (error, c: Context) => {
 	if (error instanceof AppError) {
+		if (error.retryAfter) c.header("Retry-After", String(error.retryAfter));
 		return c.json(
 			{
 				error: {

@@ -64,11 +64,11 @@ const CheckoutView = () => {
 						/>
 						<ReviewStep
 							cartId={cartId}
-							onPlaceOrder={(orderId, confirmationToken) =>
+							onPlaceOrder={(orderId, confirmationToken, paymentFailed) =>
 								router.push(
 									`/order-confirmation?order_id=${orderId}${
 										confirmationToken ? `&token=${confirmationToken}` : ""
-									}`,
+									}${paymentFailed ? "&payment=failed" : ""}`,
 								)
 							}
 						/>

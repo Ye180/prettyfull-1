@@ -1,5 +1,6 @@
 "use client";
 
+import { InstallAppButton } from "@/features/pwa";
 import { paths } from "@/lib/routes/paths-en";
 import { FOOTER_DATA, SOCIALS_DATA_FOOTER } from "@/lib/utils/constants/constants";
 import { CONTACT_INFO } from "@/lib/utils/constants/contact";
@@ -89,6 +90,7 @@ const Footer: FC = () => {
 							</Link>
 						))}
 					</div>
+					<InstallAppButton className="inline-flex gap-2 items-center self-start px-6 min-h-[4.4rem] text-[1.3rem] font-semibold tracking-[0.08em] text-white uppercase rounded-full border transition-colors border-white/30 hover:border-white hover:bg-white/10" />
 				</div>
 
 				<div className="grid grid-cols-2 gap-10 sm:grid-cols-4">

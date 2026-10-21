@@ -12,6 +12,8 @@ export class AppError extends Error {
 	readonly code: ErrorCode;
 	readonly status: ContentfulStatusCode;
 	readonly details?: Record<string, string[]>;
+	/** Secondes avant nouvel essai, renvoyées en `Retry-After` (429). */
+	retryAfter?: number;
 
 	constructor(
 		code: ErrorCode,
@@ -60,6 +62,16 @@ export const paymentError = (message: string, details?: Record<string, string[]>
 
 export const providerError = (message: string) =>
 	new AppError(ERROR_CODES.PROVIDER_ERROR, message, 502);
+
+export const tooManyRequests = (retryAfterSeconds: number) => {
+	const error = new AppError(
+		ERROR_CODES.RATE_LIMITED,
+		`Trop de tentatives. Réessayez dans ${Math.ceil(retryAfterSeconds / 60)} minute(s).`,
+		429,
+	);
+	error.retryAfter = retryAfterSeconds;
+	return error;
+};
 
 export const internalError = (message = "Une erreur interne est survenue.") =>
 	new AppError(ERROR_CODES.INTERNAL_ERROR, message, 500);

@@ -11,61 +11,64 @@ import { getStoreSettings } from "../settings/service.js";
 
 /** Neutralise le HTML des données saisies : une facture ne doit rien exécuter. */
 const escape = (value: unknown): string =>
-	String(value ?? "")
-		.replaceAll("&", "&amp;")
-		.replaceAll("<", "&lt;")
-		.replaceAll(">", "&gt;")
-		.replaceAll('"', "&quot;");
+  String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 
 const formatDate = (iso: string): string =>
-	new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date(iso));
+  new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date(iso));
 
 export const renderInvoice = async (order: Order): Promise<string> => {
-	const settings = await getStoreSettings();
-	const money = (amount: number) => formatMoney(amount, order.currency);
-	const reference = `${settings.orderNumberPrefix}-${order.displayId}`;
+  const settings = await getStoreSettings();
+  const money = (amount: number) => formatMoney(amount, order.currency);
+  const reference = `${settings.orderNumberPrefix}-${order.displayId}`;
 
-	const address = order.billingAddress ?? order.shippingAddress;
+  const address = order.billingAddress ?? order.shippingAddress;
 
-	const addressLines = [
-		`${address.firstName ?? ""} ${address.lastName ?? ""}`.trim(),
-		address.company,
-		address.address1,
-		address.address2,
-		[address.postalCode, address.city].filter(Boolean).join(" "),
-		address.countryCode?.toUpperCase(),
-		address.phone,
-	]
-		.filter(Boolean)
-		.map((line) => `<div>${escape(line)}</div>`)
-		.join("");
+  const addressLines = [
+    `${address.firstName ?? ""} ${address.lastName ?? ""}`.trim(),
+    address.company,
+    address.address1,
+    address.address2,
+    [address.postalCode, address.city].filter(Boolean).join(" "),
+    address.countryCode?.toUpperCase(),
+    address.phone,
+  ]
+    .filter(Boolean)
+    .map((line) => `<div>${escape(line)}</div>`)
+    .join("");
 
-	const rows = order.items
-		.map(
-			(item) => `
+  const rows = order.items
+    .map(
+      (item) => `
 			<tr>
 				<td>
 					<strong>${escape(item.productName)}</strong>
 					${
-						item.variantName || item.sizeLabel
-							? `<div class="muted">${escape(
-									[item.variantName, item.sizeLabel].filter(Boolean).join(" · "),
-								)}</div>`
-							: ""
-					}
+            item.variantName || item.sizeLabel
+              ? `<div class="muted">${escape(
+                  [item.variantName, item.sizeLabel]
+                    .filter(Boolean)
+                    .join(" · "),
+                )}</div>`
+              : ""
+          }
 					${item.sku ? `<div class="muted">SKU ${escape(item.sku)}</div>` : ""}
 				</td>
 				<td class="num">${money(item.unitPrice)}</td>
 				<td class="num">${item.quantity}</td>
 				<td class="num">${money(item.lineTotal)}</td>
 			</tr>`,
-		)
-		.join("");
+    )
+    .join("");
 
-	return `<!doctype html>
+  return `<!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src https: data:">
 <title>Facture ${escape(reference)}</title>
 <style>
 	:root { color-scheme: light; }

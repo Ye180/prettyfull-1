@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { currencySchema, localeSchema, moneySchema } from "./common.js";
+import { currencySchema, localeSchema, moneySchema, partialForUpdate } from "./common.js";
 
 /**
  * Paramètres généraux du §4.9. Stockés en `settings` sous forme de
@@ -27,7 +27,7 @@ export const storeSettingsSchema = z.object({
 
 export type StoreSettings = z.infer<typeof storeSettingsSchema>;
 
-export const updateStoreSettingsSchema = storeSettingsSchema.partial();
+export const updateStoreSettingsSchema = partialForUpdate(storeSettingsSchema);
 
 /**
  * Taxe applicable. Le taux est exprimé en points de base (1 850 = 18,50 %)

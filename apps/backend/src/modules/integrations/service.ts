@@ -20,6 +20,7 @@ import {
 	getPaymentAdapter,
 	isConfigured,
 	listPaymentAdapters,
+	resolveCredentials,
 } from "../../integrations/payment/registry.js";
 import { getShippingAdapter, listShippingAdapters } from "../../integrations/shipping/registry.js";
 
@@ -52,10 +53,19 @@ const toProviderConfig = (
 		description: string;
 		logoUrl: string | null;
 		supportsWebhooks: boolean;
-		requiredCredentials: { key: string; label: string; secret: boolean }[];
+		requiredCredentials: {
+			key: string;
+			label: string;
+			secret: boolean;
+			optional?: boolean;
+			env?: string;
+		}[];
 	},
 ): ProviderConfig => {
-	const configuredKeys = Object.keys(row.credentials);
+	// Une clé fournie par variable d'environnement compte comme renseignée.
+	const configuredKeys = Object.keys(
+		resolveCredentials(adapter.requiredCredentials, row.credentials),
+	);
 
 	return {
 		id: row.id,
@@ -70,7 +80,7 @@ const toProviderConfig = (
 		requiredCredentials: adapter.requiredCredentials,
 		configuredKeys,
 		isConfigured: adapter.requiredCredentials
-			.filter((field) => field.secret)
+			.filter((field) => field.secret && !field.optional)
 			.every((field) => configuredKeys.includes(field.key)),
 		supportsWebhooks: adapter.supportsWebhooks,
 		webhookUrl: adapter.supportsWebhooks
@@ -170,7 +180,7 @@ export const updatePaymentProvider = async (
 
 	if (willEnable && !isConfigured(adapter, mergedCredentials)) {
 		const missing = adapter.requiredCredentials
-			.filter((field) => field.secret && !mergedCredentials[field.key])
+			.filter((field) => field.secret && !field.optional && !mergedCredentials[field.key])
 			.map((field) => field.label);
 
 		throw conflict(
@@ -261,7 +271,10 @@ export const testPaymentProvider = async (key: string) => {
 
 	return adapter.test({
 		environment: row?.environment ?? "test",
-		credentials: decryptCredentials(row?.credentials ?? {}),
+		credentials: resolveCredentials(
+			adapter.requiredCredentials,
+			decryptCredentials(row?.credentials ?? {}),
+		),
 		config: row?.config ?? {},
 	});
 };

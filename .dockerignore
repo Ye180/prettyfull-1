@@ -11,12 +11,10 @@ dist
 
 .turbo
 
-# Environment files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Environment files : à toutes les profondeurs (apps/*/.env), jamais dans une image.
+# Les secrets se passent à l'exécution, par l'hébergeur.
+**/.env*
+!**/.env.example
 
 # Editor files
 .vscode

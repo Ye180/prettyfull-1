@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Input } from "@prettyfull/ui";
+import { Button } from "@prettyfull/ui";
 import { cn } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -41,12 +41,6 @@ export function PaymentStep({
 		useGetPaymentProviders();
 	const initPaymentSession = useInitPaymentSession();
 
-	// Card form state
-	const [cardNumber, setCardNumber] = useState("");
-	const [expiryDate, setExpiryDate] = useState("");
-	const [cvv, setCvv] = useState("");
-	const [cardName, setCardName] = useState("");
-
 	const isOpen = isStepActive("payment");
 	const isCompleted = isStepCompleted("payment");
 	const canAccess = isStepCompleted("delivery");
@@ -86,25 +80,6 @@ export function PaymentStep({
 		}
 	};
 
-	const formatCardNumber = (value: string) => {
-		const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
-		const matches = v.match(/\d{4,16}/g);
-		const match = (matches && matches[0]) || "";
-		const parts = [];
-		for (let i = 0, len = match.length; i < len; i += 4) {
-			parts.push(match.substring(i, i + 4));
-		}
-		return parts.length ? parts.join(" ") : value;
-	};
-
-	const formatExpiryDate = (value: string) => {
-		const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
-		if (v.length >= 2) {
-			return v.substring(0, 2) + "/" + v.substring(2, 4);
-		}
-		return v;
-	};
-
 	// Helper to get friendly provider name
 	/**
 	 * Libellé du moyen de paiement.
@@ -123,19 +98,13 @@ export function PaymentStep({
 		return fallback[provider.id] || provider.id;
 	};
 
-	const isStripeProvider = selectedMethod?.includes("stripe");
+	// La carte se saisit sur la page hébergée de Stripe, jamais ici : aucune
+	// donnée bancaire ne transite par le site.
+	const isStripeProvider = selectedMethod === "stripe";
 	const isSystemProvider =
 		selectedMethod?.includes("system") || selectedMethod?.includes("manual");
 
-	const isCardFormValid =
-		isStripeProvider &&
-		cardNumber.replace(/\s/g, "").length === 16 &&
-		expiryDate.length === 5 &&
-		cvv.length >= 3 &&
-		cardName.length > 0;
-	const canSubmit = isStripeProvider
-		? isCardFormValid
-		: selectedMethod !== null;
+	const canSubmit = selectedMethod !== null;
 
 	return (
 		<div className="bg-white">
@@ -231,65 +200,13 @@ export function PaymentStep({
 						</div>
 					)}
 
-					{/* Card Form - Show for Stripe */}
+					{/* Stripe - redirection vers la page de paiement hébergée */}
 					{isStripeProvider && (
-						<div className="p-4 space-y-4 bg-gray-50 rounded-lg">
-							<div>
-								<label className="block mb-2 text-sm font-medium">
-									{t("cardNumber")}
-								</label>
-								<Input
-									value={cardNumber}
-									onChange={(e) =>
-										setCardNumber(formatCardNumber(e.target.value))
-									}
-									placeholder="1234 5678 9012 3456"
-									maxLength={19}
-									className="py-5"
-								/>
-							</div>
-
-							<div>
-								<label className="block mb-2 text-sm font-medium">
-									{t("cardName")}
-								</label>
-								<Input
-									value={cardName}
-									onChange={(e) => setCardName(e.target.value)}
-									placeholder="Jean Dupont"
-									className="py-5"
-								/>
-							</div>
-
-							<div className="grid grid-cols-2 gap-4">
-								<div>
-									<label className="block mb-2 text-sm font-medium">
-										{t("expiryDate")}
-									</label>
-									<Input
-										value={expiryDate}
-										onChange={(e) =>
-											setExpiryDate(formatExpiryDate(e.target.value))
-										}
-										placeholder="MM/YY"
-										maxLength={5}
-										className="py-5"
-									/>
-								</div>
-								<div>
-									<label className="block mb-2 text-sm font-medium">{t("cvv")}</label>
-									<Input
-										value={cvv}
-										onChange={(e) =>
-											setCvv(e.target.value.replace(/\D/g, "").slice(0, 4))
-										}
-										placeholder="123"
-										maxLength={4}
-										type="password"
-										className="py-5"
-									/>
-								</div>
-							</div>
+						<div className="p-4 space-y-2 text-sm bg-gray-50 rounded-lg border border-gray-200">
+							<p className="font-medium text-gray-900">
+								{t("stripeLabel")}
+							</p>
+							<p className="text-gray-600">{t("stripeDescription")}</p>
 						</div>
 					)}
 
@@ -314,9 +231,6 @@ export function PaymentStep({
 								)
 							: ""}
 					</p>
-					{isStripeProvider && cardNumber && (
-						<p>{t("cardEndingIn", { digits: cardNumber.slice(-4) })}</p>
-					)}
 				</div>
 			) : !canAccess ? (
 				<p className="text-sm text-gray-400">

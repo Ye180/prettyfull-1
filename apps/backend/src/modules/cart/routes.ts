@@ -16,6 +16,7 @@ import { validate } from "../../middleware/validate.js";
 import type { AddressSnapshot } from "../../db/schema/orders.js";
 import { checkout } from "../orders/service.js";
 import * as service from "./service.js";
+import { MINUTE, rateLimit } from "../../middleware/rate-limit.js";
 
 const itemParam = z.object({ itemId: z.uuid() });
 
@@ -169,7 +170,8 @@ storeCartRoutes.delete("/cart/discount-code", async (c) => {
  * Passage en commande. Renvoie `redirectUrl` quand le prestataire exige une
  * page de paiement hébergée (Wave) ; `null` sinon (paiement à la livraison).
  */
-storeCartRoutes.post("/checkout", validate("json", checkoutSchema), async (c) => {
+// Chaque commande bloque du stock : sans limite, un script viderait le rayon.
+storeCartRoutes.post("/checkout", rateLimit("checkout", 20, 15 * MINUTE), validate("json", checkoutSchema), async (c) => {
 	const cartId = await resolveCartId(c);
 	const auth = c.get("auth");
 
