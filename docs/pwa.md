@@ -162,7 +162,7 @@ Il faut `rsvg-convert` (librsvg) et `magick` (ImageMagick 7). Un SVG est recolor
 | Images (`/_next/image`, `/assets`, `/products`…) et polices | **Cache puis rafraîchissement** (*stale-while-revalidate*), 150 entrées maximum | Affichage immédiat, mise à jour en arrière-plan, taille du cache bornée |
 | `/api/*`, `/checkout`, `/account`, `/order-confirmation`, `/login`, `/create-account` | **Jamais touchées** | Paiement, données personnelles, sessions |
 | Requêtes RSC de Next (en-tête `RSC`, paramètre `_rsc`) | **Jamais touchées** | Données de navigation client, propres à chaque rendu |
-| Autres origines (API backend `:7777`, Stripe, UploadThing…) | **Jamais touchées** | Le service worker ne traite que l'origine du site |
+| Autres origines (API backend `:7777`, Stripe, Cloudflare R2…) | **Jamais touchées** | Le service worker ne traite que l'origine du site |
 | Tout ce qui n'est pas `GET` | **Jamais touché** | Envois de formulaires, mutations |
 
 ### 6.2 Précache

@@ -21,7 +21,6 @@
 		"@prettyfull/ui": "workspace:*",
 		"@prettyfull/utils": "workspace:*",
 		"@tanstack/react-query": "^5.102.8",
-		"@uploadthing/react": "^7.3.3",
 		"axios": "^1.20.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
@@ -35,7 +34,6 @@
 		"react-hook-form": "^7.87.0",
 		"react-swipeable": "^7.0.2",
 		"tailwind-merge": "^3.6.0",
-		"uploadthing": "^7.7.4",
 		"web": "link:",
 		"zod": "^3.25.76",
 		"zustand": "^4.5.7"

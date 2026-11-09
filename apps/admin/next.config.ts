@@ -24,6 +24,15 @@ const securityHeaders = [
 	{ key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
 ];
 
+/**
+ * Hôte public du stockage R2 (`NEXT_PUBLIC_MEDIA_URL`, ex. `https://cdn.prettyfull.shop`
+ * ou `https://pub-xxxx.r2.dev`), lu à la compilation : `next/image` n'optimise
+ * que les hôtes déclarés.
+ */
+const mediaHost = process.env.NEXT_PUBLIC_MEDIA_URL
+	? new URL(process.env.NEXT_PUBLIC_MEDIA_URL).hostname
+	: null;
+
 const nextConfig: NextConfig = {
 	transpilePackages: ["@prettyfull/ui", "@prettyfull/utils"],
 	poweredByHeader: false,
@@ -46,6 +55,8 @@ const nextConfig: NextConfig = {
 	 */
 	images: {
 		remotePatterns: [
+			...(mediaHost ? [{ protocol: "https" as const, hostname: mediaHost }] : []),
+			// Visuels téléversés avant la migration vers R2.
 			{ protocol: "https", hostname: "**.ufs.sh", pathname: "/f/**" },
 			{ protocol: "https", hostname: "utfs.io", pathname: "/f/**" },
 		],

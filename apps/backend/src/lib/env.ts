@@ -53,13 +53,19 @@ const schema = z.object({
 		.transform((v) => v === "true"),
 
 	/**
-	 * Jeton UploadThing (stockage des visuels).
+	 * Stockage des visuels : Cloudflare R2 (tableau de bord → R2 → bucket →
+	 * Settings, et « Manage API tokens » pour la paire de clés S3).
 	 *
-	 * Optionnel : sans lui, l'API démarre normalement et les routes de
-	 * téléversement répondent une erreur explicite. Rendre la variable
-	 * obligatoire empêcherait de lancer le projet sans compte UploadThing.
+	 * Optionnelles : sans elles, l'API démarre normalement et les routes de
+	 * téléversement répondent une erreur explicite. Les rendre obligatoires
+	 * empêcherait de lancer le projet sans compte Cloudflare.
 	 */
-	UPLOADTHING_TOKEN: z.string().optional(),
+	R2_ACCOUNT_ID: z.string().optional(),
+	R2_ACCESS_KEY_ID: z.string().optional(),
+	R2_SECRET_ACCESS_KEY: z.string().optional(),
+	R2_BUCKET: z.string().optional(),
+	/** Adresse publique de lecture : domaine personnalisé du bucket, ou `https://pub-xxxx.r2.dev`. */
+	R2_PUBLIC_URL: z.string().url().optional(),
 
 	/**
 	 * Nombre de proxys de confiance devant l'API (Traefik, Nginx, Vercel…).

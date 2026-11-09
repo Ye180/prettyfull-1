@@ -19,15 +19,10 @@ export const reviewInputSchema = z.object({
 		.trim()
 		.min(10, "Votre avis doit faire au moins 10 caractères.")
 		.max(2_000),
-	// Uniquement des fichiers téléversés via le formulaire (UploadThing) : une
-	// URL libre permettrait de pister l'équipe de modération ou les visiteurs.
+	// HTTPS uniquement ; l'hôte (notre stockage) est contrôlé par l'API, qui
+	// connaît son adresse publique - les contrats n'ont pas accès à l'environnement.
 	photoUrls: z
-		.array(
-			z.url().refine((value) => {
-				const { protocol, hostname } = new URL(value);
-				return protocol === "https:" && (hostname.endsWith(".ufs.sh") || hostname === "utfs.io");
-			}, "Photo non reconnue."),
-		)
+		.array(z.url().refine((value) => value.startsWith("https://"), "Photo non reconnue."))
 		.max(6)
 		.default([]),
 	/** Champ leurre : voir `contactMessageInputSchema`. */

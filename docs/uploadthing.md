@@ -1,3 +1,5 @@
+> **Remplacé par Cloudflare R2** : voir `docs/cloudflare-r2.md`. Ce guide ne décrit plus le code actuel.
+
 # Téléversement de fichiers avec UploadThing
 
 Guide technique de l'intégration UploadThing utilisée dans ce projet (galerie

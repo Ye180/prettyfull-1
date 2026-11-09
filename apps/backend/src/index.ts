@@ -34,7 +34,7 @@ import { adminSettingsRoutes } from "./modules/settings/routes.js";
 import { storeMiscRoutes } from "./modules/store/routes.js";
 import {
   adminUploadRoutes,
-  uploadthingRoutes,
+  storeUploadRoutes,
 } from "./modules/uploads/routes.js";
 import { adminUsersRoutes } from "./modules/users/routes.js";
 import { webhookRoutes } from "./modules/webhooks/routes.js";
@@ -130,15 +130,6 @@ app.get("/health", (c) =>
  */
 app.route("/api/webhooks", webhookRoutes);
 
-/**
- * Téléversement des visuels.
- *
- * Monté hors du garde `/api/admin/*` : UploadThing pilote lui-même l'échange
- * (négociation, callback de fin) et vérifie le jeton du back-office dans le
- * middleware de sa propre route.
- */
-app.route("/api/uploadthing", uploadthingRoutes);
-
 app.route("/api/store/auth", storeAuthRoutes);
 app.route("/api/store", storeOrderConfirmationRoutes);
 app.route("/api/store", storeCatalogRoutes);
@@ -154,6 +145,7 @@ app.route("/api/store", storeMiscRoutes);
  * routes publiques héritent d'un garde qui ne les concerne pas.
  */
 app.route("/api/store", storeReviewRoutes);
+app.route("/api/store", storeUploadRoutes);
 app.route("/api/store", storeOrdersRoutes);
 app.route("/api/store", storeAddressRoutes);
 

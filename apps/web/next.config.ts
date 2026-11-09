@@ -25,6 +25,15 @@ const securityHeaders = [
 	{ key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
 ];
 
+/**
+ * Hôte public du stockage R2 (`NEXT_PUBLIC_MEDIA_URL`, ex. `https://cdn.prettyfull.shop`
+ * ou `https://pub-xxxx.r2.dev`), lu à la compilation : `next/image` n'optimise
+ * que les hôtes déclarés.
+ */
+const mediaHost = process.env.NEXT_PUBLIC_MEDIA_URL
+	? new URL(process.env.NEXT_PUBLIC_MEDIA_URL).hostname
+	: null;
+
 const nextConfig: NextConfig = {
 	transpilePackages: ["@prettyfull/ui", "@prettyfull/store"],
 	poweredByHeader: false,
@@ -54,14 +63,12 @@ const nextConfig: NextConfig = {
 		/**
 		 * Visuels téléversés depuis le back-office.
 		 *
-		 * UploadThing sert les fichiers sur `<app-id>.ufs.sh` : le sous-domaine
-		 * porte l'identifiant de l'application, inconnu à la compilation. Le
-		 * motif générique évite d'avoir à recompiler le storefront si l'app
-		 * change, et reste limité au domaine du prestataire.
-		 *
-		 * `utfs.io` couvre les fichiers téléversés avant la v7.
+		 * Stockage R2 (`NEXT_PUBLIC_MEDIA_URL`). Les deux hôtes UploadThing
+		 * restent déclarés : les visuels téléversés avant la migration y sont
+		 * toujours servis tant qu'ils n'ont pas été ré-envoyés vers R2.
 		 */
 		remotePatterns: [
+			...(mediaHost ? [{ protocol: "https" as const, hostname: mediaHost }] : []),
 			{ protocol: "https", hostname: "**.ufs.sh", pathname: "/f/**" },
 			{ protocol: "https", hostname: "utfs.io", pathname: "/f/**" },
 			{ protocol: "https", hostname: "images.unsplash.com" },

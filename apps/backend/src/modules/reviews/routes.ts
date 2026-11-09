@@ -12,6 +12,8 @@ import { validate } from "../../middleware/validate.js";
 import type { AppEnv } from "../../middleware/request-context.js";
 import * as service from "./service.js";
 import { MINUTE, rateLimit } from "../../middleware/rate-limit.js";
+import { badRequest } from "../../lib/errors.js";
+import { isOwnMediaUrl } from "../../lib/r2.js";
 
 const idParam = z.object({ id: z.uuid() });
 const productQuery = z.object({ productId: z.uuid() });
@@ -48,6 +50,12 @@ storeReviewRoutes.post(
 		const input = c.req.valid("json");
 
 		if (input.website) return c.json({ success: true }, 201);
+
+		// Seules les photos passées par notre stockage sont acceptées : une URL
+		// libre permettrait de pister l'équipe de modération et les visiteurs.
+		if (!input.photoUrls.every(isOwnMediaUrl)) {
+			throw badRequest("Photo non reconnue.", { photoUrls: ["Photo non reconnue."] });
+		}
 
 		const created = await service.createReview(input, {
 			ipAddress: c.get("clientIp"),

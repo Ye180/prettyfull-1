@@ -78,7 +78,7 @@ Au-delà de la limite, l'API répond `429` avec un en-tête `Retry-After`. L'IP 
 - Redirection après connexion limitée au site lui-même. Les contournements `//`, `/\`, `/.//`, tabulations et URL absolues sont testés.
 - Aucun `dangerouslySetInnerHTML` : contenus CMS, avis et descriptions sont affichés comme du texte.
 - Facture HTML : données échappées, et CSP interne qui interdit tout script.
-- Photos d'avis acceptées uniquement depuis le stockage UploadThing.
+- Photos d'avis acceptées uniquement depuis notre bucket Cloudflare R2.
 - Export CSV protégé contre l'injection de formules tableur.
 - Service worker (PWA) : aucune page HTML, aucune réponse d'API ni donnée personnelle mise en cache.
 

@@ -1,112 +1,113 @@
-import { PERMISSIONS, UPLOAD_ENDPOINTS } from "@prettyfull/contracts";
+import {
+	PERMISSIONS,
+	adminPresignSchema,
+	reviewPresignSchema,
+	type PresignResponse,
+	type UploadEndpoint,
+	type UploadImageType,
+} from "@prettyfull/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
-import { UTApi } from "uploadthing/server";
-import { createRouteHandler } from "uploadthing/server";
-import { env } from "../../lib/env.js";
-import { badRequest, internalError } from "../../lib/errors.js";
 import { recordAudit } from "../../lib/audit.js";
-import { requirePermission } from "../../middleware/auth.js";
-import { validate } from "../../middleware/validate.js";
-import { MINUTE, clientKey, consumeRateLimit } from "../../middleware/rate-limit.js";
+import { badRequest, forbidden, internalError } from "../../lib/errors.js";
+import { deleteObject, isStorageConfigured, isValidKey, presignUpload } from "../../lib/r2.js";
+import { currentUser, requirePermission } from "../../middleware/auth.js";
+import { MINUTE, rateLimit } from "../../middleware/rate-limit.js";
 import type { AppEnv } from "../../middleware/request-context.js";
-import { uploadRouter } from "./router.js";
+import { validate } from "../../middleware/validate.js";
 
 /**
- * Montage des routes de téléversement.
+ * Téléversement des visuels vers Cloudflare R2.
  *
- * Le jeton UploadThing est facultatif : sans lui, l'API démarre normalement et
- * ces routes répondent un message explicite plutôt que de faire échouer le
- * boot. Un projet doit pouvoir tourner en local sans compte de stockage.
+ * Deux temps : le navigateur demande ici une URL signée par fichier (c'est
+ * le seul point où l'on peut refuser : jeton, permission, type, poids), puis
+ * envoie le fichier directement à R2. Il ne transite jamais par cette API.
+ *
+ * Sans configuration R2, l'API démarre normalement et ces routes répondent
+ * un message explicite : un projet doit pouvoir tourner sans compte de stockage.
  */
-const isConfigured = Boolean(env.UPLOADTHING_TOKEN);
 
-export const uploadthingRoutes = new Hono<AppEnv>();
-
-/**
- * Les photos d'avis sont le seul téléversement anonyme : quota par IP, pour
- * que personne ne remplisse le stockage. Les rappels signés d'UploadThing
- * (`uploadthing-hook`) ne comptent pas.
- */
-uploadthingRoutes.use("*", async (c, next) => {
-	if (
-		c.req.method === "POST" &&
-		c.req.query("slug") === UPLOAD_ENDPOINTS.reviewPhoto &&
-		!c.req.header("uploadthing-hook")
-	) {
-		consumeRateLimit("review-photo", clientKey(c), 20, 60 * MINUTE);
+const requireStorage = () => {
+	if (!isStorageConfigured) {
+		throw badRequest(
+			"Le stockage des visuels n'est pas configuré. Renseignez les variables R2_* côté API.",
+		);
 	}
-	await next();
+};
+
+const sign = (endpoint: UploadEndpoint, files: { type: UploadImageType; size: number }[]): PresignResponse => ({
+	files: files.map((file) => presignUpload(endpoint, file)),
 });
 
-if (isConfigured) {
-	const handlers = createRouteHandler({
-		router: uploadRouter,
-		config: {
-			token: env.UPLOADTHING_TOKEN,
-			isDev: env.NODE_ENV === "development",
-		},
-	});
+// --- Back-office -----------------------------------------------------------
 
-	// UploadThing gère lui-même GET et POST sur ce chemin ; on lui passe la
-	// requête brute, sa signature d'échange en dépend.
-	uploadthingRoutes.all("/", (c) => handlers(c.req.raw));
-} else {
-	uploadthingRoutes.all("/", (c) =>
-		c.json(
-			{
-				error: {
-					code: "UPLOAD_NOT_CONFIGURED",
-					message:
-						"Le stockage des visuels n'est pas configuré. Renseignez UPLOADTHING_TOKEN côté API.",
-				},
-			},
-			503,
-		),
-	);
-}
-
-/** Routes d'administration des fichiers, montées sous `/api/admin`. */
+/** Routes montées sous `/api/admin` (jeton staff déjà exigé par le garde global). */
 export const adminUploadRoutes = new Hono<AppEnv>();
 
-/**
- * Indique au panel si le téléversement est disponible.
- *
- * Permet d'afficher le champ d'URL manuelle en repli plutôt qu'un bouton qui
- * échouerait au clic.
- */
-adminUploadRoutes.get("/uploads/status", (c) =>
-	c.json({ configured: isConfigured }),
+/** Le panel s'en sert pour n'annoncer le téléversement que s'il est branché. */
+adminUploadRoutes.get("/uploads/status", (c) => c.json({ configured: isStorageConfigured }));
+
+adminUploadRoutes.post(
+	"/uploads/presign",
+	rateLimit("admin-presign", 120, 15 * MINUTE),
+	validate("json", adminPresignSchema),
+	async (c) => {
+		requireStorage();
+		const { endpoint, files } = c.req.valid("json");
+
+		const permission =
+			endpoint === "catalogImage" ? PERMISSIONS.catalog.write : PERMISSIONS.content.write;
+		if (!currentUser(c).permissions.includes(permission)) {
+			throw forbidden(`Permission requise : ${permission}.`);
+		}
+
+		return c.json(sign(endpoint, files));
+	},
 );
 
 /**
- * Suppression d'un fichier téléversé.
+ * Suppression d'un fichier.
  *
  * Retirer un visuel d'un produit ne libère rien côté stockage : sans cette
- * route, le quota se remplirait de fichiers que plus rien ne référence.
+ * route, le bucket se remplirait de fichiers que plus rien ne référence.
+ * La clé est contrôlée contre notre schéma de nommage : impossible de viser
+ * un autre objet du bucket.
  */
 adminUploadRoutes.delete(
-	"/uploads/:key",
+	"/uploads",
 	requirePermission(PERMISSIONS.catalog.write),
-	validate("param", z.object({ key: z.string().min(8).max(200) })),
+	validate("query", z.object({ key: z.string().max(200).refine(isValidKey, "Clé invalide.") })),
 	async (c) => {
-		if (!isConfigured) throw badRequest("Le stockage des visuels n'est pas configuré.");
-
-		const { key } = c.req.valid("param");
+		requireStorage();
+		const { key } = c.req.valid("query");
 
 		try {
-			await new UTApi({ token: env.UPLOADTHING_TOKEN }).deleteFiles(key);
+			await deleteObject(key);
 		} catch (error) {
 			console.error("[upload] suppression impossible", key, error);
 			throw internalError("Le fichier n'a pas pu être supprimé du stockage.");
 		}
 
-		await recordAudit(c, {
-			action: "upload.deleted",
-			resourceType: "upload",
-			resourceId: key,
-		});
-
+		await recordAudit(c, { action: "upload.deleted", resourceType: "upload", resourceId: key });
 		return c.json({ success: true });
+	},
+);
+
+// --- Storefront ------------------------------------------------------------
+
+/**
+ * Photos d'avis : le seul téléversement anonyme, au même niveau de confiance
+ * que le formulaire de contact. Quota par IP pour que personne ne remplisse
+ * le bucket ; la modération se fait à la publication de l'avis.
+ */
+export const storeUploadRoutes = new Hono<AppEnv>();
+
+storeUploadRoutes.post(
+	"/uploads/review-photos",
+	rateLimit("review-photo", 10, 60 * MINUTE),
+	validate("json", reviewPresignSchema),
+	async (c) => {
+		requireStorage();
+		return c.json(sign("reviewPhoto", c.req.valid("json").files));
 	},
 );
