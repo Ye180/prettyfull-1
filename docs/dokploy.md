@@ -16,7 +16,7 @@
 ## Variables
 
 **backend** (onglet Environment, variables d'exécution) : voir `apps/backend/.env.example`. Indispensables :
-`NODE_ENV=production`, `DATABASE_URL` (adresse *Internal Connection* de la base, sans `sslmode`), `JWT_SECRET`, `CREDENTIALS_ENCRYPTION_KEY`, `TRUST_PROXY_HOPS=1`, `CORS_ORIGINS`, `PUBLIC_API_URL`, `STOREFRONT_URL`, `ADMIN_URL`, `COOKIE_DOMAIN`, `COOKIE_SECURE=true`, `R2_*`, `STRIPE_*`.
+`NODE_ENV=production`, `DATABASE_URL` (adresse *Internal Connection* de la base, sans `sslmode`), `JWT_SECRET`, `CREDENTIALS_ENCRYPTION_KEY`, `TRUST_PROXY_HOPS=1`, `CORS_ORIGINS`, `PUBLIC_API_URL`, `STOREFRONT_URL`, `COOKIE_DOMAIN`, `COOKIE_SECURE=true`, `R2_*`, `STRIPE_*`.
 Les migrations s'exécutent au démarrage ; `RUN_MIGRATIONS=false` les désactive.
 
 **web et admin** : `NEXT_PUBLIC_*` sont lues **à la compilation**. Les déclarer en **Build-time Arguments** (pas en variables d'exécution) :
