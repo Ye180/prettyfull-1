@@ -19,7 +19,15 @@ export interface CredentialField {
 	label: string;
 	/** `true` : la valeur est chiffrée et jamais réaffichée. */
 	secret: boolean;
+	/** `true` : la clé n'est pas exigée pour activer le prestataire. */
+	optional?: boolean;
 	placeholder?: string;
+	/**
+	 * Variable d'environnement de repli, lue quand la clé n'est pas saisie
+	 * dans le panel. Permet de fournir les secrets par l'hébergeur plutôt
+	 * qu'en base ; une valeur saisie dans le panel reste prioritaire.
+	 */
+	env?: string;
 }
 
 export interface ProviderRuntimeConfig {
@@ -46,6 +54,14 @@ export interface PaymentInitiateContext extends ProviderRuntimeConfig {
 	cancelUrl: string;
 	/** URL publique que le prestataire doit appeler pour notifier le résultat. */
 	webhookUrl: string;
+	/** Fin de la réservation de stock : au-delà, le paiement ne doit plus aboutir. */
+	expiresAt: Date;
+	/**
+	 * Tentative précédente, lors d'une reprise de paiement. L'adaptateur peut
+	 * la réutiliser si elle est encore ouverte, plutôt que d'en créer une
+	 * seconde que la cliente pourrait régler en double.
+	 */
+	previousTransactionId?: string | null;
 }
 
 export interface PaymentInitiateResult {
@@ -112,7 +128,15 @@ export interface PaymentAdapter {
 	/** `true` : le résultat arrive par notification asynchrone. */
 	readonly supportsWebhooks: boolean;
 	readonly supportsRefunds: boolean;
+	/** `false` : le prestataire ne rembourse que la totalité (Wave). Défaut : partiel possible. */
+	readonly supportsPartialRefunds?: boolean;
 	readonly requiredCredentials: CredentialField[];
+	/**
+	 * Durée de vie minimale de la page de paiement hébergée, en minutes. La
+	 * réservation de stock est allongée d'autant : un paiement accepté après
+	 * la libération du stock serait une vente sans marchandise.
+	 */
+	readonly sessionMinutes?: number;
 
 	initiate(context: PaymentInitiateContext): Promise<PaymentInitiateResult>;
 

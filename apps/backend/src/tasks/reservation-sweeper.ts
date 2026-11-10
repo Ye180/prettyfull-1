@@ -15,30 +15,30 @@ const SWEEP_INTERVAL_MS = 60_000;
 let timer: NodeJS.Timeout | null = null;
 
 const sweep = async (): Promise<void> => {
-	try {
-		const released = await expireStaleReservations();
-		if (released > 0) {
-			console.log(`[stock] ${released} réservation(s) expirée(s) libérée(s)`);
-		}
-	} catch (error) {
-		// Une passe en échec ne doit pas arrêter la boucle : la suivante
-		// rattrapera les réservations restées actives.
-		console.error("[stock] balayage des réservations en échec", error);
-	}
+  try {
+    const released = await expireStaleReservations();
+    if (released > 0) {
+      console.log(`[stock] ${released} réservation(s) expirée(s) libérée(s)`);
+    }
+  } catch (error) {
+    // Une passe en échec ne doit pas arrêter la boucle : la suivante
+    // rattrapera les réservations restées actives.
+    console.error("[stock] balayage des réservations en échec", error);
+  }
 };
 
 export const startReservationSweeper = (): void => {
-	if (timer) return;
+  if (timer) return;
 
-	// `unref` : la tâche n'empêche pas le processus de s'arrêter proprement.
-	timer = setInterval(() => void sweep(), SWEEP_INTERVAL_MS);
-	timer.unref();
+  // `unref` : la tâche n'empêche pas le processus de s'arrêter proprement.
+  timer = setInterval(() => void sweep(), SWEEP_INTERVAL_MS);
+  timer.unref();
 
-	void sweep();
+  void sweep();
 };
 
 export const stopReservationSweeper = (): void => {
-	if (!timer) return;
-	clearInterval(timer);
-	timer = null;
+  if (!timer) return;
+  clearInterval(timer);
+  timer = null;
 };

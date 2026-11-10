@@ -2,15 +2,18 @@
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icon";
 import { useDisplayCurrency } from "@/hooks/use-display-currency";
-import { fetchOrderConfirmation } from "@/lib/store-api";
+import { fetchOrderConfirmation, resumeOrderPayment } from "@/lib/store-api";
 import type { CurrencyCode } from "@prettyfull/contracts";
 import { Skeleton } from "@prettyfull/ui";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+/** Au-delà, on cesse d'interroger l'API : le webhook est anormalement lent. */
+const CONFIRMATION_TIMEOUT_MS = 60_000;
 
 const GENERIC_VARIANT_TITLES = ["default variant", "default", "default title"];
 
@@ -24,6 +27,9 @@ const OrderConfirmationView = () => {
 	const searchParams = useSearchParams();
 	const orderId = searchParams.get("order_id");
 	const token = searchParams.get("token");
+	/** Posé au retour du prestataire : `success`, `cancelled` ou `failed`. */
+	const paymentReturn = searchParams.get("payment");
+	const [confirmationSlow, setConfirmationSlow] = useState(false);
 
 	const {
 		data: order,
@@ -34,7 +40,38 @@ const OrderConfirmationView = () => {
 		queryFn: () => fetchOrderConfirmation(orderId as string, token as string),
 		enabled: Boolean(orderId && token),
 		retry: false,
+		// Retour de la page de paiement : la confirmation arrive par webhook,
+		// souvent quelques secondes après la cliente.
+		refetchInterval: (query) =>
+			paymentReturn === "success" &&
+			query.state.data?.payment_status === "pending" &&
+			!confirmationSlow
+				? 2_000
+				: false,
 	});
+
+	const confirming = paymentReturn === "success" && order?.payment_status === "pending";
+
+	useEffect(() => {
+		if (!confirming) return;
+		const timer = setTimeout(() => setConfirmationSlow(true), CONFIRMATION_TIMEOUT_MS);
+		return () => clearTimeout(timer);
+	}, [confirming]);
+
+	const paymentIncomplete =
+		order !== undefined &&
+		order.status !== "canceled" &&
+		(order.payment_status === "failed" ||
+			((paymentReturn === "cancelled" || paymentReturn === "failed") &&
+				order.payment_status === "pending"));
+
+	const resumePayment = useMutation({
+		mutationFn: () => resumeOrderPayment(orderId as string, token as string),
+		onSuccess: ({ redirectUrl }) => {
+			if (redirectUrl) window.location.assign(redirectUrl);
+		},
+	});
+	const resuming = resumePayment.isPending || resumePayment.isSuccess;
 
 	const [isPaymentDetailOpen, setIsPaymentDetailOpen] = useState(false);
 	const { format } = useDisplayCurrency();
@@ -94,7 +131,53 @@ const OrderConfirmationView = () => {
 	return (
 		<main className="w-full min-h-screen bg-white text-gray-900 pb-28 pt-8 sm:pt-14">
 			<div className="max-w-[860px] mx-auto px-4 sm:px-6">
-				{/* Thank You Header */}
+				{paymentIncomplete ? (
+					<div className="text-center space-y-3 pb-8 sm:pb-10">
+						<span className="inline-block text-xs uppercase tracking-widest font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-3 py-1">
+							{t("paymentIncompleteBadge")}
+						</span>
+						<h1 className="text-3xl sm:text-4xl font-extrabold font-sans tracking-tight text-gray-950">
+							{t("paymentIncompleteTitle")}
+						</h1>
+						<p className="text-sm sm:text-base text-gray-500 max-w-md mx-auto">
+							{t("paymentIncompleteDescription")}
+						</p>
+						{resumePayment.error && (
+							<p role="alert" className="text-sm text-red-700 max-w-md mx-auto">
+								{resumePayment.error.message || t("resumeError")}
+							</p>
+						)}
+						<div className="pt-3">
+							<button
+								type="button"
+								onClick={() => resumePayment.mutate()}
+								disabled={resuming}
+								className="px-6 py-3 bg-black text-white font-semibold rounded-sm hover:bg-black/85 transition disabled:opacity-60"
+							>
+								{resuming ? t("resumingPayment") : t("resumePayment")}
+							</button>
+						</div>
+						<p className="text-xs uppercase tracking-widest text-gray-400 font-semibold pt-1">
+							{t("orderId", { id: order.display_id })}
+						</p>
+					</div>
+				) : confirming ? (
+					<div role="status" className="text-center space-y-3 pb-8 sm:pb-10">
+						{!confirmationSlow && (
+							<div className="w-12 h-12 mx-auto mb-4 rounded-full border-4 border-gray-200 border-t-gray-900 animate-spin" />
+						)}
+						<h1 className="text-2xl sm:text-3xl font-extrabold font-sans tracking-tight text-gray-950">
+							{t("paymentConfirming")}
+						</h1>
+						<p className="text-sm sm:text-base text-gray-500 max-w-md mx-auto">
+							{confirmationSlow ? t("paymentSlow") : t("paymentConfirmingDescription")}
+						</p>
+						<p className="text-xs uppercase tracking-widest text-gray-400 font-semibold pt-1">
+							{t("orderId", { id: order.display_id })}
+						</p>
+					</div>
+				) : (
+				/* Thank You Header */
 				<div className="text-center space-y-3 pb-8 sm:pb-10">
 					<div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-100">
 						<svg
@@ -128,6 +211,7 @@ const OrderConfirmationView = () => {
 						{t("orderId", { id: order.display_id })}
 					</p>
 				</div>
+				)}
 
 				{/* Order Items Card */}
 				<div className="bg-[#F9FAFB] rounded-3xl p-6 sm:p-8 border border-gray-150/80 shadow-xs mb-8 space-y-6">
@@ -198,7 +282,11 @@ const OrderConfirmationView = () => {
 							<div className="p-4 mt-3 bg-white rounded-xl border border-gray-200 text-xs sm:text-sm text-gray-600 space-y-1">
 								<p>
 									<span className="font-medium text-gray-900">{t("status")}</span>{" "}
-									{order.status === "canceled" ? t("cancelled") : t("confirmed")}
+									{order.status === "canceled"
+									? t("cancelled")
+									: order.payment_status === "paid"
+										? t("paid")
+										: t("awaitingPayment")}
 								</p>
 								<p>
 									<span className="font-medium text-gray-900">{t("receipt")}</span>{" "}

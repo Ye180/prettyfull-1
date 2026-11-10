@@ -101,4 +101,21 @@ export declare const UPLOAD_ENDPOINTS: {
     readonly reviewPhoto: "reviewPhoto";
 };
 export type UploadEndpoint = (typeof UPLOAD_ENDPOINTS)[keyof typeof UPLOAD_ENDPOINTS];
+/**
+ * Formats d'image acceptés, avec l'extension du fichier stocké. Pas de SVG :
+ * un SVG peut embarquer du script, servi depuis le domaine du stockage.
+ */
+export declare const UPLOAD_IMAGE_TYPES: {
+    readonly "image/jpeg": "jpg";
+    readonly "image/png": "png";
+    readonly "image/webp": "webp";
+    readonly "image/avif": "avif";
+    readonly "image/gif": "gif";
+};
+export type UploadImageType = keyof typeof UPLOAD_IMAGE_TYPES;
+/** Taille et nombre maximaux par envoi, vérifiés côté API et côté navigateur. */
+export declare const UPLOAD_RULES: Record<UploadEndpoint, {
+    maxBytes: number;
+    maxFiles: number;
+}>;
 //# sourceMappingURL=enums.d.ts.map

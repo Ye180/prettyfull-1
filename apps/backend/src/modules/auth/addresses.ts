@@ -1,5 +1,5 @@
 import type { Address, AddressInput } from "@prettyfull/contracts";
-import { addressInputSchema } from "@prettyfull/contracts";
+import { addressInputSchema, partialForUpdate } from "@prettyfull/contracts";
 import { and, asc, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
@@ -115,7 +115,7 @@ storeAddressRoutes.post(
 storeAddressRoutes.patch(
 	"/addresses/:id",
 	validate("param", idParam),
-	validate("json", addressInputSchema.partial()),
+	validate("json", partialForUpdate(addressInputSchema)),
 	async (c) => {
 		const userId = currentUser(c).sub;
 		const { id } = c.req.valid("param");

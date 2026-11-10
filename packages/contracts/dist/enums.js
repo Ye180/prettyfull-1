@@ -142,4 +142,21 @@ export const UPLOAD_ENDPOINTS = {
     content: "contentImage",
     reviewPhoto: "reviewPhoto",
 };
+/**
+ * Formats d'image acceptés, avec l'extension du fichier stocké. Pas de SVG :
+ * un SVG peut embarquer du script, servi depuis le domaine du stockage.
+ */
+export const UPLOAD_IMAGE_TYPES = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+    "image/avif": "avif",
+    "image/gif": "gif",
+};
+/** Taille et nombre maximaux par envoi, vérifiés côté API et côté navigateur. */
+export const UPLOAD_RULES = {
+    catalogImage: { maxBytes: 8 * 1024 * 1024, maxFiles: 10 },
+    contentImage: { maxBytes: 8 * 1024 * 1024, maxFiles: 10 },
+    reviewPhoto: { maxBytes: 4 * 1024 * 1024, maxFiles: 4 },
+};
 //# sourceMappingURL=enums.js.map

@@ -19,3 +19,4 @@ export * from "./cms.js";
 export * from "./settings.js";
 export * from "./dashboard.js";
 export * from "./reviews.js";
+export * from "./uploads.js";

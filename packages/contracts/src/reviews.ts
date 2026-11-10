@@ -19,7 +19,12 @@ export const reviewInputSchema = z.object({
 		.trim()
 		.min(10, "Votre avis doit faire au moins 10 caractères.")
 		.max(2_000),
-	photoUrls: z.array(z.url()).max(6).default([]),
+	// HTTPS uniquement ; l'hôte (notre stockage) est contrôlé par l'API, qui
+	// connaît son adresse publique - les contrats n'ont pas accès à l'environnement.
+	photoUrls: z
+		.array(z.url().refine((value) => value.startsWith("https://"), "Photo non reconnue."))
+		.max(6)
+		.default([]),
 	/** Champ leurre : voir `contactMessageInputSchema`. */
 	website: z.string().max(200).optional(),
 });

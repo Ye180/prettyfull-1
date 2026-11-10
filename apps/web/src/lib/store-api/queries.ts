@@ -257,6 +257,15 @@ export const fetchOrderConfirmation = async (orderId: string, token: string) => 
 	return toStoreOrder(order);
 };
 
+/**
+ * Relance le paiement d'une commande en attente (retour arrière depuis la
+ * page du prestataire, session expirée) et renvoie l'URL où rediriger.
+ */
+export const resumeOrderPayment = (orderId: string, token: string) =>
+	storeApi.post<{ redirectUrl: string | null }>(`/api/store/orders/${orderId}/pay`, {
+		token,
+	});
+
 export const cancelOrder = async (orderId: string, reason?: string) => {
 	const order = await storeApi.post<Order>(`/api/store/orders/${orderId}/cancel`, {
 		reason,

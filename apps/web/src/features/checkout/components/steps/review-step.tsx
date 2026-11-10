@@ -17,7 +17,11 @@ const TAX_RATE = 0.18;
 
 interface ReviewStepProps {
 	cartId: string | null;
-	onPlaceOrder?: (orderId: string, confirmationToken?: string) => void;
+	onPlaceOrder?: (
+		orderId: string,
+		confirmationToken?: string,
+		paymentFailed?: boolean,
+	) => void;
 }
 
 export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
@@ -53,11 +57,24 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 
 		setIsLoading(true);
 		setError(null);
+		let leaving = false;
 
 		try {
 			const order = await completeCart.mutateAsync();
 			resetCheckoutStore();
-			onPlaceOrder?.(order.orderId, order.confirmationToken);
+
+			// Redirection vers la page du prestataire déjà lancée : naviguer
+			// par-dessus l'interromprait. Le bouton reste désactivé d'ici là.
+			if (order.redirectUrl) {
+				leaving = true;
+				return;
+			}
+
+			onPlaceOrder?.(
+				order.orderId,
+				order.confirmationToken,
+				order.paymentStatus === "failed",
+			);
 		} catch (err) {
 			// L'API nomme l'article épuisé et le disponible restant : afficher
 			// son message est bien plus actionnable qu'un texte générique.
@@ -66,7 +83,7 @@ export function ReviewStep({ cartId, onPlaceOrder }: ReviewStepProps) {
 				err instanceof Error ? err.message : t("placeOrderError"),
 			);
 		} finally {
-			setIsLoading(false);
+			if (!leaving) setIsLoading(false);
 		}
 	};
 

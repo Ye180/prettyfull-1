@@ -1,18 +1,18 @@
 import type { Permission, UserKind } from "@prettyfull/contracts";
 import { createMiddleware } from "hono/factory";
-import { extractBearerToken, verifyAccessToken } from "../lib/jwt.js";
 import { forbidden, unauthorized } from "../lib/errors.js";
+import { extractBearerToken, verifyAccessToken } from "../lib/jwt.js";
 import type { AppEnv } from "./request-context.js";
 
 /**
  * Exige un jeton d'accès valide et dépose la charge utile dans le contexte.
  */
 export const requireAuth = createMiddleware<AppEnv>(async (c, next) => {
-	const token = extractBearerToken(c.req.header("Authorization"));
-	if (!token) throw unauthorized("Jeton d'accès manquant.");
+  const token = extractBearerToken(c.req.header("Authorization"));
+  if (!token) throw unauthorized("Jeton d'accès manquant.");
 
-	c.set("auth", await verifyAccessToken(token));
-	await next();
+  c.set("auth", await verifyAccessToken(token));
+  await next();
 });
 
 /**
@@ -22,12 +22,13 @@ export const requireAuth = createMiddleware<AppEnv>(async (c, next) => {
  * la séparation ne repose pas sur l'application appelante, mais sur le jeton.
  */
 export const requireKind = (kind: UserKind) =>
-	createMiddleware<AppEnv>(async (c, next) => {
-		const auth = c.get("auth");
-		if (!auth) throw unauthorized();
-		if (auth.kind !== kind) throw forbidden("Ce compte n'a pas accès à cette interface.");
-		await next();
-	});
+  createMiddleware<AppEnv>(async (c, next) => {
+    const auth = c.get("auth");
+    if (!auth) throw unauthorized();
+    if (auth.kind !== kind)
+      throw forbidden("Ce compte n'a pas accès à cette interface.");
+    await next();
+  });
 
 /**
  * Exige une permission précise (§5, §7).
@@ -36,21 +37,21 @@ export const requireKind = (kind: UserKind) =>
  * gestionnaire catalogue reçoit 403 sur la configuration des agrégateurs.
  */
 export const requirePermission = (...required: Permission[]) =>
-	createMiddleware<AppEnv>(async (c, next) => {
-		const auth = c.get("auth");
-		if (!auth) throw unauthorized();
+  createMiddleware<AppEnv>(async (c, next) => {
+    const auth = c.get("auth");
+    if (!auth) throw unauthorized();
 
-		const granted = new Set(auth.permissions);
-		const missing = required.filter((permission) => !granted.has(permission));
+    const granted = new Set(auth.permissions);
+    const missing = required.filter((permission) => !granted.has(permission));
 
-		if (missing.length > 0) {
-			throw forbidden(
-				`Permission requise : ${missing.join(", ")}. Contactez un super administrateur.`,
-			);
-		}
+    if (missing.length > 0) {
+      throw forbidden(
+        `Permission requise : ${missing.join(", ")}. Contactez un super administrateur.`,
+      );
+    }
 
-		await next();
-	});
+    await next();
+  });
 
 /**
  * Authentification facultative : renseigne le contexte si un jeton valide est
@@ -62,22 +63,22 @@ export const requirePermission = (...required: Permission[]) =>
  * navigation d'un visiteur.
  */
 export const optionalAuth = createMiddleware<AppEnv>(async (c, next) => {
-	const token = extractBearerToken(c.req.header("Authorization"));
+  const token = extractBearerToken(c.req.header("Authorization"));
 
-	if (token) {
-		try {
-			c.set("auth", await verifyAccessToken(token));
-		} catch {
-			// Navigation anonyme : on continue sans identité.
-		}
-	}
+  if (token) {
+    try {
+      c.set("auth", await verifyAccessToken(token));
+    } catch {
+      // Navigation anonyme : on continue sans identité.
+    }
+  }
 
-	await next();
+  await next();
 });
 
 /** Identité courante, garantie non nulle derrière `requireAuth`. */
 export const currentUser = (c: { get: (key: "auth") => unknown }) => {
-	const auth = c.get("auth");
-	if (!auth) throw unauthorized();
-	return auth as NonNullable<AppEnv["Variables"]["auth"]>;
+  const auth = c.get("auth");
+  if (!auth) throw unauthorized();
+  return auth as NonNullable<AppEnv["Variables"]["auth"]>;
 };

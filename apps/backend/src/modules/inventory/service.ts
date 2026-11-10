@@ -266,7 +266,7 @@ export const reserveStock = async (
 export const consumeReservations = async (
 	tx: Transaction,
 	orderId: string,
-): Promise<void> => {
+): Promise<number> => {
 	const reservations = await tx
 		.select({
 			id: t.stockReservations.id,
@@ -279,7 +279,10 @@ export const consumeReservations = async (
 				eq(t.stockReservations.orderId, orderId),
 				eq(t.stockReservations.status, "active"),
 			),
-		);
+		)
+		// Verrou : le balayage des réservations expirées ne peut pas relâcher
+		// la même réservation au même instant (double décrément).
+		.for("update");
 
 	for (const reservation of reservations) {
 		const item = await lockInventoryItem(tx, reservation.inventoryItemId);
@@ -304,6 +307,52 @@ export const consumeReservations = async (
 			.set({ status: "consumed", releasedAt: new Date() })
 			.where(eq(t.stockReservations.id, reservation.id));
 	}
+
+	return reservations.length;
+};
+
+/**
+ * Sortie de stock d'une commande payée sans réservation active (expirée
+ * avant l'encaissement). Chaque ligne est décrémentée si le stock le permet ;
+ * sinon elle est signalée plutôt que de bloquer la confirmation d'un
+ * paiement déjà reçu. Renvoie les libellés en manque.
+ */
+export const consumeFromOrderItems = async (
+	tx: Transaction,
+	orderId: string,
+): Promise<string[]> => {
+	const items = await tx
+		.select({
+			inventoryItemId: t.orderItems.inventoryItemId,
+			quantity: t.orderItems.quantity,
+			label: t.orderItems.productName,
+		})
+		.from(t.orderItems)
+		.where(eq(t.orderItems.orderId, orderId));
+
+	const shortfalls: string[] = [];
+
+	for (const item of items) {
+		if (!item.inventoryItemId) continue;
+
+		const stock = await lockInventoryItem(tx, item.inventoryItemId);
+		// Mêmes règles que `applyMovement` : jamais négatif, et sans vente à
+		// découvert, jamais sous le stock réservé par d'autres commandes.
+		const free = stock.allowBackorder ? stock.quantity : stock.quantity - stock.reservedQuantity;
+		if (free < item.quantity) {
+			shortfalls.push(item.label);
+			continue;
+		}
+
+		await applyMovement(tx, {
+			inventoryItemId: item.inventoryItemId,
+			delta: -item.quantity,
+			reason: "order_confirmed",
+			orderId,
+		});
+	}
+
+	return shortfalls;
 };
 
 /**
@@ -331,7 +380,8 @@ export const releaseReservations = async (
 			quantity: t.stockReservations.quantity,
 		})
 		.from(t.stockReservations)
-		.where(and(filter, eq(t.stockReservations.status, "active")));
+		.where(and(filter, eq(t.stockReservations.status, "active")))
+		.for("update");
 
 	for (const reservation of reservations) {
 		const item = await lockInventoryItem(tx, reservation.inventoryItemId);
@@ -359,25 +409,29 @@ export const releaseReservations = async (
  * Appelée périodiquement par la tâche de fond ; libère le stock immobilisé
  * par des paniers dont le paiement n'a jamais abouti.
  */
-export const expireStaleReservations = async (): Promise<number> => {
-	const expired = await db
-		.select({
-			id: t.stockReservations.id,
-			inventoryItemId: t.stockReservations.inventoryItemId,
-			quantity: t.stockReservations.quantity,
-		})
-		.from(t.stockReservations)
-		.where(
-			and(
-				eq(t.stockReservations.status, "active"),
-				lte(t.stockReservations.expiresAt, new Date()),
-			),
-		)
-		.limit(500);
+export const expireStaleReservations = async (): Promise<number> =>
+	db.transaction(async (tx) => {
+		// Sélection et mise à jour dans la même transaction, sous verrou : une
+		// réservation consommée par un paiement entre-temps n'est pas relâchée
+		// une seconde fois. `skip locked` : celles en cours de paiement
+		// attendent la passe suivante.
+		const expired = await tx
+			.select({
+				id: t.stockReservations.id,
+				inventoryItemId: t.stockReservations.inventoryItemId,
+				quantity: t.stockReservations.quantity,
+			})
+			.from(t.stockReservations)
+			.where(
+				and(
+					eq(t.stockReservations.status, "active"),
+					lte(t.stockReservations.expiresAt, new Date()),
+				),
+			)
+			.orderBy(t.stockReservations.inventoryItemId)
+			.limit(500)
+			.for("update", { skipLocked: true });
 
-	if (expired.length === 0) return 0;
-
-	await db.transaction(async (tx) => {
 		for (const reservation of expired) {
 			const item = await lockInventoryItem(tx, reservation.inventoryItemId);
 
@@ -394,10 +448,9 @@ export const expireStaleReservations = async (): Promise<number> => {
 				.set({ status: "expired", releasedAt: new Date() })
 				.where(eq(t.stockReservations.id, reservation.id));
 		}
-	});
 
-	return expired.length;
-};
+		return expired.length;
+	});
 
 // --- Résolution et création des points de stock ----------------------------
 

@@ -124,6 +124,8 @@ export interface StoreOrder {
 	id: string;
 	display_id: number;
 	status: "pending" | "shipped" | "delivered" | "canceled";
+	/** Statut d'encaissement brut (`pending`, `paid`, `failed`…). */
+	payment_status: string;
 	created_at: string;
 	email: string;
 	items: StoreOrderItem[];

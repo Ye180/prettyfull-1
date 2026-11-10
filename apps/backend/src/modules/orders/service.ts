@@ -7,7 +7,7 @@ import {
 	type Paginated,
 	type PaymentStatus,
 } from "@prettyfull/contracts";
-import { and, count, desc, eq, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, gte, ilike, inArray, isNotNull, lte, ne, or, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { db, type Transaction } from "../../db/index.js";
 import * as t from "../../db/schema/index.js";
@@ -17,7 +17,11 @@ import { paginate, toSqlPagination } from "../../lib/response.js";
 import { decryptCredentials, safeCompare } from "../../lib/crypto.js";
 import { createHmac } from "node:crypto";
 import { env } from "../../lib/env.js";
-import { getPaymentAdapter } from "../../integrations/payment/registry.js";
+import {
+	getPaymentAdapter,
+	resolveCredentials,
+} from "../../integrations/payment/registry.js";
+import type { PaymentAdapter } from "../../integrations/payment/types.js";
 import * as inventory from "../inventory/service.js";
 import * as cart from "../cart/service.js";
 import { incrementUsage, resolveDiscountForSubtotal } from "../promotions/service.js";
@@ -161,11 +165,27 @@ export const getOrder = async (id: string): Promise<Order> => {
 	return order;
 };
 
+/**
+ * Vue cliente d'une commande : sans le journal des transactions (références
+ * et erreurs du prestataire) ni l'identité ou les commentaires internes de
+ * l'équipe dans l'historique.
+ */
+const toCustomerOrder = (order: Order): Order => ({
+	...order,
+	transactions: undefined,
+	statusHistory: order.statusHistory?.map((entry) => ({
+		...entry,
+		comment: null,
+		userId: null,
+		userName: null,
+	})),
+});
+
 /** Lecture côté cliente : la commande doit lui appartenir. */
 export const getOrderForUser = async (id: string, userId: string): Promise<Order> => {
 	const order = await getOrder(id);
 	if (order.userId !== userId) throw notFound("Commande");
-	return order;
+	return toCustomerOrder(order);
 };
 
 export interface OrderListQuery {
@@ -260,9 +280,35 @@ const loadProviderConfig = async (providerKey: string) => {
 		runtime: {
 			environment: row.environment,
 			// Les clés sont déchiffrées uniquement ici, au moment de l'appel.
-			credentials: decryptCredentials(row.credentials),
+			credentials: resolveCredentials(
+				adapter.requiredCredentials,
+				decryptCredentials(row.credentials),
+			),
 			config: row.config,
 		},
+	};
+};
+
+/**
+ * Durée de réservation du stock : jamais plus courte que la page de paiement
+ * du prestataire, sinon un paiement pourrait aboutir sur un stock relâché.
+ */
+const reservationMinutes = (
+	settings: { stockReservationMinutes: number },
+	adapter: PaymentAdapter,
+): number => Math.max(settings.stockReservationMinutes, adapter.sessionMinutes ?? 0);
+
+/**
+ * URLs passées au prestataire. Retour comme abandon ramènent à la page de
+ * confirmation : elle suit la confirmation du paiement, ou propose de le
+ * reprendre - le panier, lui, a déjà été converti en commande.
+ */
+const paymentUrls = (storefront: string, orderId: string, adapterKey: string) => {
+	const confirmation = `${storefront}/order-confirmation?order_id=${orderId}&token=${confirmationTokenFor(orderId)}`;
+	return {
+		successUrl: `${confirmation}&payment=success`,
+		cancelUrl: `${confirmation}&payment=cancelled`,
+		webhookUrl: `${env.PUBLIC_API_URL}/api/webhooks/${adapterKey}`,
 	};
 };
 
@@ -317,7 +363,7 @@ export const confirmationTokenFor = (orderId: string): string =>
  */
 export const getOrderByToken = async (id: string, token: string): Promise<Order> => {
 	if (!safeCompare(token, confirmationTokenFor(id))) throw notFound("Commande");
-	return getOrder(id);
+	return toCustomerOrder(await getOrder(id));
 };
 
 /**
@@ -341,9 +387,29 @@ export const checkout = async (
 	actor: { userId: string | null },
 ): Promise<CheckoutResult> => {
 	const settings = await getStoreSettings();
+	if (settings.maintenanceMode) {
+		throw conflict("La boutique est en maintenance. Réessayez dans quelques instants.");
+	}
 
 	const lines = await cart.loadCartLines(cartId);
 	if (lines.length === 0) throw badRequest("Votre panier est vide.");
+
+	// Un produit retiré de la vente (brouillon, archivé) depuis son ajout au
+	// panier ne doit plus pouvoir être acheté.
+	const unavailable = await db
+		.select({ name: t.products.name })
+		.from(t.products)
+		.where(
+			and(
+				inArray(t.products.id, [...new Set(lines.map((line) => line.productId))]),
+				or(ne(t.products.status, "published"), isNotNull(t.products.deletedAt)),
+			),
+		);
+	if (unavailable.length > 0) {
+		throw conflict(
+			`Plus disponible à la vente : ${unavailable.map((row) => row.name).join(", ")}. Retirez-le du panier.`,
+		);
+	}
 
 	const [cartRow] = await db
 		.select({
@@ -360,9 +426,19 @@ export const checkout = async (
 	}
 
 	const subtotal = lines.reduce((total, line) => total + line.lineTotal, 0);
-	const shipping = await cart.resolveShippingAmount(cartId, input.shippingRateId, subtotal);
 
-	if (!shipping) throw badRequest("Choisissez un mode de livraison.");
+	// Le tarif est recalculé pour l'adresse et le poids réels : le navigateur
+	// choisit parmi les options, il n'impose ni zone ni montant.
+	const shippingOptions = await cart.quoteShipping(
+		cartId,
+		cartRow.currency as CurrencyCode,
+		input.shippingAddress,
+	);
+	const shipping = shippingOptions.find((option) => option.rateId === input.shippingRateId);
+
+	if (!shipping) {
+		throw badRequest("Ce mode de livraison n'est pas disponible pour cette adresse.");
+	}
 
 	const shippingTotal = shipping.amount;
 
@@ -385,9 +461,17 @@ export const checkout = async (
 
 	const { adapter, runtime } = await loadProviderConfig(input.paymentProviderKey);
 
-	const expiresAt = new Date(Date.now() + settings.stockReservationMinutes * 60_000);
+	const expiresAt = new Date(Date.now() + reservationMinutes(settings, adapter) * 60_000);
 
 	const { orderId, displayId } = await db.transaction(async (tx) => {
+		// Deux validations simultanées du même panier créeraient deux commandes.
+		const [locked] = await tx
+			.select({ status: t.carts.status })
+			.from(t.carts)
+			.where(eq(t.carts.id, cartId))
+			.for("update");
+		if (locked?.status !== "active") throw conflict("Ce panier a déjà été validé.");
+
 		const [order] = await tx
 			.insert(t.orders)
 			.values({
@@ -454,7 +538,9 @@ export const checkout = async (
 
 		await appendStatusHistory(tx, id, null, "pending_payment", "Commande créée");
 
-		if (discount) await incrementUsage(discount.promoCodeId, tx);
+		if (discount && !(await incrementUsage(discount.promoCodeId, tx))) {
+			throw conflict("Ce code promo a atteint sa limite d'utilisation.");
+		}
 
 		await tx
 			.update(t.carts)
@@ -464,7 +550,9 @@ export const checkout = async (
 		return { orderId: id, displayId: order!.displayId };
 	});
 
-	const storefront = input.returnUrl ?? env.STOREFRONT_URL;
+	// Jamais une URL fournie par le client : elle servirait de redirection
+	// vers un site de phishing depuis la page de paiement du prestataire.
+	const storefront = env.STOREFRONT_URL;
 
 	const initiation = await adapter.initiate({
 		...runtime,
@@ -477,9 +565,8 @@ export const checkout = async (
 			phone: input.phone ?? null,
 			description: `${settings.orderNumberPrefix}-${displayId}`,
 		},
-		successUrl: `${storefront}/order-confirmation?order_id=${orderId}&token=${confirmationTokenFor(orderId)}`,
-		cancelUrl: `${storefront}/checkout?order=${orderId}&status=cancelled`,
-		webhookUrl: `${env.PUBLIC_API_URL}/api/webhooks/${adapter.key}`,
+		...paymentUrls(storefront, orderId, adapter.key),
+		expiresAt,
 	});
 
 	const [transaction] = await db
@@ -508,6 +595,15 @@ export const checkout = async (
 		await markOrderPaid(orderId, { comment: `Paiement ${adapter.name} confirmé` });
 	}
 
+	// Refus immédiat (clé invalide, prestataire injoignable…) : la commande
+	// reste réservée et la cliente pourra reprendre le paiement.
+	if (initiation.status === "failed") {
+		await markPaymentFailed(
+			orderId,
+			initiation.errorMessage ?? `Paiement ${adapter.name} refusé`,
+		);
+	}
+
 	const order = await getOrder(orderId);
 
 	return {
@@ -519,6 +615,125 @@ export const checkout = async (
 		transactionId: transaction?.id ?? null,
 		confirmationToken: confirmationTokenFor(orderId),
 	};
+};
+
+/**
+ * Reprise du paiement d'une commande en attente (retour arrière depuis la
+ * page du prestataire, session expirée, refus).
+ *
+ * La réservation de stock est prolongée - jamais recréée : si elle a déjà
+ * expiré, les articles ont pu être vendus entre-temps et la commande doit
+ * être repassée. L'adaptateur reçoit la tentative précédente pour la
+ * réutiliser si elle est encore ouverte, ce qui évite un double débit.
+ */
+export const resumePayment = async (
+	orderId: string,
+	token: string,
+): Promise<{ redirectUrl: string | null }> => {
+	if (!safeCompare(token, confirmationTokenFor(orderId))) throw notFound("Commande");
+
+	const [order] = await db
+		.select({
+			displayId: t.orders.displayId,
+			status: t.orders.status,
+			paymentStatus: t.orders.paymentStatus,
+			total: t.orders.total,
+			currency: t.orders.currency,
+			email: t.orders.email,
+			phone: t.orders.phone,
+		})
+		.from(t.orders)
+		.where(eq(t.orders.id, orderId))
+		.limit(1);
+
+	if (!order) throw notFound("Commande");
+	if (
+		order.status !== "pending_payment" ||
+		(order.paymentStatus !== "pending" && order.paymentStatus !== "failed")
+	) {
+		throw conflict("Cette commande n'attend plus de paiement.");
+	}
+
+	const [previous] = await db
+		.select({
+			providerKey: t.transactions.providerKey,
+			providerTransactionId: t.transactions.providerTransactionId,
+		})
+		.from(t.transactions)
+		.where(and(eq(t.transactions.orderId, orderId), eq(t.transactions.kind, "payment")))
+		.orderBy(desc(t.transactions.createdAt))
+		.limit(1);
+
+	if (!previous) throw conflict("Aucun paiement à reprendre pour cette commande.");
+
+	const { adapter, runtime } = await loadProviderConfig(previous.providerKey);
+	if (!adapter.supportsWebhooks) {
+		throw conflict("Ce moyen de paiement se règle à la livraison, rien à reprendre en ligne.");
+	}
+
+	const settings = await getStoreSettings();
+	const expiresAt = new Date(Date.now() + reservationMinutes(settings, adapter) * 60_000);
+
+	const extended = await db
+		.update(t.stockReservations)
+		.set({ expiresAt })
+		.where(
+			and(
+				eq(t.stockReservations.orderId, orderId),
+				eq(t.stockReservations.status, "active"),
+			),
+		)
+		.returning({ id: t.stockReservations.id });
+
+	if (extended.length === 0) {
+		throw conflict(
+			"Le délai de réservation de cette commande est dépassé. Merci de repasser commande.",
+		);
+	}
+
+	const initiation = await adapter.initiate({
+		...runtime,
+		order: {
+			id: orderId,
+			displayId: order.displayId,
+			amount: order.total,
+			currency: order.currency as CurrencyCode,
+			email: order.email,
+			phone: order.phone,
+			description: `${settings.orderNumberPrefix}-${order.displayId}`,
+		},
+		...paymentUrls(env.STOREFRONT_URL, orderId, adapter.key),
+		expiresAt,
+		previousTransactionId: previous.providerTransactionId,
+	});
+
+	// Même session réutilisée : elle est déjà au journal.
+	if (initiation.providerTransactionId !== previous.providerTransactionId) {
+		await db.insert(t.transactions).values({
+			orderId,
+			providerKey: adapter.key,
+			providerTransactionId: initiation.providerTransactionId,
+			kind: "payment",
+			status: initiation.status === "failed" ? "failed" : "pending",
+			amount: order.total,
+			currency: order.currency,
+			rawResponse: initiation.raw ?? null,
+			errorMessage: initiation.errorMessage ?? null,
+		});
+	}
+
+	if (initiation.status === "failed") {
+		throw paymentError(initiation.errorMessage ?? "Le paiement n'a pas pu être relancé.");
+	}
+
+	if (order.paymentStatus === "failed") {
+		await db
+			.update(t.orders)
+			.set({ paymentStatus: "pending", updatedAt: new Date() })
+			.where(and(eq(t.orders.id, orderId), eq(t.orders.paymentStatus, "failed")));
+	}
+
+	return { redirectUrl: initiation.redirectUrl };
 };
 
 // --- Cycle de vie ----------------------------------------------------------
@@ -544,8 +759,20 @@ export const markOrderPaid = async (
 
 		if (!order) throw notFound("Commande");
 		if (order.paymentStatus === "paid") return;
+		// Annulée ou remboursée : un encaissement tardif ne la ressuscite pas.
+		if (order.status !== "pending_payment") {
+			throw conflict(`Commande « ${order.status} » : elle ne peut plus être marquée payée.`);
+		}
 
-		await inventory.consumeReservations(tx, orderId);
+		const consumed = await inventory.consumeReservations(tx, orderId);
+
+		// Réservation expirée avant le paiement (paiement à la livraison
+		// confirmé des jours plus tard) : le stock est décrémenté depuis les
+		// lignes, sinon la vente n'apparaîtrait jamais dans l'inventaire.
+		const shortfalls = consumed === 0 ? await inventory.consumeFromOrderItems(tx, orderId) : [];
+		if (shortfalls.length > 0) {
+			options.comment = `${options.comment ?? "Paiement confirmé"} - stock insuffisant, à vérifier : ${shortfalls.join(", ")}`;
+		}
 
 		const now = new Date();
 
@@ -622,6 +849,16 @@ export const updateOrderStatus = async (
 
 		if (!order) throw notFound("Commande");
 		if (order.status === nextStatus) return;
+
+		// Ces deux statuts ont leurs propres actions, qui gèrent le stock et
+		// le prestataire ; les poser à la main contournerait l'encaissement.
+		if (nextStatus === "paid" || nextStatus === "refunded") {
+			throw conflict(
+				nextStatus === "paid"
+					? "Utilisez « Marquer comme payée » pour confirmer un paiement."
+					: "Utilisez « Rembourser » pour rembourser une commande.",
+			);
+		}
 
 		if (!canTransitionOrder(order.status, nextStatus)) {
 			throw conflict(
@@ -738,6 +975,36 @@ export const refundOrder = async (
 	},
 	actor: { userId: string; label: string },
 ): Promise<Order> => {
+	if (input.items) {
+		const ids = input.items.map((entry) => entry.orderItemId);
+		if (new Set(ids).size !== ids.length) {
+			throw badRequest("Chaque ligne de commande ne doit apparaître qu'une fois.");
+		}
+	}
+
+	// Verrou sur la commande pendant tout le remboursement : deux clics ou
+	// deux administrateurs simultanés rembourseraient deux fois chez le
+	// prestataire, et la base n'en garderait qu'un.
+	await db.transaction(async (tx) => {
+		await tx
+			.select({ id: t.orders.id })
+			.from(t.orders)
+			.where(eq(t.orders.id, orderId))
+			.for("update");
+
+		await refundLocked(tx, orderId, input, actor);
+	});
+
+	return getOrder(orderId);
+};
+
+const refundLocked = async (
+	tx: Transaction,
+	orderId: string,
+	input: Parameters<typeof refundOrder>[1],
+	actor: { userId: string; label: string },
+): Promise<void> => {
+	// Relue après le verrou : un remboursement concurrent est déjà compté.
 	const order = await getOrder(orderId);
 
 	if (order.paymentStatus !== "paid" && order.paymentStatus !== "partially_refunded") {
@@ -778,7 +1045,14 @@ export const refundOrder = async (
 			providerTransactionId: t.transactions.providerTransactionId,
 		})
 		.from(t.transactions)
-		.where(and(eq(t.transactions.orderId, orderId), eq(t.transactions.kind, "payment")))
+		.where(
+			and(
+				eq(t.transactions.orderId, orderId),
+				eq(t.transactions.kind, "payment"),
+				// La tentative encaissée, pas une session abandonnée avant elle.
+				eq(t.transactions.status, "success"),
+			),
+		)
 		.orderBy(desc(t.transactions.createdAt))
 		.limit(1);
 
@@ -788,6 +1062,14 @@ export const refundOrder = async (
 		const adapter = getPaymentAdapter(transaction.providerKey);
 
 		if (adapter?.supportsRefunds && adapter.refund) {
+			// Wave rembourse la session entière, quel que soit le montant demandé.
+			if (
+				adapter.supportsPartialRefunds === false &&
+				(amount !== order.total || order.refundedTotal > 0)
+			) {
+				throw conflict(`${adapter.name} ne permet que le remboursement intégral de la commande.`);
+			}
+
 			const [providerRow] = await db
 				.select()
 				.from(t.paymentProviders)
@@ -796,7 +1078,10 @@ export const refundOrder = async (
 
 			const result = await adapter.refund({
 				environment: providerRow?.environment ?? "test",
-				credentials: decryptCredentials(providerRow?.credentials ?? {}),
+				credentials: resolveCredentials(
+					adapter.requiredCredentials,
+					decryptCredentials(providerRow?.credentials ?? {}),
+				),
 				config: providerRow?.config ?? {},
 				order: {
 					id: order.id,
@@ -822,7 +1107,7 @@ export const refundOrder = async (
 		}
 	}
 
-	await db.transaction(async (tx) => {
+	try {
 		await tx.insert(t.refunds).values({
 			orderId,
 			amount,
@@ -896,7 +1181,15 @@ export const refundOrder = async (
 				actor,
 			);
 		}
-	});
-
-	return getOrder(orderId);
+	} catch (error) {
+		// L'argent est déjà parti : sans cette trace, le remboursement serait
+		// introuvable. À reporter à la main dans la commande.
+		if (providerRefundId) {
+			console.error(
+				`[remboursement] ${providerRefundId} effectué chez le prestataire mais non enregistré pour la commande ${orderId}`,
+				error,
+			);
+		}
+		throw error;
+	}
 };

@@ -11,6 +11,7 @@ import {
 	slugSchema,
 	translationsSchema,
 	uuidSchema,
+	partialForUpdate,
 } from "./common.js";
 
 // --- Bannières (§2.6) ------------------------------------------------------
@@ -52,7 +53,7 @@ const enforceSchedule = (
 
 export const bannerInputSchema = bannerBaseSchema.superRefine(enforceSchedule);
 
-export const updateBannerSchema = bannerBaseSchema.partial().superRefine(enforceSchedule);
+export const updateBannerSchema = partialForUpdate(bannerBaseSchema).superRefine(enforceSchedule);
 
 export type BannerInput = z.infer<typeof bannerInputSchema>;
 export type UpdateBannerInput = z.infer<typeof updateBannerSchema>;
@@ -148,7 +149,7 @@ export type FeaturedEntryInput = z.infer<typeof featuredEntryInputSchema>;
  * `isActive` ou `sectionKey` - changer la cible d'une mise en avant passe par
  * une suppression puis une nouvelle entrée plutôt que par ce chemin.
  */
-export const updateFeaturedEntrySchema = featuredEntryBaseSchema.partial();
+export const updateFeaturedEntrySchema = partialForUpdate(featuredEntryBaseSchema);
 
 export type UpdateFeaturedEntryInput = z.infer<typeof updateFeaturedEntrySchema>;
 
@@ -189,7 +190,7 @@ export const contentHighlightInputSchema = z.object({
 
 export type ContentHighlightInput = z.infer<typeof contentHighlightInputSchema>;
 
-export const updateContentHighlightSchema = contentHighlightInputSchema.partial();
+export const updateContentHighlightSchema = partialForUpdate(contentHighlightInputSchema);
 
 export type UpdateContentHighlightInput = z.infer<typeof updateContentHighlightSchema>;
 

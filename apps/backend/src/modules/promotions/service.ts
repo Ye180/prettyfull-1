@@ -267,13 +267,25 @@ export const getAppliedDiscount = async (
 	};
 };
 
-/** Incrément atomique - jamais un recalcul depuis l'historique des commandes. */
+/**
+ * Incrément atomique, conditionné à la limite : la vérification et
+ * l'incrément tiennent dans une seule requête, si bien que deux commandes
+ * simultanées ne peuvent pas dépasser `usageLimit`. Renvoie `false` si la
+ * limite est atteinte.
+ */
 export const incrementUsage = async (
 	id: string,
 	executor: Transaction | typeof db = db,
-): Promise<void> => {
-	await executor
+): Promise<boolean> => {
+	const updated = await executor
 		.update(t.promoCodes)
 		.set({ usageCount: sql`${t.promoCodes.usageCount} + 1`, updatedAt: new Date() })
-		.where(eq(t.promoCodes.id, id));
+		.where(
+			and(
+				eq(t.promoCodes.id, id),
+				sql`(${t.promoCodes.usageLimit} is null or ${t.promoCodes.usageCount} < ${t.promoCodes.usageLimit})`,
+			),
+		)
+		.returning({ id: t.promoCodes.id });
+	return updated.length > 0;
 };

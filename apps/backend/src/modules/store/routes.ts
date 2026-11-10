@@ -13,23 +13,23 @@ import { getStoreSettings } from "../settings/service.js";
 export const storeMiscRoutes = new Hono<AppEnv>();
 
 storeMiscRoutes.get("/payment-options", async (c) =>
-	c.json(await listAvailablePaymentOptions()),
+  c.json(await listAvailablePaymentOptions()),
 );
 
 /** Devises, langues et nom de la boutique, consommés au premier rendu. */
 storeMiscRoutes.get("/config", async (c) => {
-	const settings = await getStoreSettings();
+  const settings = await getStoreSettings();
 
-	return c.json({
-		storeName: settings.storeName,
-		contactEmail: settings.contactEmail,
-		supportPhone: settings.supportPhone ?? null,
-		defaultCurrency: settings.defaultCurrency,
-		enabledCurrencies: settings.enabledCurrencies,
-		usdToXofRate: settings.usdToXofRate,
-		defaultLocale: settings.defaultLocale,
-		enabledLocales: settings.enabledLocales,
-		freeShippingThreshold: settings.freeShippingThreshold ?? null,
-		maintenanceMode: settings.maintenanceMode,
-	});
+  return c.json({
+    storeName: settings.storeName,
+    contactEmail: settings.contactEmail,
+    supportPhone: settings.supportPhone ?? null,
+    defaultCurrency: settings.defaultCurrency,
+    enabledCurrencies: settings.enabledCurrencies,
+    usdToXofRate: settings.usdToXofRate,
+    defaultLocale: settings.defaultLocale,
+    enabledLocales: settings.enabledLocales,
+    freeShippingThreshold: settings.freeShippingThreshold ?? null,
+    maintenanceMode: settings.maintenanceMode,
+  });
 });

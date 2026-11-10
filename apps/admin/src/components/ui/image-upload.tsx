@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback, useRef, useState, type DragEvent } from "react";
 import { api } from "@/lib/api";
 import { mediaUrl } from "@/lib/media";
-import { uploadHeaders, useUploadThing } from "@/lib/uploadthing";
+import { useUpload } from "@/lib/uploads";
 import { useToast } from "@/components/ui/toast";
 import { Button, Input, Spinner } from "./primitives";
 import { IconTrash, IconUpload } from "@/components/icons";
@@ -14,9 +14,7 @@ import { IconTrash, IconUpload } from "@/components/icons";
 /**
  * Téléversement de visuels.
  *
- * Écrit avec le hook plutôt qu'avec les composants pré-stylés d'UploadThing :
- * ces derniers embarquent leur propre feuille de styles, qui jurerait avec le
- * reste du panel et ignorerait le thème sombre.
+ * Envoi direct vers Cloudflare R2 via `useUpload` (URL signée par l'API).
  *
  * Le champ d'URL manuelle reste disponible en repli - le stockage peut ne pas
  * être configuré, et certaines images vivent déjà dans `apps/web/public`.
@@ -34,8 +32,11 @@ export const useUploadAvailable = () => {
 	return data?.configured ?? false;
 };
 
+/** Destinations du back-office (les photos d'avis passent par le storefront). */
+type CatalogOrContent = Exclude<UploadEndpoint, "reviewPhoto">;
+
 interface ImageUploadProps {
-	endpoint: UploadEndpoint;
+	endpoint: CatalogOrContent;
 	/** URL courante ; chaîne vide quand aucune image n'est choisie. */
 	value: string;
 	onChange: (url: string) => void;
@@ -57,20 +58,10 @@ export const ImageUpload = ({
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [dragging, setDragging] = useState(false);
 
-	const { startUpload, isUploading } = useUploadThing(endpoint, {
-		headers: uploadHeaders,
-		onClientUploadComplete: (files) => {
-			const uploaded = files?.[0];
-			if (!uploaded) return;
-
-			onChange(uploaded.serverData?.url ?? uploaded.ufsUrl);
-			notify("Visuel téléversé.");
-		},
-		onUploadError: (error) => notifyError(error, "Téléversement impossible."),
-	});
+	const { upload: send, isUploading } = useUpload(endpoint);
 
 	const upload = useCallback(
-		(files: File[]) => {
+		async (files: File[]) => {
 			const image = files.find((file) => file.type.startsWith("image/"));
 
 			if (!image) {
@@ -78,16 +69,23 @@ export const ImageUpload = ({
 				return;
 			}
 
-			void startUpload([image]);
+			try {
+				const [url] = await send([image]);
+				if (!url) return;
+				onChange(url);
+				notify("Visuel téléversé.");
+			} catch (error) {
+				notifyError(error, "Téléversement impossible.");
+			}
 		},
-		[startUpload, notifyError],
+		[send, onChange, notify, notifyError],
 	);
 
 	const onDrop = (event: DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
 		setDragging(false);
 		if (disabled || isUploading) return;
-		upload([...event.dataTransfer.files]);
+		void upload([...event.dataTransfer.files]);
 	};
 
 	const preview = mediaUrl(value);
@@ -98,9 +96,9 @@ export const ImageUpload = ({
 				<div className="size-20 shrink-0 overflow-hidden rounded-md border border-line bg-sunken">
 					{preview && (
 						/*
-						 * Les visuels viennent du storefront ou d'UploadThing, dont
-						 * l'hôte porte l'identifiant de l'app : `next/image` exigerait
-						 * une liste d'hôtes que l'administrateur ne peut pas maintenir.
+						 * Les visuels viennent du storefront ou du stockage R2, et une URL
+						 * collée à la main peut venir de n'importe où : `next/image`
+						 * exigerait une liste d'hôtes à maintenir.
 						 */
 						// eslint-disable-next-line @next/next/no-img-element
 						<img
@@ -180,7 +178,7 @@ export const ImageUpload = ({
 				accept="image/*"
 				className="hidden"
 				onChange={(event) => {
-					upload([...(event.target.files ?? [])]);
+					void upload([...(event.target.files ?? [])]);
 					// Réinitialisé pour que re-sélectionner le même fichier
 					// redéclenche bien l'événement.
 					event.target.value = "";
@@ -202,7 +200,7 @@ export const ImageUploadList = ({
 	onChange,
 	disabled = false,
 }: {
-	endpoint: UploadEndpoint;
+	endpoint: CatalogOrContent;
 	values: string[];
 	onChange: (urls: string[]) => void;
 	disabled?: boolean;
@@ -212,27 +210,22 @@ export const ImageUploadList = ({
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [dragging, setDragging] = useState(false);
 
-	const { startUpload, isUploading } = useUploadThing(endpoint, {
-		headers: uploadHeaders,
-		onClientUploadComplete: (files) => {
-			const urls = (files ?? []).map(
-				(file) => file.serverData?.url ?? file.ufsUrl,
-			);
-			if (urls.length === 0) return;
+	const { upload: send, isUploading } = useUpload(endpoint);
 
-			onChange([...values.filter(Boolean), ...urls]);
-			notify(`${urls.length} visuel(s) ajouté(s).`);
-		},
-		onUploadError: (error) => notifyError(error, "Téléversement impossible."),
-	});
-
-	const upload = (files: File[]) => {
+	const upload = async (files: File[]) => {
 		const images = files.filter((file) => file.type.startsWith("image/"));
 		if (images.length === 0) {
 			notifyError(new Error("Seules les images sont acceptées."));
 			return;
 		}
-		void startUpload(images);
+
+		try {
+			const urls = await send(images);
+			onChange([...values.filter(Boolean), ...urls]);
+			notify(`${urls.length} visuel(s) ajouté(s).`);
+		} catch (error) {
+			notifyError(error, "Téléversement impossible.");
+		}
 	};
 
 	return (
@@ -291,7 +284,7 @@ export const ImageUploadList = ({
 							onDrop={(event) => {
 								event.preventDefault();
 								setDragging(false);
-								if (!isUploading) upload([...event.dataTransfer.files]);
+								if (!isUploading) void upload([...event.dataTransfer.files]);
 							}}
 							className={cn(
 								"flex items-center justify-center gap-2 rounded-md border border-dashed px-3 py-4 text-[13px] transition-colors",
@@ -333,7 +326,7 @@ export const ImageUploadList = ({
 						multiple
 						className="hidden"
 						onChange={(event) => {
-							upload([...(event.target.files ?? [])]);
+							void upload([...(event.target.files ?? [])]);
 							event.target.value = "";
 						}}
 					/>

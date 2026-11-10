@@ -401,15 +401,22 @@ const categoryFilter = (categoryIds: string[] | null): SQL | null => {
 			)`;
 };
 
-/** Recherche plein texte insensible aux accents, adossée à l'index GIN. */
+/**
+ * Recherche plein texte insensible aux accents, adossée à l'index GIN.
+ *
+ * Entre parenthèses : `and()` de Drizzle n'en ajoute pas, et sans elles les
+ * `or` l'emportaient sur les filtres voisins (`status = 'published'`,
+ * `deleted_at is null`) - la recherche publique renvoyait brouillons et
+ * produits supprimés.
+ */
 const searchFilter = (q: string | undefined): SQL | null =>
 	q
-		? sql`
+		? sql`(
 			to_tsvector('french', pf_unaccent(coalesce(${t.products.name}, '') || ' ' || coalesce(${t.products.shortDescription}, '')))
 			@@ plainto_tsquery('french', pf_unaccent(${q}))
 			or ${t.products.name} ilike ${`%${q}%`}
 			or ${t.products.sku} ilike ${`%${q}%`}
-		`
+		)`
 		: null;
 
 export const listProducts = async (

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ROLE_KEYS, USER_KINDS, USER_STATUSES } from "./enums.js";
-import { emailSchema, paginationQuerySchema, uuidSchema } from "./common.js";
+import { emailSchema, paginationQuerySchema, uuidSchema, partialForUpdate } from "./common.js";
 
 /**
  * Politique de mot de passe. Volontairement basée sur la longueur plutôt que
@@ -134,9 +134,9 @@ export const createStaffSchema = z.object({
 	status: z.enum(USER_STATUSES).default("active"),
 });
 
-export const updateStaffSchema = createStaffSchema
-	.partial()
-	.omit({ password: true });
+// `partialForUpdate` : un `.partial()` seul réappliquerait `status: "active"`
+// et réactiverait un compte suspendu à chaque modification.
+export const updateStaffSchema = partialForUpdate(createStaffSchema).omit({ password: true });
 
 export const updateProfileSchema = z.object({
 	firstName: z.string().trim().min(1).max(80).optional(),

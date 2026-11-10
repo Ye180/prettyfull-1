@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { BANNER_PLACEMENTS, CONTACT_MESSAGE_STATUSES, CONTENT_STATUSES, FEATURED_KINDS, } from "./enums.js";
-import { emailSchema, paginationQuerySchema, slugSchema, translationsSchema, uuidSchema, } from "./common.js";
+import { emailSchema, paginationQuerySchema, slugSchema, translationsSchema, uuidSchema, partialForUpdate, } from "./common.js";
 // --- Bannières (§2.6) ------------------------------------------------------
 /**
  * Champs d'une bannière, sans contrôle croisé - même raison que pour les
@@ -33,7 +33,7 @@ const enforceSchedule = (value, ctx) => {
     }
 };
 export const bannerInputSchema = bannerBaseSchema.superRefine(enforceSchedule);
-export const updateBannerSchema = bannerBaseSchema.partial().superRefine(enforceSchedule);
+export const updateBannerSchema = partialForUpdate(bannerBaseSchema).superRefine(enforceSchedule);
 export const bannerSchema = z.object({
     id: uuidSchema,
     title: z.string().nullable(),
@@ -106,7 +106,7 @@ export const featuredEntryInputSchema = featuredEntryBaseSchema.superRefine(enfo
  * `isActive` ou `sectionKey` - changer la cible d'une mise en avant passe par
  * une suppression puis une nouvelle entrée plutôt que par ce chemin.
  */
-export const updateFeaturedEntrySchema = featuredEntryBaseSchema.partial();
+export const updateFeaturedEntrySchema = partialForUpdate(featuredEntryBaseSchema);
 export const featuredEntrySchema = z.object({
     id: uuidSchema,
     kind: z.enum(FEATURED_KINDS),
@@ -136,7 +136,7 @@ export const contentHighlightInputSchema = z.object({
     status: z.enum(CONTENT_STATUSES).default("draft"),
     translations: translationsSchema,
 });
-export const updateContentHighlightSchema = contentHighlightInputSchema.partial();
+export const updateContentHighlightSchema = partialForUpdate(contentHighlightInputSchema);
 export const contentHighlightSchema = z.object({
     id: uuidSchema,
     icon: z.string(),

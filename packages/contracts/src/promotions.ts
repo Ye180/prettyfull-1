@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ACTIVATION_STATUSES, DISCOUNT_TYPES } from "./enums.js";
-import { moneySchema, paginationQuerySchema, uuidSchema } from "./common.js";
+import { moneySchema, paginationQuerySchema, uuidSchema, partialForUpdate } from "./common.js";
 
 // --- Codes promo (§2.9) -----------------------------------------------------
 
@@ -60,8 +60,7 @@ const enforcePromoCodeRules = (
 
 export const promoCodeInputSchema = promoCodeBaseSchema.superRefine(enforcePromoCodeRules);
 
-export const updatePromoCodeSchema = promoCodeBaseSchema
-	.partial()
+export const updatePromoCodeSchema = partialForUpdate(promoCodeBaseSchema)
 	.superRefine((value, ctx) => {
 		if (value.discountType && value.discountValue !== undefined) {
 			enforcePromoCodeRules(

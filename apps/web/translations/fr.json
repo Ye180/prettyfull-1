@@ -701,7 +701,18 @@
     "total": "Total",
     "trackYourOrder": "Suivre ma commande",
     "backToHomePage": "Retour à l'accueil",
-    "continueShopping": "Continuer mes achats"
+    "continueShopping": "Continuer mes achats",
+    "paymentConfirming": "Confirmation du paiement en cours…",
+    "paymentConfirmingDescription": "Cela ne prend généralement que quelques secondes. Ne fermez pas cette page.",
+    "paymentSlow": "La confirmation prend plus de temps que prévu. Vous recevrez un e-mail dès que le paiement sera validé.",
+    "paymentIncompleteBadge": "Paiement non finalisé",
+    "paymentIncompleteTitle": "Votre paiement n'a pas abouti",
+    "paymentIncompleteDescription": "Votre commande est réservée pour un temps limité. Vous pouvez reprendre le paiement maintenant ; aucun montant n'a été débité.",
+    "resumePayment": "Reprendre le paiement",
+    "resumingPayment": "Redirection…",
+    "resumeError": "Impossible de reprendre le paiement. Veuillez réessayer.",
+    "paid": "Payée",
+    "awaitingPayment": "En attente de paiement"
   },
   "ContactPage": {
     "hero": {
@@ -845,15 +856,12 @@
       "selectMethod": "Choisissez votre moyen de paiement",
       "loadingMethods": "Chargement des moyens de paiement...",
       "codDescription": "Payez en espèces ou par Mobile Money directement à la réception de votre commande.",
-      "cardNumber": "Numéro de carte",
-      "cardName": "Nom sur la carte",
-      "expiryDate": "Date d'expiration",
-      "cvv": "CVV",
       "processing": "Traitement en cours...",
       "reviewOrder": "Vérifier la commande",
       "paymentMethodLabel": "Moyen de paiement :",
-      "cardEndingIn": "Carte se terminant par {digits}",
-      "completePreviousStep": "Complétez l'étape précédente pour continuer"
+      "completePreviousStep": "Complétez l'étape précédente pour continuer",
+      "stripeLabel": "Paiement sécurisé par Stripe",
+      "stripeDescription": "Vous serez redirigé vers la page de paiement Stripe pour régler par carte, Apple Pay ou Google Pay. Vos coordonnées bancaires ne transitent jamais par notre site."
     },
     "checkoutForm": {
       "labelName": "Nom",
@@ -1118,5 +1126,29 @@
     "intro": "Ces conditions encadrent chaque commande passée sur PrettyFull : produits importés des USA, prix, paiement, livraison à Abidjan et retours. Elles s'appliquent dès la validation de votre commande.",
     "contactLabel": "Une question sur ces conditions ? Notre équipe vous répond.",
     "contactCta": "Nous contacter"
+  },
+  "Pwa": {
+    "install": {
+      "title": "Installez Prettyfull",
+      "description": "Retrouvez la boutique en un geste depuis votre écran d'accueil, en plein écran.",
+      "cta": "Installer",
+      "howTo": "Comment faire ?",
+      "later": "Plus tard",
+      "done": "Terminé",
+      "footerCta": "Installer l'application",
+      "ios": {
+        "step1": "Touchez <share></share> <strong>Partager</strong> dans la barre du navigateur.",
+        "step2": "Faites défiler et choisissez <add></add> <strong>Sur l'écran d'accueil</strong>.",
+        "step3": "Touchez <strong>Ajouter</strong> : Prettyfull apparaît avec vos applications."
+      }
+    },
+    "update": {
+      "message": "Une nouvelle version est disponible.",
+      "cta": "Mettre à jour",
+      "updating": "Mise à jour…"
+    },
+    "offline": {
+      "message": "Vous êtes hors ligne. Votre panier est conservé."
+    }
   }
 }

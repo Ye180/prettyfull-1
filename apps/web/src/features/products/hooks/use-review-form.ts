@@ -1,9 +1,9 @@
 "use client";
 
-import { useUploadThing } from "@/lib/uploadthing";
+import { uploadReviewPhotos } from "@/lib/uploads";
 import type { ReviewInput } from "@prettyfull/contracts";
 import { toast } from "@prettyfull/ui";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 export interface ReviewFormValues {
 	rating: number;
@@ -19,26 +19,28 @@ export interface ReviewFormValues {
  * L'état des champs (saisie, étoiles) reste dans `DrawerReview` - c'est de
  * l'état d'interface pure, pas la peine d'un hook dédié pour ça. Ce hook
  * n'existe que parce que `DrawerReview` vit dans `packages/ui`, qui ne peut
- * pas dépendre de `apps/web/src/lib/store-api` ni `apps/web/src/lib/uploadthing` :
+ * pas dépendre de `apps/web/src/lib/store-api` ni `apps/web/src/lib/uploads` :
  * les deux appels réseau sont donc préparés ici et passés en props.
  */
 export function useReviewForm(
 	productId: string,
 	submitReview: (input: ReviewInput) => Promise<{ success: boolean; id?: string }>,
 ) {
-	const { startUpload, isUploading } = useUploadThing("reviewPhoto", {
-		onUploadError: (error) => {
-			toast.error("Téléversement impossible", { description: error.message });
-		},
-	});
+	const [isUploading, setIsUploading] = useState(false);
 
-	const uploadPhotos = useCallback(
-		async (files: File[]): Promise<string[]> => {
-			const uploaded = await startUpload(files);
-			return (uploaded ?? []).map((file) => file.serverData?.url ?? file.ufsUrl);
-		},
-		[startUpload],
-	);
+	const uploadPhotos = useCallback(async (files: File[]): Promise<string[]> => {
+		setIsUploading(true);
+		try {
+			return await uploadReviewPhotos(files);
+		} catch (error) {
+			toast.error("Téléversement impossible", {
+				description: error instanceof Error ? error.message : undefined,
+			});
+			return [];
+		} finally {
+			setIsUploading(false);
+		}
+	}, []);
 
 	const onSubmit = useCallback(
 		async (values: ReviewFormValues) => {
