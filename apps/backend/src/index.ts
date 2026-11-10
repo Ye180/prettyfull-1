@@ -8,8 +8,8 @@ import { secureHeaders } from "hono/secure-headers";
 import { openApiDocument } from "./docs/openapi.js";
 import { env, isProduction } from "./lib/env.js";
 import { requireAuth, requireKind } from "./middleware/auth.js";
-import { MINUTE, rateLimit } from "./middleware/rate-limit.js";
 import { errorHandler, notFoundHandler } from "./middleware/error.js";
+import { MINUTE, rateLimit } from "./middleware/rate-limit.js";
 import { requestContext, type AppEnv } from "./middleware/request-context.js";
 import { storeAddressRoutes } from "./modules/auth/addresses.js";
 import { adminAuthRoutes, storeAuthRoutes } from "./modules/auth/routes.js";
@@ -47,7 +47,9 @@ app.use("*", requestContext);
 // dans les journaux d'accès.
 app.use(
   "*",
-  logger((message, ...rest) => console.log(message.replace(/\?\S*/, ""), ...rest)),
+  logger((message, ...rest) =>
+    console.log(message.replace(/\?\S*/, ""), ...rest),
+  ),
 );
 app.use("*", secureHeaders());
 

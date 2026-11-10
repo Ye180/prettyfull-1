@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import type { NextConfig } from "next";
 
 /**
@@ -34,6 +35,19 @@ const mediaHost = process.env.NEXT_PUBLIC_MEDIA_URL
 	: null;
 
 const nextConfig: NextConfig = {
+	/**
+	 * Sortie autonome pour Docker (`NEXT_OUTPUT=standalone`, posé par le
+	 * Dockerfile) : un serveur `server.js` et uniquement les modules utilisés,
+	 * au lieu de tout `node_modules`. Désactivée en local, où `next start`
+	 * reste le mode normal.
+	 *
+	 * La racine de traçage remonte au monorepo : sans elle, les paquets
+	 * partagés (`@prettyfull/ui`, `contracts`…) ne seraient pas embarqués.
+	 */
+	...(process.env.NEXT_OUTPUT === "standalone"
+		? { output: "standalone" as const, outputFileTracingRoot: resolve(process.cwd(), "../..") }
+		: {}),
+
 	transpilePackages: ["@prettyfull/ui", "@prettyfull/utils"],
 	poweredByHeader: false,
 

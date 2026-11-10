@@ -1,49 +1,51 @@
+# syntax=docker/dockerfile:1
+#
+# web (apps/web, Next.js) - à construire depuis la RACINE du dépôt :
+#   Dokploy : Build Type « Dockerfile », Docker Context Path « . »,
+#             Dockerfile Path « apps/web/Dockerfile »
+#
+# Variables NEXT_PUBLIC_* : lues à la COMPILATION, donc à déclarer dans
+# Dokploy comme « Build-time Arguments » (onglet Environment), pas comme
+# variables d'exécution - sinon elles seraient vides dans le navigateur.
+
 FROM node:22-alpine AS base
+RUN apk add --no-cache libc6-compat && npm install -g pnpm@10.21.0
+WORKDIR /app
 
+# --- Construction ------------------------------------------------------------
 FROM base AS builder
-RUN apk update
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-# Install pnpm and turbo globally (turbo is still useful for running scripts, even if not pruning)
-RUN npm install -g pnpm turbo
-
-# Copy the entire repository
 COPY . .
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
+    pnpm install --frozen-lockfile --store-dir /pnpm/store --filter "web..."
 
-# Install dependencies (frozen-lockfile for consistency)
-# TODO : find a way to add --frozen-lockfile
-RUN pnpm install 
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_STOREFRONT_URL
+ARG NEXT_PUBLIC_MEDIA_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+    NEXT_PUBLIC_STOREFRONT_URL=$NEXT_PUBLIC_STOREFRONT_URL \
+    NEXT_PUBLIC_MEDIA_URL=$NEXT_PUBLIC_MEDIA_URL \
+    NEXT_OUTPUT=standalone \
+    NEXT_TELEMETRY_DISABLED=1
 
-# Build-time public env vars (must be available during `next build` to be inlined in the client bundle)
-ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL
-ARG NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-ARG NEXT_PUBLIC_DEFAULT_REGION
-ARG NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
-ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=$NEXT_PUBLIC_MEDUSA_BACKEND_URL
-ENV NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=$NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-ENV NEXT_PUBLIC_DEFAULT_REGION=$NEXT_PUBLIC_DEFAULT_REGION
-ENV NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
+# Paquets partagés d'abord (contracts en tsc, ui en CSS), puis l'application.
+RUN pnpm --filter "web^..." build && pnpm --filter web build
 
-# Build the web application
-RUN pnpm --filter web build
-
-FROM base AS runner
+# --- Exécution ---------------------------------------------------------------
+FROM node:22-alpine AS runner
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0
 WORKDIR /app
 
-# Don't run production as root
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-USER nextjs
+COPY --from=builder --chown=node:node /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=node:node /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=node:node /app/apps/web/public ./apps/web/public
 
-# Copy the standalone build artifacts
-# The standalone output contains the necessary node_modules and server.js
-# We copy it to the root of the runner container
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
-
-# Expose the port (good practice, though Dokploy might override)
+USER node
 EXPOSE 3000
 
-# Start server using the standalone script
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+    CMD wget -qO- "http://127.0.0.1:${PORT}/" > /dev/null || exit 1
+
 CMD ["node", "apps/web/server.js"]
