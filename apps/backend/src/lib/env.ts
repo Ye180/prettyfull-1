@@ -18,7 +18,6 @@ const schema = z.object({
 		.default("false")
 		.transform((v) => v === "true"),
 
-	REDIS_URL: z.string().optional(),
 
 	CORS_ORIGINS: z
 		.string()
@@ -82,7 +81,6 @@ const schema = z.object({
 	/** Base publique de l'API, utilisée pour construire les URLs de webhook. */
 	PUBLIC_API_URL: z.string().default("http://localhost:7777"),
 	STOREFRONT_URL: z.string().default("http://localhost:3000"),
-	ADMIN_URL: z.string().default("http://localhost:3001"),
 });
 
 /**

@@ -19,7 +19,7 @@ Ce document recense les protections en place sur Prettyfull (API, storefront, ba
 | `CREDENTIALS_ENCRYPTION_KEY` | `openssl rand -hex 32`, **sauvegardée** : la perdre rend illisibles les clés des prestataires |
 | `TRUST_PROXY_HOPS` | `1` derrière Traefik / Nginx / Vercel / Render ; `0` sans proxy |
 | `CORS_ORIGINS` | domaines exacts du site et du panel, sans `/` final, sans `localhost` |
-| `PUBLIC_API_URL`, `STOREFRONT_URL`, `ADMIN_URL` | URL HTTPS publiques |
+| `PUBLIC_API_URL`, `STOREFRONT_URL` | URL HTTPS publiques |
 | `COOKIE_DOMAIN` | domaine commun, par ex. `.prettyfull.shop` (voir point suivant) |
 
 - [ ] **Un seul domaine.** Les cookies de session sont `SameSite=Strict`. Il faut servir l'API, le site et le panel sous **le même domaine** (`api.prettyfull.shop`, `www.prettyfull.shop`, `admin.prettyfull.shop`). Sur des adresses `*.vercel.app` distinctes, le navigateur n'envoie jamais le cookie : les clientes seraient déconnectées à chaque rechargement.
@@ -95,7 +95,7 @@ Au-delà de la limite, l'API répond `429` avec un en-tête `Retry-After`. L'IP 
 
 | Sujet | Risque | Recommandation |
 |---|---|---|
-| Limitation de débit en mémoire | Inefficace si l'API tourne sur plusieurs instances | Passer les compteurs dans Redis (`REDIS_URL` déjà prévu) avant de répliquer l'API |
+| Limitation de débit en mémoire | Inefficace si l'API tourne sur plusieurs instances | Passer les compteurs dans Redis (variable `REDIS_URL` à ajouter) avant de répliquer l'API |
 | Pas de captcha | Création de comptes et commandes par robot, même ralentie | Cloudflare Turnstile sur l'inscription et la commande invitée |
 | Inscription | Révèle si un e-mail a déjà un compte | Réponse générique + e-mail de confirmation |
 | Réinitialisation de mot de passe | N'existe pas encore | À construire : jeton haché, usage unique, durée courte, réponse générique, limite de débit |

@@ -12,7 +12,7 @@ import type { AppEnv } from "./request-context.js";
  *
  * ponytail: compteurs propres au processus - suffisant pour une instance
  * unique. Si l'API est répliquée, passer les compteurs dans Redis
- * (`REDIS_URL`, déjà prévu) avec INCR + EXPIRE.
+ * (variable `REDIS_URL` à ajouter) avec INCR + EXPIRE.
  */
 
 interface Bucket {
