@@ -29,6 +29,12 @@ export interface CardProductProps {
 	className?: string;
 	/** Code devise pour l'affichage du prix (ex: "xof" → FCFA) */
 	currencyCode?: string;
+	/**
+	 * Formate un montant (dans la devise `from` du produit, "xof" par défaut)
+	 * vers la devise choisie, conversion incluse. Sans lui, le montant est
+	 * affiché tel quel : à fournir dès que plusieurs devises sont proposées.
+	 */
+	formatPrice?: (amount: number, from?: string) => string;
 	/** Activer le chargement prioritaire de l'image (utiliser uniquement pour les premières cartes above-the-fold) */
 	priority?: boolean;
 }
@@ -41,6 +47,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 	product,
 	className,
 	currencyCode = "xof",
+	formatPrice,
 	priority = false,
 }) => {
 	const router = useRouter();
@@ -57,6 +64,12 @@ export const CardProduct: React.FC<CardProductProps> = ({
 	const defaultVariant =
 		defaultColor?.variants.find((v) => v.purchasable) ??
 		defaultColor?.variants[0];
+
+	// Devise réelle du montant stocké (jamais celle affichée).
+	const sourceCurrency = defaultVariant?.calculated_price?.currency_code ?? "xof";
+	const formatForDisplay = formatPrice
+		? (amount: number) => formatPrice(amount, sourceCurrency)
+		: undefined;
 
 	// --- Handlers ---
 	const handleNavigate = useCallback(() => {
@@ -93,7 +106,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 				selectedVariants: {},
 				unitPrice: {
 					amount: defaultVariant.calculated_price?.calculated_amount ?? 0,
-					currency: currencyCode,
+					currency: sourceCurrency,
 				},
 				// Triplet du point de stock : c'est lui, et non le libellé affiché, que
 				// le tunnel d'achat renvoie à l'API pour réserver la bonne déclinaison.
@@ -115,7 +128,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 			defaultVariant,
 			product?.collectionTitle,
 			addItem,
-			currencyCode,
+			sourceCurrency,
 		],
 	);
 
@@ -191,6 +204,7 @@ export const CardProduct: React.FC<CardProductProps> = ({
 					price={defaultColor.price}
 					compareAtPrice={defaultColor.compareAtPrice}
 					currencySymbol={currencySymbol}
+					formatPrice={formatForDisplay}
 					className="flex gap-1 items-baseline"
 				/>
 

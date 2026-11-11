@@ -13,7 +13,7 @@ export const storeSettingsSchema = z.object({
 	/** Devises proposées au sélecteur du storefront. */
 	enabledCurrencies: z.array(currencySchema).min(1).default(["xof"]),
 	/** XOF est la devise pivot : 1 USD = usdToXofRate XOF. */
-	usdToXofRate: z.number().positive().default(600),
+	usdToXofRate: z.number().positive().default(700),
 	defaultLocale: localeSchema.default("fr"),
 	enabledLocales: z.array(localeSchema).min(1).default(["fr", "en"]),
 	/** Seuil d'alerte appliqué aux produits qui n'en définissent pas. */

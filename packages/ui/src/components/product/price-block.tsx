@@ -4,6 +4,8 @@ export interface PriceBlockProps {
 	price: number;
 	compareAtPrice?: number;
 	currencySymbol: string;
+	/** Formate un montant dans la devise choisie (conversion incluse). Prioritaire sur `currencySymbol`. */
+	formatPrice?: (amount: number) => string;
 	className?: string;
 }
 
@@ -12,18 +14,21 @@ export const PriceBlock: React.FC<PriceBlockProps> = ({
 	price,
 	compareAtPrice,
 	currencySymbol,
+	formatPrice,
 	className,
 }) => {
+	const show = (amount: number) =>
+		formatPrice ? formatPrice(amount) : formatCurrency_FR(amount, currencySymbol);
 	const onSale = compareAtPrice != null && compareAtPrice > price;
 
 	return (
 		<div className={className}>
 			<span className="text-sm font-semibold tracking-wide whitespace-nowrap">
-				{formatCurrency_FR(price, currencySymbol)}
+				{show(price)}
 			</span>
 			{onSale && (
 				<span className="ml-2 text-sm text-grey line-through whitespace-nowrap">
-					{formatCurrency_FR(compareAtPrice, currencySymbol)}
+					{show(compareAtPrice)}
 				</span>
 			)}
 		</div>

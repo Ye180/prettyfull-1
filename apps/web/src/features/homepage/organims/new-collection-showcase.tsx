@@ -4,10 +4,12 @@ import { useGetNewCollectionProducts } from "@/features/homepage/api/medusa/get-
 import { useRegionStore } from "@/stores/useRegion";
 import { CardProduct, normalizeStandaloneProducts } from "@prettyfull/ui";
 import { useMemo, useRef } from "react";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 
 export const NewCollectionShowcase = () => {
 	const { data: rawProducts, isLoading } = useGetNewCollectionProducts();
 	const currencyCode = useRegionStore((state) => state.region?.currency_code);
+	const { format } = useDisplayCurrency();
 	const scrollRef = useRef<HTMLDivElement>(null);
 
 	const products = useMemo(() => {
@@ -67,6 +69,7 @@ export const NewCollectionShowcase = () => {
 									<CardProduct
 										product={product}
 										currencyCode={currencyCode}
+													formatPrice={format}
 										priority={index < 2}
 									/>
 								</div>

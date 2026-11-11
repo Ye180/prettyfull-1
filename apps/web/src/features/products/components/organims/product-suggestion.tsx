@@ -1,5 +1,6 @@
 "use client";
 
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 import { useRelatedProducts } from "@/features/products/hooks/use-related-products";
 import SectionHeading from "@/shared/components/molecules/core/section-heading";
 import { useRegionStore } from "@/stores/useRegion";
@@ -18,6 +19,7 @@ const ProductSuggestion = ({
 	excludeProductId,
 }: ProductSuggestionProps) => {
 	const currencyCode = useRegionStore((state) => state.region?.currency_code);
+	const { format } = useDisplayCurrency();
 	const { data: products, isLoading } = useRelatedProducts(
 		categorySlug,
 		excludeProductId,
@@ -48,6 +50,7 @@ const ProductSuggestion = ({
 										key={product.collectionId}
 										product={product}
 										currencyCode={currencyCode}
+													formatPrice={format}
 										priority={index < 4}
 									/>
 								))}

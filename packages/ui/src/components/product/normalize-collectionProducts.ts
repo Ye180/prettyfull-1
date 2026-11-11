@@ -67,6 +67,7 @@ function buildVariantEntry(variant: RawVariant): NormalizedVariant {
     calculated_price: {
       calculated_amount: variant.calculated_price?.calculated_amount ?? 0,
       original_amount: variant.calculated_price?.original_amount,
+      currency_code: variant.calculated_price?.currency_code,
     },
     variantId: variant.variant_id ?? null,
     sizeId: variant.size_id ?? null,

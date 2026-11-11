@@ -19,6 +19,7 @@ import {
 } from "../hooks/use-collection-products";
 import { getMediaUrl } from "@prettyfull/utils";
 import { useTranslations } from "next-intl";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 
 // 7 lignes de la grille dense (5 colonnes en desktop) avant le bouton "See More".
 const PAGE_SIZE = 35;
@@ -72,6 +73,7 @@ export const CollectionViews = () => {
 		clear: clearFilters,
 	} = useCollectionFilters();
 	const currencyCode = useRegionStore((state) => state.region?.currency_code);
+	const { format } = useDisplayCurrency();
 	const [searchDraft, setSearchDraft] = useState(q);
 	const [limit, setLimit] = useState(PAGE_SIZE);
 	const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -373,6 +375,7 @@ export const CollectionViews = () => {
 													key={product.collectionId}
 													product={product}
 													currencyCode={currencyCode}
+													formatPrice={format}
 													priority={index < 4}
 												/>
 											))}
