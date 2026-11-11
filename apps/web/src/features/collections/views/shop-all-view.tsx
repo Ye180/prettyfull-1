@@ -18,6 +18,7 @@ import { useCollectionFacets } from "../hooks/use-collection-facets";
 import { useCollectionFilters } from "../hooks/use-collection-filters";
 import { useCollectionProducts } from "../hooks/use-collection-products";
 import SidebarFilter, { FilterState } from "../organims/sidebar-filter";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
 
 // 7 lignes de la grille dense (5 colonnes en desktop) avant le bouton "See More".
 const PAGE_SIZE = 35;
@@ -58,6 +59,7 @@ export const ShopAllView = () => {
 		clear: clearFilters,
 	} = useCollectionFilters();
 	const currencyCode = useRegionStore((state) => state.region?.currency_code);
+	const { format } = useDisplayCurrency();
 	const [searchDraft, setSearchDraft] = useState(q);
 	const [limit, setLimit] = useState(PAGE_SIZE);
 	const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -458,6 +460,7 @@ export const ShopAllView = () => {
 													key={product.collectionId}
 													product={product}
 													currencyCode={currencyCode}
+													formatPrice={format}
 													priority={index < 4}
 												/>
 											))}

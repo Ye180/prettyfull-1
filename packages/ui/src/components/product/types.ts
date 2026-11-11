@@ -154,6 +154,8 @@ export interface NormalizedVariant {
   calculated_price: {
     calculated_amount: number;
     original_amount?: number;
+    /** Devise du montant (jamais celle affichée) : sert à le convertir. */
+    currency_code?: string;
   };
   /** Triplet du point de stock réel, nécessaire pour réserver la bonne déclinaison au panier. */
   variantId?: string | null;

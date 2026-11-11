@@ -23,19 +23,19 @@ export const useDisplayCurrency = () => {
 	const currencyCode = (region?.currency_code ??
 		config?.defaultCurrency ??
 		"xof") as CurrencyCode;
-	const usdToXofRate = config?.usdToXofRate ?? 600;
+	const usdToXofRate = config?.usdToXofRate ?? 700;
 
 	// D'anciens paniers stockent un libellé ("FCFA", "USD") au lieu d'un code :
 	// sans repli, la conversion rendait NaN.
-	const convert = (amountMinor: number, fromCurrency: CurrencyCode = "xof"): number =>
+	const convert = (amountMinor: number, fromCurrency: string = "xof"): number =>
 		convertAmount(
 			amountMinor,
-			CURRENCY_CODES.includes(fromCurrency) ? fromCurrency : "xof",
+			CURRENCY_CODES.includes(fromCurrency as CurrencyCode) ? (fromCurrency as CurrencyCode) : "xof",
 			currencyCode,
 			usdToXofRate,
 		);
 
-	const format = (amountMinor: number, fromCurrency: CurrencyCode = "xof"): string =>
+	const format = (amountMinor: number, fromCurrency: string = "xof"): string =>
 		formatMoney(convert(amountMinor, fromCurrency), currencyCode);
 
 	return { currencyCode, usdToXofRate, convert, format };
