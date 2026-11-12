@@ -62,6 +62,24 @@ const nextConfig: NextConfig = {
 	async headers() {
 		return [
 			{ source: "/:path*", headers: securityHeaders },
+			// Pages privées ou sans contenu propre : jamais dans l'index Google.
+			// En-tête plutôt que balise meta : plusieurs de ces pages sont des
+			// composants client, qui ne peuvent pas exporter de métadonnées.
+			...[
+				"/cart",
+				"/checkout",
+				"/account/:path*",
+				"/order-confirmation",
+				"/login",
+				"/create-account",
+				"/wishlist",
+				"/products",
+				"/pages/:path*",
+				"/page/:path*",
+			].map((source) => ({
+				source,
+				headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+			})),
 			{
 				source: "/sw.js",
 				headers: [

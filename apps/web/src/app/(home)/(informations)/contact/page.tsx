@@ -1,11 +1,14 @@
-import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo/site";
 import ContactViews from "@/features/contact/views";
 
-export const metadata: Metadata = {
-	title: "Contact - PrettyFull",
+
+export const metadata = buildMetadata({
+	title: "Contact : une question sur une commande ?",
 	description:
-		"Une question sur une taille, un colis ou un retour ? Écrivez-nous, nous répondons sous 24 heures ouvrées.",
-};
+		"Une question sur un produit, un colis ou un retour ? Écrivez à l'équipe Prettyfull, nous répondons sous 24 heures ouvrées.",
+	path: "/contact",
+	keywords: ["contact Prettyfull","service client Abidjan"],
+});
 
 const Page = () => <ContactViews />;
 
