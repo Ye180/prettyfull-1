@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { ApiRequestError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { Button, Field, Input } from "@/components/ui/primitives";
+import { Button, Field, Input, PasswordInput } from "@/components/ui/primitives";
 
 /**
  * Connexion au back-office.
@@ -79,9 +79,8 @@ const LoginPage = () => {
 					</Field>
 
 					<Field label="Mot de passe" htmlFor="password" required>
-						<Input
+						<PasswordInput
 							id="password"
-							type="password"
 							autoComplete="current-password"
 							required
 							value={password}

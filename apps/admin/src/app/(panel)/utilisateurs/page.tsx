@@ -19,6 +19,7 @@ import {
 	Checkbox,
 	Field,
 	Input,
+	PasswordInput,
 	Select,
 } from "@/components/ui/primitives";
 import { IconEdit, IconPlus, IconTrash } from "@/components/icons";
@@ -324,8 +325,7 @@ const StaffPage = () => {
 								error={errors.password?.[0]}
 								hint="Au moins 10 caractères, une majuscule, une minuscule et un chiffre."
 							>
-								<Input
-									type="password"
+								<PasswordInput
 									autoComplete="new-password"
 									value={draft.password}
 									onChange={(event) => setDraft({ ...draft, password: event.target.value })}

@@ -5,6 +5,7 @@ import {
 	cloneElement,
 	isValidElement,
 	useId,
+	useState,
 	type ButtonHTMLAttributes,
 	type InputHTMLAttributes,
 	type ReactElement,
@@ -90,6 +91,47 @@ export const Input = ({
 	<input className={cn(FIELD_BASE, "h-9", className)} {...props} />
 );
 
+const EyeIcon = ({ off }: { off: boolean }) => (
+	<svg
+		viewBox="0 0 24 24"
+		width="18"
+		height="18"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+		aria-hidden="true"
+	>
+		<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+		<circle cx="12" cy="12" r="3" />
+		{off && <path d="M3 3l18 18" />}
+	</svg>
+);
+
+/** Champ mot de passe avec bouton « œil » pour afficher ou masquer la saisie. */
+export const PasswordInput = ({
+	className,
+	...props
+}: Omit<InputHTMLAttributes<HTMLInputElement>, "type">) => {
+	const [visible, setVisible] = useState(false);
+
+	return (
+		<div className="relative">
+			<Input {...props} type={visible ? "text" : "password"} className={cn("pr-10", className)} />
+			<button
+				type="button"
+				onClick={() => setVisible((current) => !current)}
+				aria-label={visible ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+				aria-pressed={visible}
+				className="flex absolute inset-y-0 right-0 justify-center items-center w-10 rounded-r-md transition-colors text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ink"
+			>
+				<EyeIcon off={visible} />
+			</button>
+		</div>
+	);
+};
+
 export const Textarea = ({
 	className,
 	...props
@@ -150,7 +192,7 @@ interface FieldProps {
  * pire que pas d'association du tout. Ces cas gardent un libellé simple et
  * portent leur propre `aria-label`.
  */
-const LABELABLE = new Set<unknown>([Input, Select, Textarea]);
+const LABELABLE = new Set<unknown>([Input, PasswordInput, Select, Textarea]);
 
 export const Field = ({
 	label,
